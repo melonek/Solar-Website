@@ -161,7 +161,7 @@ nav {
 @media screen and (max-width: 768px) {
 
     nav {
-        padding: 2.2rem 1rem; /* Slightly increase nav height for mobile */
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
     }
 
     .nav-links {
