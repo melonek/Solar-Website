@@ -488,7 +488,7 @@ footer {
     justify-content: center;
     gap: 20px;
     flex-direction: row !important;
-    paddin: 0 10;
+    padding: 0 10;
     width: 100%;
 }
 
@@ -498,7 +498,6 @@ footer {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
-    width: 100%; /* Ensure full width */
 }
 
 .article-card {
