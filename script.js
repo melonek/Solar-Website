@@ -1,3 +1,97 @@
+// Add this at the TOP of your existing JS file
+function preloadImages(urls) {
+  return new Promise((resolve, reject) => {
+      const promises = urls.map(url => {
+          return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.src = url;
+              img.onload = () => resolve(url);
+              img.onerror = () => reject(url);
+          });
+      });
+
+      Promise.all(promises)
+          .then(() => resolve())
+          .catch((failedUrl) => 
+              console.error(`Failed to preload image: ${failedUrl}`))
+          .finally(() => resolve()); // Always resolve to continue execution
+  });
+}
+
+  // Updated brand images array with your URLs
+  const brandImages = [
+    'https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp',
+    'https://i.postimg.cc/Jh2pGxNg/Dasolar.webp',
+    'https://i.postimg.cc/4yCw13FQ/Fronius.png',
+    'https://i.postimg.cc/ZnrHshGt/Growatt.png',
+    'https://i.postimg.cc/43m5kcD1/Huawei.png',
+    'https://i.postimg.cc/HsgBcVMp/JASolar.png',
+    'https://i.postimg.cc/FFcTHj7W/Jinko.png',
+    'https://i.postimg.cc/HkS2hzhx/logo-black-scaled.jpg',
+    'https://i.postimg.cc/3JF9gYj2/Longi.png',
+    'https://i.postimg.cc/JhvQ1nmC/Risen-Solar.png',
+    'https://i.postimg.cc/76znbkYG/Seraphim.png',
+    'https://i.postimg.cc/2yFdF7WC/SMA.png',
+    'https://i.postimg.cc/wMdcmG7W/Sofar.png',
+    'https://i.postimg.cc/FFjx4NBw/Solar-Edge.png',
+    'https://i.postimg.cc/wTgQxnKM/Solis.png',
+    'https://i.postimg.cc/CxKCkDxV/Sungrow.png',
+    'https://i.postimg.cc/YqRfv8k3/Trina-Solar.png',
+    'https://i.postimg.cc/dQpY2GFc/Screenshot-2025-02-07-at-12-04-38-am.png',
+    'https://i.postimg.cc/gkhPNrcX/Screenshot-2025-02-07-at-12-05-06-am.png'
+  ];
+  
+  // Modify your existing DOMContentLoaded listener like this:
+  document.addEventListener('DOMContentLoaded', function() {
+    // Wrap all existing code in this preload promise
+    preloadImages(brandImages).then(() => {
+        // Original brand-related code
+        const brandCards = document.querySelectorAll('.brand-card');
+        let currentIndex = 0;
+  
+        // Initialize first set
+        updateBrandCards();
+  
+        function updateBrandCards() {
+            brandCards.forEach((card, i) => {
+                const imgIndex = (currentIndex + i) % brandImages.length;
+                card.querySelector('img').src = brandImages[imgIndex];
+                card.classList.remove('active');
+                setTimeout(() => card.classList.add('active'), 50);
+            });
+        }
+  
+        function cycleBrands() {
+            brandCards.forEach(card => card.classList.remove('active'));
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 4) % brandImages.length;
+                updateBrandCards();
+            }, 500);
+        }
+  
+        // Start cycling
+        let brandInterval = setInterval(cycleBrands, 5000);
+  
+        // Pause cycling on hover
+        document.querySelector('#brands').addEventListener('mouseenter', () => {
+            clearInterval(brandInterval);
+        });
+  
+        document.querySelector('#brands').addEventListener('mouseleave', () => {
+            brandInterval = setInterval(cycleBrands, 5000);
+        });
+  
+        // Initial fade-in
+        setTimeout(() => {
+            brandCards.forEach(card => card.classList.add('active'));
+        }, 500);
+  
+        // Rest of your existing code (articles, menu toggle, etc.)
+        // ... [Keep all your existing code here] ...
+    });
+  });
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Array of articles - this could be replaced with fetching data from JSON or an API
@@ -215,71 +309,3 @@ function displayModal(article) {
         });
     });
   });
-
-  // Add to your existing JS
-document.addEventListener('DOMContentLoaded', function() {
-  // Brand images data (replace with your actual image URLs)
-  const brandImages = [
-    'https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp',
-    'https://i.postimg.cc/Jh2pGxNg/Dasolar.webp',
-    'https://i.postimg.cc/4yCw13FQ/Fronius.png',
-    'https://i.postimg.cc/ZnrHshGt/Growatt.png',
-    'https://i.postimg.cc/43m5kcD1/Huawei.png',
-    'https://i.postimg.cc/HsgBcVMp/JASolar.png',
-    'https://i.postimg.cc/FFcTHj7W/Jinko.png',
-    'https://i.postimg.cc/HkS2hzhx/logo-black-scaled.jpg',
-    'https://i.postimg.cc/3JF9gYj2/Longi.png',
-    'https://i.postimg.cc/JhvQ1nmC/Risen-Solar.png',
-    'https://i.postimg.cc/76znbkYG/Seraphim.png',
-    'https://i.postimg.cc/2yFdF7WC/SMA.png',
-    'https://i.postimg.cc/wMdcmG7W/Sofar.png',
-    'https://i.postimg.cc/FFjx4NBw/Solar-Edge.png',
-    'https://i.postimg.cc/wTgQxnKM/Solis.png',
-    'https://i.postimg.cc/CxKCkDxV/Sungrow.png',
-    'https://i.postimg.cc/YqRfv8k3/Trina-Solar.png',
-    'https://i.postimg.cc/dQpY2GFc/Screenshot-2025-02-07-at-12-04-38-am.png',
-    'https://i.postimg.cc/gkhPNrcX/Screenshot-2025-02-07-at-12-05-06-am.png'
-  ];
-
-  const brandCards = document.querySelectorAll('.brand-card');
-  let currentIndex = 0;
-
-  // Initialize first set
-  updateBrandCards();
-
-  function updateBrandCards() {
-    brandCards.forEach((card, i) => {
-      const imgIndex = (currentIndex + i) % brandImages.length;
-      card.querySelector('img').src = brandImages[imgIndex];
-      card.classList.remove('active');
-      setTimeout(() => card.classList.add('active'), 50);
-    });
-  }
-
-  function cycleBrands() {
-    brandCards.forEach(card => card.classList.remove('active'));
-    
-    setTimeout(() => {
-      currentIndex = (currentIndex + 4) % brandImages.length;
-      updateBrandCards();
-    }, 500);
-  }
-
-  // Start cycling
-  let brandInterval = setInterval(cycleBrands, 5000);
-
-  // Pause cycling on hover
-  document.querySelector('#brands').addEventListener('mouseenter', () => {
-    clearInterval(brandInterval);
-  });
-
-  document.querySelector('#brands').addEventListener('mouseleave', () => {
-    brandInterval = setInterval(cycleBrands, 5000);
-  });
-
-  // Initial fade-in
-  setTimeout(() => {
-    brandCards.forEach(card => card.classList.add('active'));
-  }, 500);
-  
-});
