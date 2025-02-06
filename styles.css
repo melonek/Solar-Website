@@ -202,7 +202,13 @@ nav {
     margin: 1rem auto;
     max-width: 1200px;
   }
-  
+  #about .about-content {
+    width: 100%; /* Full width within its container */
+    max-width: none; /* Remove any max-width constraints */
+    padding: 0; /* Remove padding if it was causing smaller appearance */
+    box-sizing: border-box; /* Includes padding in width calculation */
+}
+
   .about-container {
     background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -265,8 +271,67 @@ nav {
       flex-direction: column; /* Stack text and images on smaller screens */
     }
 }
-  
-  
+
+/* Brands of Solar Panels */
+#brands {
+    padding: 2rem;
+    margin: 1rem auto;
+}
+
+.brands-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.brand-card {
+    width: 240px; /* Increased from 200px */
+    height: 180px; /* Increased from 150px */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    opacity: 0;
+    transition: all 0.5s ease, transform 0.3s ease;
+}
+
+.brand-card.active {
+    opacity: 1;
+}
+
+.brand-card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.brand-card:hover img {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .brand-card {
+        width: 180px; /* Increased from 150px */
+        height: 130px; /* Increased from 100px */
+    }
+}
+
+@media (max-width: 480px) {
+    .brands-container {
+        gap: 10px;
+    }
+    .brand-card {
+        width: 45%;
+        height: 100px; /* Increased from 80px */
+    }
+}
+
 /* Sections */
 .section {
     padding: 2rem;
