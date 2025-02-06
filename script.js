@@ -92,6 +92,122 @@ function preloadImages(urls) {
     });
   });
 
+  // Product Data Array (add to your existing JS)
+const solarProducts = {
+  panels: [
+    {
+      id: 1,
+      name: "Canadian Solar 400W",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp"
+    },
+    // Add more panels...
+  ],
+  inverters: [
+    {
+      id: 1,
+      name: "Fronius Primo 5.0",
+      specs: "5kW Single Phase",
+      country: "Austria",
+      warranty: "10 years",
+      datasheet: "fronius-primo.pdf",
+      image: "https://i.postimg.cc/4yCw13FQ/Fronius.png"
+    },
+    // Add more inverters...
+  ]
+};
+
+// Package Selection Logic
+let selectedPanel = null;
+let selectedInverter = null;
+
+function createProductCard(product, type) {
+  const card = document.createElement('div');
+  card.className = 'product-card product';
+  card.innerHTML = `
+    <img src="${product.image}" alt="${product.name}">
+    <h3>${product.name}</h3>
+    <p>Specs: ${product.specs}</p>
+    <p>Country: ${product.country}</p>
+    <p>Datasheet: ${product.datasheet}</p>
+    <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
+  `;
+  return card;
+}
+
+function updatePackageDisplay() {
+  if (selectedPanel && selectedInverter) {
+    document.getElementById('selected-panel-image').src = selectedPanel.image;
+    document.getElementById('selected-inverter-image').src = selectedInverter.image;
+    document.getElementById('package-description').innerHTML = `
+      My installation will consist of <strong>${selectedPanel.name}</strong> panels 
+      and <strong>${selectedInverter.name}</strong> inverter
+    `;
+    document.getElementById('solar-package-input').value = 
+      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
+  }
+}
+
+// Initialize Packages Page
+function initPackagesPage() {
+  const panelsGrid = document.getElementById('panels-grid');
+  const invertersGrid = document.getElementById('inverters-grid');
+
+  solarProducts.panels.forEach(panel => {
+    const card = createProductCard(panel, 'panel');
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPanel = panel;
+      updatePackageDisplay();
+    });
+    panelsGrid.appendChild(card);
+  });
+
+  solarProducts.inverters.forEach(inverter => {
+    const card = createProductCard(inverter, 'inverter');
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedInverter = inverter;
+      updatePackageDisplay();
+    });
+    invertersGrid.appendChild(card);
+  });
+
+  // Modal Handling
+  document.querySelectorAll('.read-more-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const type = e.target.dataset.type;
+      const id = e.target.dataset.id;
+      const product = solarProducts[type === 'panel' ? 'panels' : 'inverters'].find(p => p.id == id);
+
+      const modalContent = `
+        <img src="${product.image}" alt="${product.name}">
+        <div class="product-specs">
+          <h2>${product.name}</h2>
+          <p><strong>Specifications:</strong> ${product.specs}</p>
+          <p><strong>Country:</strong> ${product.country}</p>
+          <p><strong>Warranty:</strong> ${product.warranty}</p>
+          <p><strong>Datasheet:</strong> ${product.datasheet}</p>
+        </div>
+      `;
+
+      document.getElementById('product-modal').style.display = 'block';
+      document.querySelector('.modal-product-image').innerHTML = modalContent;
+    });
+  });
+}
+
+// Update your existing DOMContentLoaded listener
+if (document.location.pathname.includes('packages.html')) {
+  initPackagesPage();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Array of articles - this could be replaced with fetching data from JSON or an API

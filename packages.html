@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Packages - Nature's Spark Solar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Reuse your existing navigation -->
+  <nav>
+    <!-- Your existing nav code -->
+  </nav>
+
+  <section class="section">
+    <h1>Our Solar Packages</h1>
+    <p>Build your own and get a free quote</p>
+
+    <!-- Solar Panels Section -->
+    <div class="service-category">
+      <h2>Solar Panels</h2>
+      <div class="product-grid" id="panels-grid"></div>
+    </div>
+
+    <!-- Inverters Section -->
+    <div class="service-category">
+      <h2>Inverters</h2>
+      <div class="product-grid" id="inverters-grid"></div>
+    </div>
+
+    <!-- Selected Package Display -->
+    <div id="selected-package" class="section">
+      <h2>My Solar Package</h2>
+      <div class="package-combination">
+        <div class="image-combination">
+          <img id="selected-panel-image" src="" alt="Selected Panel">
+          <img id="selected-inverter-image" src="" alt="Selected Inverter">
+        </div>
+        <p id="package-description"></p>
+      </div>
+    </div>
+
+    <!-- Package Form -->
+    <form action="https://formspree.io/f/mgvoybrr" method="POST" class="package-form">
+      <input type="hidden" name="solar-package" id="solar-package-input">
+      <!-- Add other necessary form fields -->
+      <button type="submit" class="fancy-button">Get Free Quote</button>
+    </form>
+  </section>
+
+  <!-- Product Modal -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content product-modal-content">
+      <span class="close">&times;</span>
+      <div class="modal-product-image"></div>
+      <div class="modal-product-details"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
