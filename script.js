@@ -434,8 +434,15 @@ document.addEventListener('DOMContentLoaded', function() {
     displayArticles(currentPage);
   }
 
-  document.getElementById('prev-page').addEventListener('click', () => navigatePages('prev'));
-  document.getElementById('next-page').addEventListener('click', () => navigatePages('next'));
+  const prevPage = document.getElementById('prev-page');
+const nextPage = document.getElementById('next-page');
+
+if (prevPage) {
+  prevPage.addEventListener('click', () => navigatePages('prev'));
+}
+if (nextPage) {
+  nextPage.addEventListener('click', () => navigatePages('next'));
+}
 
   // Setup event listeners for article cards
   function setupArticleClickEvents() {
@@ -481,10 +488,62 @@ function displayModal(article) {
     }
   };
 }
-  
+    // Initial display
+    displayArticles(currentPage);
 
-  // Initial display
-  displayArticles(currentPage);
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const navLinks = document.querySelector('.nav-links');
+      
+      // Toggle mobile menu
+      if (mobileMenu && navLinks) {
+        mobileMenu.addEventListener('click', () => {
+          navLinks.classList.toggle('active');
+        });
+      }
+    
+      // Handle dropdown for all screen sizes
+      const dropdowns = document.querySelectorAll('.dropdown');
+      dropdowns.forEach(dropdown => {
+        const dropdownContent = dropdown.querySelector('.dropdown-content');
+        
+        if (dropdownContent) {
+          dropdown.addEventListener('click', (e) => {
+            if (window.innerWidth > 768) {
+              dropdownContent.classList.toggle('active');
+            } else {
+              e.stopPropagation(); // On mobile, prevent default behavior to avoid hiding immediately
+              if (!dropdownContent.classList.contains('active')) {
+                // Close other dropdowns if any are open
+                document.querySelectorAll('.dropdown-content.active').forEach(activeDropdown => {
+                  if (activeDropdown !== dropdownContent) {
+                    activeDropdown.classList.remove('active');
+                  }
+                });
+                dropdownContent.classList.add('active');
+              }
+            }
+          });
+    
+          // Close dropdown if clicking outside on mobile
+          document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target) && window.innerWidth <= 768 && dropdownContent.classList.contains('active')) {
+              dropdownContent.classList.remove('active');
+            }
+          });
+    
+          // Close dropdown when clicking on a link inside it
+          dropdown.querySelectorAll('.dropdown-content a').forEach(link => {
+            link.addEventListener('click', () => {
+              if (window.innerWidth <= 768) {
+                dropdownContent.classList.remove('active');
+              }
+            });
+          });
+        }
+      });
+    });
+
 
     // Toggle mobile menu
     const mobileMenu = document.getElementById('mobile-menu');
@@ -492,32 +551,5 @@ function displayModal(article) {
 
     mobileMenu.addEventListener('click', () => {
         navLinks.classList.toggle('active');
-    });
-
-    // Handle dropdown for all screen sizes
-    const dropdown = document.querySelector('.dropdown');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    dropdown.addEventListener('click', (e) => {
-        if (window.innerWidth > 768) {
-            dropdownContent.classList.toggle('active');
-        } else {
-            // On mobile, prevent default behavior to avoid hiding immediately
-            e.stopPropagation();
-        }
-    });
-
-    // Ensure dropdown closes when clicking outside on mobile
-    document.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target) && window.innerWidth <= 768) {
-            dropdownContent.classList.remove('active');
-        }
-    });
-
-    // Ensure dropdown closes when clicking on a link inside it
-    document.querySelectorAll('.dropdown-content a').forEach(link => {
-        link.addEventListener('click', () => {
-            dropdownContent.classList.remove('active');
-        });
     });
   });

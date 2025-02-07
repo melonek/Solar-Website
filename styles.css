@@ -96,6 +96,7 @@ nav {
     position: relative;
 }
 
+
 .dropbtn {
     background-color: transparent;
     border: none;
@@ -138,6 +139,9 @@ nav {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+.dropdown.active .dropdown-content {
+    display: block;}
 
 /* Mobile Menu Toggle */
 .menu-toggle {
