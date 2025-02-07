@@ -390,39 +390,55 @@ nav {
     width: 300px;
     margin: 10px;
     text-align: center;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adds a subtle shadow */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
 .product img {
     width: 100%;
     height: 200px;
     object-fit: cover;
+    border-radius: 8px 8px 0 0; /* Rounded corners for top of image */
+    transition: transform 0.3s ease; /* Smooth zoom effect for image */
+}
+
+.product h3 {
+    padding: 10px 0 5px; /* Space around the title */
+}
+
+.product p {
+    padding: 0 10px 15px; /* Padding for description text */
+}
+
+/* Hover effects for product cards */
+.product:hover {
+    transform: scale(1.03); /* Slight zoom effect on hover */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+}
+
+.product:hover img {
+    transform: scale(1.05); /* Zoom the image slightly more than the card */
+}
+
+
+/* Specific styles for panels grid */
+.panels-grid {
+    border: 2px solid #2ecc71; /* Green border for panels */
+    padding: 1rem;
     border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-/* Solar Package and Brands Section */
-#solar-package-and-brands {
-    padding: 2rem;
-    margin: 1rem auto;
-    max-width: 1400px;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Specific styles for inverters grid */
+  .inverters-grid {
+    border: 2px solid #3498db; /* Blue border for inverters */
+    padding: 1rem;
     border-radius: 8px;
-    text-align: center;
-}
+  }
+  
 
-.package-combination {
-    margin: 2rem 0;
-}
-
-.package-layout {
-    display: flex;
-    flex-direction: row;
-    gap: 20px; /* Space between package and card container */
-    overflow-x: auto; /* Ensures content stays within container */
-    max-width: 100%; /* Prevents exceeding container width */
-}
-
+/* Center the image combination within its container */
 .image-combination {
     position: relative;
     width: 400px; /* Fixed width for consistency */
@@ -430,6 +446,15 @@ nav {
     aspect-ratio: 4/5; /* Keep aspect ratio for smaller screens */
     flex-shrink: 0; /* Prevent the image from shrinking */
     min-width: 200px; /* Minimum width for smaller screens */
+    margin: 0 auto; /* Center horizontally */
+    display: flex; /* Use flexbox for centering content */
+    justify-content: center; /* Center horizontally within container */
+    align-items: center; /* Center vertically within container */
+    /* If you want to center in the viewport, use this instead: */
+    /* position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
 }
 
 #selected-panel-image {
@@ -450,8 +475,6 @@ nav {
     height: auto;
     object-fit: contain;
 }
-
-
 
 /* Brand Cards Container */
 #brands {
@@ -522,10 +545,51 @@ nav {
     border-radius: 8px;
     transition: all 0.3s ease;
 }
-  .product-card.selected {
+
+
+/* Adjust text spacing */
+.product-card h3 {
+    padding: 5px 10px 0; /* Reduced top padding */
+    margin-bottom: 5px; /* Reduce space after the heading */
+}
+
+.product-card p {
+    padding: 0 10px 5px; /* Reduced bottom padding */
+    margin-bottom: 5px; /* Reduce space between paragraphs */
+    line-height: 1.2; /* Decrease line height for less vertical space */
+}
+
+.product-card button {
+    margin: 5px 10px 10px; /* Adjust margins for the button */
+    padding: 5px 10px; /* Smaller padding to fit within space */
+}
+
+/* Ensure button is visible */
+.product-card .read-more-btn {
+    display: block;
+    margin: 0 auto; /* Center the button */
+    width: calc(100% - 195px); /* Make button almost full width */
+    border: none;
+}
+
+
+/* Styles for selected product cards in both sections */
+
+.product-card.selected {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
-    border: 2px solid #2ecc71;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Neutral shadow for both */
+  }
+  
+  /* Specific styles for Solar Panels */
+  .panels-grid .product-card.selected {
+    border: 2px solid #2ecc71; /* Green border for panels */
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); /* Green shadow for panels */
+  }
+  
+  /* Specific styles for Inverters */
+  .inverters-grid .product-card.selected {
+    border: 2px solid #3498db; /* Blue border for inverters */
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); /* Blue shadow for inverters */
   }
   
   .product-modal-content {
@@ -548,8 +612,16 @@ nav {
     padding: 1rem;
   }
   
+  /* Center the button and apply the gradient */
+.center-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px; /* Space from the heading */
+    margin-bottom: 30px; /* Space from the heading */
+  }
+  
   .fancy-button {
-    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    background: linear-gradient(90deg, #618570, #53966f, #618570);
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -557,8 +629,10 @@ nav {
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none; /* Remove underline from anchor tag */
   }
   
+
   .fancy-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
@@ -639,6 +713,58 @@ footer {
     background: lightgray;
     color: black;
 }
+
+.package-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center child elements horizontally */
+    padding: 20px;
+    max-width: 600px; /* Adjust as needed */
+    margin: 0 auto; /* Center the form itself */
+  }
+  
+  .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input, 
+  .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .button-container {
+    margin-top: 20px; /* Space above the button */
+    width: 100%; /* Full width of the form */
+    text-align: center; /* Center the button within this container */
+  }
+  
+  /* Style for the button if not already defined */
+  .fancy-button {
+    background: linear-gradient(90deg, #618570, #53966f, #618570);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .fancy-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+  }
 
 /* Contact Form */
 #contact form {

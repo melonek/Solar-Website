@@ -124,9 +124,27 @@ const solarProducts = {
       datasheet: "canadian-400w.pdf",
       image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
     },
+     {
+      id: 1,
+      name: "Canadian Solar 400W",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
+    },
     // Add more panels...
   ],
   inverters: [
+    {
+      id: 1,
+      name: "Fronius Primo 5.0",
+      specs: "5kW Single Phase",
+      country: "Austria",
+      warranty: "10 years",
+      datasheet: "fronius-primo.pdf",
+      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
+    },
     {
       id: 1,
       name: "Fronius Primo 5.0",
@@ -184,10 +202,10 @@ function updatePackageDisplay() {
   if (selectedPanel && selectedInverter) {
     // Show images and update text when selections are made
     panelImage.src = selectedPanel.image;
-    panelImage.style.visibility = 'visible'; // Show the panel image
+    panelImage.style.visibility = 'visible'; 
     
     inverterImage.src = selectedInverter.image;
-    inverterImage.style.visibility = 'visible'; // Show the inverter image
+    inverterImage.style.visibility = 'visible'; 
     
     packageDescription.innerHTML = `
       My installation will consist of <strong>${selectedPanel.name}</strong> panels 
@@ -195,6 +213,12 @@ function updatePackageDisplay() {
     `;
     document.getElementById('solar-package-input').value = 
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
+    
+    // Scroll to the solar package section
+    const solarPackageSection = document.getElementById('solar-package');
+    if (solarPackageSection) {
+      solarPackageSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   } else {
     // Hide images and clear description when no selection or only one selection
     panelImage.style.visibility = 'hidden';
@@ -202,6 +226,7 @@ function updatePackageDisplay() {
     packageDescription.textContent = '';
   }
 }
+
 // Initialize Packages Page
 function initPackagesPage() {
   const panelsGrid = document.getElementById('panels-grid');
@@ -214,6 +239,12 @@ function initPackagesPage() {
       card.classList.add('selected');
       selectedPanel = panel;
       updatePackageDisplay();
+      
+      // Scroll to inverters section
+      const invertersSection = document.getElementById('inverters-grid');
+      if (invertersSection) {
+        invertersSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
     panelsGrid.appendChild(card);
   });
@@ -225,6 +256,8 @@ function initPackagesPage() {
       card.classList.add('selected');
       selectedInverter = inverter;
       updatePackageDisplay();
+      
+      // The scroll to package section happens inside updatePackageDisplay when both panel and inverter are selected
     });
     invertersGrid.appendChild(card);
   });

@@ -63,29 +63,32 @@
     <h1>Services</h1>
     
     <!-- Solar Systems -->
-    <div id="solar-systems" class="service-category">
-      <h2>Solar Systems</h2>
-      <div class="product-grid">
-        <div class="product">
-          <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar">
-          <h3>Residential Solar Panels</h3>
-          <p>High-efficiency panels for homes with a 25-year warranty.</p>
-        </div>
-        <div class="product">
-          <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar">
-          <h3>Commercial Solar Solutions</h3>
-          <p>Scalable systems for businesses to reduce energy costs.</p>
-        </div>
-        <div class="product">
-          <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof">
-          <h3>Solar Roof Tiles</h3>
-          <p>Aesthetic solar tiles that blend with your roof design.</p>
-        </div>
-      </div>
-              <!-- Add this in your Services section or where appropriate -->
-<a href="packages.html" class="fancy-button" target="_blank">Browse Solar Packages</a>
+<div id="solar-systems" class="service-category">
+  <h2>Solar Systems</h2>
+  <div class="center-button">
+    <a href="packages.html" class="fancy-button" target="_blank">Browse Solar Packages</a>
+  </div>
+  <div class="product-grid">
+    <!-- Your product items here -->
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar">
+      <h3>Residential Solar Panels</h3>
+      <p>High-efficiency panels for homes with a 25-year warranty.</p>
     </div>
-  
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar">
+      <h3>Commercial Solar Solutions</h3>
+      <p>Scalable systems for businesses to reduce energy costs.</p>
+    </div>
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof">
+      <h3>Solar Roof Tiles</h3>
+      <p>Aesthetic solar tiles that blend with your roof design.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
 <!-- Battery Storage -->
 <div id="battery-storage" class="service-category">
     <h2>Battery Storage</h2>
@@ -195,28 +198,41 @@
 <section id="contact" class="section">
   <h1>Contact Us</h1>
   <form action="https://formspree.io/f/mgvoybrr" method="POST">
-    <label>
-      Your email:
-      <input type="email" name="email" required>
+    <label for="fullName">
+      Full name:
+      <input type="text" id="fullName" name="fullName" required>
     </label>
-    <label>
+    
+    <label for="mobilePhone">
+      Mobile phone:
+      <input type="tel" id="mobilePhone" name="mobilePhone" required>
+    </label>
+    
+    <label for="email">
+      Your email:
+      <input type="email" id="email" name="email" required>
+    </label>
+    
+    <label for="installationAddress">
+      Installation address:
+      <textarea id="installationAddress" name="installationAddress" required></textarea>
+    </label>
+    
+    <label for="serviceType">
       Service Type:
-      <select name="serviceType" required>
+      <select id="serviceType" name="serviceType" required>
         <option value="">Select Service</option>
         <option value="solar-install">Solar Installation</option>
         <option value="battery-install">Battery Storage Installation</option>
         <option value="ev-charger">EV Charger Installation</option>
       </select>
     </label>
-    <label>
-      Your message:
-      <textarea name="message" required></textarea>
+    
+    <label for="message">
+      Message:
+      <textarea id="message" name="message" required></textarea>
     </label>
-    <label>
-      Mobile number:
-      <input type="tel" name="mobile" required> <!-- Changed to input type="tel" for mobile number -->
-    </label>
-    <!-- your other form fields go here -->
+    
     <button type="submit">Send</button>
   </form>
 </section>

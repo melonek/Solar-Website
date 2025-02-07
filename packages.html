@@ -8,29 +8,50 @@
 </head>
 <body>
   <!-- Reuse your existing navigation -->
-  <nav>
     <!-- Your existing nav code -->
+    <nav>
+      <!-- Moved logo outside of nav for fixed positioning -->
+      <div class="floating-logo">
+        <img src="https://i.postimg.cc/XJ4wb1NM/nse.png/download" alt="Nature's Spark Solar Logo" width="150" height="50">
+      </div>
+      <ul class="nav-links">
+        <li><a href="#about">About Us</a></li>
+        <li class="dropdown">
+          <a href="/index.html#services" class="dropbtn">Services</a>
+          <div class="dropdown-content">
+            <a href="packages.html">Solar Systems</a>
+            <a href="/index.html#battery-storage">Battery Storage</a>
+            <a href="/index.html#ev-chargers">EV Chargers</a>
+          </div>
+        </li>
+        <li><a href="/index.html#articles">Articles/News</a></li>
+        <li><a href="/index.html#installations">Installations</a></li>
+        <li><a href="/index.html#faq">FAQ</a></li>
+        <li><a href="/index.html#contact">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
   </nav>
+    </nav>
 
   <section class="section">
     <h1>Our Solar Packages</h1>
     <p>Build your own and get a free quote</p>
   
-    <div class="service-categories-container">
-      <div class="service-category panel-category">
-        <h2>Solar Panels</h2>
-        <div class="panel-container">
-          <div class="product-grid" id="panels-grid"></div>
-        </div>
-      </div>
-  
-      <div class="service-category inverter-category">
-        <h2>Inverters</h2>
-        <div class="inverter-container">
-          <div class="product-grid" id="inverters-grid"></div>
-        </div>
-      </div>
-    </div>
+<!-- Solar Panels Section -->
+<div class="service-category">
+  <h2>Solar Panels</h2>
+  <div class="product-grid panels-grid" id="panels-grid"></div>
+</div>
+
+<!-- Inverters Section -->
+<div class="service-category">
+  <h2>Inverters</h2>
+  <div class="product-grid inverters-grid" id="inverters-grid"></div>
+</div>
   
   </section>
 
@@ -50,7 +71,7 @@
     <form action="https://formspree.io/f/mgvoybrr" method="POST" class="package-form">
       <input type="hidden" name="solar-package" id="solar-package-input">
       <!-- Add other necessary form fields -->
-      <button type="submit" class="fancy-button">Get Free Quote</button>
+      <button type="submit" class="fancy-button">Enquire about this package</button>
     </form>
   </section>
 
