@@ -714,61 +714,83 @@ nav {
 footer {
     text-align: center;
     padding: 1rem;
-    background: lightgray;
+    background: linear-gradient(to right, #6c7f79, #89b7a0);
     color: black;
 }
 
+/* Package Form */
 .package-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center child elements horizontally */
-    padding: 20px;
-    max-width: 600px; /* Adjust as needed */
-    margin: 0 auto; /* Center the form itself */
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.package-form label {
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #34495e;
+}
+
+.package-form input, 
+.package-form textarea {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+.package-form input:focus, 
+.package-form textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Assuming you might have more fields in the future, here's how they'd look: */
+.package-form select {
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 5px;
+}
+
+/* Button Styling */
+.fancy-button {
+    background: linear-gradient(to right, #327c66, #528b6f, #327c66);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center; /* To center the button within the form */
+}
+
+.fancy-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .package-form {
+    padding: 15px;
   }
-  
-  .form-group {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input, 
-  .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .button-container {
-    margin-top: 20px; /* Space above the button */
-    width: 100%; /* Full width of the form */
-    text-align: center; /* Center the button within this container */
-  }
-  
-  /* Style for the button if not already defined */
-  .fancy-button {
-    background: linear-gradient(90deg, #618570, #53966f, #618570);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-  }
-  
-  .fancy-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-  }
+}
 
 /* Contact Form */
 #contact form {
@@ -780,18 +802,19 @@ footer {
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-#contact label {
-    text-align: left;
+  }
+  
+  #contact label {
+    text-align: center; /* Center text within labels */
     margin-bottom: 5px;
     font-weight: bold;
     color: #34495e;
-}
-
-#contact input, 
-#contact textarea, 
-#contact select {
+    display: block; /* Ensure labels are block elements for centering to work */
+  }
+  
+  #contact input, 
+  #contact textarea, 
+  #contact select {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -800,47 +823,50 @@ footer {
     box-sizing: border-box;
     font-size: 1em;
     transition: border-color 0.3s ease;
-}
-
-#contact select {
+  }
+  
+  #contact select {
     background-color: white;
-    appearance: none; /* Remove default dropdown arrow in some browsers */
-    -webkit-appearance: none; /* For Safari */
-    -moz-appearance: none; /* For Firefox */
-    background-image: url('data:image/svg+xml;utf8,<svg width="10" height="5" viewBox="0 0 10 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 5L10 0H0Z" fill="%2334495e"/></svg>'); /* Custom arrow */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg width="10" height="5" viewBox="0 0 10 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 5L10 0H0Z" fill="%2334495e"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 10px 5px;
-}
-
-#contact input:focus, 
-#contact textarea:focus, 
-#contact select:focus {
+  }
+  
+  #contact input:focus, 
+  #contact textarea:focus, 
+  #contact select:focus {
     outline: none;
     border-color: #3498db;
-}
-
-#contact button[type="submit"] {
-    background-color: #3498db;
+  }
+  
+  /* Button Styling */
+  #contact button[type="submit"] {
+    background: linear-gradient(to right, #327c66, #528b6f, #327c66);
     color: white;
+    padding: 1rem 2rem;
     border: none;
-    padding: 10px;
-    border-radius: 4px;
+    border-radius: 25px;
+    font-size: 1.1rem;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-#contact button[type="submit"]:hover {
-    background-color: #2980b9;
-}
-
-/* Responsive design for form */
-@media screen and (max-width: 768px) {
+    transition: all 0.3s ease;
+    align-self: center; /* To center the button within the form */
+  }
+  
+  #contact button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
     #contact form {
-        padding: 15px;
+      padding: 15px;
     }
-}
+  }
 
 /* Article Cards */
 #articles {
