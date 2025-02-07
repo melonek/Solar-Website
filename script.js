@@ -1,3 +1,4 @@
+
 // Add this at the TOP of your existing JS file
 function preloadImages(urls) {
   return new Promise((resolve, reject) => {
@@ -87,6 +88,7 @@ function preloadImages(urls) {
             brandCards.forEach(card => card.classList.add('active'));
         }, 500);
   
+        
         // Rest of your existing code (articles, menu toggle, etc.)
         // ... [Keep all your existing code here] ...
     });
@@ -102,7 +104,25 @@ const solarProducts = {
       country: "Canada",
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
-      image: "https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp"
+      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
+    },
+    {
+      id: 1,
+      name: "Canadian Solar 400W",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
+    },
+    {
+      id: 1,
+      name: "Canadian Solar 400W",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
     },
     // Add more panels...
   ],
@@ -114,7 +134,25 @@ const solarProducts = {
       country: "Austria",
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
-      image: "https://i.postimg.cc/4yCw13FQ/Fronius.png"
+      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
+    },
+    {
+      id: 1,
+      name: "Fronius Primo 5.0",
+      specs: "5kW Single Phase",
+      country: "Austria",
+      warranty: "10 years",
+      datasheet: "fronius-primo.pdf",
+      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
+    },
+    {
+      id: 1,
+      name: "Fronius Primo 5.0",
+      specs: "5kW Single Phase",
+      country: "Austria",
+      warranty: "10 years",
+      datasheet: "fronius-primo.pdf",
+      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
     },
     // Add more inverters...
   ]
@@ -139,18 +177,31 @@ function createProductCard(product, type) {
 }
 
 function updatePackageDisplay() {
+  const panelImage = document.getElementById('selected-panel-image');
+  const inverterImage = document.getElementById('selected-inverter-image');
+  const packageDescription = document.getElementById('package-description');
+
   if (selectedPanel && selectedInverter) {
-    document.getElementById('selected-panel-image').src = selectedPanel.image;
-    document.getElementById('selected-inverter-image').src = selectedInverter.image;
-    document.getElementById('package-description').innerHTML = `
+    // Show images and update text when selections are made
+    panelImage.src = selectedPanel.image;
+    panelImage.style.visibility = 'visible'; // Show the panel image
+    
+    inverterImage.src = selectedInverter.image;
+    inverterImage.style.visibility = 'visible'; // Show the inverter image
+    
+    packageDescription.innerHTML = `
       My installation will consist of <strong>${selectedPanel.name}</strong> panels 
       and <strong>${selectedInverter.name}</strong> inverter
     `;
     document.getElementById('solar-package-input').value = 
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
+  } else {
+    // Hide images and clear description when no selection or only one selection
+    panelImage.style.visibility = 'hidden';
+    inverterImage.style.visibility = 'hidden';
+    packageDescription.textContent = '';
   }
 }
-
 // Initialize Packages Page
 function initPackagesPage() {
   const panelsGrid = document.getElementById('panels-grid');
@@ -197,13 +248,25 @@ function initPackagesPage() {
         </div>
       `;
 
-      document.getElementById('product-modal').style.display = 'block';
+      const modal = document.getElementById('product-modal');
+      modal.style.display = 'block';
       document.querySelector('.modal-product-image').innerHTML = modalContent;
+
+      // Close modal
+      document.querySelector('.close').onclick = function() {
+        modal.style.display = "none";
+      };
+
+      // Close modal if user clicks outside of it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
     });
   });
 }
 
-// Update your existing DOMContentLoaded listener
 if (document.location.pathname.includes('packages.html')) {
   initPackagesPage();
 }

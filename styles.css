@@ -287,15 +287,17 @@ nav {
 }
 
 .brand-card {
-    width: 240px; /* Increased from 200px */
-    height: 180px; /* Increased from 150px */
+    width: calc(100% - 20px); /* Full width minus margin */
+    max-width: 240px; /* Set a max width for larger screens */
+    height: 180px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 15px;
+    padding: 10px; /* Add padding inside the card */
+    margin: 0 10px; /* Add small margins */
     opacity: 0;
     transition: all 0.5s ease, transform 0.3s ease;
 }
@@ -305,9 +307,10 @@ nav {
 }
 
 .brand-card img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%; /* Image takes up the full width of its container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 100%; /* Ensure image does not exceed card height */
+    object-fit: contain; /* Keep image fully visible within its container */
     transition: transform 0.3s ease;
 }
 
@@ -317,8 +320,8 @@ nav {
 
 @media (max-width: 768px) {
     .brand-card {
-        width: 180px; /* Increased from 150px */
-        height: 130px; /* Increased from 100px */
+        max-width: 180px;
+        height: 130px;
     }
 }
 
@@ -327,8 +330,8 @@ nav {
         gap: 10px;
     }
     .brand-card {
-        width: 45%;
-        height: 100px; /* Increased from 80px */
+        width: calc(50% - 20px); /* Two cards per row on smaller screens */
+        height: 100px;
     }
 }
 
@@ -397,40 +400,128 @@ nav {
     transition: all 0.3s ease;
 }
 
-/* Packages Page Styles */
-.package-combination {
-    position: relative;
-    margin: 2rem 0;
-  }
-  
-  .image-combination {
-    position: relative;
-    min-height: 300px;
-  }
-  
-  #selected-panel-image {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
+/* Solar Package and Brands Section */
+#solar-package-and-brands {
+    padding: 2rem;
+    margin: 1rem auto;
+    max-width: 1400px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 8px;
-  }
-  
-  #selected-inverter-image {
+    text-align: center;
+}
+
+.package-combination {
+    margin: 2rem 0;
+}
+
+.package-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between package and card container */
+    overflow-x: auto; /* Ensures content stays within container */
+    max-width: 100%; /* Prevents exceeding container width */
+}
+
+.image-combination {
+    position: relative;
+    width: 400px; /* Fixed width for consistency */
+    height: 500px; /* Fixed height for consistency */
+    aspect-ratio: 4/5; /* Keep aspect ratio for smaller screens */
+    flex-shrink: 0; /* Prevent the image from shrinking */
+    min-width: 200px; /* Minimum width for smaller screens */
+}
+
+#selected-panel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the entire image is visible while keeping aspect ratio */
+    border-radius: 8px;
+    visibility: hidden;
+}
+
+#selected-inverter-image {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 120px;
+    max-width: 200px;
+    max-height: 200px;
+    bottom: 10px;
+    visibility: hidden;
+    right: 10px;
     height: auto;
-    border: 3px solid white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  }
+    object-fit: contain;
+}
+
+
+
+/* Brand Cards Container */
+#brands {
+    flex-grow: 1; /* Take up remaining space */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between cards */
+    max-width: 100%; /* Ensure it doesn't exceed the container */
+}
+
+.brand-card {
+    width: calc(33.333% - 10px); /* Assuming 3 cards per row, adjust as needed */
+    margin-bottom: 10px;
+    /* Other existing styles for brand-card */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .package-layout {
+        flex-direction: column; /* Stack vertically on smaller screens */
+    }
+
+    .image-combination {
+        width: 100%;
+        height: auto;
+        max-width: none; /* Allow full width on smaller screens */
+        min-width: 0; /* Reset minimum width */
+    }
+
+    #brands {
+        padding-top: 10px;
+    }
+
+    .brand-card {
+        width: calc(50% - 5px); /* Two cards per row on tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-card {
+        width: 100%; /* One card per row on mobile */
+    }
+
+    #selected-inverter-image {
+        max-width: 100px;
+        max-height: 100px;
+        right: 5px;
+        bottom: 5px;
+    }
+}
+
+/* Product cards */
   
   .product-card {
-    position: relative;
-    cursor: pointer;
+    width: calc(100% - 4%); /* Total 4% margin (2% on each side) */
+    max-width: 300px; /* Default max-width for consistency */
+    height: 400px; /* Fixed card height */
+    margin: 15px 2%; /* 2% margin on each side */
+    overflow: hidden; /* Ensure images stay within card bounds */
+}
+
+.product-card img {
+    width: 80%; /* Image takes up the full width of its container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 200px; /* Fixed image height */
+    object-fit: cover; /* Ensure images fill container */
+    padding: 20px;
+    border-radius: 8px;
     transition: all 0.3s ease;
-  }
-  
+}
   .product-card.selected {
     transform: scale(1.05);
     box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
@@ -448,9 +539,9 @@ nav {
   
   .modal-product-image img {
     width: 100%;
-    max-height: 400px;
+    height: 400px;
     object-fit: contain;
-  }
+}s
   
   .modal-product-details {
     flex: 1;
@@ -473,10 +564,11 @@ nav {
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
   }
   
-.product:hover img {
+  .product-card:hover img {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
 
 /* FAQ Styling */
 .faq-container {

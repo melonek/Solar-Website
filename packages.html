@@ -15,21 +15,27 @@
   <section class="section">
     <h1>Our Solar Packages</h1>
     <p>Build your own and get a free quote</p>
-
-    <!-- Solar Panels Section -->
-    <div class="service-category">
-      <h2>Solar Panels</h2>
-      <div class="product-grid" id="panels-grid"></div>
+  
+    <div class="service-categories-container">
+      <div class="service-category panel-category">
+        <h2>Solar Panels</h2>
+        <div class="panel-container">
+          <div class="product-grid" id="panels-grid"></div>
+        </div>
+      </div>
+  
+      <div class="service-category inverter-category">
+        <h2>Inverters</h2>
+        <div class="inverter-container">
+          <div class="product-grid" id="inverters-grid"></div>
+        </div>
+      </div>
     </div>
-
-    <!-- Inverters Section -->
-    <div class="service-category">
-      <h2>Inverters</h2>
-      <div class="product-grid" id="inverters-grid"></div>
-    </div>
+  
+  </section>
 
     <!-- Selected Package Display -->
-    <div id="selected-package" class="section">
+    <div id="solar-package" class="section">
       <h2>My Solar Package</h2>
       <div class="package-combination">
         <div class="image-combination">
@@ -51,7 +57,7 @@
   <!-- Product Modal -->
   <div id="product-modal" class="modal">
     <div class="modal-content product-modal-content">
-      <span class="close">&times;</span>
+      <span class="close">×</span>
       <div class="modal-product-image"></div>
       <div class="modal-product-details"></div>
     </div>
