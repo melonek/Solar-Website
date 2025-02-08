@@ -198,6 +198,7 @@ function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
   const inverterImage = document.getElementById('selected-inverter-image');
   const packageDescription = document.getElementById('package-description');
+  const confirmButton = document.getElementById('confirm-selection'); // Get the new button
 
   if (selectedPanel && selectedInverter) {
     // Show images and update text when selections are made
@@ -213,19 +214,31 @@ function updatePackageDisplay() {
     `;
     document.getElementById('solar-package-input').value = 
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
-    
-    // Scroll to the solar package section
+
+        // Scroll to the solar package section
     const solarPackageSection = document.getElementById('solar-package');
     if (solarPackageSection) {
       solarPackageSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+          // Enable the confirm button
+    if (confirmButton) {
+      confirmButton.style.visibility = 'visible'; // Show the button
+      confirmButton.onclick = function() {
+        // Scroll to package form
+        const packageForm = document.querySelector('.package-form');
+        if (packageForm) {
+          packageForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
     }
   } else {
     // Hide images and clear description when no selection or only one selection
     panelImage.style.visibility = 'hidden';
     inverterImage.style.visibility = 'hidden';
     packageDescription.textContent = '';
+    confirmButton.style.visibility = 'hidden'; // Hide the button
+    }
   }
-}
 
 // Initialize Packages Page
 function initPackagesPage() {
@@ -248,6 +261,12 @@ function initPackagesPage() {
     });
     panelsGrid.appendChild(card);
   });
+
+    // Initially hide the confirm button
+    const confirmButton = document.getElementById('confirm-selection');
+    if (confirmButton) {
+      confirmButton.style.visibility = 'hidden';
+    }
 
   solarProducts.inverters.forEach(inverter => {
     const card = createProductCard(inverter, 'inverter');

@@ -635,7 +635,6 @@ nav {
     transition: all 0.3s ease;
     text-decoration: none; /* Remove underline from anchor tag */
   }
-  
 
   .fancy-button:hover {
     transform: translateY(-2px);
@@ -646,7 +645,23 @@ nav {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
-
+/*The button "That's correct"*/
+#confirm-selection {
+    background: linear-gradient(90deg, #618570, #53966f, #618570);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px; /* Space above the button if needed */
+  }
+  
+  #confirm-selection:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+  }
 
 /* FAQ Styling */
 .faq-container {
