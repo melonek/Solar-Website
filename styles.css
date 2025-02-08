@@ -646,6 +646,37 @@ nav {
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+/* Mobile menu styles */
+.nav-links {
+    display: none;
+}
+.nav-links.active {
+    display: block;
+}
+
+/* Dropdown styles */
+.dropdown-content {
+    display: none;
+    padding-left: 20px;
+}
+.dropdown-content.active {
+    display: block;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .nav-links {
+        display: flex !important;
+    }
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+    .dropdown-content {
+        position: absolute;
+        padding-left: 0;
+    }
+}
+
 /*The button "That's correct"*/
 #confirm-selection {
     background: linear-gradient(90deg, #618570, #53966f, #618570);
