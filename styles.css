@@ -645,6 +645,7 @@ nav {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
 /*The button "That's correct"*/
 #confirm-selection {
     background: linear-gradient(90deg, #618570, #53966f, #618570);
