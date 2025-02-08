@@ -516,6 +516,25 @@ document.addEventListener('DOMContentLoaded', function() {
   const mobileMenu = document.getElementById('mobile-menu');
   const navLinks = document.querySelector('.nav-links');
   const mediaQuery = window.matchMedia('(max-width: 768px)');
+  
+  // Toggle href attributes based on viewport
+  const toggleHrefs = () => {
+      document.querySelectorAll('.dropdown > a').forEach(toggle => {
+          if (mediaQuery.matches) {
+              // Store original href and disable navigation
+              toggle.dataset.originalHref = toggle.href;
+              toggle.href = 'javascript:void(0);';
+          } else {
+              // Restore original href
+              if (toggle.dataset.originalHref) {
+                  toggle.href = toggle.dataset.originalHref;
+              }
+          }
+      });
+  };
+
+  // Initial href setup
+  toggleHrefs();
 
   // Toggle mobile menu
   if (mobileMenu && navLinks) {
@@ -530,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
       toggle.addEventListener('click', function(e) {
           if (!mediaQuery.matches) return;
           
-          // e.preventDefault();
+          e.preventDefault();
           e.stopPropagation();
           
           const dropdown = this.parentElement;
@@ -567,6 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Handle window resize
   window.addEventListener('resize', () => {
+      toggleHrefs(); // Update hrefs on resize
       if (!mediaQuery.matches) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
