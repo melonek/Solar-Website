@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', function() {
+  twttr.ready()
+});
 
 // Add this at the TOP of your existing JS file
 function preloadImages(urls) {
