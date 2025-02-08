@@ -512,9 +512,10 @@ function displayModal(article) {
             if (window.innerWidth > 768) {
               dropdownContent.classList.toggle('active');
             } else {
-              e.stopPropagation(); // On mobile, prevent default behavior to avoid hiding immediately
+              e.preventDefault(); // Prevent default anchor navigation
+              e.stopPropagation();
               if (!dropdownContent.classList.contains('active')) {
-                // Close other dropdowns if any are open
+                // Close other dropdowns
                 document.querySelectorAll('.dropdown-content.active').forEach(activeDropdown => {
                   if (activeDropdown !== dropdownContent) {
                     activeDropdown.classList.remove('active');
@@ -543,13 +544,12 @@ function displayModal(article) {
         }
       });
     });
-
-
+    
     // Toggle mobile menu
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
-
+    
     mobileMenu.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
+      navLinks.classList.toggle('active');
     });
   });
