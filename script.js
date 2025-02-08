@@ -509,7 +509,7 @@ function displayModal(article) {
         
         if (dropdownContent) {
           dropdown.addEventListener('click', (e) => {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 768, 480) {
               dropdownContent.classList.toggle('active');
             } else {
               e.preventDefault(); // Prevent default anchor navigation
