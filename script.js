@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
       toggle.addEventListener('click', function(e) {
           if (!mediaQuery.matches) return;
           
-          e.preventDefault();
+          // e.preventDefault();
           e.stopPropagation();
           
           const dropdown = this.parentElement;
