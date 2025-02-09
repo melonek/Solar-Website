@@ -1,4 +1,3 @@
-
 // Add this at the TOP of your existing JS file
 function preloadImages(urls) {
   return new Promise((resolve, reject) => {
