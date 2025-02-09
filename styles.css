@@ -403,13 +403,22 @@ nav {
     margin-bottom: 20px;
 }
 
-/* Subcategories */
-.service-category h2 {
-    font-family: 'Roboto Slab', serif; /* Use Roboto Slab for subcategories */
-    font-size: 1.5em;
-    font-weight: 400; /* Regular weight for a softer look */
-    color: #3498db;
-    margin-bottom: 1rem;
+/* Subcategories for Panel and Inverters*/
+
+/* Panels Section - Green with Thin Font */
+.panels-title {
+    color: #2ecc71 !important;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    margin-bottom: 1rem; /* Adds space below the title */
+}
+
+/* Inverters Section - Blue with Thin Font */
+.inverters-title {
+    color: #3498db !important;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    margin-bottom: 1rem; /* Adds space below the title */
 }
 
 /* Responsive Design for section and service category*/
@@ -423,11 +432,50 @@ nav {
     }
 }
 
-/* Services */
+/* ======= SECTION & SERVICE CATEGORY ======= */
+.section {
+    text-align: center;
+    padding: 2rem 0;
+}
+
 .service-category {
     margin-bottom: 2rem;
 }
 
+/* ======= PANELS & INVERTERS STYLING ======= */
+.panels-grid {
+    border: 2px solid #2ecc71; /* Match border with Panels h2 */
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.inverters-grid {
+    border: 2px solid #3498db; /* Blue border for inverters */
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+/* Match h2 colors to borders */
+.panels-grid h2 {
+    color: #2ecc71;
+}
+
+.inverters-grid h2 {
+    color: #3498db;
+}
+
+/* ======= RESPONSIVE HEADINGS ======= */
+@media screen and (max-width: 768px) {
+    .section h1 {
+        font-size: 2em;
+    }
+
+    .service-category h2 {
+        font-size: 1.2em;
+    }
+}
+
+/* ======= PRODUCT GRID & CARDS ======= */
 .product-grid {
     display: flex;
     flex-wrap: wrap;
@@ -440,75 +488,53 @@ nav {
     text-align: center;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Adds a subtle shadow */
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
 
 .product img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px 8px 0 0; /* Rounded corners for top of image */
-    transition: transform 0.3s ease; /* Smooth zoom effect for image */
+    border-radius: 8px 8px 0 0;
+    transition: transform 0.3s ease;
 }
 
 .product h3 {
-    padding: 10px 0 5px; /* Space around the title */
+    padding: 10px 0 5px;
 }
 
 .product p {
-    padding: 0 10px 15px; /* Padding for description text */
+    padding: 0 10px 15px;
 }
 
-/* Hover effects for product cards */
+/* Hover Effects */
 .product:hover {
-    transform: scale(1.03); /* Slight zoom effect on hover */
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 .product:hover img {
-    transform: scale(1.05); /* Zoom the image slightly more than the card */
+    transform: scale(1.05);
 }
 
-
-/* Specific styles for panels grid */
-.panels-grid {
-    border: 2px solid #2ecc71; /* Green border for panels */
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  
-  /* Specific styles for inverters grid */
-  .inverters-grid {
-    border: 2px solid #3498db; /* Blue border for inverters */
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  
-
-/* Center the image combination within its container */
+/* ======= IMAGE COMBINATION SECTION ======= */
 .image-combination {
     position: relative;
-    width: 400px; /* Fixed width for consistency */
-    height: 500px; /* Fixed height for consistency */
-    aspect-ratio: 4/5; /* Keep aspect ratio for smaller screens */
-    flex-shrink: 0; /* Prevent the image from shrinking */
-    min-width: 200px; /* Minimum width for smaller screens */
-    margin: 0 auto; /* Center horizontally */
-    display: flex; /* Use flexbox for centering content */
-    justify-content: center; /* Center horizontally within container */
-    align-items: center; /* Center vertically within container */
-    /* If you want to center in the viewport, use this instead: */
-    /* position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); */
+    width: 400px;
+    height: 500px;
+    flex-shrink: 0;
+    min-width: 200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #selected-panel-image {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Ensures the entire image is visible while keeping aspect ratio */
+    object-fit: contain;
     border-radius: 8px;
     visibility: hidden;
 }
@@ -518,52 +544,35 @@ nav {
     max-width: 200px;
     max-height: 200px;
     bottom: 10px;
-    visibility: hidden;
     right: 10px;
-    height: auto;
     object-fit: contain;
+    visibility: hidden;
 }
 
-/* Brand Cards Container */
+/* ======= BRAND CARDS ======= */
 #brands {
-    flex-grow: 1; /* Take up remaining space */
+    flex-grow: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Space between cards */
-    max-width: 100%; /* Ensure it doesn't exceed the container */
+    gap: 10px;
+    max-width: 100%;
 }
 
 .brand-card {
-    width: calc(33.333% - 10px); /* Assuming 3 cards per row, adjust as needed */
+    width: calc(33.333% - 10px);
     margin-bottom: 10px;
-    /* Other existing styles for brand-card */
 }
 
-/* Responsive Adjustments */
+/* Responsive Brand Cards */
 @media (max-width: 768px) {
-    .package-layout {
-        flex-direction: column; /* Stack vertically on smaller screens */
-    }
-
-    .image-combination {
-        width: 100%;
-        height: auto;
-        max-width: none; /* Allow full width on smaller screens */
-        min-width: 0; /* Reset minimum width */
-    }
-
-    #brands {
-        padding-top: 10px;
-    }
-
     .brand-card {
-        width: calc(50% - 5px); /* Two cards per row on tablets */
+        width: calc(50% - 5px);
     }
 }
 
 @media (max-width: 480px) {
     .brand-card {
-        width: 100%; /* One card per row on mobile */
+        width: 100%;
     }
 
     #selected-inverter-image {
@@ -574,92 +583,97 @@ nav {
     }
 }
 
-/* Product cards */
-  
-  .product-card {
-    width: calc(100% - 4%); /* Total 4% margin (2% on each side) */
-    max-width: 300px; /* Default max-width for consistency */
-    height: 400px; /* Fixed card height */
-    margin: 15px 2%; /* 2% margin on each side */
-    overflow: hidden; /* Ensure images stay within card bounds */
+/* ======= PRODUCT CARD STYLING ======= */
+.product-card {
+    width: calc(100% - 4%);
+    max-width: 300px;
+    height: 400px;
+    margin: 15px 2%;
+    overflow: hidden;
 }
 
 .product-card img {
-    width: 80%; /* Image takes up the full width of its container */
-    height: auto; /* Maintain aspect ratio */
-    max-height: 200px; /* Fixed image height */
-    object-fit: cover; /* Ensure images fill container */
+    width: 80%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
     padding: 20px;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
 
-
-/* Adjust text spacing */
+/* Product Card Text Spacing */
 .product-card h3 {
-    padding: 5px 10px 0; /* Reduced top padding */
-    margin-bottom: 5px; /* Reduce space after the heading */
+    padding: 5px 10px 0;
+    margin-bottom: 5px;
 }
 
 .product-card p {
-    padding: 0 10px 5px; /* Reduced bottom padding */
-    margin-bottom: 5px; /* Reduce space between paragraphs */
-    line-height: 1.2; /* Decrease line height for less vertical space */
+    padding: 0 10px 5px;
+    margin-bottom: 5px;
+    line-height: 1.2;
 }
 
-.product-card button {
-    margin: 5px 10px 10px; /* Adjust margins for the button */
-    padding: 5px 10px; /* Smaller padding to fit within space */
-}
-
-/* Ensure button is visible */
+/* Read More Button */
 .product-card .read-more-btn {
     display: block;
-    margin: 0 auto; /* Center the button */
-    width: calc(100% - 195px); /* Make button almost full width */
+    margin: 0 auto;
+    width: calc(100% - 195px);
     border: none;
 }
 
-
-/* Styles for selected product cards in both sections */
-
+/* ======= SELECTED PRODUCT CARD STYLING ======= */
 .product-card.selected {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* Neutral shadow for both */
-  }
-  
-  /* Specific styles for Solar Panels */
-  .panels-grid .product-card.selected {
-    border: 2px solid #2ecc71; /* Green border for panels */
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); /* Green shadow for panels */
-  }
-  
-  /* Specific styles for Inverters */
-  .inverters-grid .product-card.selected {
-    border: 2px solid #3498db; /* Blue border for inverters */
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); /* Blue shadow for inverters */
-  }
-  
-  .product-modal-content {
-    display: flex;
-    gap: 2rem;
-  }
-  
-  .modal-product-image {
-    flex: 1;
-  }
-  
-  .modal-product-image img {
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Match Selected Cards to Their Categories */
+.panels-grid .product-card.selected {
+    border: 2px solid #2ecc71;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+}
+
+.inverters-grid .product-card.selected {
+    border: 2px solid #3498db;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+}
+
+/* ======= MODAL STYLES ======= */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
     width: 100%;
-    height: 400px;
-    object-fit: contain;
-}s
-  
-  .modal-product-details {
-    flex: 1;
-    padding: 1rem;
-  }
-  
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
   /* Center the button and apply the gradient */
 .center-button {
     display: flex;

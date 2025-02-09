@@ -366,33 +366,28 @@ function updatePackageDisplay() {
   }
 }
 
-// Initialize Packages Page
 function initPackagesPage() {
   const panelsGrid = document.getElementById('panels-grid');
   const invertersGrid = document.getElementById('inverters-grid');
 
+  // Panels creation and selection logic
   solarProducts.panels.forEach(panel => {
     const card = createProductCard(panel, 'panel');
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('read-more-btn')) {
+        // Prevent scroll when "Read More" button is clicked
+        return;
+      }
       document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedPanel = panel;
       updatePackageDisplay();
-      
-      // Scroll to the <h2> Inverters heading
-      const invertersHeading = document.querySelector('h2');
-      if (invertersHeading && invertersHeading.textContent.trim() === 'Inverters') {
-        window.scrollTo({
-          top: invertersHeading.offsetTop - 50,  // Adjust the offset to make the heading visible
-          behavior: 'smooth'
-        });
-      }
 
-      // Scroll to the inverters grid section but with an additional offset to leave space for the heading
+      // Scroll to the inverters section after panel selection
       const invertersSection = document.getElementById('inverters-grid');
       if (invertersSection) {
         window.scrollTo({
-          top: invertersSection.offsetTop - 100,  // Adjust -100 to leave more space above for the heading
+          top: invertersSection.offsetTop - 100,  // Adjusted offset to leave space for the heading
           behavior: 'smooth'
         });
       }
@@ -400,67 +395,79 @@ function initPackagesPage() {
     panelsGrid.appendChild(card);
   });
 
-  // Initially hide the confirm button
-  const confirmButton = document.getElementById('confirm-selection');
-  if (confirmButton) {
-    confirmButton.style.visibility = 'hidden';
-  }
-
+  // Inverters creation and selection logic
   solarProducts.inverters.forEach(inverter => {
     const card = createProductCard(inverter, 'inverter');
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('read-more-btn')) {
+        // Prevent scroll when "Read More" button is clicked
+        return;
+      }
       document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedInverter = inverter;
       updatePackageDisplay();
-      
-      // The scroll to package section happens inside updatePackageDisplay when both panel and inverter are selected
+
+      // Scroll to the "My Solar Packages" section once both selections are made
+      if (selectedPanel && selectedInverter) {
+        const solarPackageSection = document.getElementById('solar-package');
+        if (solarPackageSection) {
+          window.scrollTo({
+            top: solarPackageSection.offsetTop - 50, // Adjust for header if needed
+            behavior: 'smooth'
+          });
+        }
+      }
     });
     invertersGrid.appendChild(card);
   });
+
+  // Reattach modal functionality after the products are added to the DOM
+  document.querySelectorAll('.read-more-btn').forEach(btn => {
+    btn.addEventListener('click', handleModalOpen);
+  });
 }
 
+// Modal open handler
+function handleModalOpen(e) {
+  e.preventDefault();  // Prevent scrolling and page behavior when "Read More" is clicked
+  const type = e.target.dataset.type;
+  const id = e.target.dataset.id;
+  const product = solarProducts[type === 'panel' ? 'panels' : 'inverters'].find(p => p.id == id);
 
-  // Modal Handling
-  document.querySelectorAll('.read-more-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const type = e.target.dataset.type;
-      const id = e.target.dataset.id;
-      const product = solarProducts[type === 'panel' ? 'panels' : 'inverters'].find(p => p.id == id);
+  const modalContent = `
+    <img src="${product.image}" alt="${product.name}">
+    <div class="product-specs">
+      <h2>${product.name}</h2>
+      <p><strong>Specifications:</strong> ${product.specs}</p>
+      <p><strong>Country:</strong> ${product.country}</p>
+      <p><strong>Warranty:</strong> ${product.warranty}</p>
+      <p><strong>Datasheet:</strong> ${product.datasheet}</p>
+    </div>
+  `;
 
-      const modalContent = `
-        <img src="${product.image}" alt="${product.name}">
-        <div class="product-specs">
-          <h2>${product.name}</h2>
-          <p><strong>Specifications:</strong> ${product.specs}</p>
-          <p><strong>Country:</strong> ${product.country}</p>
-          <p><strong>Warranty:</strong> ${product.warranty}</p>
-          <p><strong>Datasheet:</strong> ${product.datasheet}</p>
-        </div>
-      `;
+  const modal = document.getElementById('product-modal');
+  modal.style.display = 'block';
+  document.querySelector('.modal-product-image').innerHTML = modalContent;
 
-      const modal = document.getElementById('product-modal');
-      modal.style.display = 'block';
-      document.querySelector('.modal-product-image').innerHTML = modalContent;
+  // Close modal when "X" is clicked
+  document.querySelector('.close').onclick = function() {
+    modal.style.display = "none";
+  };
 
-      // Close modal
-      document.querySelector('.close').onclick = function() {
-        modal.style.display = "none";
-      };
+  // Close modal if user clicks outside of it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+}
 
-      // Close modal if user clicks outside of it
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-    });
-  });
-
+// Check if we're on the packages.html page and initialize
 if (document.location.pathname.includes('packages.html')) {
   initPackagesPage();
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
 
