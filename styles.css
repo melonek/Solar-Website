@@ -731,6 +731,11 @@ nav {
   .twitter-timeline {
     width: 100% !important;
   }
+
+  .Xheadline h1{ padding: 10px;
+    margin: 0;
+    white-space: normal;}
+ 
   
   /* Responsive adjustments */
   @media (max-width: 780px) {
