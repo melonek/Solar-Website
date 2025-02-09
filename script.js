@@ -335,10 +335,13 @@ function updatePackageDisplay() {
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
 
         // Scroll to the solar package section
-    const solarPackageSection = document.getElementById('solar-package');
-    if (solarPackageSection) {
-      solarPackageSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+        const solarPackageSection = document.getElementById('solar-package');
+        if (solarPackageSection) {
+            window.scrollTo({
+                top: solarPackageSection.offsetTop - 50,
+                behavior: 'smooth'
+            });
+        }
           // Enable the confirm button
     if (confirmButton) {
       confirmButton.style.visibility = 'visible'; // Show the button
@@ -346,9 +349,12 @@ function updatePackageDisplay() {
         // Scroll to package form
         const packageForm = document.querySelector('.package-form');
         if (packageForm) {
-          packageForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.scrollTo({
+                top: packageForm.offsetTop - 50,
+                behavior: 'smooth'
+            });
+          }
         }
-      }
     }
   } else {
     // Hide images and clear description when no selection or only one selection
@@ -380,6 +386,7 @@ function initPackagesPage() {
     });
     panelsGrid.appendChild(card);
   });
+  
   
     // Initially hide the confirm button
     const confirmButton = document.getElementById('confirm-selection');
@@ -499,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
       fullText: "<br>Publisher Information Księgarnia Akademicka Publishing is an independent scholarly publisher established in 1992 and headquartered in Kraków, Poland. It offers a wide range of academic monographs, conference proceedings and journals, mainly in humanities and social sciences, including digital projects and open access publications. With almost 3,000 published titles, about 15 scholarly journals, over 30 book series and an annual production of more than 100 new publications, including translations, Księgarnia Akademicka Publishing also ranks among the top tier of Polish academic publishers in terms of quality. <br/> <br> Księgarnia Akademicka Publishing’s mission is to disseminate the outstanding works of the Central Eastern European academia across the world, using print and digital media. The publisher’s focus is placed both on Central and Eastern Europe studies (including history, Slavic literature and linguistics, regional studies) and many fields of international, multidisciplinary issues. <br/> <br> A major part of its output is published in Polish and English, but also in Russian, Spanish and German. The publisher cooperates with main Polish universities such as Jagiellonian University and University of Wroclaw, as well as other international and regional cultural and research institutions. Diverse territories of Latin America are immersed in important situations today.<br/> <br> The region is not only facing shortages, inequities, and inequalities a large part of the population has to live with, but also constant information, disinformation and fake news that permeate their minds and erode their freedom of decision and action in democratic processes. The scenario they are going through calls for a deep shake from its foundations, given the discourse of knowledge beyond a robust wave of information, coming from unusual sources, some of them disrupting the effort to ascertain the truth of the facts and being apparently at the service of economic and/or political hegemonies. This text proposes a comprehensive approach to fake news and the scope of influence they have on individual freedom with repercussions on the weak Latin American democracy.",
       publishedDate: "February 5, 2025",
       comment: "A breakthrough worth our times"
-    }
+    },
     
     // ... other articles ...
   ];
@@ -538,7 +545,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
  // Modified handlePageChange function
- function handlePageChange(newPage) {
+ // Add scroll logic to pagination handlers
+
+function handlePageChange(newPage) {
   if (newPage === currentPage) return;
   
   const oldPage = currentPage;
@@ -550,54 +559,71 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 }
 
-
 function scrollToArticlesSection() {
-  const articlesSection = document.getElementById('articles');
-  if (!articlesSection) return;
+    const articlesSection = document.getElementById('articles');
+    if (!articlesSection) return;
 
-  const offset = window.innerWidth <= 768 ? -20 : -100;
-  const topPos = articlesSection.offsetTop + offset;
+    const offset = window.innerWidth <= 768 ? -20 : -100;
+    const topPos = articlesSection.offsetTop + offset;
 
-  window.scrollTo({
-      top: topPos,
-      behavior: 'smooth'
-  });
+    window.scrollTo({
+        top: topPos,
+        behavior: 'smooth'
+    });
 }
 displayArticles(currentPage); // This will show articles on first load
 
-  // Update pagination buttons and numbers
-    // Modified updatePagination function
-    function updatePagination() {
-      const totalPages = Math.ceil(allArticles.length / articlesPerPage);
-      const pageNumbers = document.getElementById('page-numbers');
-      let html = '';
+function updatePagination() {
+  const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+  const pageNumbers = document.getElementById('page-numbers');
+  let html = '';
+  
+  // Always show 5 pages, centered around current page
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 2);
+  
+  // Adjust if we're at the start or end
+  if (currentPage <= 3) {
+      endPage = Math.min(5, totalPages);
+  }
+  if (currentPage >= totalPages - 2) {
+      startPage = Math.max(totalPages - 4, 1);
+  }
 
-      for (let i = 1; i <= totalPages; i++) {
-          html += `<button class="page-number ${i === currentPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
-      }
+  // Previous button
+  html += `<button class="page-nav" id="prev-page" ${currentPage === 1 ? 'disabled' : ''}><</button>`;
 
-      pageNumbers.innerHTML = html;
+  // Page numbers
+  for (let i = startPage; i <= endPage; i++) {
+      html += `<button class="page-number ${i === currentPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
+  }
 
-      document.querySelectorAll('.page-number').forEach(button => {
-          button.addEventListener('click', function() {
-              handlePageChange(parseInt(this.getAttribute('data-page')));
-          });
+  // Next button
+  html += `<button class="page-nav" id="next-page" ${currentPage === totalPages ? 'disabled' : ''}>></button>`;
+
+  pageNumbers.innerHTML = html;
+
+  // Event listeners
+  document.querySelectorAll('.page-number').forEach(button => {
+      button.addEventListener('click', function() {
+          handlePageChange(parseInt(this.getAttribute('data-page')));
       });
+  });
 
-      document.getElementById('prev-page').disabled = currentPage === 1;
-      document.getElementById('next-page').disabled = currentPage === totalPages;
-  }
+  document.getElementById('prev-page').addEventListener('click', () => navigatePages('prev'));
+  document.getElementById('next-page').addEventListener('click', () => navigatePages('next'));
+}
 
-  // Handle navigation between pages
+
   // Modified navigatePages function
-    function navigatePages(direction) {
-      const totalPages = Math.ceil(allArticles.length / articlesPerPage);
-      const newPage = direction === 'prev' ? currentPage - 1 : currentPage + 1;
-      
-      if (newPage >= 1 && newPage <= totalPages) {
-          handlePageChange(newPage);
-      }
-  }
+  function navigatePages(direction) {
+    const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+    const newPage = direction === 'prev' ? currentPage - 1 : currentPage + 1;
+    
+    if (newPage >= 1 && newPage <= totalPages) {
+        handlePageChange(newPage);
+    }
+}
 
 const prevPage = document.getElementById('prev-page');
 const nextPage = document.getElementById('next-page');
@@ -609,7 +635,7 @@ if (nextPage) {
   nextPage.addEventListener('click', () => navigatePages('next'));
 }
 
-      displayArticles(currentPage);
+
   // Setup event listeners for article cards
   function setupArticleClickEvents() {
     document.querySelectorAll('.article-card').forEach(card => {
