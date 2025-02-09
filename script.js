@@ -539,12 +539,12 @@ document.addEventListener('DOMContentLoaded', function() {
   displayArticles(1);
 
     // Add scroll logic to pagination handlers
+// Modified handlePageChange function
 function handlePageChange(newPage) {
   const oldPage = currentPage;
   currentPage = newPage;
   
   if (oldPage !== currentPage) {
-      displayArticles(currentPage);
       scrollToArticlesSection();
   }
 }
@@ -561,6 +561,7 @@ function scrollToArticlesSection() {
       behavior: 'smooth'
   });
 }
+displayArticles(currentPage); // This will show articles on first load
 
   // Update pagination buttons and numbers
   function updatePagination() {
