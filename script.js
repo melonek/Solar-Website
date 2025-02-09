@@ -608,15 +608,7 @@ if (prevPage) {
 if (nextPage) {
   nextPage.addEventListener('click', () => navigatePages('next'));
 }
-        // Force scroll on mobile devices
-        if (window.innerWidth <= 768) {
-          setTimeout(() => {
-              window.scrollTo({
-                  top: document.getElementById('articles').offsetTop - 50,
-                  behavior: 'smooth'
-              });
-          }, 100);
-      }
+
       displayArticles(currentPage);
   // Setup event listeners for article cards
   function setupArticleClickEvents() {
