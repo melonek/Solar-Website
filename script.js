@@ -424,8 +424,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log(`Displaying articles for page ${page}`);
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) {
-      console.error('Articles grid not found');
-      return;
+        console.error('Articles grid not found');
+        return;
     }
     articlesGrid.innerHTML = '';
 
@@ -434,15 +434,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const articlesToShow = allArticles.slice(startIndex, endIndex);
 
     articlesToShow.forEach(article => {
-      articlesGrid.innerHTML += `
-        <div class="article-card" data-article-id="${article.id}">
-          <img src="${article.image}" alt="${article.title}">
-          <h3>${article.title}</h3>
-          <p>${article.snippet}</p>
-          <a href="#" class="read-more-btn">Read More</a>
-        </div>
-      `;
+        articlesGrid.innerHTML += `
+            <div class="article-card" data-article-id="${article.id}">
+                <img src="${article.image}" alt="${article.title}">
+                <h3>${article.title}</h3>
+                <p>${article.snippet}</p>
+                <a href="#" class="read-more-btn">Read More</a>
+            </div>
+        `;
     });
+
+        // New scroll-to-top functionality
+        const articlesSection = document.getElementById('articles');
+        if (articlesSection) {
+            articlesSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    
+        updatePagination();
+        setupArticleClickEvents();
+    
 
     console.log('Articles added to the DOM');
 
@@ -467,11 +480,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.page-number').forEach(button => {
       button.addEventListener('click', function() {
-        currentPage = parseInt(this.getAttribute('data-page'));
-        displayArticles(currentPage);
+          currentPage = parseInt(this.getAttribute('data-page'));
+          displayArticles(currentPage);
+          
+          // Additional scroll trigger for mobile
+          if (window.innerWidth <= 768) {
+              window.scrollTo({
+                  top: document.getElementById('articles').offsetTop - 50,
+                  behavior: 'smooth'
+              });
+          }
       });
-    });
-  }
+  });
+}
 
   // Handle navigation between pages
   function navigatePages(direction) {
@@ -493,7 +514,15 @@ if (prevPage) {
 if (nextPage) {
   nextPage.addEventListener('click', () => navigatePages('next'));
 }
-
+        // Force scroll on mobile devices
+        if (window.innerWidth <= 768) {
+          setTimeout(() => {
+              window.scrollTo({
+                  top: document.getElementById('articles').offsetTop - 50,
+                  behavior: 'smooth'
+              });
+          }, 100);
+      }
   // Setup event listeners for article cards
   function setupArticleClickEvents() {
     document.querySelectorAll('.article-card').forEach(card => {
