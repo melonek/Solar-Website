@@ -705,10 +705,14 @@ nav {
     display: block;
 }
 
+
 /* Desktop styles */
 @media (min-width: 769px) {
     .nav-links {
         display: flex !important;
+    }
+    .nav-links.open {
+        display: block; /* Or whatever makes it visible */
     }
     .dropdown:hover .dropdown-content {
         display: block;
