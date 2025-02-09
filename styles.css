@@ -143,27 +143,57 @@ nav {
 .dropdown.active .dropdown-content {
     display: block;}
 
+
 /* Mobile Menu Toggle */
 .menu-toggle {
-    display: none;
+    position: absolute;
+    top: 5rem;
+    right: 5rem;
+    width: 5rem;
+    height: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     cursor: pointer;
-    color: #2c3e50;
-    font-size: 1.5rem;
-    position: absolute; /* Position burger menu over the nav */
-    right: 1rem; /* Adjust as needed */
-    top: 50%;
-    transform: translateY(-50%);
+    z-index: 1500;
+    transition: transform 650ms ease-out;
+    display: none; /* Keep your original display: none */
+}
+
+.menu-toggle.open {
+    transform: rotate(-45deg);
 }
 
 .menu-toggle .bar {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: #2c3e50;
-    margin: 5px 0;
-    transition: 0.4s;
+    background: linear-gradient(to right, #45f0ee, #22d36f);
+    width: 100%;
+    padding: 5px;
+    height: 4px;
+    border-radius: 0.8rem;
 }
 
+.menu-toggle .bar.half {
+    width: 50%;
+}
+
+.menu-toggle .bar.start {
+    transform-origin: right;
+    transition: transform 650ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+}
+
+.menu-toggle.open .bar.start {
+    transform: rotate(-450deg) translateX(0.7rem);
+}
+
+.menu-toggle .bar.end {
+    align-self: flex-end;
+    transform-origin: left;
+    transition: transform 650ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+  }
+
+.menu-toggle.open .bar.end {
+    transform: rotate(-450deg) translateX(-0.7rem);
+}
 
 @media screen and (max-width: 768px) {
 
@@ -196,7 +226,19 @@ nav {
     }
 
     .menu-toggle {
-        display: block; /* Show the burger menu icon */
+    display: flex; /* Show the burger menu icon */
+    position: absolute; /* Position burger menu over the nav */
+    right: 1rem; /* Adjust as needed */
+    top: 0.5rem;
+    right: 2rem;
+    width: 5rem;
+    height: 4.2rem; /* how close the 50% lines meet*/
+    padding: 12px;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 1500;
+    transition: transform 650ms ease-out;
     }
 }
 
@@ -1068,6 +1110,7 @@ footer {
     margin: 0 auto;
     max-height: 450px; /* Approximate height for two tweets, adjust as needed */
     overflow-y: auto; /* Adds scroll if content exceeds height */
+    position: relative;
   }
   
   /* Styling for the Twitter widget itself */
@@ -1076,6 +1119,8 @@ footer {
     width: 100% !important; /* Override Twitter's default width */
     max-height: 450px; /* Match the container's max-height */
     border-radius: 8px;
+    display: block !important; /* Override any potential hidden states */
+    min-height: 450px; /* Prevent collapse while loading */
   }
   
 /* Responsive Design for twitter feed */

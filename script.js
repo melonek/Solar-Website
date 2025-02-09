@@ -19,6 +19,37 @@ function preloadImages(urls) {
   });
 }
 
+// Toggler
+document.addEventListener('DOMContentLoaded', function() {
+  const menuToggler = document.getElementById('mobile-menu');
+  const navLinks = document.querySelector('.nav-logg');
+
+  // Toggle menu
+  if(menuToggler) {
+      menuToggler.addEventListener('click', function(e) {
+          e.stopPropagation(); // Prevent this click from triggering document click
+          this.classList.toggle('open');
+          navLinks.classList.toggle('open');
+      });
+  }
+
+  // Close menu when clicking anywhere outside
+  document.addEventListener('click', function(e) {
+      if(!e.target.closest('.nav-logg') && !e.target.closest('#mobile-menu')) {
+          menuToggler.classList.remove('open');
+          navLinks.classList.remove('open');
+      }
+  });
+
+  // Close menu when clicking nav links
+  document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+          menuToggler.classList.remove('open');
+          navLinks.classList.remove('open');
+      });
+  });
+});
+
   // Updated brand images array with your URLs
   const brandImages = [
     'https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp',
