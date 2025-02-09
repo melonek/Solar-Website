@@ -535,19 +535,21 @@ document.addEventListener('DOMContentLoaded', function() {
     setupArticleClickEvents();
 }
     console.log('Articles added to the DOM');
-  // Display first page of articles on load
-  displayArticles(1);
 
-    // Add scroll logic to pagination handlers
-// Modified handlePageChange function
-function handlePageChange(newPage) {
+
+ // Modified handlePageChange function
+ function handlePageChange(newPage) {
+  if (newPage === currentPage) return;
+  
   const oldPage = currentPage;
   currentPage = newPage;
   
-  if (oldPage !== currentPage) {
+  displayArticles(currentPage);
+  if (oldPage !== 1 || currentPage !== 1) {
       scrollToArticlesSection();
   }
 }
+
 
 function scrollToArticlesSection() {
   const articlesSection = document.getElementById('articles');
@@ -564,38 +566,40 @@ function scrollToArticlesSection() {
 displayArticles(currentPage); // This will show articles on first load
 
   // Update pagination buttons and numbers
-  function updatePagination() {
-    const totalPages = Math.ceil(allArticles.length / articlesPerPage);
-    const pageNumbers = document.getElementById('page-numbers');
-    let html = '';
+    // Modified updatePagination function
+    function updatePagination() {
+      const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+      const pageNumbers = document.getElementById('page-numbers');
+      let html = '';
 
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="page-number ${i === currentPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
-    }
+      for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="page-number ${i === currentPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
+      }
 
-    pageNumbers.innerHTML = html;
+      pageNumbers.innerHTML = html;
 
-    document.querySelectorAll('.page-number').forEach(button => {
-        button.addEventListener('click', function() {
-            handlePageChange(parseInt(this.getAttribute('data-page')));
-        });
-    });
+      document.querySelectorAll('.page-number').forEach(button => {
+          button.addEventListener('click', function() {
+              handlePageChange(parseInt(this.getAttribute('data-page')));
+          });
+      });
 
-    document.getElementById('prev-page').disabled = currentPage === 1;
-    document.getElementById('next-page').disabled = currentPage === totalPages;
-}
+      document.getElementById('prev-page').disabled = currentPage === 1;
+      document.getElementById('next-page').disabled = currentPage === totalPages;
+  }
 
   // Handle navigation between pages
-  function navigatePages(direction) {
-    const totalPages = Math.ceil(allArticles.length / articlesPerPage);
-    const newPage = direction === 'prev' ? currentPage - 1 : currentPage + 1;
-    
-    if (newPage >= 1 && newPage <= totalPages) {
-        handlePageChange(newPage);
-    }
-}
+  // Modified navigatePages function
+    function navigatePages(direction) {
+      const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+      const newPage = direction === 'prev' ? currentPage - 1 : currentPage + 1;
+      
+      if (newPage >= 1 && newPage <= totalPages) {
+          handlePageChange(newPage);
+      }
+  }
 
-  const prevPage = document.getElementById('prev-page');
+const prevPage = document.getElementById('prev-page');
 const nextPage = document.getElementById('next-page');
 
 if (prevPage) {
@@ -613,6 +617,7 @@ if (nextPage) {
               });
           }, 100);
       }
+      displayArticles(currentPage);
   // Setup event listeners for article cards
   function setupArticleClickEvents() {
     document.querySelectorAll('.article-card').forEach(card => {
