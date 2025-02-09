@@ -790,8 +790,9 @@ nav {
 }
 
 /*The button "That's correct"*/
+/* Confirm Selection Button - Matching Fancy Button */
 #confirm-selection {
-    background: linear-gradient(90deg, #618570, #53966f, #618570);
+    background: linear-gradient(to right, #327c66, #528b6f, #327c66); /* Same gradient */
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -799,13 +800,14 @@ nav {
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 20px; /* Space above the button if needed */
-  }
-  
-  #confirm-selection:hover {
+    align-self: center;
+    margin-top: 20px; /* Keeps spacing */
+}
+
+#confirm-selection:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-  }
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Keeps hover effect */
+}
 
 /* FAQ Styling */
 .faq-container {
