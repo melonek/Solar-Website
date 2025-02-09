@@ -334,27 +334,28 @@ function updatePackageDisplay() {
     document.getElementById('solar-package-input').value = 
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
 
-        // Scroll to the solar package section
-        const solarPackageSection = document.getElementById('solar-package');
-        if (solarPackageSection) {
-            window.scrollTo({
-                top: solarPackageSection.offsetTop - 50,
-                behavior: 'smooth'
-            });
-        }
-          // Enable the confirm button
+    // Scroll to the solar package section
+    const solarPackageSection = document.getElementById('solar-package');
+    if (solarPackageSection) {
+      window.scrollTo({
+        top: solarPackageSection.offsetTop - 50,
+        behavior: 'smooth'
+      });
+    }
+
+    // Enable the confirm button
     if (confirmButton) {
       confirmButton.style.visibility = 'visible'; // Show the button
       confirmButton.onclick = function() {
         // Scroll to package form
         const packageForm = document.querySelector('.package-form');
         if (packageForm) {
-            window.scrollTo({
-                top: packageForm.offsetTop - 50,
-                behavior: 'smooth'
-            });
-          }
+          window.scrollTo({
+            top: packageForm.offsetTop - 50,
+            behavior: 'smooth'
+          });
         }
+      }
     }
   } else {
     // Hide images and clear description when no selection or only one selection
@@ -362,8 +363,8 @@ function updatePackageDisplay() {
     inverterImage.style.visibility = 'hidden';
     packageDescription.textContent = '';
     confirmButton.style.visibility = 'hidden'; // Hide the button
-    }
   }
+}
 
 // Initialize Packages Page
 function initPackagesPage() {
@@ -378,21 +379,32 @@ function initPackagesPage() {
       selectedPanel = panel;
       updatePackageDisplay();
       
-      // Scroll to inverters section
+      // Scroll to the <h2> Inverters heading
+      const invertersHeading = document.querySelector('h2');
+      if (invertersHeading && invertersHeading.textContent.trim() === 'Inverters') {
+        window.scrollTo({
+          top: invertersHeading.offsetTop - 50,  // Adjust the offset to make the heading visible
+          behavior: 'smooth'
+        });
+      }
+
+      // Scroll to the inverters grid section but with an additional offset to leave space for the heading
       const invertersSection = document.getElementById('inverters-grid');
       if (invertersSection) {
-        invertersSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({
+          top: invertersSection.offsetTop - 100,  // Adjust -100 to leave more space above for the heading
+          behavior: 'smooth'
+        });
       }
     });
     panelsGrid.appendChild(card);
   });
-  
-  
-    // Initially hide the confirm button
-    const confirmButton = document.getElementById('confirm-selection');
-    if (confirmButton) {
-      confirmButton.style.visibility = 'hidden';
-    }
+
+  // Initially hide the confirm button
+  const confirmButton = document.getElementById('confirm-selection');
+  if (confirmButton) {
+    confirmButton.style.visibility = 'hidden';
+  }
 
   solarProducts.inverters.forEach(inverter => {
     const card = createProductCard(inverter, 'inverter');
@@ -406,6 +418,8 @@ function initPackagesPage() {
     });
     invertersGrid.appendChild(card);
   });
+}
+
 
   // Modal Handling
   document.querySelectorAll('.read-more-btn').forEach(btn => {
@@ -443,7 +457,6 @@ function initPackagesPage() {
       };
     });
   });
-}
 
 if (document.location.pathname.includes('packages.html')) {
   initPackagesPage();
@@ -507,6 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
       publishedDate: "February 5, 2025",
       comment: "A breakthrough worth our times"
     },
+
     
     // ... other articles ...
   ];
