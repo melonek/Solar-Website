@@ -234,7 +234,7 @@ const solarProducts = {
       country: "China",
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Trina-Solar-410-W.webp",
+      image: "https://cdn.prod.website-files.com/65ae7d5dd4abfa970b1c838d/67597899d89662b2203a43ba_Trina-Vertex-TSM-575DE19R-front.webp",
       price: 260,
       popularity: 5
     }
@@ -258,7 +258,7 @@ const solarProducts = {
       country: "Germany",
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/SMA-Sunny-Boy.png",
+      image: "https://cdn.sma.de/fileadmin/_processed_/4/3/csm_Sunny-Boy-3.0-3.6-4.0-5.0-6.0_613d33ef52.png",
       price: 1150,
       popularity: 2
     }
@@ -429,6 +429,9 @@ document.addEventListener('click', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', initPackagesPage);
+
+
+// Filter Bar , function () sorting the solar by cheapest, most popular and most expensive
 
 function sortProducts(type, criteria) {
   const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
