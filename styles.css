@@ -347,30 +347,33 @@ h1 {
     text-align: center; /* Center the heading */
 }
 
+#brands h2{
+    font-size: 2rem; /* Adjust to your preferred font size */
+    font-weight: 600; /* Adjust weight if needed */
+    width: 100%;
+    color: #333; /* Use a color that fits your design */
+    margin-bottom: 2rem; /* Add space below the heading */
+    text-align: center; /* Center the heading */
+}
+
 /* Brands of Solar Panels */
 #brands {
-    display: flex;
-    flex-direction: column;  /* Stack heading and container vertically */
-    align-items: center;     /* Center content horizontally */
-    justify-content: center; /* Center content vertically */
     padding: 2rem;
-    margin: 2rem auto; /* Center section horizontally with spacing */
-    width: 80%; /* Restrict width for better centering */
+    margin: 1rem auto;
+    justify-content: center;
 }
 
 .brands-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;  /* Ensure cards are centered */
-    gap: 20px; /* Space between cards */
+    justify-content: center;
+    gap: 20px;
     padding: 20px 0;
-    width: 100%; /* Full width for the container */
-    max-width: 1200px; /* Optional, set a max width if needed */
 }
 
 .brand-card {
     width: calc(100% - 20px); /* Full width minus margin */
-    max-width: 240px; /* Max width for larger screens */
+    max-width: 240px; /* Set a max width for larger screens */
     height: 180px;
     background: white;
     border-radius: 8px;
@@ -378,8 +381,8 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px; /* Padding inside card */
-    margin: 0 10px; /* Small margins between cards */
+    padding: 10px; /* Add padding inside the card */
+    margin: 0 10px; /* Add small margins */
     opacity: 0;
     transition: all 0.5s ease, transform 0.3s ease;
 }
@@ -389,10 +392,10 @@ h1 {
 }
 
 .brand-card img {
-    width: 100%; /* Full width inside card */
+    width: 100%; /* Image takes up the full width of its container */
     height: auto; /* Maintain aspect ratio */
-    max-height: 100%; /* Ensure image fits in card */
-    object-fit: contain; /* Keep the image visible */
+    max-height: 100%; /* Ensure image does not exceed card height */
+    object-fit: contain; /* Keep image fully visible within its container */
     transition: transform 0.3s ease;
 }
 
@@ -400,39 +403,29 @@ h1 {
     transform: scale(1.1);
 }
 
-/* For medium screens and up (e.g., tablets, laptops) */
 @media (max-width: 768px) {
     .brand-card {
-        max-width: 120px;
+        max-width: 180px;
         height: 130px;
     }
+    .brand-card.active {
+        opacity: 1;
+}}
 
+@media (max-width: 480px) {
     .brands-container {
-        justify-content: space-between; /* Space out items for better 2x2 layout */
-    width: 300px;
+        gap: 10px;
     }
-}
-
-/* For smaller screens (e.g., phones) with 2x2 grid at 430px or below */
-@media (max-width: 430px) {
-    .brands-container {
-        gap: 10px; /* Smaller gap on small screens */
-        padding : 
-    }
-
     .brand-card {
         width: calc(50% - 20px); /* Two cards per row on smaller screens */
-        height: 130px; /* Maintain a consistent height */
+        height: 100px;
+    }
+    .brand-card.active {
+        opacity: 1;
+        width:100%;
     }
 }
 
-/* Center content on very small screens */
-@media (max-width: 320px) {
-    .brand-card {
-        width: calc(20% - 20px); /* Ensures 2x2 layout */
-        height: 130px;
-    }
-}
 
 
 
