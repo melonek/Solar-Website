@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Product Data Array (add to your existing JS)
+// Product Data Array
 const solarProducts = {
   panels: [
     {
@@ -226,33 +226,14 @@ const solarProducts = {
       image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
     },
     {
-      id: 1,
-      name: "Canadian Solar 400W",
-      specs: "400W Mono PERC",
-      country: "Canada",
+      id: 2,
+      name: "Trina Solar 410W",
+      specs: "410W Mono PERC",
+      country: "China",
       warranty: "25 years",
-      datasheet: "canadian-400w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
-    },
-    {
-      id: 1,
-      name: "Canadian Solar 400W",
-      specs: "400W Mono PERC",
-      country: "Canada",
-      warranty: "25 years",
-      datasheet: "canadian-400w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
-    },
-     {
-      id: 1,
-      name: "Canadian Solar 400W",
-      specs: "400W Mono PERC",
-      country: "Canada",
-      warranty: "25 years",
-      datasheet: "canadian-400w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
-    },
-    // Add more panels...
+      datasheet: "trina-410w.pdf",
+      image: "https://i.postimg.cc/DfHr06Fy/Trina-Solar-410-W.webp"
+    }
   ],
   inverters: [
     {
@@ -265,37 +246,17 @@ const solarProducts = {
       image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
     },
     {
-      id: 1,
-      name: "Fronius Primo 5.0",
+      id: 2,
+      name: "SMA Sunny Boy 5.0",
       specs: "5kW Single Phase",
-      country: "Austria",
+      country: "Germany",
       warranty: "10 years",
-      datasheet: "fronius-primo.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
-    },
-    {
-      id: 1,
-      name: "Fronius Primo 5.0",
-      specs: "5kW Single Phase",
-      country: "Austria",
-      warranty: "10 years",
-      datasheet: "fronius-primo.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
-    },
-    {
-      id: 1,
-      name: "Fronius Primo 5.0",
-      specs: "5kW Single Phase",
-      country: "Austria",
-      warranty: "10 years",
-      datasheet: "fronius-primo.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
-    },
-    // Add more inverters...
+      datasheet: "sma-sunny-boy.pdf",
+      image: "https://i.postimg.cc/Jh6Zj5wn/SMA-Sunny-Boy.png"
+    }
   ]
 };
 
-// Package Selection Logic
 let selectedPanel = null;
 let selectedInverter = null;
 
@@ -307,9 +268,29 @@ function createProductCard(product, type) {
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
-    <p>Datasheet: ${product.datasheet}</p>
+    <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
     <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
+  
+  card.querySelector('.read-more-btn').addEventListener('click', handleModalOpen);
+  
+  card.addEventListener('click', (e) => {
+    if (e.target.classList.contains('read-more-btn')) return;
+    
+    if (type === 'panel') {
+      document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPanel = product;
+      scrollToSection('inverters-section');
+    } else if (type === 'inverter') {
+      document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedInverter = product;
+      showSolarPackageSection();
+    }
+    updatePackageDisplay();
+  });
+  
   return card;
 }
 
@@ -317,156 +298,123 @@ function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
   const inverterImage = document.getElementById('selected-inverter-image');
   const packageDescription = document.getElementById('package-description');
-  const confirmButton = document.getElementById('confirm-selection'); // Get the new button
+  const confirmButton = document.getElementById('confirm-selection');
 
-  if (selectedPanel && selectedInverter) {
-    // Show images and update text when selections are made
+  if (selectedPanel) {
     panelImage.src = selectedPanel.image;
     panelImage.style.visibility = 'visible'; 
-    
+  }
+
+  if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
     inverterImage.style.visibility = 'visible'; 
-    
+  }
+
+  if (selectedPanel && selectedInverter) {
     packageDescription.innerHTML = `
       My installation will consist of <strong>${selectedPanel.name}</strong> panels 
       and <strong>${selectedInverter.name}</strong> inverter
     `;
     document.getElementById('solar-package-input').value = 
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
-
-    // Scroll to the solar package section
-    const solarPackageSection = document.getElementById('solar-package');
-    if (solarPackageSection) {
-      window.scrollTo({
-        top: solarPackageSection.offsetTop - 50,
-        behavior: 'smooth'
-      });
-    }
-
-    // Enable the confirm button
-    if (confirmButton) {
-      confirmButton.style.visibility = 'visible'; // Show the button
-      confirmButton.onclick = function() {
-        // Scroll to package form
-        const packageForm = document.querySelector('.package-form');
-        if (packageForm) {
-          window.scrollTo({
-            top: packageForm.offsetTop - 50,
-            behavior: 'smooth'
-          });
-        }
-      }
-    }
+    confirmButton.style.visibility = 'visible';
   } else {
-    // Hide images and clear description when no selection or only one selection
-    panelImage.style.visibility = 'hidden';
-    inverterImage.style.visibility = 'hidden';
     packageDescription.textContent = '';
-    confirmButton.style.visibility = 'hidden'; // Hide the button
+    confirmButton.style.visibility = 'hidden';
+  }
+}
+
+function showSolarPackageSection() {
+  const solarPackageSection = document.getElementById('solar-package');
+  if (selectedPanel && selectedInverter) {
+    solarPackageSection.style.display = 'block';  // Show the section
+    scrollToSection('solar-package');  // Scroll to "My Solar Package" section
+  }
+}
+
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    window.scrollTo({
+      top: section.offsetTop - 50, // Adjust for header/nav if needed
+      behavior: 'smooth'
+    });
+  }
+}
+
+function scrollToForm() {
+  const packageForm = document.querySelector('.package-form');
+  if (packageForm) {
+    window.scrollTo({
+      top: packageForm.offsetTop - 50,  // Adjust for any fixed header if needed
+      behavior: 'smooth'
+    });
   }
 }
 
 function initPackagesPage() {
   const panelsGrid = document.getElementById('panels-grid');
   const invertersGrid = document.getElementById('inverters-grid');
+  
+  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, 'panel')));
+  solarProducts.inverters.forEach(inverter => invertersGrid.appendChild(createProductCard(inverter, 'inverter')));
 
-  // Panels creation and selection logic
-  solarProducts.panels.forEach(panel => {
-    const card = createProductCard(panel, 'panel');
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('read-more-btn')) {
-        // Prevent scroll when "Read More" button is clicked
-        return;
-      }
-      document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedPanel = panel;
-      updatePackageDisplay();
+  // Initially hide the "My Solar Package" section
+  document.getElementById('solar-package').style.display = 'none';
 
-      // Scroll to the inverters section after panel selection
-      const invertersSection = document.getElementById('inverters-grid');
-      if (invertersSection) {
-        window.scrollTo({
-          top: invertersSection.offsetTop - 100,  // Adjusted offset to leave space for the heading
-          behavior: 'smooth'
-        });
-      }
-    });
-    panelsGrid.appendChild(card);
-  });
-
-  // Inverters creation and selection logic
-  solarProducts.inverters.forEach(inverter => {
-    const card = createProductCard(inverter, 'inverter');
-    card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('read-more-btn')) {
-        // Prevent scroll when "Read More" button is clicked
-        return;
-      }
-      document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedInverter = inverter;
-      updatePackageDisplay();
-
-      // Scroll to the "My Solar Packages" section once both selections are made
-      if (selectedPanel && selectedInverter) {
-        const solarPackageSection = document.getElementById('solar-package');
-        if (solarPackageSection) {
-          window.scrollTo({
-            top: solarPackageSection.offsetTop - 50, // Adjust for header if needed
-            behavior: 'smooth'
-          });
-        }
-      }
-    });
-    invertersGrid.appendChild(card);
-  });
-
-  // Reattach modal functionality after the products are added to the DOM
-  document.querySelectorAll('.read-more-btn').forEach(btn => {
-    btn.addEventListener('click', handleModalOpen);
+  // Add event listener to "That's correct!" button
+  document.getElementById('confirm-selection').addEventListener('click', () => {
+    scrollToForm();  // Scroll to the package form section
   });
 }
 
-// Modal open handler
+// Open modal when a product card is clicked
 function handleModalOpen(e) {
-  e.preventDefault();  // Prevent scrolling and page behavior when "Read More" is clicked
+  e.preventDefault();
   const type = e.target.dataset.type;
-  const id = e.target.dataset.id;
-  const product = solarProducts[type === 'panel' ? 'panels' : 'inverters'].find(p => p.id == id);
+  const id = parseInt(e.target.dataset.id);
+  const product = solarProducts[type + 's'].find(p => p.id === id);
 
-  const modalContent = `
-    <img src="${product.image}" alt="${product.name}">
-    <div class="product-specs">
-      <h2>${product.name}</h2>
-      <p><strong>Specifications:</strong> ${product.specs}</p>
-      <p><strong>Country:</strong> ${product.country}</p>
-      <p><strong>Warranty:</strong> ${product.warranty}</p>
-      <p><strong>Datasheet:</strong> ${product.datasheet}</p>
-    </div>
-  `;
+  if (!product) return;
 
   const modal = document.getElementById('product-modal');
-  modal.style.display = 'block';
-  document.querySelector('.modal-product-image').innerHTML = modalContent;
-
-  // Close modal when "X" is clicked
-  document.querySelector('.close').onclick = function() {
-    modal.style.display = "none";
-  };
-
-  // Close modal if user clicks outside of it
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
+  document.querySelector('.modal-product-image').innerHTML = `
+    <img src="${product.image}" alt="${product.name}">
+  `;
+  document.querySelector('.modal-product-details').innerHTML = `
+    <h2>${product.name}</h2>
+    <p><strong>Specifications:</strong> ${product.specs}</p>
+    <p><strong>Country:</strong> ${product.country}</p>
+    <p><strong>Warranty:</strong> ${product.warranty}</p>
+    <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
+  `;
+  modal.style.display = 'block'; // Show the modal
 }
 
-// Check if we're on the packages.html page and initialize
-if (document.location.pathname.includes('packages.html')) {
-  initPackagesPage();
-}
+// Close modal when clicking outside or on the "X" button
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('product-modal');
+  const closeButton = modal.querySelector('.close'); // Get the close button inside the modal
+
+  // If the user clicks the background (modal itself) or the close button, hide the modal
+  if (e.target === modal || e.target === closeButton) {
+    modal.style.display = 'none'; // Close the modal
+  }
+});
+
+
+// Close modal when clicking outside or on the "X" button
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('product-modal');
+  const closeButton = document.querySelector('.modal-close'); // Assuming your close button has this class
+
+  if (e.target === modal || e.target === closeButton) {
+    modal.style.display = 'none'; // Close modal
+  }
+});
+
+document.addEventListener('DOMContentLoaded', initPackagesPage);
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
