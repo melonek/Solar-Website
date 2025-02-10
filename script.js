@@ -224,7 +224,8 @@ const solarProducts = {
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
       image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp",
-      price: 250
+      price: 250,
+      popularity: 3
     },
     {
       id: 2,
@@ -234,7 +235,8 @@ const solarProducts = {
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
       image: "https://i.postimg.cc/DfHr06Fy/Trina-Solar-410-W.webp",
-      price: 260
+      price: 260,
+      popularity: 5
     }
   ],
   inverters: [
@@ -246,7 +248,8 @@ const solarProducts = {
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
       image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png",
-      price: 1200
+      price: 1200,
+      popularity: 4
     },
     {
       id: 2,
@@ -256,11 +259,14 @@ const solarProducts = {
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
       image: "https://i.postimg.cc/Jh6Zj5wn/SMA-Sunny-Boy.png",
-      price: 1150
+      price: 1150,
+      popularity: 2
     }
   ]
 };
 
+
+//Create product cards and Update package
 
 let selectedPanel = null;
 let selectedInverter = null;
@@ -424,6 +430,32 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', initPackagesPage);
 
+function sortProducts(type, criteria) {
+  const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
+  let products = [...solarProducts[type + "s"]]; // Clone the array to avoid modifying the original
+
+  // Sorting logic
+  if (criteria === "expensive") {
+    products.sort((a, b) => b.price - a.price); // High to Low
+  } else if (criteria === "cheap") {
+    products.sort((a, b) => a.price - b.price); // Low to High
+  } else if (criteria === "popular") {
+    products.sort((a, b) => b.popularity - a.popularity); // Most to Least Popular
+  }
+
+  // Clear grid and re-render products
+  grid.innerHTML = "";
+  products.forEach(product => grid.appendChild(createProductCard(product, type)));
+}
+
+// Add event listeners for dropdown filters
+document.getElementById("panel-filter").addEventListener("change", function() {
+  sortProducts("panel", this.value);
+});
+
+document.getElementById("inverter-filter").addEventListener("change", function() {
+  sortProducts("inverter", this.value);
+});
 
 
 document.addEventListener('DOMContentLoaded', function() {

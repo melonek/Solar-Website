@@ -43,21 +43,40 @@
     <p>Build your own and get a free quote</p>
     </section>
   
+     <!-- Solar Panels Section -->
     <section class="service-category section panels-section">
-      <h2 class="panels-title">Solar Panels</h2>
+      <h1 class="panels-title">Solar Panels</h1>
+      <div class="filter-bar">
+        <label for="panel-filter">Sort by:</label>
+        <select id="panel-filter">
+          <option value="default">Default</option>
+          <option value="expensive">Most Expensive</option>
+          <option value="cheap">Cheapest</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
       <div class="product-grid panels-grid" id="panels-grid"></div>
     </section>
     
     <!-- Inverters Section -->
     <section class="service-category section inverters-section" id="inverters-section">
-      <h2 class="inverters-title">Inverters</h2>
+      <h1 class="inverters-title">Inverters</h1>
+      <div class="filter-bar">
+        <label for="inverter-filter">Sort by:</label>
+        <select id="inverter-filter">
+          <option value="default">Default</option>
+          <option value="expensive">Most Expensive</option>
+          <option value="cheap">Cheapest</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
       <div class="product-grid inverters-grid" id="inverters-grid"></div>
     </section>    
   </section>
 
     <!-- Selected Package Display -->
     <div id="solar-package" class="section">
-      <h2>My Solar Package</h2>
+      <h1>My Solar Package</h1>
       <div class="package-combination">
         <div class="image-combination">
           <img id="selected-panel-image" src="" alt="Selected Panel">
@@ -119,6 +138,7 @@
       </div>
   </div>
 </div>
+
 
     <!-- Footer -->
     <footer>
