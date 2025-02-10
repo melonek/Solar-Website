@@ -223,7 +223,8 @@ const solarProducts = {
       country: "Canada",
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp"
+      image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp",
+      price: 250
     },
     {
       id: 2,
@@ -232,7 +233,8 @@ const solarProducts = {
       country: "China",
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
-      image: "https://i.postimg.cc/DfHr06Fy/Trina-Solar-410-W.webp"
+      image: "https://i.postimg.cc/DfHr06Fy/Trina-Solar-410-W.webp",
+      price: 260
     }
   ],
   inverters: [
@@ -243,7 +245,8 @@ const solarProducts = {
       country: "Austria",
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png"
+      image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png",
+      price: 1200
     },
     {
       id: 2,
@@ -252,10 +255,12 @@ const solarProducts = {
       country: "Germany",
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
-      image: "https://i.postimg.cc/Jh6Zj5wn/SMA-Sunny-Boy.png"
+      image: "https://i.postimg.cc/Jh6Zj5wn/SMA-Sunny-Boy.png",
+      price: 1150
     }
   ]
 };
+
 
 let selectedPanel = null;
 let selectedInverter = null;
@@ -268,6 +273,7 @@ function createProductCard(product, type) {
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
+    <p>Price: $${product.price}</p>
     <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
     <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
@@ -293,6 +299,7 @@ function createProductCard(product, type) {
   
   return card;
 }
+
 
 function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
@@ -386,10 +393,12 @@ function handleModalOpen(e) {
     <p><strong>Specifications:</strong> ${product.specs}</p>
     <p><strong>Country:</strong> ${product.country}</p>
     <p><strong>Warranty:</strong> ${product.warranty}</p>
+    <p><strong>Price:</strong> $${product.price}</p>
     <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
   `;
   modal.style.display = 'block'; // Show the modal
 }
+
 
 // Close modal when clicking outside or on the "X" button
 document.addEventListener('click', (e) => {
