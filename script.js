@@ -1,4 +1,4 @@
-// Add this at the TOP of your existing JS file
+// Function to preload images before they are used - BRANDS SLIDER IN HTML
 function preloadImages(urls) {
   return new Promise((resolve, reject) => {
       const promises = urls.map(url => {
@@ -15,6 +15,24 @@ function preloadImages(urls) {
           .catch((failedUrl) => 
               console.error(`Failed to preload image: ${failedUrl}`))
           .finally(() => resolve()); // Always resolve to continue execution
+  });
+}
+
+// Function to preload images before they are used - BRANDS SLIDER IN PACKAGES.HTML
+function preloadImages(images) {
+  return new Promise((resolve, reject) => {
+    const imageElements = images.map(image => {
+      const img = new Image();
+      img.src = image.url;
+      img.onload = () => {
+        // Continue preloading all images
+        if (imageElements.every(i => i.complete)) {
+          resolve();
+        }
+      };
+      img.onerror = reject;
+      return img;
+    });
   });
 }
 //Navigation Dropdown menu/sumbenu//
@@ -215,6 +233,62 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
   });
 });
+
+//Slider for brands in packages.html
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for images to preload before starting the functionality
+  preloadImages(brandImages).then(() => {
+    const brandCards = document.querySelectorAll('.solar-brand-card'); // Updated to match new class
+    let currentIndex = 0;
+
+    // Initialize the first set of images
+    updateBrandCards();
+
+    function updateBrandCards() {
+      brandCards.forEach((card, i) => {
+        const imgIndex = (currentIndex + i) % brandImages.length;
+        const brandImage = brandImages[imgIndex];
+
+        const imgElement = card.querySelector('img');
+        imgElement.src = brandImage.url; // Set the image source to the brand's URL
+        imgElement.alt = brandImage.name; // Set alt text for the image
+
+        card.classList.remove('active');
+        setTimeout(() => card.classList.add('active'), 50); // Animate cards into view
+      });
+    }
+
+    function cycleBrands() {
+      brandCards.forEach(card => card.classList.remove('active')); // Remove active class for fade-out effect
+
+      setTimeout(() => {
+        currentIndex = (currentIndex + 4) % brandImages.length; // Move to the next set of images
+        updateBrandCards();
+      }, 500);
+    }
+
+    // Start cycling the brands every 5 seconds
+    let brandInterval = setInterval(cycleBrands, 5000);
+
+    // Pause cycling on hover
+    document.querySelector('#solar-logo-cards-container').addEventListener('mouseenter', () => {
+      clearInterval(brandInterval);
+    });
+
+    document.querySelector('#solar-logo-cards-container').addEventListener('mouseleave', () => {
+      brandInterval = setInterval(cycleBrands, 5000);
+    });
+
+    // Initial fade-in effect after a slight delay
+    setTimeout(() => {
+      brandCards.forEach(card => card.classList.add('active'));
+    }, 500);
+  });
+});
+
+
+
 
 
 // Product Data Array
