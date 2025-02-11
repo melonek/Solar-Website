@@ -369,6 +369,8 @@ h1 {
     justify-content: center;
     gap: 20px;
     padding: 20px 0;
+    width: 100%;
+    max-width: 1200px;
 }
 
 .brand-card {
@@ -425,6 +427,7 @@ h1 {
         width:100%;
     }
 }
+
 
 
 
@@ -754,7 +757,91 @@ h1 {
     color: #f00;
 }
 
- /* FIlter bar Styling */
+
+/*Modal logo img on the panel and inverter*/
+
+.product-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.main-product-image {
+    width: 100%;
+    height: auto;
+}
+
+/* Panel Brand Logo */
+.brand-logo-panel {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    width: 80px !important;  /* Adjust size for panels */
+    height: auto;
+    background: white;
+    padding: 2px;
+    border-radius: 4px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Inverter Brand Logo */
+.brand-logo-inverter {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 100px !important;  /* Adjust size for inverters */
+    height: auto;
+    background: white;
+    padding: 4px;  /* Add different padding for inverters */
+    border-radius: 6px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+#panel-logo {
+    left: 10px;
+  }
+  
+  #inverter-logo {
+    left: 220px; /* Adjust based on image size */
+  }
+
+  /* IMAGES COMBINED (SOLAR AND INVERTER) - THE STYLING FOR TWO TOP LEFT LOGOS*/
+
+  /* Ensuring the image-combination class is untouched */
+.image-combination {
+    position: relative;
+    display: flex;
+    gap: 100px; /* Keep existing spacing */
+  }
+  
+  /* Specific style for the logo overlays */
+  .logo-overlay {
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    width: 50px;  /* Adjust size of the logo */
+    height: auto;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8);  /* Optional background */
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  /* If you need to fine-tune positioning */
+  #panel-logo {
+    top: 80px;
+    left: 90px;
+    width: 100px !important;
+    height: auto;
+  }
+  
+  #inverter-logo {
+    top: 138px;
+    left: 90px;
+    width: 100px !important;
+    height: auto;
+  }
+  
+ /* Filter bar Styling */
 .filter-bar {
     display: flex;
     justify-content: flex-end;
@@ -771,6 +858,7 @@ h1 {
     padding: 5px;
     font-size: 14px;
   }
+
   
   
   /* Responsive Design */

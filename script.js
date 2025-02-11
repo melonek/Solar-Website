@@ -142,11 +142,11 @@ document.addEventListener('DOMContentLoaded', function() {
 const brandImages = [
   { name: 'Trina', url: 'https://i.postimg.cc/YqRfv8k3/Trina-Solar.png' },
   { name: 'SMA', url: 'https://i.postimg.cc/2yFdF7WC/SMA.png' },
-  { name: 'Canadian', url: "https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp" },
+  { name: 'Canadian Solar', url: "https://i.postimg.cc/7L6BHd20/Canadian-Solar.webp" },
   { name: 'DaSolar', url: "https://i.postimg.cc/Jh2pGxNg/Dasolar.webp" },
   { name: 'Fronius', url: "https://i.postimg.cc/4yCw13FQ/Fronius.png" },
   { name: 'Growatt', url: "https://i.postimg.cc/ZnrHshGt/Growatt.png" },
-  { name: 'Huawei', url: "https://i.postimg.cc/43m5kcD1/Huawei.png" },
+  { name: 'Huawei/iStotre', url: "https://i.postimg.cc/43m5kcD1/Huawei.png" },
   { name: 'JASolar', url: "https://i.postimg.cc/HsgBcVMp/JASolar.png" },
   { name: 'Goodwe', url: "https://i.postimg.cc/HkS2hzhx/logo-black-scaled.jpg" },
   { name: 'Jinko', url: "https://i.postimg.cc/FFcTHj7W/Jinko.png" },
@@ -157,7 +157,7 @@ const brandImages = [
   { name: 'SolarEdge', url: "https://i.postimg.cc/FFjx4NBw/Solar-Edge.png" },
   { name: 'Solis', url: "https://i.postimg.cc/wTgQxnKM/Solis.png" },
   { name: 'Sungrow', url: "https://i.postimg.cc/CxKCkDxV/Sungrow.png" },
-  { name: 'Eging', url: "https://i.postimg.cc/dQpY2GFc/Screenshot-2025-02-07-at-12-04-38-am.png" },
+  { name: 'EgingPV', url: "https://i.postimg.cc/dQpY2GFc/Screenshot-2025-02-07-at-12-04-38-am.png" },
   { name: 'QCells', url: "https://i.postimg.cc/gkhPNrcX/Screenshot-2025-02-07-at-12-05-06-am.png" },
   // Add other brands here
 ];
@@ -223,52 +223,56 @@ const solarProducts = {
     {
       id: 1,
       name: "Canadian Solar 400W",
+      brand: 'Canadian Solar',
       specs: "400W Mono PERC",
       country: "Canada",
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
       image: "https://i.postimg.cc/DfHr06Fy/Canadian-Solar-440-W.webp",
       price: 250,
-      brand: "Canadian",
-      popularity: 3
+      popularity: 3,
+      description: "Solar panel description goes here...",
     },
-    {
+      {
       id: 2,
       name: "Trina Solar 410W",
+      brand: "Trina",      
       specs: "410W Mono PERC",
       country: "China",
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
       image: "https://cdn.prod.website-files.com/65ae7d5dd4abfa970b1c838d/67597899d89662b2203a43ba_Trina-Vertex-TSM-575DE19R-front.webp",
       price: 260,
-      brand: "Canadian",
-      popularity: 5
+      popularity: 5,
+      description: "Solar panel description goes here...",
     }
   ],
   inverters: [
     {
       id: 1,
       name: "Fronius Primo 5.0",
+      brand: "Fronius",  
       specs: "5kW Single Phase",
       country: "Austria",
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
       image: "https://i.postimg.cc/Jh6Zj5wn/Fronius-Symo.png",
       price: 1200,
-      brand: "Canadian",
-      popularity: 4
+      popularity: 4,
+      description: "Inverter description goes here...",
     },
     {
       id: 2,
       name: "SMA Sunny Boy 5.0",
+      brand: "SMA",  
       specs: "5kW Single Phase",
       country: "Germany",
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
       image: "https://cdn.sma.de/fileadmin/_processed_/4/3/csm_Sunny-Boy-3.0-3.6-4.0-5.0-6.0_613d33ef52.png",
       price: 1150,
-      brand: "Canadian",
-      popularity: 2
+      popularity: 2,
+      description: "Inverter description goes here...",
     }
   ]
 };
@@ -283,7 +287,7 @@ function createProductCard(product, type) {
   const card = document.createElement('div');
   card.className = 'product-card product';
   card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}">
+    <img src="${product.image}" alt="${product.name}Best Perth Solar panel">
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
@@ -321,16 +325,53 @@ function updatePackageDisplay() {
   const packageDescription = document.getElementById('package-description');
   const confirmButton = document.getElementById('confirm-selection');
 
+  // Create or find logo elements
+  let panelLogo = document.getElementById('panel-logo');
+  let inverterLogo = document.getElementById('inverter-logo');
+
+  if (!panelLogo) {
+    panelLogo = document.createElement('img');
+    panelLogo.id = 'panel-logo';
+    panelLogo.classList.add('logo-overlay'); // Add the new class for logos
+    panelImage.parentNode.appendChild(panelLogo);
+  }
+
+  if (!inverterLogo) {
+    inverterLogo = document.createElement('img');
+    inverterLogo.id = 'inverter-logo';
+    inverterLogo.classList.add('logo-overlay'); // Add the new class for logos
+    inverterImage.parentNode.appendChild(inverterLogo);
+  }
+
+  // Update panel image and logo
   if (selectedPanel) {
     panelImage.src = selectedPanel.image;
-    panelImage.style.visibility = 'visible'; 
+    panelImage.style.visibility = 'visible';
+
+    const panelBrand = brandImages.find(brand => brand.name === selectedPanel.brand);
+    if (panelBrand) {
+      panelLogo.src = panelBrand.url;
+      panelLogo.style.visibility = 'visible';
+    } else {
+      panelLogo.style.visibility = 'hidden';
+    }
   }
 
+  // Update inverter image and logo
   if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
-    inverterImage.style.visibility = 'visible'; 
+    inverterImage.style.visibility = 'visible';
+
+    const inverterBrand = brandImages.find(brand => brand.name === selectedInverter.brand);
+    if (inverterBrand) {
+      inverterLogo.src = inverterBrand.url;
+      inverterLogo.style.visibility = 'visible';
+    } else {
+      inverterLogo.style.visibility = 'hidden';
+    }
   }
 
+  // Update package description and button visibility
   if (selectedPanel && selectedInverter) {
     packageDescription.innerHTML = `
       My installation will consist of <strong>${selectedPanel.name}</strong> panels 
@@ -401,20 +442,35 @@ function handleModalOpen(e) {
 
   if (!product) return;
 
+  // Find brand logo URL from brandImages array
+  const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
+  const brandLogoUrl = brand ? brand.url : '';
+
+  // Determine the logo class based on type (panel or inverter)
+  const logoClass = type === 'panel' ? 'brand-logo-panel' : 'brand-logo-inverter';
+
   const modal = document.getElementById('product-modal');
   document.querySelector('.modal-product-image').innerHTML = `
-    <img src="${product.image}" alt="${product.name}">
+    <div class="product-image-container">
+      <img src="${product.image}" alt="${product.name}" class="main-product-image">
+      ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="${logoClass}">` : ''}
+    </div>
   `;
+
   document.querySelector('.modal-product-details').innerHTML = `
     <h2>${product.name}</h2>
+    <p><strong>Brand Name: </strong>${product.brand}<br></br></p>
     <p><strong>Specifications:</strong> ${product.specs}</p>
     <p><strong>Country:</strong> ${product.country}</p>
     <p><strong>Warranty:</strong> ${product.warranty}</p>
     <p><strong>Price:</strong> $${product.price}</p>
-    <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
+    <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a><br></br></p>
+    <p><strong>Product Description: </strong>${product.description}
   `;
+
   modal.style.display = 'block'; // Show the modal
 }
+
 
 
 // Close modal when clicking outside or on the "X" button
@@ -454,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
       comment: "A breakthrough worth our times"
     },
     { 
-      id: 1, 
+      id: 2, 
       title: "Solar Innovation", 
       image: "https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300", 
       snippet: "Latest in solar tech...", 
@@ -463,7 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
       comment: "A breakthrough worth our times"
     },
     { 
-      id: 1, 
+      id: 3, 
       title: "Solar Innovation", 
       image: "https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300", 
       snippet: "Latest in solar tech...", 
@@ -472,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
       comment: "A breakthrough worth our times"
     },
     { 
-      id: 1, 
+      id: 4, 
       title: "Solar Innovation", 
       image: "https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300", 
       snippet: "Latest in solar tech...", 
@@ -481,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
       comment: "A breakthrough worth our times"
     },
     { 
-      id: 1, 
+      id: 5, 
       title: "Solar Innovation", 
       image: "https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300", 
       snippet: "Latest in solar tech...", 
@@ -490,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function() {
       comment: "A breakthrough worth our times"
     },
     { 
-      id: 1, 
+      id: 6, 
       title: "Solar Innovation", 
       image: "https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300", 
       snippet: "Latest in solar tech...", 
