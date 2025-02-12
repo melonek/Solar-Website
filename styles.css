@@ -255,18 +255,30 @@ nav {
     text-align: center;
     padding: 4rem 2rem;
     border-radius: 8px;
+    height: 40vh;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Banner Content */
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -20px;
+    gap: 1.5rem; /* Adjust this to control spacing */
+}
+
 .banner-content h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    font-family: "Akronim", serif;
+    font-size: 5rem;
+    margin-top: -60px;
+    padding: 10px;
 }
 
 .banner-content h2 {
     font-size: 2rem;
     font-weight: 500;
-    margin-bottom: 1rem;
+    margin-top: -50px;
 }
 
 .banner-content p {
@@ -274,6 +286,65 @@ nav {
     max-width: 800px;
     margin: auto;
 }
+
+/* Responsive Adjustments */
+
+/* For screens up to 780px */
+@media (max-width: 780px) {
+    .about-banner {
+        padding: 3rem 1.5rem;
+        height: 40vh;
+    }
+
+    .banner-content {
+        gap: 1.2rem; /* Adjust spacing for smaller screens */
+        margin-top: 10px;
+    }
+
+    .banner-content h1 {
+        font-size: 3.5rem;
+        padding: 15px;
+    }
+
+    .banner-content h2 {
+        font-size: 1.8rem;
+        margin-top: -40px;
+    }
+
+    .banner-content p {
+        font-size: 1rem;
+        max-width: 600px;
+    }
+}
+
+/* For screens up to 430px */
+@media (max-width: 430px) {
+    .about-banner {
+        padding: 2.5rem 1rem;
+        height:30vh;
+    }
+
+    .banner-content {
+        gap: 1rem; /* Tighter spacing on mobile */
+    }
+
+    .banner-content h1 {
+        font-size: 2.8rem;
+
+
+    }
+
+    .banner-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .banner-content p {
+        font-size: 0.9rem;
+        max-width: 90%;
+    }
+}
+
+
 
 /* About Content */
 .about-container {
