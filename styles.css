@@ -250,7 +250,7 @@ nav {
 
 /* Hero Banner */
 .about-banner {
-    background: url('/images/AboutUs/hero.png') center/cover no-repeat;
+    background: url('./images/AboutUs/hero.png') center/cover no-repeat;
     color: white;
     text-align: center;
     padding: 4rem 2rem;
