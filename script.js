@@ -152,7 +152,7 @@ const brandImages = [
   { name: 'Trina', url: './images/BrandLogos/Trina-Solar.png' },
   { name: 'SMA', url: './images/BrandLogos/SMA.png' },
   { name: 'Canadian Solar', url: "./images/BrandLogos/Canadian-Solar.png" },
-  { name: 'DaSolar', url: "./images/BrandLogos/DaSolar.png" },
+  { name: 'DaSolar', url: "./images/BrandLogos/Dasolar.png" },
   { name: 'Fronius', url: "./images/BrandLogos/Fronius.png" },
   { name: 'Growatt', url: "./images/BrandLogos/Growatt.png" },
   { name: 'Huawei/iStore', url: "./images/BrandLogos/Huawei.png" },
