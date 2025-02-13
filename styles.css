@@ -67,7 +67,8 @@ nav {
 }
 
 .nav-links li {
-    margin-left: 20px; /* Changed from margin-right to margin-left to space items from the left */
+    margin-left: 20px;
+    text-align: center; /* Add this line to center the dropdown */
 }
 
 .nav-links a {
@@ -96,30 +97,34 @@ nav {
 /* Dropdown Menu */
 .dropdown {
     position: relative;
+    display: inline-block; /* Prevents full-width issues */
+}
+
+/* Dropdown Button */
+.dropbtn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    text-align: center;
 }
 
 
-.dropbtn {
-    background-color: transparent;
-    border: none;
-    color: #2c3e50;
-    cursor: pointer;
-    padding: 10px 15px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    z-index: 1200;
-  }
-
+/* Dropdown Content */
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #e9f7ef; /* Lighter green for dropdown */
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    /* Adjust the positioning if needed */
-    right: 0; /* Aligns dropdown to the right of the dropdown button */
+    top: 100%; /* Places dropdown right below the button */
+    left: 50% !important;/* Centers it */
+    transform: translateX(-50%) !important;/* Ensures it's centered */
+    width: 200px; /* Fixed width for consistency */
+    background-color: #fff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    border-radius: 6px;
+    z-index: 1000;
+    text-align: center;
 }
 
 .dropbtn:hover, .nav-links a:hover {
@@ -128,11 +133,17 @@ nav {
     transform: translateY(-2px);
   }
 
-.dropdown-content a {
-    color: #2c3e50;
-    padding: 12px 16px;
-    text-decoration: none;
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content,
+.dropdown.active .dropdown-content {
     display: block;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
 }
 
 .dropdown-content a:hover {
@@ -146,6 +157,28 @@ nav {
 .dropdown.active .dropdown-content {
     display: block;}
 
+/* 📱 Mobile Fix: Ensure Centered Alignment */
+@media screen and (max-width: 768px) {
+    .dropdown {
+        width: 100%;
+        text-align: center; /* Ensures the dropdown is centered */
+        position: relative;
+        display: inline-block;
+            /* Remove margin: 0 auto as it's not needed */
+    }
+
+    .dropbtn {
+        width: auto; /* Prevents full width stretching */
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        width: 90%;
+        max-width: 250px;
+        left: 50%;
+        transform: translateX(-50%); /* Always centers it */
+    }
+}
 
 /* Mobile Menu Toggle */
 .menu-toggle {
@@ -222,6 +255,7 @@ nav {
         text-align: center;
         width: 100%;
         margin: 10px 0;
+        text-align: center;
     }
 
     .dropdown-content {
@@ -245,6 +279,7 @@ nav {
     }
 }
 
+
 /* About Section */
 #about {
     max-width: 1400px;
@@ -263,6 +298,10 @@ nav {
     border-radius: 8px;
     height: 40vh;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Background overlay for opacity */
@@ -289,24 +328,34 @@ nav {
     z-index: 2; /* Ensures text is above the overlay */
 }
 
-.banner-content h1 {
-    font-family: "Sonsie One", serif;
+/* Text Background Effect */
+.text-background h1 {
+    background: linear-gradient(to right, #0e7d40, #2eb162);
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: "Condiment", serif;
     font-size: 5rem;
-    margin-top: -54px;
-    color: #207220;
-    padding: 10px;
+    margin-top: -55px;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    /* text-transform: uppercase; */
+    font-weight: 800;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
 }
 
 .banner-content h2 {
     font-size: 2rem;
     font-weight: 500;
-    margin-top: -50px;
+    margin-top: -20px;
 }
 
 .banner-content p {
     font-size: 1.2rem;
     max-width: 800px;
-    margin: auto;
+    margin-top: -15px;
 }
 
 /* Responsive Adjustments */
@@ -315,7 +364,7 @@ nav {
 @media (max-width: 780px) {
     .about-banner {
         padding: 3rem 1.5rem;
-        height: 45vh;
+        height: 34vh;
     }
 
     .banner-content {
@@ -330,7 +379,7 @@ nav {
 
     .banner-content h2 {
         font-size: 1.8rem;
-        margin-top: -40px;
+        margin-top: -20px;
     }
 
     .banner-content p {
@@ -343,7 +392,7 @@ nav {
 @media (max-width: 430px) {
     .about-banner {
         padding: 2.5rem 1rem;
-        height: 45vh;
+        height: 40vh;
     }
 
     .banner-content {
@@ -363,9 +412,6 @@ nav {
         max-width: 90%;
     }
 }
-
-
-
 
 /* About Content */
 .about-container {
@@ -557,10 +603,10 @@ nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2px;
-    padding: 2px 0;
+    gap: 20px;
+    padding: 20px 0;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
 }
 
 .solar-brand-card {
@@ -673,12 +719,14 @@ nav {
 /* ======= PANELS & INVERTERS STYLING ======= */
 .panels-grid {
     border: 2px solid #2ecc71; /* Match border with Panels h2 */
+    background: #eff8f2;
     padding: 1rem;
     border-radius: 8px;
 }
 
 .inverters-grid {
     border: 2px solid #3498db; /* Blue border for inverters */
+    background: #e9eff3;
     padding: 1rem;
     border-radius: 8px;
 }
@@ -1080,15 +1128,6 @@ nav {
     display: none;
 }
 .nav-links.active {
-    display: block;
-}
-
-/* Dropdown styles */
-.dropdown-content {
-    display: none;
-    padding-left: 20px;
-}
-.dropdown-content.active {
     display: block;
 }
 
@@ -1664,7 +1703,8 @@ footer {
     }
 
     .nav-links li {
-        margin: 10px 0;
+        margin-left: 20px;
+        text-align: center; /* Add this line to center the dropdown */
     }
 
     .product {
