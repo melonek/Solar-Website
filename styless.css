@@ -1,113 +1,194 @@
-/* styles.css */
-
+/* General Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
 }
 
-h1, h2, h3 {
+/* Main Container */
+.solar-savings-container {
+    max-width: 1320px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h3 {
     text-align: center;
     color: #333;
 }
 
-#solar-savings {
-    padding: 20px;
-}
-
-.main-container {
+/* Flexbox Layout for Main Sections */
+.calculator-container {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    margin: 0 auto;
-    max-width: 1320px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
-.left-container, .right-container {
-    box-sizing: border-box;
-    padding: 20px;
-}
-
+/* Left Container */
 .left-container {
-    flex: 1 1 50%;
-    border-right: 1px solid #ddd;
-}
-
-.right-container {
-    flex: 1 1 50%;
+    width: 48%;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
+/* Right Container */
+.right-container {
+    width: 48%;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Stack sections inside */
+    gap: 15px;
+}
+
+/* Banner Styling */
 .banner img {
     width: 100%;
     height: auto;
-    margin-bottom: 20px;
+    border-radius: 8px;
 }
 
-.selection {
+/* Inverter & Solar Panels Section */
+.image-selectors {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 48%;
+}
+
+.selector select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    margin-top: 10px;
+}
+
+.selector img {
+    max-width: 150px; /* Maximum size */
+    max-height: 150px; /* Maximum size */
+    object-fit: cover; /* Ensure the image covers the container without distortion */
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Dropdown Styling */
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease;
+}
+
+select:hover {
+    border-color: #007bff;
+}
+
+/* Specifications */
+.specifications {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.specs {
     display: flex;
     justify-content: space-between;
 }
 
-.column {
+.specs div {
     width: 48%;
-    text-align: center;
-}
-
-.column img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    transition: transform 0.3s;
-}
-
-.column img:hover {
-    transform: scale(1.05);
-}
-
-.specifications {
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-select {
-    width: 100%;
     padding: 10px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-select:hover {
-    background-color: #e9e9e9;
-}
-
-.top-sub-container, .bottom-sub-container {
-    padding: 20px;
-    border-bottom: 1px solid #ddd;
+/* Bill Costs & Slider */
+.bill-costs {
+    text-align: center;
+    margin-top: 20px;
 }
 
 #bill-slider {
     width: 100%;
-    margin: 20px 0;
+    cursor: pointer;
 }
 
 #bill-amount {
-    text-align: center;
-    font-size: 1.2em;
-    color: #555;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
 }
 
-#savings {
+/* Savings Section */
+.savings {
     text-align: center;
-    margin: 20
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
 }
-/* ::contentReference[oaicite:0]{index=0} */
 
- 
+/* Production Grid - Ensures items stay side by side */
+
+.production-grid {
+    display: flex;
+    flex-direction: row; /* Make Summer and Winter side by side */
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Grid Items */
+.grid-item {
+    flex: 1; /* Allow it to grow or shrink based on available space */
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid Images */
+.grid-item img {
+    width: 40px;
+    height: auto;
+}
+
+/* Tree Icon Adjustments */
+.tree-icon {
+    width: 1.2em;
+    height: auto;
+    vertical-align: middle;
+    margin-left: 5px;
+}
