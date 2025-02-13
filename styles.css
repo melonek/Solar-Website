@@ -22,11 +22,65 @@ nav {
     padding: 1.8rem 1rem; /* Slightly higher nav bar */
     display: flex;
     justify-content: center; /* Center the nav-links */
-    align-items: center;
+    align-items: center; /* Ensure vertical alignment */
     position: relative; /* To keep logo in place */
     z-index: 1000;
 }
 
+/* Ensure navbar links are aligned horizontally and centered */
+.nav-links {
+    list-style-type: none;
+    display: flex;
+    margin-left: 0; /* Reset margin to ensure dropdown works */
+    padding: 0; /* Remove any padding that might push items off-center */
+    align-items: center; /* Vertical alignment */
+}
+    
+
+/* Ensure the spacing between items is even */
+.nav-links li {
+    margin-left: 20px; /* Space between items */
+}
+
+/* Links style */
+.nav-links a {
+    color: #2c3e50;
+    text-decoration: none;
+    text-align: center !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    padding: 10px 15px; /* Padding for the button effect */
+    border-radius: 4px; /* Rounded corners for buttons */
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for button background */
+    display: inline-flex;
+    align-items: center; /* Align text inside the link vertically */
+}
+
+/* Hover effect for links */
+.nav-links a:hover {
+    color: #2980b9;
+    background-color: rgba(255, 255, 255, 0.4); /* More opaque background on hover */
+    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3); /* Subtle glow effect */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Mobile styling */
+@media screen and (max-width: 480px) {
+    nav {
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+    }
+
+    /* Stacking the navbar items vertically on mobile */
+    .nav-links {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center the items */
+    }
+
+    .nav-links li {
+        margin-left: 0; /* Reset the margin for stacking */
+        margin-bottom: 10px; /* Add space between items when stacked */
+    }
+}
 /* Floating Logo */
 .floating-logo {
     position: fixed;
@@ -58,72 +112,52 @@ nav {
     font-weight: bold;
 }
 
-.nav-links {
-    list-style-type: none;
-    display: flex;
-    margin-left: 0; /* Reset margin to ensure dropdown works */
-    padding: 0; /* Remove any padding that might push items off-center */
-    z-index: 1100;
-}
 
-.nav-links li {
-    margin-left: 20px;
-    text-align: center; /* Add this line to center the dropdown */
-}
-
-.nav-links a {
-    color: #2c3e50;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    padding: 10px 15px; /* Padding for the button effect */
-    border-radius: 4px; /* Rounded corners for buttons */
-    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for button background */
-    z-index: 1100;
-}
-
-.nav-links a:hover {
-    color: #2980b9;
-    background-color: rgba(255, 255, 255, 0.4); /* More opaque background on hover */
-    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3); /* Subtle glow effect */
-    transform: translateY(-2px); /* Slight lift effect */
-  }
-  
-  @media screen and (max-width: 480px) {
-    nav {
-        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
-    }
-}
-/* Dropdown Menu */
+/* Dropdown Container */
 .dropdown {
     position: relative;
-    display: inline-block; /* Prevents full-width issues */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center dropdown button */
 }
 
 /* Dropdown Button */
 .dropbtn {
+    background-color: #4CAF50;
+    color: white;
     padding: 10px 15px;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
     border: none;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    width: 150px; /* Keep consistent with dropdown content */
 }
-
 
 /* Dropdown Content */
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 100%; /* Places dropdown right below the button */
-    left: 50% !important;/* Centers it */
-    transform: translateX(-50%) !important;/* Ensures it's centered */
-    width: 200px; /* Fixed width for consistency */
-    background-color: #fff;
+    background-color: #f9f9f9;
+    width: 150px; /* Match the width of the button */
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 10px 0;
-    border-radius: 6px;
-    z-index: 1000;
+    z-index: 1;
+    text-align: center;
+    top: 100%; /* Position it directly below the button */
+    left: 0; /* Align with the left edge of the parent */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 150px; /* Set width of the dropdown content */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
     text-align: center;
 }
 
@@ -133,17 +167,16 @@ nav {
     transform: translateY(-2px);
   }
 
-/* Show dropdown on hover */
-.dropdown:hover .dropdown-content,
-.dropdown.active .dropdown-content {
+  /* Ensure dropdown shows on hover */
+.dropdown:hover .dropdown-content {
     display: block;
 }
 
 .dropdown-content a {
-    display: block;
-    padding: 10px 15px;
+    color: #2c3e50;
+    padding: 12px 16px;
     text-decoration: none;
-    color: #333;
+    display: block;
 }
 
 .dropdown-content a:hover {
@@ -157,26 +190,27 @@ nav {
 .dropdown.active .dropdown-content {
     display: block;}
 
-/* 📱 Mobile Fix: Ensure Centered Alignment */
-@media screen and (max-width: 768px) {
-    .dropdown {
-        width: 100%;
-        text-align: center; /* Ensures the dropdown is centered */
-        position: relative;
-        display: inline-block;
-            /* Remove margin: 0 auto as it's not needed */
-    }
-
+    /* Mobile Version for screens with width 430px */
+@media screen and (max-width: 430px) {
     .dropbtn {
-        width: auto; /* Prevents full width stretching */
-        display: inline-block;
+        width: 120px; /* Slightly smaller width for mobile */
+        padding: 12px;
     }
 
     .dropdown-content {
-        width: 90%;
-        max-width: 250px;
-        left: 50%;
-        transform: translateX(-50%); /* Always centers it */
+        min-width: 120px; /* Make dropdown content narrower */
+    }
+}
+
+/* Mobile Version for screens with width 780px */
+@media screen and (max-width: 780px) {
+    .dropbtn {
+        width: 130px; /* Adjust button size for mid-sized screens */
+        padding: 14px;
+    }
+
+    .dropdown-content {
+        min-width: 130px; /* Adjust dropdown content width */
     }
 }
 
@@ -255,7 +289,6 @@ nav {
         text-align: center;
         width: 100%;
         margin: 10px 0;
-        text-align: center;
     }
 
     .dropdown-content {
@@ -298,10 +331,6 @@ nav {
     border-radius: 8px;
     height: 40vh;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Background overlay for opacity */
@@ -1703,8 +1732,7 @@ footer {
     }
 
     .nav-links li {
-        margin-left: 20px;
-        text-align: center; /* Add this line to center the dropdown */
+        margin: 10px 0;
     }
 
     .product {

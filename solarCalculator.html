@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Savings Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <section id="solar-savings">
+        <h1>SOLAR ENERGY SAVINGS</h1>
+        <div class="main-container">
+            <!-- Left Container -->
+            <div class="left-container">
+                <div class="banner">
+                    <img src="banner.jpg" alt="Solar Energy Banner">
+                </div>
+                <div class="selection">
+                    <div class="column">
+                        <h2>Inverter</h2>
+                        <img id="inverter-image" src="placeholder_inverter.jpg" alt="Inverter Image">
+                        <div class="specifications" id="inverter-specs">
+                            <!-- Inverter specifications will be populated here -->
+                        </div>
+                        <select id="inverter-select">
+                            <!-- Inverter options will be populated here -->
+                        </select>
+                    </div>
+                    <div class="column">
+                        <h2>Solar Panels</h2>
+                        <img id="panel-image" src="placeholder_panel.jpg" alt="Solar Panel Image">
+                        <div class="specifications" id="panel-specs">
+                            <!-- Panel specifications will be populated here -->
+                        </div>
+                        <select id="panel-select">
+                            <!-- Panel options will be populated here -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Container -->
+            <div class="right-container">
+                <!-- Top Sub-Container -->
+                <div class="top-sub-container">
+                    <h2>Monthly Bill Costs (Synergy etc.)</h2>
+                    <input type="range" id="bill-slider" min="0" max="2000" value="100">
+                    <div id="bill-amount">$100</div>
+                </div>
+                <!-- Bottom Sub-Container -->
+                <div class="bottom-sub-container">
+                    <h2>Savings</h2>
+                    <div id="savings">
+                        <!-- Savings information will be displayed here -->
+                    </div>
+                    <label for="years-select">Select Years:</label>
+                    <select id="years-select">
+                        <!-- Year options will be populated here -->
+                    </select>
+                    <div id="total-saved">
+                        <!-- Total savings will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Production Comparison Grid -->
+    <section id="production-comparison">
+        <h2>Production Comparison</h2>
+        <div class="grid">
+            <div class="column">
+                <img src="sun_icon.png" alt="Summer">
+                <h3>Summer</h3>
+                <div id="summer-production">
+                    <!-- Summer production data will be displayed here -->
+                </div>
+            </div>
+            <div class="column">
+                <img src="snowflake_icon.png" alt="Winter">
+                <h3>Winter</h3>
+                <div id="winter-production">
+                    <!-- Winter production data will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
