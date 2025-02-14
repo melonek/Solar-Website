@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Savings Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Sonsie+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styless.css">
 </head>
 <body>
@@ -60,14 +63,13 @@
                 <!-- Disclaimer -->
                 <div class="disclaimer">
                     <p><small><b>Calculations are based on Perth, Australia, known for its sunny climate.</b>
-                    <br>*Sunny Days: Statistically on average Perth gets:
-                    <br>- 147 completely sunny days
-                    <br>- 139 partly cloudy days (some sun but not fully clear)
-                    <br>- 79 mostly cloudy/overcast days (little to no sun)
-                    <br>*Wintery Days: Perth’s winter (June–August) has about 60-70 rainy days per year in total.
-                    <br>Summer in Perth, WA, lasts from December to February (can extend to March-April).
-                    <br>Drop your bill up to 50% when running air-con, pool pumps etc during the day.
-                    <br>For best savings, have your solar system facing West due to higher tariff after 3pm. North-West offers good performance. South-facing = less.</small></p>
+                    <br>On average, Perth experiences:
+                    <br>➮147 completely sunny days.
+                    <br>➮139 partly cloudy days (some sun but not fully clear)
+                    <br>➮79 mostly cloudy or overcast days (little to no sun)
+                    <br>Total annual kWh is calculated based on the number of sunny days in summer and cloudy days in winter, accounting for seasonal variations in solar output.
+                    <br>Save up to 50% on your electricity bill by running air conditioning, pool pumps, and other appliances during the day.
+                    <br></small></p>
                 </div>
             </div>
 
@@ -76,7 +78,7 @@
                 <!-- New Bill Analysis Section -->
                 <div class="bill-analysis">
                     <p>Based on your monthly bill of $<span id="monthly-bill-amount">200</span>AUD,
-                    <br>Annual electricity bill is: $<span id="annual-bill">2400</span>
+                    <br>your annual electricity bill is: $<span id="annual-bill">2400</span>
                     <br>Total emissions for electricity consumption: <span id="co2-emissions">3.4</span> tonnes CO₂</p>
                 </div>
 
@@ -102,7 +104,7 @@
 
                 <!-- Production Grid -->
                 <div class="production-grid">
-                    <h3>Production</h3>
+                    <h3>Solar Production (kWh)</h3>
                     <div class="grid-items">
                         <div class="grid-item">
                             <img src="https://e7.pngegg.com/pngimages/487/562/png-clipart-sun-logo-sunlight-thumbnail.png" alt="Summer">

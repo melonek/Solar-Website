@@ -20,6 +20,7 @@ body {
 h1, h3 {
     text-align: center;
     color: #333;
+    font-family: "Playfair Display SC", serif;
 }
 
 /* Flexbox Layout for Main Sections */
@@ -73,6 +74,8 @@ h1, h3 {
     align-items: center;
     justify-content: space-between;
     width: 48%;
+    min-height: 320px; /* Minimum height for consistent sizing */
+    margin-bottom: 15px;
 }
 
 .selector select {
@@ -86,12 +89,11 @@ h1, h3 {
 }
 
 .selector img {
-    max-width: 150px; /* Maximum size */
-    max-height: 150px; /* Maximum size */
-    object-fit: cover; /* Ensure the image covers the container without distortion */
+    width: 100%;
+    height: 180px; /* Fixed height for images */
+    object-fit: contain; /* Ensures image fits without distortion */
     margin-bottom: 10px;
     border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* New Bill Analysis Section */
@@ -108,21 +110,23 @@ h1, h3 {
     color: #2c3e50;
 }
 
-/* System Size Selector */
+/* System Size Container*/
 .system-size-container {
     display: flex;
     justify-content: center;
     margin: 15px 0;
 }
 
+/* System Size Selector */
 .system-size-selector {
-    width: 100%;
+    width: 60%;
     text-align: center;
+    min-height: 280px; /* Consistent height with other selectors */
 }
-
 .system-size-selector img {
-    max-width: 200px;
-    max-height: 150px;
+    width: 100%;
+    height: 180px; /* Match other selector image heights */
+    object-fit: contain;
 }
 
 
@@ -148,12 +152,15 @@ select:hover {
     background: #f9f9f9;
     border-radius: 8px;
     text-align: center;
-    margin: 0 0 0 0 
+    min-height: 150px; /* Minimum height for specs container */
 }
 
+
 .specs {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .specs h3 {
@@ -161,11 +168,11 @@ select:hover {
 }
 
 .specs div {
-    width: 48%;
     padding: 10px;
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevents content from overflowing */
 }
 
 /* Bill Costs & Slider */
@@ -290,7 +297,13 @@ select:hover {
 }
 
 .total-display {
-    font-size: 24px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#total-amount {
+    font-size: 30px;
     font-weight: bold;
     margin-top: 10px;
 }
