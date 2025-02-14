@@ -94,6 +94,37 @@ h1, h3 {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* New Bill Analysis Section */
+.bill-analysis {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.bill-analysis span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* System Size Selector */
+.system-size-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.system-size-selector {
+    width: 100%;
+    text-align: center;
+}
+
+.system-size-selector img {
+    max-width: 200px;
+    max-height: 150px;
+}
+
 
 /* Dropdown Styling */
 select {
@@ -117,11 +148,16 @@ select:hover {
     background: #f9f9f9;
     border-radius: 8px;
     text-align: center;
+    margin: 0 0 0 0 
 }
 
 .specs {
     display: flex;
     justify-content: space-between;
+}
+
+.specs h3 {
+    color:hsl(240, 5%, 45%)
 }
 
 .specs div {
@@ -158,25 +194,56 @@ select:hover {
     border-radius: 8px;
 }
 
-/* Production Grid - Ensures items stay side by side */
-
-.production-grid {
+.savings-content {
     display: flex;
-    flex-direction: row; /* Make Summer and Winter side by side */
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
+    flex-direction: column;
+    gap: 15px;
 }
 
-/* Grid Items */
-.grid-item {
-    flex: 1; /* Allow it to grow or shrink based on available space */
+.years-total {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#total-saved {
+    background: #4CAF50;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* CO2 and Trees Saved */
+.co2-trees-saved {
     text-align: center;
-    padding: 12px;
-    background: white;
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Production Grid Layout */
+.production-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.grid-items {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.grid-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 48%;
 }
 
 /* Grid Images */
@@ -187,8 +254,43 @@ select:hover {
 
 /* Tree Icon Adjustments */
 .tree-icon {
-    width: 1.2em;
-    height: auto;
+    width: 24px;
+    height: 24px;
     vertical-align: middle;
-    margin-left: 5px;
+}
+
+.calculator {
+    width: 1320px;
+    height: 600px;
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+.left-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.right-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.slider-container, .dropdown-container {
+    margin-bottom: 20px;
+}
+
+/* Combined Yearly Total */
+.combined-yearly-total {
+    text-align: center;
+    padding: 20px;
+    background: #4CAF50;
+    border-radius: 10px;
+    color: white;
+}
+
+.total-display {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
 }

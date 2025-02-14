@@ -16,85 +16,129 @@
                 <div class="banner">
                     <img src="https://sunridgefarms.com/wp-content/uploads/2018/01/solar-panels-web-banner.jpg" alt="Solar Savings Banner">
                 </div>
+                
                 <!-- Inverter and Panels Selector -->
                 <div class="image-selectors">
                     <div class="selector">
                         <h3>Inverter</h3>
                         <img id="inverter-image" src="" alt="Inverter">
-                        <select id="inverter-select">
-                            <!-- Options will be populated by JavaScript -->
-                        </select>
+                        <select id="inverter-select"></select>
                     </div>
                     <div class="selector">
                         <h3>Solar Panels</h3>
                         <img id="panel-image" src="" alt="Solar Panels">
-                        <select id="panel-select">
-                            <!-- Options will be populated by JavaScript -->
-                        </select>
+                        <select id="panel-select"></select>
                     </div>
                 </div>
-                <!-- Specifications -->
-                <div class="specifications">
-                    <h3>Specifications</h3>
-                    <div class="specs">
-                        <div id="inverter-specs">
-                            <p><strong>Power Output:</strong> <span id="inverter-power">0 kW</span></p>
-                            <p><strong>Efficiency:</strong> <span id="inverter-efficiency">0%</span></p>
-                        </div>
-                        <div id="panel-specs">
-                            <p><strong>Power Output:</strong> <span id="panel-power">0 W</span></p>
-                            <p><strong>Efficiency:</strong> <span id="panel-efficiency">0%</span></p>
-                        </div>
+
+                                <!-- Specifications -->
+                                <div class="specifications">
+                                    <h3>Specifications</h3>
+                                    <div class="specs">
+                                        <div id="inverter-specs">
+                                            <h3>Inverter</h3>
+                                            <p><strong>Power Output:</strong> <span id="inverter-power">0 kW</span></p>
+                                            <p><strong>Efficiency:</strong> <span id="inverter-efficiency">0%</span></p>
+                                        </div>
+                                        <div id="panel-specs">
+                                            <h3>Solar Panel</h3>
+                                            <p><strong>Power Output:</strong> <span id="panel-power">0 W</span></p>
+                                            <p><strong>Efficiency:</strong> <span id="panel-efficiency">0%</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                <!-- System Size Selector -->
+                <div class="system-size-container">
+                    <div class="selector system-size-selector">
+                        <h3>System Size</h3>
+                        <img id="system-size-image" src="https://i.pinimg.com/564x/44/c7/a6/44c7a6dbb9e1895d2c6b06691a575748.jpg" alt="System Size">
+                        <select id="system-size-select"></select>
                     </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <p><small><b>Calculations are based on Perth, Australia, known for its sunny climate.</b>
+                    <br>*Sunny Days: Statistically on average Perth gets:
+                    <br>- 147 completely sunny days
+                    <br>- 139 partly cloudy days (some sun but not fully clear)
+                    <br>- 79 mostly cloudy/overcast days (little to no sun)
+                    <br>*Wintery Days: Perth’s winter (June–August) has about 60-70 rainy days per year in total.
+                    <br>Summer in Perth, WA, lasts from December to February (can extend to March-April).
+                    <br>Drop your bill up to 50% when running air-con, pool pumps etc during the day.
+                    <br>For best savings, have your solar system facing West due to higher tariff after 3pm. North-West offers good performance. South-facing = less.</small></p>
                 </div>
             </div>
 
-<!-- Right Container -->
-<div class="right-container">
-    <!-- Monthly Bill Costs -->
-    <div class="bill-costs">
-        <h3>Monthly Bill Costs (Synergy etc)</h3>
-        <input type="range" id="bill-slider" min="0" max="2000" value="500">
-        <span id="bill-amount">$500</span>
-    </div>
-    
-    <!-- Savings -->
-    <div class="savings">
-        <h3>Savings</h3>
-        <div id="savings-details">
-            <p>CO2 Saved: <span id="co2-saved">0</span> kg</p>
-            <p>Trees Saved: <span id="trees-saved">0</span> 
-                <img src="https://cdn-icons-png.flaticon.com/512/489/489969.png" alt="Tree Icon" class="tree-icon">
-            </p>
-        </div>
-        <select id="years-select">
-            <!-- Options will be populated by JavaScript -->
-        </select>
-        <div id="total-saved">
-            <p>Total Saved: <span id="total-amount">$0</span></p>
-        </div>
-    </div>
+            <!-- Right Container -->
+            <div class="right-container">
+                <!-- New Bill Analysis Section -->
+                <div class="bill-analysis">
+                    <p>Based on your monthly bill of $<span id="monthly-bill-amount">200</span>AUD,
+                    <br>Annual electricity bill is: $<span id="annual-bill">2400</span>
+                    <br>Total emissions for electricity consumption: <span id="co2-emissions">3.4</span> tonnes CO₂</p>
+                </div>
 
-    <!-- Production Grid (Inside Right Container) -->
-    <div class="production-grid">
-        <div class="grid-item">
-            <img src="https://e7.pngegg.com/pngimages/487/562/png-clipart-sun-logo-sunlight-thumbnail.png" alt="Summer">
-            <h3>Summer</h3>
-            <div id="summer-production">
-                <p>Daily: <span id="summer-daily">0</span> kW</p>
-                <p>Yearly: <span id="summer-yearly">0</span> kW</p>
-            </div>
-        </div>
-        <div class="grid-item">
-            <img src="https://png.pngtree.com/element_our/20190528/ourmid/pngtree-cartoon-snowflake-icon-download-image_1147140.jpg" alt="Winter">
-            <h3>Winter</h3>
-            <div id="winter-production">
-                <p>Daily: <span id="winter-daily">0</span> kW</p>
-                <p>Yearly: <span id="winter-yearly">0</span> kW</p>
+                <!-- Monthly Bill Costs -->
+                <div class="bill-costs">
+                    <h3>Monthly Bill Costs (Synergy etc)</h3>
+                    <input type="range" id="bill-slider" min="0" max="2000" value="200">
+                    <span id="bill-amount">$200</span>
+                </div>
+
+                <!-- Savings -->
+                <div class="savings">
+                    <h3>←Savings with selected solar package</h3>
+                    <div class="savings-content">
+                        <div class="years-total">
+                            <select id="years-select"></select>
+                            <div id="total-saved" class="total-display">
+                                <p><strong>Total Saved:</strong> <span id="total-amount">$0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Production Grid -->
+                <div class="production-grid">
+                    <h3>Production</h3>
+                    <div class="grid-items">
+                        <div class="grid-item">
+                            <img src="https://e7.pngegg.com/pngimages/487/562/png-clipart-sun-logo-sunlight-thumbnail.png" alt="Summer">
+                            <h3>Summer</h3>
+                            <div id="summer-production">
+                                <p>Daily: <span id="summer-daily">0 kWh</span></p>
+                            </div>
+                        </div>
+                        <div class="grid-item">
+                            <img src="https://png.pngtree.com/element_our/20190528/ourmid/pngtree-cartoon-snowflake-icon-download-image_1147140.jpg" alt="Winter">
+                            <h3>Winter</h3>
+                            <div id="winter-production">
+                                <p>Daily: <span id="winter-daily">0 kWh</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Yearly Total -->
+                <div class="combined-yearly-total">
+                    <h3><b>Combined Yearly Total:</b></h3>
+                    <div class="total-display">
+                        <span id="combined-yearly-total">0 kWh</span>
+                    </div>
+                </div>
+
+                <!-- CO2 and Trees Saved -->
+                <div class="co2-trees-saved">
+                    <p><b>CO₂ Saved:</b> <span id="co2-saved">0</span> kg</p>
+                    <p><b>Trees Saved:</b> <span id="trees-saved">0</span> 
+                        <img src="https://cdn-icons-png.flaticon.com/512/489/489969.png" alt="Tree Icon" class="tree-icon">
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <script src="solarCalculator.js"></script>
 </body>
 </html>
