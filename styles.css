@@ -312,27 +312,6 @@ nav {
     }
 }
 
-.link-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.link-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    text-decoration: none;
-    border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.link-button:hover {
-    background-color: #0056b3;
-}
-
 
 /* About Section */
 #about {
@@ -662,7 +641,7 @@ nav {
 .solar-brand-card {
     width: calc(100% - 20px); /* Full width minus margin */
     max-width: 240px; /* Set a max width for larger screens */
-    height: 100px;
+    height: 180px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -1412,6 +1391,7 @@ footer {
     padding: 15px;
   }
 }
+
 
 /* Contact Form */
 #contact form {
