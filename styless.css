@@ -6,6 +6,302 @@ body {
     padding: 0;
 }
 
+/* Navigation Bar */
+nav {
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+    padding: 1.8rem 1rem; /* Slightly higher nav bar */
+    display: flex;
+    justify-content: center; /* Center the nav-links */
+    align-items: center; /* Ensure vertical alignment */
+    position: relative; /* To keep logo in place */
+    z-index: 1000;
+}
+
+/* Ensure navbar links are aligned horizontally and centered */
+.nav-links {
+    list-style-type: none;
+    display: flex;
+    margin-left: 0; /* Reset margin to ensure dropdown works */
+    padding: 0; /* Remove any padding that might push items off-center */
+    align-items: center; /* Vertical alignment */
+}
+    
+
+/* Ensure the spacing between items is even */
+.nav-links li {
+    margin-left: 20px; /* Space between items */
+}
+
+/* Links style */
+.nav-links a {
+    color: #2c3e50;
+    text-decoration: none;
+    text-align: center !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    padding: 10px 15px; /* Padding for the button effect */
+    border-radius: 4px; /* Rounded corners for buttons */
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for button background */
+    display: inline-flex;
+    align-items: center; /* Align text inside the link vertically */
+}
+
+/* Hover effect for links */
+.nav-links a:hover {
+    color: #2980b9;
+    background-color: rgba(255, 255, 255, 0.4); /* More opaque background on hover */
+    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3); /* Subtle glow effect */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Mobile styling */
+@media screen and (max-width: 480px) {
+    nav {
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+    }
+
+    /* Stacking the navbar items vertically on mobile */
+    .nav-links {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center the items */
+    }
+
+    .nav-links li {
+        margin-left: 0; /* Reset the margin for stacking */
+        margin-bottom: 10px; /* Add space between items when stacked */
+    }
+}
+/* Floating Logo */
+.floating-logo {
+    position: fixed;
+    top: 10px; /* Push logo further into the corner */
+    left: 10px; /* Push logo further into the corner */
+    z-index: 1000;
+  }
+  
+  .floating-logo img {
+    width: auto;
+    height: 60px; /* Make logo slightly bigger */
+  }
+  
+
+.logo img {
+    width: auto;
+    height: 50px; /* Adjust based on your image size */
+    position: absolute; /* Position the logo on the left */
+    left: 1rem;
+}
+
+.logo {
+    /* If you want the logo to stay on the left, you can use absolute positioning */
+    position: absolute;
+    left: 1rem;
+    display: none;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+
+/* Dropdown Container */
+.dropdown {
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center dropdown button */
+}
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    width: 150px; /* Keep consistent with dropdown content */
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 150px; /* Match the width of the button */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    text-align: center;
+    top: 100%; /* Position it directly below the button */
+    left: 0; /* Align with the left edge of the parent */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 150px; /* Set width of the dropdown content */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    text-align: center;
+}
+
+.dropbtn:hover, .nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Ensure dropdown shows on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: #2c3e50;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #c5e6d1; /* Even lighter green for hover */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown.active .dropdown-content {
+    display: block;}
+
+    /* Mobile Version for screens with width 430px */
+@media screen and (max-width: 430px) {
+    .dropbtn {
+        width: 120px; /* Slightly smaller width for mobile */
+        padding: 12px;
+    }
+
+    .dropdown-content {
+        min-width: 120px; /* Make dropdown content narrower */
+    }
+}
+
+/* Mobile Version for screens with width 780px */
+@media screen and (max-width: 780px) {
+    .dropbtn {
+        width: 130px; /* Adjust button size for mid-sized screens */
+        padding: 14px;
+    }
+
+    .dropdown-content {
+        min-width: 130px; /* Adjust dropdown content width */
+    }
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+    position: absolute;
+    top: 5rem;
+    right: 5rem;
+    width: 5rem;
+    height: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 1500;
+    transition: transform 650ms ease-out;
+    display: none; /* Keep your original display: none */
+}
+
+.menu-toggle.open {
+    transform: rotate(-45deg);
+}
+
+.menu-toggle .bar {
+    background: linear-gradient(to right, #45f0ee, #22d36f);
+    width: 100%;
+    padding: 5px;
+    height: 4px;
+    border-radius: 0.8rem;
+}
+
+.menu-toggle .bar.half {
+    width: 50%;
+}
+
+.menu-toggle .bar.start {
+    transform-origin: right;
+    transition: transform 650ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+}
+
+.menu-toggle.open .bar.start {
+    transform: rotate(-450deg) translateX(0.7rem);
+}
+
+.menu-toggle .bar.end {
+    align-self: flex-end;
+    transform-origin: left;
+    transition: transform 650ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+  }
+
+.menu-toggle.open .bar.end {
+    transform: rotate(-450deg) translateX(-0.7rem);
+}
+
+@media screen and (max-width: 768px) {
+
+    nav {
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute; /* Position over the nav */
+        top: 70px; /* Adjust based on your nav height */
+        left: 0;
+        background-color: #e9f7ef;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        text-align: center;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .dropdown-content {
+        position: static; /* Keep dropdown below on mobile */
+    }
+
+    .menu-toggle {
+    display: flex; /* Show the burger menu icon */
+    position: absolute; /* Position burger menu over the nav */
+    right: 1rem; /* Adjust as needed */
+    top: 0.5rem;
+    right: 2rem;
+    width: 5rem;
+    height: 4.2rem; /* how close the 50% lines meet*/
+    padding: 12px;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 1500;
+    transition: transform 650ms ease-out;
+    }
+}
+
 /* Main Container */
 .solar-savings-container {
     max-width: 1320px;
@@ -18,9 +314,9 @@ body {
 
 /* Headings */
 h1, h3 {
+    font-family: 'Roboto Slab', serif;
     text-align: center;
     color: #333;
-    font-family: "Playfair Display SC", serif;
 }
 
 /* Flexbox Layout for Main Sections */
@@ -214,7 +510,7 @@ select:hover {
 }
 
 #total-saved {
-    background: #4CAF50;
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
     border-radius: 10px;
     color: white;
     padding: 10px;
@@ -312,7 +608,7 @@ select:hover {
 .combined-yearly-total {
     text-align: center;
     padding: 20px;
-    background: #4CAF50;
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
     border-radius: 10px;
     color: white;
 }
