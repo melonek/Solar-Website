@@ -703,6 +703,7 @@ nav {
 /* Sections */
 .section {
     margin: 1rem auto;
+    padding: 10px;
     max-width: 1400px;
     background: white;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -1139,7 +1140,6 @@ nav {
     align-items: center;
     margin-top: 30px;
     margin-bottom: 20px;
-    margin-left: 50px;
     
 }
 
@@ -1156,6 +1156,44 @@ nav {
     display: inline-block;
     text-align: center;
 }
+
+/* Hover Effect for Buttons */
+.fancy-button:hover, .link-button:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
+    transform: translateY(-2px); /* Slight upward movement */
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
+}
+
+
+/* For screens 780px and below */
+@media (max-width: 780px) {
+    .button-container {
+        gap: 15px; /* Decrease space between buttons */
+        margin-top: 20px; /* Reduce gap above buttons */
+        padding: 20px;
+    }
+
+    .fancy-button, .link-button {
+        padding: 0.8rem 1.5rem; /* Adjust button padding */
+        font-size: 1rem; /* Reduce font size */
+    }
+}
+
+/* For screens 430px and below */
+@media (max-width: 430px) {
+    .button-container {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px; /* Decrease space between buttons further */
+    }
+
+    .fancy-button, .link-button {
+        padding: 0.8rem 1.2rem; /* Adjust button padding further */
+        font-size: 0.9rem; /* Adjust font size for smaller screens */
+        width: 100%; /* Make buttons full width on small screens */
+    }
+}
+
+
  /* Adjusts to screen height */
   .product-card:hover img {
     transform: scale(1.05);
