@@ -686,7 +686,7 @@ nav {
 
 
     @media (max-width: 480px){
-        .solar-brand-card.actove {
+        .solar-brand-card.active {
             width: 100%;
         }
     }
