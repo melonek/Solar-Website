@@ -651,7 +651,7 @@ nav {
 /* Solar Brands Section */
 #solar-logo-cards-container {
     padding: 0;
-    margin-top: -35px;
+    margin-top: -5px;
     justify-content: center;
     text-align: center;
 }
@@ -661,7 +661,7 @@ nav {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    padding: 20px 0;
+    padding: 10px 0;
     width: 100%;
     max-width: 1600px;
 }
