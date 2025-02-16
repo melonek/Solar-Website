@@ -511,6 +511,17 @@ nav {
     .about-text {
         font-size: 0.9rem; /* Even smaller text for very small devices */
     }
+
+    .about-images {
+        flex-direction: column; /* Stack images vertically */
+        width: 100%; /* Ensure the image container is full-width */
+    }
+
+    .about-image {
+        width: 100%; /* Make each image 100% width of the container */
+        margin-bottom: 15px; /* Add space between stacked images */
+        min-height: auto; /* Let height adjust based on image aspect ratio */
+    }
 }
 
 /* About Images */
@@ -567,6 +578,7 @@ nav {
         margin-bottom: 15px; /* Add space between stacked images */
     }
 }
+
 
 
 
