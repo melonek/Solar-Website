@@ -18,63 +18,40 @@ function preloadImages(images) {
 }
 
 
-// JavaScript
-const IMAGE_WIDTH = 1000;
-const IMAGE_HEIGHT = 500;
-let currentScale = 1;
+// SIMPLE PARALLAX SCRIPT
+document.addEventListener('DOMContentLoaded', () => {
+  const heroSection = document.querySelector('.hero-section');
+  const heroImage = document.querySelector('.hero-image img');
+  let lastScroll = 0;
 
-function initParallax() {
-    const heroSection = document.querySelector('.hero-section');
-    const heroImage = heroSection.querySelector('.hero-image img');
-    
-    // Wait for image load
-    if (!heroImage.complete) {
-        heroImage.onload = initParallax;
-        return;
-    }
+  function updateParallax() {
+      const scrollY = window.scrollY;
+      const sectionTop = heroSection.offsetTop;
+      const sectionHeight = heroSection.clientHeight;
+      
+      // Only animate when section is visible
+      if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
 
-    // Initial scale calculation
-    currentScale = calculateScale(heroSection);
-    applyTransform(0, heroSection, heroImage);
+      // Calculate parallax movement (25% of scroll distance)
+      const progress = (scrollY - sectionTop) / sectionHeight;
+      const parallaxY = progress * sectionHeight * 0.25;
 
-    window.addEventListener('resize', () => {
-        currentScale = calculateScale(heroSection);
-        applyTransform(window.scrollY, heroSection, heroImage);
-    });
+      // Apply transform with hardware acceleration
+      heroImage.style.transform = `
+          translate3d(-50%, calc(-50% + ${parallaxY}px), 0)
+      `;
 
-    window.addEventListener('scroll', () => {
-        requestAnimationFrame(() => {
-            applyTransform(window.scrollY, heroSection, heroImage);
-        });
-    });
-}
+      requestAnimationFrame(updateParallax);
+  }
 
-function calculateScale(section) {
-    const viewportRatio = window.innerWidth / window.innerHeight;
-    const imageRatio = IMAGE_WIDTH / IMAGE_HEIGHT;
-    
-    return imageRatio > viewportRatio 
-        ? section.clientHeight / IMAGE_HEIGHT 
-        : section.clientWidth / IMAGE_WIDTH;
-}
-
-function applyTransform(scrollY, section, image) {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    const scrollProgress = Math.min(1, Math.max(0, (scrollY - sectionTop) / sectionHeight));
-    
-    // Parallax movement (25% of scroll progress)
-    const parallaxOffset = scrollProgress * sectionHeight * 0.25;
-    
-    // Apply transforms
-    image.style.transform = `
-        translate(-50%, calc(-50% + ${parallaxOffset}px))
-        scale(${currentScale * 1.05})
-    `;
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', initParallax);
+  // Optimized scroll handler
+  window.addEventListener('scroll', () => {
+      if (Math.abs(window.scrollY - lastScroll) > 2) {
+          requestAnimationFrame(updateParallax);
+          lastScroll = window.scrollY;
+      }
+  });
+});
 
 //Navigation Dropdown menu/sumbenu//
 
