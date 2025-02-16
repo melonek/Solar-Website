@@ -420,9 +420,10 @@ nav {
 /* Hero Section */
 .hero-section {
     position: relative;
-    height: 100vh;
     width: 100%;
+    height: 100vh;
     overflow: hidden;
+    isolation: isolate;
 }
 
 .hero-image {
@@ -432,18 +433,18 @@ nav {
     width: 100%;
     height: 100%;
     z-index: 1;
-    transform: translate3d(0,0,0); /* Mobile fix */
 }
 
 .hero-image img {
     position: absolute;
     top: 50%;
     left: 50%;
+    transform: translate(-50%, -50%);
     min-width: 100%;
     min-height: 100%;
     object-fit: cover;
-    transform: translate(-50%, -50%);
-    will-change: transform; /* Optimize animation */
+    transition: transform 0.3s ease-out;
+    will-change: transform;
 }
 
 /* Text Container - Responsive Boundaries */
@@ -455,11 +456,13 @@ nav {
     z-index: 2;
     width: 100%;
     max-width: 1200px;
+    padding: 20px;
     text-align: center;
     color: white;
-    padding: 20px;
+    --title-size: clamp(3.5rem, 8vw, 6rem);        /* 56-96px */
+    --subtitle-size: clamp(1.8rem, 4vw, 2.5rem);   /* 28-40px */
+    --spacing: 0.8rem;                             /* Space between elements */
 }
-
 
 /* Vertical centering adjustment */
 .hero-content {
@@ -477,16 +480,20 @@ nav {
 }
 
 /* Text Styling - Responsive & Visible */
-.main-title {
-    font-size: clamp(3rem, 8vw, 5rem);
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+.subtitle {
+    font-size: var(--subtitle-size);
+    margin: calc(var(--spacing) * 0.5) 0;
+    font-weight: 300;
+    letter-spacing: 1.2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.subtitle {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    margin: 0.5rem 0;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+.main-title {
+    font-size: var(--title-size);
+    margin: 0 0 var(--spacing) 0;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 /* Optional: Background for Text */
