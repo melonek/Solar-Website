@@ -760,6 +760,7 @@ nav {
     background: #eff8f2;
     padding: 1rem;
     border-radius: 8px;
+    width: 100%;
 }
 
 .inverters-grid {
@@ -767,6 +768,7 @@ nav {
     background: #e9eff3;
     padding: 1rem;
     border-radius: 8px;
+    width: 100%;
 }
 
 /* Match h2 colors to borders */
@@ -1129,7 +1131,6 @@ nav {
   }
   
 
-  /* Center the button and apply the gradient */
 
   .service-category {
     display: flex;
@@ -1149,7 +1150,7 @@ nav {
     
 }
 
-.fancy-button, .link-button {
+.fancy-button {
     background: linear-gradient(90deg, #163530, #90b9a7, #163530);
     color: white;
     padding: 1rem 2rem;
@@ -1161,10 +1162,12 @@ nav {
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    width: auto; /* Prevents the button from stretching to max width */
+    margin: 0 auto; /* Center the button if needed */
 }
 
 /* Hover Effect for Buttons */
-.fancy-button:hover, .link-button:hover {
+.fancy-button:hover {
     background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
     transform: translateY(-2px); /* Slight upward movement */
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
@@ -1179,7 +1182,7 @@ nav {
         padding: 20px;
     }
 
-    .fancy-button, .link-button {
+    .fancy-button {
         padding: 0.8rem 1.5rem; /* Adjust button padding */
         font-size: 1rem; /* Reduce font size */
     }
@@ -1195,8 +1198,75 @@ nav {
     .fancy-button, .link-button {
         padding: 0.8rem 1.2rem; /* Adjust button padding further */
         font-size: 0.9rem; /* Adjust font size for smaller screens */
-        width: 100%; /* Make buttons full width on small screens */
     }
+}
+
+ /* Send Button Styling */
+ #send-button {
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: auto; /* Prevents the button from stretching to max width */
+    margin: 0 auto; /* Center the button if needed */
+ }
+
+ /*The button "That's correct"*/
+/* Confirm Selection Button - Matching Fancy Button */
+#confirm-selection {
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: auto; /* Prevents the button from stretching to max width */
+    margin: 20px auto 0; /* Adds margin-top to move it down and keeps the horizontal centering */
+    text-align: center; /* Ensures text is centered within the button */
+}
+
+/* Optional: Adjust the button when hovering */
+#confirm-selection:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+
+#confirm-selection:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Keeps hover effect */
+}
+
+/*Enquire button*/
+
+#enquire-button {
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: auto; /* Prevents the button from stretching to max width */
+    margin: 0 auto; /* Center the button if needed */
 }
 
 
@@ -1280,27 +1350,6 @@ nav {
         position: absolute;
         padding-left: 0;
     }
-}
-
-/*The button "That's correct"*/
-/* Confirm Selection Button - Matching Fancy Button */
-#confirm-selection {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530); /* Same gradient */
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    align-self: center;
-    margin-top: 20px; /* Keeps spacing */
-}
-
-#confirm-selection:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Keeps hover effect */
 }
 
 /* FAQ Styling */
@@ -1480,25 +1529,6 @@ footer {
   #contact select:focus {
     outline: none;
     border-color: #3498db;
-  }
-  
-  /* Button Styling */
-  #contact button[type="submit"] {
-    background: linear-gradient(to right, #327c66, #528b6f, #327c66);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    align-self: center; /* To center the button within the form */
-  }
-  
-  #contact button[type="submit"]:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
   }
   
   /* Responsive adjustments */
@@ -1793,9 +1823,5 @@ footer {
 
     .service-category h2 {
         font-size: 1.2em;
-    }
-
-    form input, form textarea, button[type="submit"] {
-        max-width: 100%;
     }
 }
