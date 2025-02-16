@@ -500,6 +500,33 @@ nav {
     }
 }
 
+.link-container {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 50px;
+  }
+  
+  .link-button {
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none; /* Removes underline */
+    display: inline-block;
+    text-align: center;
+  }
+  
+  .link-button:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+  }
+  
+  
 
 /* Brands of Solar Panels */
 #brands {
@@ -623,9 +650,10 @@ nav {
 
 /* Solar Brands Section */
 #solar-logo-cards-container {
-    padding: 2rem;
-    margin: 1rem auto;
+    padding: 0;
+    margin-top: -35px;
     justify-content: center;
+    text-align: center;
 }
 
 .solar-brands-container {
@@ -648,30 +676,36 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px; /* Add padding inside the card */
-    margin: 0 10px; /* Add small margins */
+    padding: 10px;
+    margin: 0 10px;
+    opacity: 0;
     transition: all 0.5s ease, transform 0.3s ease;
 }
 
-.solar-brand-card img {
-    width: 100%; /* Image takes up the full width of its container */
-    height: auto; /* Maintain aspect ratio */
-    max-height: 100%; /* Ensure image does not exceed card height */
-    object-fit: contain; /* Keep image fully visible within its container */
-    opacity: 0.5; /* Default opacity */
-    transition: opacity 0.3s ease, transform 0.3s ease;
+.solar-brand-card.active {
+    opacity: 1;
 }
 
-/* Hover effect */
+.solar-brand-card img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
 .solar-brand-card:hover img {
-    opacity: 1;
     transform: scale(1.1);
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     .solar-brand-card {
         max-width: 180px;
         height: 130px;
+    }
+    .solar-brand-card.active {
+        opacity: 1;
     }
 }
 
@@ -680,17 +714,15 @@ nav {
         gap: 10px;
     }
     .solar-brand-card {
-        width: calc(50% - 20px); /* Two cards per row on smaller screens */
+        width: calc(50% - 20px);
         height: 100px;
     }
-
-
-    @media (max-width: 480px){
-        .solar-brand-card.active {
-            width: 100%;
-        }
+    .solar-brand-card.active {
+        opacity: 1;
+        width: 100%;
     }
 }
+
 
 
 /* Sections */
@@ -1126,8 +1158,6 @@ nav {
     }
   }
   
-  
-  
 
   /* Center the button and apply the gradient */
 .center-button {
@@ -1150,6 +1180,7 @@ nav {
   }
 
   .fancy-button:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
   }
@@ -1238,7 +1269,7 @@ nav {
 /*The button "That's correct"*/
 /* Confirm Selection Button - Matching Fancy Button */
 #confirm-selection {
-    background: linear-gradient(to right, #327c66, #528b6f, #327c66); /* Same gradient */
+    background: linear-gradient(90deg, #163530, #90b9a7, #163530); /* Same gradient */
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -1251,6 +1282,7 @@ nav {
 }
 
 #confirm-selection:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Keeps hover effect */
 }
@@ -1374,30 +1406,13 @@ footer {
   background-size: 10px 5px;
 }
 
-/* Button Styling */
-.fancy-button {
-    background: linear-gradient(to right, #327c66, #528b6f, #327c66);
-  color: white;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 25px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  align-self: center; /* To center the button within the form */
-}
-
-.fancy-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-}
-
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .package-form {
     padding: 15px;
   }
 }
+
 
 
 /* Contact Form */
@@ -1465,6 +1480,7 @@ footer {
   }
   
   #contact button[type="submit"]:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
   }
