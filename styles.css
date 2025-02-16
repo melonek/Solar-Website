@@ -333,16 +333,19 @@ nav {
 /* Hero Banner */
 .about-banner {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Ensure content starts from the top */
     background: url('./images/AboutUs/hero.jpg') center/cover no-repeat;
     color: white;
     text-align: center;
     padding: 4rem 2rem;
     margin-top: -42px;
     border-radius: 8px;
-    height: 40vh;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     background-size: cover; /* Ensure the background image stays contained */
     overflow: hidden; /* Prevent image from overflowing */
+    height: auto;
 }
 
 /* Background overlay for opacity */
@@ -358,7 +361,7 @@ nav {
     z-index: 1;
 }
 
-/* Banner Content */
+/* Adjust Banner Content */
 .banner-content {
     position: relative;
     display: flex;
@@ -404,7 +407,7 @@ nav {
 @media (max-width: 780px) {
     .about-banner {
         padding: 3rem 1.5rem;
-        height: 34vh;
+        min-height: 30vh; /* Allow the banner to shrink */
     }
 
     .banner-content {
@@ -432,7 +435,7 @@ nav {
 @media (max-width: 430px) {
     .about-banner {
         padding: 2.5rem 1rem;
-        height: 40vh;
+        min-height: 30vh; /* Allow the banner to shrink further */
     }
 
     .banner-content {
@@ -453,6 +456,14 @@ nav {
     }
 }
 
+/* About Section */
+#about {
+    max-width: 1400px;
+    margin: auto;
+    padding: 3rem 2rem;
+    overflow: hidden; /* Prevent content from overflowing */
+}
+
 /* About Content */
 .about-container {
     display: flex;
@@ -466,6 +477,7 @@ nav {
     overflow: hidden; /* Prevent content from overflowing */
 }
 
+/* About Text */
 .about-text {
     flex: 1;
     min-width: 300px;
@@ -482,38 +494,81 @@ nav {
     margin-bottom: 15px;
 }
 
+/* Adjust font size based on viewport */
+@media (max-width: 1024px) {
+    .about-text {
+        font-size: 1.1rem; /* Slightly smaller text for tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .about-text {
+        font-size: 1rem; /* Smaller text for smaller devices */
+    }
+}
+
+@media (max-width: 430px) {
+    .about-text {
+        font-size: 0.9rem; /* Even smaller text for very small devices */
+    }
+}
+
+/* About Images */
 .about-images {
-    flex: 1;
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-    overflow: hidden; /* Prevent images from overflowing */
+    overflow: hidden;
+    margin-top: 20px;
 }
 
 .about-image {
-    width: 48%;
+    width: 48%; /* Initially, make images 48% of the width */
     border-radius: 8px;
     object-fit: cover;
     min-height: 200px;
-    overflow: hidden; /* Ensure no overflow of image */
+    overflow: hidden;
+    transition: all 0.3s ease; /* Smooth transition for resizing */
 }
 
-/* Responsive Design */
-@media screen and (max-width: 768px) {
+/* For large screens, the images sit to the right of the text */
+@media (min-width: 768px) {
     .about-container {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row; /* Images and text side by side */
+    }
+
+    .about-text {
+        flex: 1; /* Text takes up available space */
     }
 
     .about-images {
-        flex-direction: column;
+        flex: 1; /* Images take up available space */
+        justify-content: flex-start; /* Align images to the left within their section */
     }
 
     .about-image {
-        width: 100%;
+        width: 48%; /* Keep the images next to each other */
     }
 }
+
+/* Stacking images on smaller devices */
+@media (max-width: 768px) {
+    .about-container {
+        flex-direction: column; /* Stack text and images */
+    }
+
+    .about-images {
+        flex-direction: column; /* Stack images vertically */
+    }
+
+    .about-image {
+        width: 100%; /* Images take full width on small screens */
+        margin-bottom: 15px; /* Add space between stacked images */
+    }
+}
+
+
 
   
   
