@@ -462,6 +462,7 @@ nav {
     margin: auto;
     padding: 3rem 2rem;
     overflow: hidden; /* Prevent content from overflowing */
+position: relative;
 }
 
 /* About Content */
