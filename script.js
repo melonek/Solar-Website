@@ -17,13 +17,64 @@ function preloadImages(images) {
   });
 }
 
-// Run the sliders when the page loads
-document.addEventListener('DOMContentLoaded', function () {
-  preloadImages(brandImages).then(() => {
-    initBrandSlider('#brands', '.brand-card');
-    initBrandSlider('#solar-logo-cards-container', '.solar-brand-card');
-  });
-});
+
+// JavaScript
+const IMAGE_WIDTH = 1000;
+const IMAGE_HEIGHT = 500;
+let currentScale = 1;
+
+function initParallax() {
+    const heroSection = document.querySelector('.hero-section');
+    const heroImage = heroSection.querySelector('.hero-image img');
+    
+    // Wait for image load
+    if (!heroImage.complete) {
+        heroImage.onload = initParallax;
+        return;
+    }
+
+    // Initial scale calculation
+    currentScale = calculateScale(heroSection);
+    applyTransform(0, heroSection, heroImage);
+
+    window.addEventListener('resize', () => {
+        currentScale = calculateScale(heroSection);
+        applyTransform(window.scrollY, heroSection, heroImage);
+    });
+
+    window.addEventListener('scroll', () => {
+        requestAnimationFrame(() => {
+            applyTransform(window.scrollY, heroSection, heroImage);
+        });
+    });
+}
+
+function calculateScale(section) {
+    const viewportRatio = window.innerWidth / window.innerHeight;
+    const imageRatio = IMAGE_WIDTH / IMAGE_HEIGHT;
+    
+    return imageRatio > viewportRatio 
+        ? section.clientHeight / IMAGE_HEIGHT 
+        : section.clientWidth / IMAGE_WIDTH;
+}
+
+function applyTransform(scrollY, section, image) {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    const scrollProgress = Math.min(1, Math.max(0, (scrollY - sectionTop) / sectionHeight));
+    
+    // Parallax movement (25% of scroll progress)
+    const parallaxOffset = scrollProgress * sectionHeight * 0.25;
+    
+    // Apply transforms
+    image.style.transform = `
+        translate(-50%, calc(-50% + ${parallaxOffset}px))
+        scale(${currentScale * 1.05})
+    `;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', initParallax);
 
 //Navigation Dropdown menu/sumbenu//
 
