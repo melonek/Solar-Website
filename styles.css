@@ -500,31 +500,6 @@ nav {
     }
 }
 
-.link-container {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 50px;
-  }
-  
-  .link-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none; /* Removes underline */
-    display: inline-block;
-    text-align: center;
-  }
-  
-  .link-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-  }
   
   
 
@@ -727,7 +702,6 @@ nav {
 
 /* Sections */
 .section {
-    padding: 2rem;
     margin: 1rem auto;
     max-width: 1400px;
     background: white;
@@ -742,7 +716,6 @@ nav {
     font-size: 2.5em;
     font-weight: 700; /* Bold weight for emphasis */
     color: #2c3e50;
-    margin-bottom: 20px;
 }
 
 /* Subcategories for Panel and Inverters*/
@@ -772,16 +745,6 @@ nav {
     .service-category h2 {
         font-size: 1.2em;
     }
-}
-
-/* ======= SECTION & SERVICE CATEGORY ======= */
-.section {
-    text-align: center;
-    padding: 2rem 0;
-}
-
-.service-category {
-    margin-bottom: 2rem;
 }
 
 /* ======= PANELS & INVERTERS STYLING ======= */
@@ -1160,14 +1123,27 @@ nav {
   
 
   /* Center the button and apply the gradient */
-.center-button {
+
+  .service-category {
     display: flex;
-    justify-content: center;
-    margin-top: 30px; /* Space from the heading */
-    margin-bottom: 30px; /* Space from the heading */
-  }
-  
-  .fancy-button {
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    justify-content: center; /* Centers content vertically */
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px; /* Space between buttons */
+    justify-content: center; /* Centers buttons horizontally */
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 50px;
+    
+}
+
+.fancy-button, .link-button {
     background: linear-gradient(90deg, #163530, #90b9a7, #163530);
     color: white;
     padding: 1rem 2rem;
@@ -1176,15 +1152,11 @@ nav {
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none; /* Remove underline from anchor tag */
-  }
-
-  .fancy-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-  }
-  
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+ /* Adjusts to screen height */
   .product-card:hover img {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
