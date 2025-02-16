@@ -28,7 +28,7 @@ body {
 /* Navigation Bar */
 nav {
     background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    padding: 1.8rem 1rem; /* Slightly higher nav bar */
+    padding: 1.2rem 1rem; /* Slightly higher nav bar */
     display: flex;
     justify-content: center; /* Center the nav-links */
     align-items: center; /* Ensure vertical alignment */
@@ -73,25 +73,87 @@ nav {
     transform: translateY(-2px); /* Slight lift effect */
 }
 
-/* Mobile styling */
-@media screen and (max-width: 480px) {
+/* Gradual navbar element scaling below 1080px */
+@media screen and (max-width: 1080px) {
     nav {
-        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+        background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+        padding: 1.5rem 1rem; /* Slightly higher nav bar */
+        display: flex;
+        justify-content: center; /* Center the nav-links */
+        align-items: center; /* Ensure vertical alignment */
+        position: relative; /* To keep logo in place */
+        z-index: 1000;
     }
-
-    /* Stacking the navbar items vertically on mobile */
-    .nav-links {
-        flex-direction: column; /* Stack items vertically */
-        align-items: center; /* Center the items */
+    .nav-links a {
+        font-size: 0.9rem; /* Slightly smaller font */
+        padding: 9px 14px; /* Reduce padding to keep elements fitting */
     }
 
     .nav-links li {
-        margin-left: 0; /* Reset the margin for stacking */
-        margin-bottom: 10px; /* Add space between items when stacked */
+        margin-left: 8px; /* Reduce space between items */
     }
 }
 
+@media screen and (max-width: 1000px) {
+    nav {
+        background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+        padding: 1.2rem 1rem; /* Slightly higher nav bar */
+        display: flex;
+        justify-content: center; /* Center the nav-links */
+        align-items: center; /* Ensure vertical alignment */
+        position: relative; /* To keep logo in place */
+        z-index: 1000;
+    }
+    .nav-links a {
+        font-size: 0.85rem;
+        padding: 7px 10px;
+    }
+}
+
+@media screen and (max-width: 922px) {
+    nav {
+        background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+        padding: 1.5rem 1rem; /* Slightly higher nav bar */
+        display: flex;
+        justify-content: center; /* Center the nav-links */
+        align-items: center; /* Ensure vertical alignment */
+        position: relative; /* To keep logo in place */
+        z-index: 1000;
+    }
+    .nav-links a {
+        font-size: 0.8rem;
+        padding: 6px 9px;
+    }
+}
+
+@media screen and (max-width: 880px) {
+    nav {
+        background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+        padding: 1.5rem 1rem; /* Slightly higher nav bar */
+        display: flex;
+        justify-content: center; /* Center the nav-links */
+        align-items: center; /* Ensure vertical alignment */
+        position: relative; /* To keep logo in place */
+        z-index: 1000;
+    }
+    .nav-links a {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+    }
+}
+
+/* At ~760px, the toggle menu activates, and normal links disappear */
+
 @media screen and (max-width: 768px) {
+    nav {
+        background: linear-gradient(90deg, #163530, #90b9a7, #163530);
+        padding: 1.2rem 1rem; /* Slightly higher nav bar */
+        display: flex;
+        justify-content: center; /* Center the nav-links */
+        align-items: center; /* Ensure vertical alignment */
+        position: relative; /* To keep logo in place */
+        z-index: 1000;
+    }
 
     nav {
         padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
@@ -115,6 +177,24 @@ nav {
         text-align: center;
         width: 100%;
         margin: 10px 0;
+    }
+}
+
+/* Mobile styling */
+@media screen and (max-width: 480px) {
+    nav {
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+    }
+
+    /* Stacking the navbar items vertically on mobile */
+    .nav-links {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center the items */
+    }
+
+    .nav-links li {
+        margin-left: 0; /* Reset the margin for stacking */
+        margin-bottom: 10px; /* Add space between items when stacked */
     }
 }
 
