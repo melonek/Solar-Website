@@ -48,7 +48,7 @@ nav {
 
 /* Ensure the spacing between items is even */
 .nav-links li {
-    margin-left: 20px; /* Space between items */
+    margin-left: 10px; /* Space between items */
 }
 
 /* Links style */
@@ -90,6 +90,34 @@ nav {
         margin-bottom: 10px; /* Add space between items when stacked */
     }
 }
+
+@media screen and (max-width: 768px) {
+
+    nav {
+        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute; /* Position over the nav */
+        top: 70px; /* Adjust based on your nav height */
+        left: 0;
+        background-color: #e9f7ef;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        text-align: center;
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
 /* Floating Logo */
 .floating-logo {
     position: fixed;
@@ -220,6 +248,14 @@ nav {
 
     .dropdown-content {
         min-width: 130px; /* Adjust dropdown content width */
+        position: static; /* Keep dropdown below on mobile */
+        padding-left: 0;
+    }
+
+    /* Desktop styles */
+
+    .dropdown:hover .dropdown-content {
+        display: block;
     }
 }
 
@@ -275,35 +311,6 @@ nav {
 }
 
 @media screen and (max-width: 768px) {
-
-    nav {
-        padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
-    }
-
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        position: absolute; /* Position over the nav */
-        top: 70px; /* Adjust based on your nav height */
-        left: 0;
-        background-color: #e9f7ef;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-links li {
-        text-align: center;
-        width: 100%;
-        margin: 10px 0;
-    }
-
-    .dropdown-content {
-        position: static; /* Keep dropdown below on mobile */
-    }
-
     .menu-toggle {
     display: flex; /* Show the burger menu icon */
     position: absolute; /* Position burger menu over the nav */
@@ -579,11 +586,6 @@ position: relative;
         margin-bottom: 15px; /* Add space between stacked images */
     }
 }
-
-
-
-
-  
   
 
 /* Brands of Solar Panels */
@@ -1295,6 +1297,12 @@ position: relative;
     margin: 0 auto; /* Center the button if needed */
  }
 
+#send-button:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
+    transform: translateY(-2px); /* Slight upward movement */
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
+}
+
  /*The button "That's correct"*/
 /* Confirm Selection Button - Matching Fancy Button */
 #confirm-selection {
@@ -1346,19 +1354,16 @@ position: relative;
     margin: 0 auto; /* Center the button if needed */
 }
 
+#enquire-button:hover {
+    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
+    transform: translateY(-2px); /* Slight upward movement */
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
+}
 
  /* Adjusts to screen height */
   .product-card:hover img {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-/* Mobile menu styles */
-.nav-links {
-    display: none;
-}
-.nav-links.active {
-    display: block;
 }
 
 /* Facebook */
@@ -1412,22 +1417,6 @@ position: relative;
     }
   }
 
-/* Desktop styles */
-@media (min-width: 769px) {
-    .nav-links {
-        display: flex !important;
-    }
-    .nav-links.open {
-        display: block; /* Or whatever makes it visible */
-    }
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-    .dropdown-content {
-        position: absolute;
-        padding-left: 0;
-    }
-}
 
 /* FAQ Styling */
 .faq-container {
@@ -1866,34 +1855,13 @@ footer {
     }
 }
 
+
 /* Responsive design */
 @media screen and (max-width: 768px) {
-    nav {
-        flex-direction: column;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
-    }
-
-    .nav-links li {
-        margin: 10px 0;
-    }
 
     .product {
         width: 100%;
     }
-
-    .dropdown-content {
-        position: static;
-    }
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
     .section h1 {
         font-size: 2em;
     }
