@@ -1,23 +1,3 @@
-// Function to preload images before they are used - for sliders in packages html and index.
-function preloadImages(images) {
-  return new Promise((resolve) => {
-    const promises = images.map(image => {
-      return new Promise((res, rej) => {
-        const img = new Image();
-        img.src = image.path;
-        img.onload = () => res(image.path);
-        img.onerror = () => {
-          console.error(`Failed to preload image: ${image.path}`);
-          rej(image.path);
-        };
-      });
-    });
-
-    Promise.all(promises).then(() => resolve()).catch(() => resolve());
-  });
-}
-
-
 // SIMPLE PARALLAX SCRIPT
 document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.querySelector('.hero-section');
@@ -52,6 +32,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
 });
+
+// Function to preload images before they are used - for sliders in packages html and index.
+function preloadImages(images) {
+  return new Promise((resolve) => {
+    const promises = images.map(image => {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.src = image.path;
+        img.onload = () => res(image.path);
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${image.path}`);
+          rej(image.path);
+        };
+      });
+    });
+
+    Promise.all(promises).then(() => resolve()).catch(() => resolve());
+  });
+}
 
 //Navigation Dropdown menu/sumbenu//
 
@@ -177,25 +176,25 @@ document.addEventListener('DOMContentLoaded', function() {
 // Updated brand images array with local paths (adjust the path as needed)
 
 const brandImages = [
-  { name: 'Trina', url: './images/BrandLogos/Trina-Solar.png' },
-  { name: 'SMA', url: './images/BrandLogos/SMA.png' },
-  { name: 'Canadian Solar', url: "./images/BrandLogos/Canadian-Solar.png" },
-  { name: 'DaSolar', url: "./images/BrandLogos/DaSolar.png" },
-  { name: 'Fronius', url: "./images/BrandLogos/Fronius.png" },
-  { name: 'Growatt', url: "./images/BrandLogos/Growatt.png" },
-  { name: 'Huawei/iStore', url: "./images/BrandLogos/Huawei.png" },
-  { name: 'JASolar', url: "./images/BrandLogos/JASolar.png" },
-  { name: 'Goodwe', url: "./images/BrandLogos/Goodwe.jpg" },
-  { name: 'Jinko', url: "./images/BrandLogos/Jinko.png" },
-  { name: 'Longi', url: "./images/BrandLogos/Longi.png" },
-  { name: 'Risen', url: "./images/BrandLogos/Risen-Solar.png" },
-  { name: 'Seraphim', url: "./images/BrandLogos/Seraphim.png" },
-  { name: 'Sofar', url: "./images/BrandLogos/Sofar.png" },
-  { name: 'SolarEdge', url: "./images/BrandLogos/Solar-Edge.png" },
-  { name: 'Solis', url: "./images/BrandLogos/Solis.png" },
-  { name: 'Sungrow', url: "./images/BrandLogos/Sungrow.png" },
-  { name: 'EgingPV', url: "./images/BrandLogos/EgingPV.png" },
-  { name: 'QCells', url: "./images/BrandLogos/QCells.png" }
+  { name: 'Trina', url: '/images/BrandLogos/Trina-Solar.png' },
+  { name: 'SMA', url: '/images/BrandLogos/SMA.png' },
+  { name: 'Canadian Solar', url: "/images/BrandLogos/Canadian-Solar.png" },
+  { name: 'DaSolar', url: "/images/BrandLogos/DaSolar.png" },
+  { name: 'Fronius', url: "/images/BrandLogos/Fronius.png" },
+  { name: 'Growatt', url: "/images/BrandLogos/Growatt.png" },
+  { name: 'Huawei/iStore', url: "/images/BrandLogos/Huawei.png" },
+  { name: 'JASolar', url: "/images/BrandLogos/JASolar.png" },
+  { name: 'Goodwe', url: "/images/BrandLogos/Goodwe.jpg" },
+  { name: 'Jinko', url: "/images/BrandLogos/Jinko.png" },
+  { name: 'Longi', url: "/images/BrandLogos/Longi.png" },
+  { name: 'Risen', url: "/images/BrandLogos/Risen-Solar.png" },
+  { name: 'Seraphim', url: "/images/BrandLogos/Seraphim.png" },
+  { name: 'Sofar', url: "/images/BrandLogos/Sofar.png" },
+  { name: 'SolarEdge', url: "/images/BrandLogos/Solar-Edge.png" },
+  { name: 'Solis', url: "/images/BrandLogos/Solis.png" },
+  { name: 'Sungrow', url: "/images/BrandLogos/Sungrow.png" },
+  { name: 'EgingPV', url: "/images/BrandLogos/EgingPV.png" },
+  { name: 'QCells', url: "/images/BrandLogos/QCells.png" }
 ];
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -274,7 +273,7 @@ const solarProducts = {
       country: "Canada",
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
-      image: "./images/Panels/Canadian-Solar-440-W.webp",
+      image: "/images/Panels/Canadian-Solar-440-W.webp",
       price: 250,
       popularity: 3,
       description: "Solar panel description goes here...",
@@ -287,7 +286,7 @@ const solarProducts = {
       country: "China",
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
-      image: "./images/Panels/Trina.webp",
+      image: "/images/Panels/Trina.webp",
       price: 260,
       popularity: 5,
       description: "Solar panel description goes here...",
@@ -302,7 +301,7 @@ const solarProducts = {
       country: "Austria",
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
-      image: "./images/Inverters/FroniusSymo.png",
+      image: "/images/Inverters/FroniusSymo.png",
       price: 1200,
       popularity: 4,
       description: "Inverter description goes here...",
@@ -315,7 +314,7 @@ const solarProducts = {
       country: "Germany",
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
-      image: "./images/Inverters/SMA.png",
+      image: "/images/Inverters/SMA.png",
       price: 1150,
       popularity: 2,
       description: "Inverter description goes here...",
