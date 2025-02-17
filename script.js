@@ -182,7 +182,7 @@ const brandImages = [
   { name: 'DaSolar', url: "/images/BrandLogos/DaSolar.png" },
   { name: 'Fronius', url: "/images/BrandLogos/Fronius.png" },
   { name: 'Growatt', url: "/images/BrandLogos/Growatt.png" },
-  { name: 'Huawei/iStore', url: "./images/BrandLogos/Huawei.png" },
+  { name: 'Huawei/iStore', url: "/images/BrandLogos/Huawei.png" },
   { name: 'JASolar', url: "/images/BrandLogos/JASolar.png" },
   { name: 'Goodwe', url: "/images/BrandLogos/Goodwe.jpg" },
   { name: 'Jinko', url: "/images/BrandLogos/Jinko.png" },
