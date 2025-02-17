@@ -49,7 +49,7 @@ nav {
     padding: 0; /* Remove any padding that might push items off-center */
     align-items: center; /* Vertical alignment */
 }
-    
+
 
 /* Ensure the spacing between items is even */
 .nav-links li {
@@ -164,26 +164,78 @@ nav {
         padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
     }
 
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        position: absolute; /* Position over the nav */
-        top: 70px; /* Adjust based on your nav height */
-        left: 0;
-        background-color: #e9f7ef;
-    }
+    @media screen and (max-width: 768px) {
+        .nav-links {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            top: 100%; /* Start right below navbar */
+            left: 0;
+            background: #e9f7ef;
+            padding: 1rem 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #e9f7ef, #ffffff);
+            box-shadow: 0 10px 30px rgba(144,185,167,0.3);
+            overflow: hidden;
+            position: absolute;
+            border-radius: 0 0 25px 25px;
+            transform-origin: top center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-    .nav-links.active {
-        display: flex;
+        .nav-links::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 20px;
+            width: 20px;
+            height: 20px;
+            background: #e9f7ef;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+            transition: all 0.3s ease;
+        }
+    
+        .nav-links.active {
+            display: flex;
+            animation: bubbleAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 0 0 25px 25px;
+        }
+    
+        .nav-links li {
+            margin: 0.8rem 0;
+        }
+    
+        .nav-links a {
+            font-size: clamp(1.1rem, 4vw, 1.5rem) !important; /* Larger text */
+            padding: 1rem 2rem !important;
+            background: transparent !important;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+    
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.8) !important;
+            transform: translateX(10px);
+        }
     }
-
-    .nav-links li {
-        text-align: center;
-        width: 100%;
-        margin: 10px 0;
+    @keyframes bubbleAppear {
+        0% {
+            transform: scaleY(0) translateY(-20px);
+            opacity: 0;
+            border-radius: 0 0 100px 100px;
+        }
+        50% {
+            transform: scaleY(1.1) translateY(5px);
+            border-radius: 0 0 50px 50px;
+        }
+        100% {
+            transform: scaleY(1) translateY(0);
+            opacity: 1;
+        }
     }
 }
+
+
 
 /* Mobile styling */
 @media screen and (max-width: 480px) {
@@ -321,6 +373,10 @@ nav {
 
     .dropdown-content {
         min-width: 120px; /* Make dropdown content narrower */
+        
+    }
+    .dropdown-content a:hover {
+        background-color: #c5e6d1; /* Even lighter green for hover */
     }
 }
 
@@ -332,17 +388,41 @@ nav {
     }
 
     .dropdown-content {
-        min-width: 130px; /* Adjust dropdown content width */
+        min-width: 250px; /* Adjust dropdown content width */
         position: static; /* Keep dropdown below on mobile */
         padding-left: 0;
+        display: none;
+        position: static;
+        background-color: #f9f9f9;
+        width: 100%; /* Make it full width */
+        text-align: left;
     }
+
+    .dropdown-content a {
+        color: #2c3e50;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        width: 100%; /* Ensures full-width coverage */
+        box-sizing: border-box; /* Includes padding in width calculation */
+    }
+
+    /* Ensure hover effect works */
+    .dropdown-content a:hover {
+        background-color: #c5e6d1 !important; /* Lighter green */
+        width: 100%; /* Ensures full-width hover effect */
+    }
+
 
     /* Desktop styles */
 
-    .dropdown:hover .dropdown-content {
+    .dropdown:hover .nav-links a:hover {
         display: block;
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
+        transform: translateY(-2px);
     }
-}
+    }
 
 /* Mobile Menu Toggle */
 .menu-toggle {
@@ -413,14 +493,6 @@ nav {
     }
 }
 
-
-/* About Section */
-#about {
-    max-width: 1400px;
-    margin: auto;
-    padding: 3rem 2rem;
-    overflow: hidden; /* Prevent content from overflowing */
-}
 
 /* Hero Section */
 .hero-section {
@@ -526,14 +598,7 @@ nav {
     }
 }
 
-/* About Section */
-#about {
-    max-width: 1400px;
-    margin: auto;
-    padding: 3rem 2rem;
-    position: relative;
-    box-sizing: border-box; /* Ensures padding doesn't affect the container size */
-}
+
 
 /* About Content */
 .about-container {
