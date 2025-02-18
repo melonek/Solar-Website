@@ -33,6 +33,89 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+// CARDS REVEAL BOUNCE EFFECT //
+function revealCards() {
+  const cards = document.querySelectorAll('.brand-card');
+  const triggerBottom = window.innerHeight * 0.9; // Trigger point (90% of viewport)
+
+  cards.forEach(card => {
+      const cardTop = card.getBoundingClientRect().top;
+
+      if (cardTop < triggerBottom) {
+          card.classList.add('active');
+      } else {
+          card.classList.remove('active');
+      }
+  });
+}
+
+// FANCY BUTTONS REVEAL EFFECT (JSLIDE FROM OPPOSITE DIRECTIONS)
+function revealButtons() {
+  const buttons = document.querySelectorAll('.fancy-button');
+  const triggerBottom = window.innerHeight * 0.8;
+  
+  buttons.forEach(button => {
+      const buttonTop = button.getBoundingClientRect().top;
+      if(buttonTop < triggerBottom) {
+          button.classList.add('revealed');
+      } else {
+          button.classList.remove('revealed');
+      }
+  });
+}
+
+// SERVICE SECTIONS REVEAL (LEFT/RIGHT/LEFT PATTERN)
+function revealServices() {
+  const services = document.querySelectorAll('.service-category');
+  const triggerBottom = window.innerHeight * 0.8;
+
+  services.forEach(service => {
+      const serviceTop = service.getBoundingClientRect().top;
+      if(serviceTop < triggerBottom) {
+          service.classList.add('active');
+          
+          // Reveal products with staggered delays
+          const products = service.querySelectorAll('.product');
+          products.forEach((product, index) => {
+              setTimeout(() => {
+                  product.classList.add('revealed');
+              }, index * 200); // 200ms stagger
+          });
+      }
+  });
+}
+
+// CARDS REVEAL BOUNCE EFFECT (BRAND CARDS)
+function revealCards() {
+  const cards = document.querySelectorAll('.brand-card');
+  const triggerBottom = window.innerHeight * 0.9;
+  
+  cards.forEach(card => {
+      const cardTop = card.getBoundingClientRect().top;
+      card.classList.toggle('active', cardTop < triggerBottom);
+  });
+}
+
+// OPTIMIZED SCROLL HANDLER
+let isScrolling;
+window.addEventListener('scroll', () => {
+  window.clearTimeout(isScrolling);
+  isScrolling = setTimeout(() => {
+      revealButtons();
+      revealServices();
+      revealCards();
+  }, 66); // Run at ~15fps
+});
+
+// INITIALIZE ON LOAD
+window.addEventListener('load', () => {
+  revealButtons();
+  revealServices();
+  revealCards();
+});
+
+
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {
   return new Promise((resolve) => {
