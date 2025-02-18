@@ -137,6 +137,19 @@ function revealButtons() {
       }
   });
 }
+//register the click immediately//
+document.querySelectorAll('.fancy-button').forEach(button => {
+  button.addEventListener('touchstart', function () {
+      this.click();
+  });
+});
+//If mobile browsers require a second tap due to JavaScript behavior
+document.querySelectorAll('.fancy-button').forEach(button => {
+  button.addEventListener('touchend', function (event) {
+      event.preventDefault(); // Prevent weird behaviors
+      window.location.href = this.getAttribute('href');
+  });
+});
 
 
 // REVEAL SERVICES SECTIONS
