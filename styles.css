@@ -501,8 +501,8 @@ nav {
 .hero-section {
     position: relative;
     height: 100vh;
-    width: 100%;
     overflow: hidden;
+    width: 100vw;
 }
 
 .hero-image {
