@@ -1451,6 +1451,7 @@ nav {
     display: flex;
     justify-content: center;
     gap: 15px; /* Space between buttons */
+    flex-wrap: wrap;
     margin: 2rem auto;
     max-width: 800px;
     gap: 8px; /* Reduced from 15px */
@@ -1529,6 +1530,12 @@ nav {
         margin-top: 20px; /* Reduce gap above buttons */
         padding: 20px;
     }
+
+.button-wrapper {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+    align-items: center;
+    padding: 0 10px; /* Less padding for small screens */
+}
 
     .fancy-button {
         padding: 0.8rem 1.5rem; /* Adjust button padding */
