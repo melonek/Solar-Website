@@ -1462,7 +1462,6 @@ nav {
     font-size: 1.1rem;
     transition: all 0.3s ease;
     position: relative;
-    text-align: center;
     width: auto; /* Prevents the button from stretching to max width */
     margin: 0 0; /* Center the button if needed */
     opacity: 0;
@@ -1472,11 +1471,11 @@ nav {
 
 }
 .fancy-button[data-reveal="left"] {
-    transform: translateX(-50px); /* Move left initially */
+  transform: translateX(-20px);
 }
 
 .fancy-button[data-reveal="right"] {
-    transform: translateX(50px); /* Opposite direction */
+  transform: translateX(20px);
 }
 
 @keyframes buttonGlow {
