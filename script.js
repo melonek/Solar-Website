@@ -50,13 +50,14 @@ function revealCards() {
   });
 }
 
-// FANCY BUTTONS REVEAL EFFECT (JSLIDE FROM OPPOSITE DIRECTIONS)
+// FANCY BUTTONS REVEAL EFFECT (JUST BELOW BRANDS) //
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button');
   const triggerBottom = window.innerHeight * 0.8;
   
   buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
+      
       if(buttonTop < triggerBottom) {
           button.classList.add('revealed');
       } else {
@@ -65,56 +66,48 @@ function revealButtons() {
   });
 }
 
-// SERVICE SECTIONS REVEAL (LEFT/RIGHT/LEFT PATTERN)
+// Initialize on load and scroll
+window.addEventListener('load', revealButtons);
+window.addEventListener('scroll', revealButtons);
+
+// Initial check on load
+window.addEventListener('load', revealCards);
+
+// Check on scroll
+window.addEventListener('scroll', revealCards);
+
+// REVEAL SERVICES SECTIONS (SOLAR PANELS, BATTERY STORAGE, EV CHARGERS)
 function revealServices() {
   const services = document.querySelectorAll('.service-category');
+  const products = document.querySelectorAll('.product');
   const triggerBottom = window.innerHeight * 0.8;
 
+  // Reveal service categories
   services.forEach(service => {
       const serviceTop = service.getBoundingClientRect().top;
       if(serviceTop < triggerBottom) {
           service.classList.add('active');
           
-          // Reveal products with staggered delays
-          const products = service.querySelectorAll('.product');
-          products.forEach((product, index) => {
-              setTimeout(() => {
-                  product.classList.add('revealed');
-              }, index * 200); // 200ms stagger
+          // Reveal products within active service
+          const productsInService = service.querySelectorAll('.product');
+          productsInService.forEach((product, index) => {
+              product.classList.add('revealed', `reveal-delay-${index + 1}`);
           });
+      }
+  });
+
+  // Reveal standalone products
+  products.forEach(product => {
+      const productTop = product.getBoundingClientRect().top;
+      if(productTop < triggerBottom) {
+          product.classList.add('revealed');
       }
   });
 }
 
-// CARDS REVEAL BOUNCE EFFECT (BRAND CARDS)
-function revealCards() {
-  const cards = document.querySelectorAll('.brand-card');
-  const triggerBottom = window.innerHeight * 0.9;
-  
-  cards.forEach(card => {
-      const cardTop = card.getBoundingClientRect().top;
-      card.classList.toggle('active', cardTop < triggerBottom);
-  });
-}
-
-// OPTIMIZED SCROLL HANDLER
-let isScrolling;
-window.addEventListener('scroll', () => {
-  window.clearTimeout(isScrolling);
-  isScrolling = setTimeout(() => {
-      revealButtons();
-      revealServices();
-      revealCards();
-  }, 66); // Run at ~15fps
-});
-
-// INITIALIZE ON LOAD
-window.addEventListener('load', () => {
-  revealButtons();
-  revealServices();
-  revealCards();
-});
-
+// Initialize
+window.addEventListener('load', revealServices);
+window.addEventListener('scroll', revealServices);
 
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {
