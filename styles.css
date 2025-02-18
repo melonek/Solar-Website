@@ -948,7 +948,6 @@ nav {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 8px;
     text-align: center;
-    overflow: hidden; /* Prevents child elements from overflowing */
 }
 
 /* Main Headings */
@@ -1397,7 +1396,6 @@ nav {
     opacity: 0;
     transform: translateX(-100px);
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    overflow: hidden; /* Prevents child elements from overflowing */
 }
 
 .service-category[data-reveal-direction="right"] {
@@ -1463,16 +1461,14 @@ nav {
     transform: translateX(-50px); /* Initial hidden state */
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden; /* Prevents child elements from overflowing */
+
+}
+.fancy-button[data-reveal="left"] {
+    transform: translateX(-50px); /* Move left initially */
 }
 
 .fancy-button[data-reveal="right"] {
     transform: translateX(50px); /* Opposite direction */
-}
-
-.fancy-button.revealed {
-    opacity: 1;
-    transform: translateX(0);
-    animation: buttonGlow 1.2s ease-out forwards;
 }
 
 @keyframes buttonGlow {
@@ -1487,9 +1483,10 @@ nav {
     }
 }
 
-/* Add transition delay for staggered effect */
-.fancy-button[data-reveal="right"] {
-    transform: translateX(50px);
+.fancy-button.revealed {
+    opacity: 1;
+    transform: translateX(0);
+    animation: buttonGlow 1.2s ease-out forwards;
 }
 
 /* Hover Effect for Buttons */
@@ -1617,15 +1614,34 @@ nav {
   .timeline-container {
     width: calc(50% - 10px); /* Half width minus some margin */
     margin-bottom: 20px;
+    flex: 1;
+    min-width: 300px;
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    perspective: 1000px;
+    overflow: visible !important;
   }
+
+  .fb-page-wrapper {
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-style: preserve-3d;
+    opacity: 0;
+    transform: rotateY(180deg) scale(0.8);
+}
+
+.fb-page-wrapper.revealed {
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
+}
   
   /* Styling for FB timelines */
   .fb-page {
-    height: 400px; /* Fixed height for two posts */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    height: 400px !important; /* Force height */
     width: 100%; /* Full width of its container */
   }
   
@@ -1635,6 +1651,10 @@ nav {
       width: 100%; /* Full width on smaller screens */
       margin-bottom: 20px; /* Space below each timeline */
     }
+
+    .timeline-wrapper {
+        flex-direction: column; /* Stack timelines vertically */
+    }
     
     .section h1 {
       font-size: 2em;
@@ -1643,6 +1663,16 @@ nav {
     .fb-page {
       height: 500px; /* Adjust the height for visibility */
     }
+
+    .fb-page-wrapper { 
+        transform: rotateY(180deg) scale(0.9); }
+
+        .fb-page-wrapper:not(.revealed) {
+            visibility: hidden;
+        }
+        
+    .fb-page { 
+        height: 500px !important; }
   }
   
   /* Responsive design for screens up to 440px wide */
@@ -1879,6 +1909,13 @@ footer {
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     padding: 0 10px;
+    transform: translateY(50px);
+    transition: all 0.6s ease-out;
+}
+
+.article-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .article-card:hover {

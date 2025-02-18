@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(updateParallax);
   }
 
-  // Optimized scroll handler
+  // Initialize parallax on scroll
   window.addEventListener('scroll', () => {
       if (Math.abs(window.scrollY - lastScroll) > 2) {
           requestAnimationFrame(updateParallax);
@@ -33,81 +33,117 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Combined Scroll Handler with Throttling
+let lastCall = 0;
 
-// CARDS REVEAL BOUNCE EFFECT //
+function handleScroll() {
+    const now = Date.now();
+    if (now - lastCall < 100) return; // Throttle to 10fps
+    lastCall = now;
+
+    // Reveal functions
+    requestAnimationFrame(() => {
+        revealButtons();
+        revealServices();
+        revealCards();
+        revealArticles();
+        revealFBTimelines();
+    });
+}
+
+// Initialize all functions
+function initAll() {
+    revealButtons();
+    revealServices();
+    revealCards();
+    revealArticles();
+    revealFBTimelines();
+}
+
+// Event Listeners (REPLACES ALL OTHERS)
+window.addEventListener('load', initAll);
+window.addEventListener('scroll', handleScroll, { passive: true });
+
+// =================================================================
+// REVEAL FUNCTIONS (KEEP THESE AS IS)
+// =================================================================
+
+// CARDS REVEAL BOUNCE EFFECT
 function revealCards() {
   const cards = document.querySelectorAll('.brand-card');
-  const triggerBottom = window.innerHeight * 0.9; // Trigger point (90% of viewport)
+  const triggerBottom = window.innerHeight * 0.9;
 
   cards.forEach(card => {
       const cardTop = card.getBoundingClientRect().top;
-
-      if (cardTop < triggerBottom) {
-          card.classList.add('active');
-      } else {
-          card.classList.remove('active');
-      }
+      card.classList.toggle('active', cardTop < triggerBottom);
   });
 }
 
-// FANCY BUTTONS REVEAL EFFECT (JUST BELOW BRANDS) //
+// FANCY BUTTONS REVEAL EFFECT
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button');
   const triggerBottom = window.innerHeight * 0.8;
   
   buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
-      
-      if(buttonTop < triggerBottom) {
-          button.classList.add('revealed');
-      } else {
-          button.classList.remove('revealed');
-      }
+      button.classList.toggle('revealed', buttonTop < triggerBottom);
   });
 }
 
-// Initialize on load and scroll
-window.addEventListener('load', revealButtons);
-window.addEventListener('scroll', revealButtons);
-
-// Initial check on load
-window.addEventListener('load', revealCards);
-
-// Check on scroll
-window.addEventListener('scroll', revealCards);
-
-// REVEAL SERVICES SECTIONS (SOLAR PANELS, BATTERY STORAGE, EV CHARGERS)
+// REVEAL SERVICES SECTIONS
 function revealServices() {
   const services = document.querySelectorAll('.service-category');
   const products = document.querySelectorAll('.product');
   const triggerBottom = window.innerHeight * 0.8;
 
-  // Reveal service categories
   services.forEach(service => {
       const serviceTop = service.getBoundingClientRect().top;
-      if(serviceTop < triggerBottom) {
-          service.classList.add('active');
-          
-          // Reveal products within active service
-          const productsInService = service.querySelectorAll('.product');
-          productsInService.forEach((product, index) => {
-              product.classList.add('revealed', `reveal-delay-${index + 1}`);
-          });
-      }
+      const isActive = serviceTop < triggerBottom;
+      service.classList.toggle('active', isActive);
+
+      service.querySelectorAll('.product').forEach((product, index) => {
+          product.classList.toggle('revealed', isActive);
+      });
   });
 
-  // Reveal standalone products
   products.forEach(product => {
-      const productTop = product.getBoundingClientRect().top;
-      if(productTop < triggerBottom) {
-          product.classList.add('revealed');
+      product.classList.toggle('revealed', 
+          product.getBoundingClientRect().top < triggerBottom
+      );
+  });
+}
+
+// ARTICLE REVEAL EFFECT
+function revealArticles() {
+  const articles = document.querySelectorAll('.article-card');
+  const triggerBottom = window.innerHeight * 0.8;
+
+  articles.forEach((article, index) => {
+      const articleTop = article.getBoundingClientRect().top;
+      if (articleTop < triggerBottom) {
+          setTimeout(() => {
+              article.classList.add('revealed');
+          }, index * 200); // 200ms stagger
+      } else {
+          article.classList.remove('revealed'); // Reset when out of view
       }
   });
 }
 
-// Initialize
-window.addEventListener('load', revealServices);
-window.addEventListener('scroll', revealServices);
+// FACEBOOK TIMELINE REVEAL
+function revealFBTimelines() {
+  const wrappers = document.querySelectorAll('.fb-page-wrapper');
+  const triggerBottom = window.innerHeight * 0.9;
+
+  wrappers.forEach(wrapper => {
+      const top = wrapper.getBoundingClientRect().top;
+      wrapper.classList.toggle('revealed', top < triggerBottom);
+      
+      if (top < triggerBottom && typeof FB !== 'undefined') {
+          FB.XFBML.parse(wrapper);
+      }
+  });
+}
 
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {
@@ -115,16 +151,16 @@ function preloadImages(images) {
     const promises = images.map(image => {
       return new Promise((res, rej) => {
         const img = new Image();
-        img.src = image.path;
-        img.onload = () => res(image.path);
+        img.src = image.url;  // Ensure we use 'url' instead of 'path'
+        img.onload = () => res(image.url);
         img.onerror = () => {
-          console.error(`Failed to preload image: ${image.path}`);
-          rej(image.path);
+          console.error(`Failed to preload image: ${image.url}`);
+          rej(image.url);
         };
       });
     });
 
-    Promise.all(promises).then(() => resolve()).catch(() => resolve());
+    Promise.allSettled(promises).then(() => resolve()); // Ensures function completes even with failures
   });
 }
 
