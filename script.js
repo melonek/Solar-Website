@@ -35,23 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Combined Scroll Handler with Throttling
 let lastCall = 0;
+let timeout;
 
 function handleScroll() {
     const now = Date.now();
     if (now - lastCall < 100) return; // Throttle to 10fps
     lastCall = now;
 
-    // Reveal functions
-    requestAnimationFrame(() => {
-        revealButtons();
-        revealServices();
-        revealCards();
-        revealArticles();
-        revealFBTimelines();
-    });
+    // Throttle the revealFBTimelines function to prevent constant re-parsing
+    if (timeout) {
+        clearTimeout(timeout); // Clear the previous timeout if any
+    }
+
+    timeout = setTimeout(() => {
+        // Use requestAnimationFrame to optimize rendering
+        requestAnimationFrame(() => {
+            revealButtons();
+            revealServices();
+            revealCards();
+            revealArticles();
+            revealFBTimelines(); // Facebook timelines reveal logic
+        });
+    }, 100); // Delay the execution of FB.XFBML.parse to 100ms (adjust as needed)
 }
 
-// Initialize all functions
+// Initialize all reveal functions
 function initAll() {
     revealButtons();
     revealServices();
@@ -137,13 +145,18 @@ function revealFBTimelines() {
 
   wrappers.forEach(wrapper => {
       const top = wrapper.getBoundingClientRect().top;
+      
+      // Toggle visibility based on scroll position
       wrapper.classList.toggle('revealed', top < triggerBottom);
       
-      if (top < triggerBottom && typeof FB !== 'undefined') {
+      // Ensure Facebook XFBML parsing only happens once when the element comes into view
+      if (top < triggerBottom && typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
           FB.XFBML.parse(wrapper);
+          wrapper.classList.add('fb-parsed'); // Prevent re-parsing
       }
   });
 }
+
 
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {

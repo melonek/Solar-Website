@@ -733,7 +733,7 @@ nav {
     display: block;
     justify-content: center;
     font-size: 1.5em;
-    margin: 0.83em 0;
+    margin: 1em 0;
     font-weight: bold;
     color: #333;
     color: #333;
@@ -1441,28 +1441,23 @@ nav {
     border: none;
     border-radius: 25px;
     font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
+    font-family: "Roboto Slab", Arial, sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-block;
-    flex: 0 1 auto;
+    display: inline-flex; /* Change to inline-flex */
+    justify-content: center; /* Horizontally center the text */
+    align-items: center; /* Vertically center the text */
     min-width: 200px;
     padding: 1rem 1.5rem;
     border-radius: 30px;
-    text-align: center;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    position: relative;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 0; /* Center the button if needed */
+    width: auto;
     opacity: 0;
-    transform: translateX(-50px); /* Initial hidden state */
+    transform: translateX(-50px);
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    overflow: hidden; /* Prevents child elements from overflowing */
-
+    overflow: hidden;
 }
+
 .fancy-button[data-reveal="left"] {
     transform: translateX(-50px); /* Move left initially */
 }
@@ -1502,12 +1497,13 @@ nav {
     .button-container {
         gap: 15px; /* Decrease space between buttons */
         margin-top: 20px; /* Reduce gap above buttons */
-        padding: 20px;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
     }
 
     .fancy-button {
-        padding: 0.8rem 1.5rem; /* Adjust button padding */
-        font-size: 1rem; /* Reduce font size */
+        padding: 0.8rem 1.2rem; /* Adjust button padding */
+        font-size: 0.9rem; /* Reduce font size */
     }
 }
 
