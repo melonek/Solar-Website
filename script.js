@@ -138,28 +138,19 @@ function revealButtons() {
   });
 }
 
-// Ensure the click is registered on the first touch
+// Fix: Ensure proper mobile behavior (Prevent duplicate clicks)
 document.querySelectorAll('.fancy-button').forEach(button => {
-  button.addEventListener('touchstart', function () {
-      this.click();
-  });
-});
-
-// Fix pop-up blocking & ensure target="_blank" works
-document.querySelectorAll('.fancy-button').forEach(button => {
-  button.addEventListener('touchend', function (event) {
-      event.preventDefault(); // Prevent weird behaviors
-
-      const url = this.getAttribute('href');
-      const target = this.getAttribute('target');
-
-      if (target === "_blank") {
-          window.open(url, "_blank"); // Open in a new tab
-      } else {
-          window.location.href = url; // Open normally
+  button.addEventListener('touchstart', function (event) {
+      // Prevents triggering twice in Safari
+      if (!this.dataset.clicked) {
+          this.dataset.clicked = "true"; // Mark as clicked
+          window.open(this.href, this.target || "_self"); 
+          setTimeout(() => delete this.dataset.clicked, 500); // Reset after a short time
       }
+      event.preventDefault(); // Stops unwanted behaviors
   });
 });
+
 
 
 
