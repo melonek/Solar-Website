@@ -1423,6 +1423,14 @@ nav {
     transform: translateY(0);
 }
 
+
+/* Fancy button wrapper */
+.button-wrapper {
+    overflow: hidden;
+    position: relative; /* Helps establish a new positioning context */
+  }
+
+  
 /* Button Mirror Layout */
 .button-split-container {
     display: flex;
