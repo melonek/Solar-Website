@@ -1453,7 +1453,10 @@ nav {
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* Helps prevent extra spacing issues */
     flex: 0 1 auto;
     min-width: 200px;
     padding: 1rem 1.5rem;
