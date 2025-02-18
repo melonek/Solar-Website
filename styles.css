@@ -891,11 +891,14 @@ nav {
     padding: 10px;
     margin: 0 10px;
     opacity: 0;
-    transition: all 0.5s ease, transform 0.3s ease;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .solar-brand-card.active {
     opacity: 1;
+    transform: translateY(0);
+    animation: bounce 0.8s ease;
 }
 
 .solar-brand-card img {
@@ -908,6 +911,18 @@ nav {
 
 .solar-brand-card:hover img {
     transform: scale(1.1);
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /* Responsive Design */

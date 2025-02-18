@@ -110,7 +110,7 @@ function handleScroll() {
 // REVEAL FUNCTIONS (KEEP THESE AS IS)
 // =================================================================
 
-// CARDS REVEAL BOUNCE EFFECT
+// BRANDS CARDS REVEAL BOUNCE EFFECT
 function revealCards() {
   const cards = document.querySelectorAll('.brand-card');
   const triggerBottom = window.innerHeight * 0.9;
