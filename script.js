@@ -33,6 +33,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Preload Facebook Timelines when the page is loaded
+function preloadFBTimelines() {
+  const wrappers = document.querySelectorAll('.fb-page-wrapper');
+
+  wrappers.forEach(wrapper => {
+    // Trigger XFBML parsing on page load to preload Facebook timelines
+    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
+      FB.XFBML.parse(wrapper);
+      wrapper.classList.add('fb-parsed'); // Mark as parsed to prevent re-parsing
+    }
+  });
+}
+
+// Initialize all functions
+function initAll() {
+    revealButtons();
+    revealServices();
+    revealCards();
+    revealArticles();
+    revealFBTimelines();
+    preloadFBTimelines();  // Preload Facebook timelines
+}
+
+// Event Listeners (REPLACES ALL OTHERS)
+window.addEventListener('load', initAll);
+window.addEventListener('scroll', handleScroll, { passive: true });
+
 // Combined Scroll Handler with Throttling
 let lastCall = 0;
 let timeout;
@@ -58,19 +85,6 @@ function handleScroll() {
         });
     }, 100); // Delay the execution of FB.XFBML.parse to 100ms (adjust as needed)
 }
-
-// Initialize all reveal functions
-function initAll() {
-    revealButtons();
-    revealServices();
-    revealCards();
-    revealArticles();
-    revealFBTimelines();
-}
-
-// Event Listeners (REPLACES ALL OTHERS)
-window.addEventListener('load', initAll);
-window.addEventListener('scroll', handleScroll, { passive: true });
 
 // =================================================================
 // REVEAL FUNCTIONS (KEEP THESE AS IS)
