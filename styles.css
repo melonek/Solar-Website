@@ -14,7 +14,7 @@ html {
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: visible; /* or remove any global overflow hidden */
 }
 
 body {
@@ -26,7 +26,7 @@ body {
     color: #333;
     background: #f4f4f4;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: visible; /* or remove any global overflow hidden */
 }
 
 /* Navigation Bar */
@@ -1387,6 +1387,13 @@ nav {
 
 
 /* ===== Service Categories ===== */
+
+.services-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden; /* Clips any children that extend beyond its bounds */
+  }
+
 .service-category {
     display: flex;
     flex-direction: column;
@@ -1399,9 +1406,15 @@ nav {
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.service-category[data-reveal-direction="right"] {
+/* Initial offset: slide in from the left */
+.service-category[data-reveal-direction="left"] {
+    transform: translateX(-100px);
+  }
+  
+  /* Initial offset: slide in from the right */
+  .service-category[data-reveal-direction="right"] {
     transform: translateX(100px);
-}
+  }
 
 .service-category.active {
     opacity: 1;
@@ -1429,6 +1442,7 @@ nav {
 .button-wrapper {
     overflow: hidden;
     position: relative; /* Helps establish a new positioning context */
+    width: 100%;
   }
 
   
@@ -1475,11 +1489,11 @@ nav {
 
 }
 .fancy-button[data-reveal="left"] {
-  transform: translateX(-20px);
+  transform: translateX(-50px);
 }
 
 .fancy-button[data-reveal="right"] {
-  transform: translateX(20px);
+  transform: translateX(50px);
 }
 
 @keyframes buttonGlow {
