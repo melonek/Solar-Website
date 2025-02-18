@@ -137,19 +137,30 @@ function revealButtons() {
       }
   });
 }
-//register the click immediately//
+
+// Ensure the click is registered on the first touch
 document.querySelectorAll('.fancy-button').forEach(button => {
   button.addEventListener('touchstart', function () {
       this.click();
   });
 });
-//If mobile browsers require a second tap due to JavaScript behavior
+
+// Fix pop-up blocking & ensure target="_blank" works
 document.querySelectorAll('.fancy-button').forEach(button => {
   button.addEventListener('touchend', function (event) {
       event.preventDefault(); // Prevent weird behaviors
-      window.location.href = this.getAttribute('href');
+
+      const url = this.getAttribute('href');
+      const target = this.getAttribute('target');
+
+      if (target === "_blank") {
+          window.open(url, "_blank"); // Open in a new tab
+      } else {
+          window.location.href = url; // Open normally
+      }
   });
 });
+
 
 
 // REVEAL SERVICES SECTIONS
