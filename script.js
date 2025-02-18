@@ -121,16 +121,23 @@ function revealCards() {
   });
 }
 
-// FANCY BUTTONS REVEAL EFFECT
+// FANCY BUTTONS REVEAL EFFECT //
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button');
   const triggerBottom = window.innerHeight * 0.8;
-  
+
   buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
-      button.classList.toggle('revealed', buttonTop < triggerBottom);
+      const isRevealed = buttonTop < triggerBottom;
+      button.classList.toggle('revealed', isRevealed);
+
+      // Fix: Ensure pointer-events are enabled on first reveal
+      if (isRevealed) {
+          button.style.pointerEvents = 'auto';
+      }
   });
 }
+
 
 // REVEAL SERVICES SECTIONS
 function revealServices() {

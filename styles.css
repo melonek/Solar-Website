@@ -1494,6 +1494,7 @@ nav {
     border-radius: 30px;
     text-align: center;
     font-size: 1.1rem;
+    pointer-events: auto; /* Ensures clicks are registered */
     transition: all 0.3s ease;
     position: relative;
     width: auto; /* Prevents the button from stretching to max width */
