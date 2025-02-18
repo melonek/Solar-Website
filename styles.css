@@ -948,6 +948,7 @@ nav {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-radius: 8px;
     text-align: center;
+    overflow: hidden; /* Prevents child elements from overflowing */
 }
 
 /* Main Headings */
@@ -1396,6 +1397,7 @@ nav {
     opacity: 0;
     transform: translateX(-100px);
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden; /* Prevents child elements from overflowing */
 }
 
 .service-category[data-reveal-direction="right"] {
@@ -1460,6 +1462,7 @@ nav {
     opacity: 0;
     transform: translateX(-50px); /* Initial hidden state */
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden; /* Prevents child elements from overflowing */
 }
 
 .fancy-button[data-reveal="right"] {
@@ -1485,9 +1488,8 @@ nav {
 }
 
 /* Add transition delay for staggered effect */
-.fancy-button[data-reveal="right"].revealed {
-    transition-delay: 0.2s;
-    animation-delay: 0.2s;
+.fancy-button[data-reveal="right"] {
+    transform: translateX(50px);
 }
 
 /* Hover Effect for Buttons */
