@@ -1441,23 +1441,28 @@ nav {
     border: none;
     border-radius: 25px;
     font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif;
+    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-flex; /* Change to inline-flex */
-    justify-content: center; /* Horizontally center the text */
-    align-items: center; /* Vertically center the text */
+    display: inline-block;
+    flex: 0 1 auto;
     min-width: 200px;
     padding: 1rem 1.5rem;
     border-radius: 30px;
-    width: auto;
+    text-align: center;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    text-align: center;
+    width: auto; /* Prevents the button from stretching to max width */
+    margin: 0 0; /* Center the button if needed */
     opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(-50px); /* Initial hidden state */
     transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    overflow: hidden;
-}
+    overflow: hidden; /* Prevents child elements from overflowing */
 
+}
 .fancy-button[data-reveal="left"] {
     transform: translateX(-50px); /* Move left initially */
 }
@@ -1497,13 +1502,12 @@ nav {
     .button-container {
         gap: 15px; /* Decrease space between buttons */
         margin-top: 20px; /* Reduce gap above buttons */
-        padding: 0.8rem 1.5rem;
-        font-size: 1rem;
+        padding: 20px;
     }
 
     .fancy-button {
-        padding: 0.8rem 1.2rem; /* Adjust button padding */
-        font-size: 0.9rem; /* Reduce font size */
+        padding: 0.8rem 1.5rem; /* Adjust button padding */
+        font-size: 1rem; /* Reduce font size */
     }
 }
 

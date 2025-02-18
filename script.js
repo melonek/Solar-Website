@@ -33,6 +33,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Function to preload images before they are used - for sliders in packages html and index.
+function preloadImages(images) {
+  return new Promise((resolve) => {
+    const promises = images.map(image => {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.src = image.url;  // Ensure we use 'url' instead of 'path'
+        img.onload = () => res(image.url);
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${image.url}`);
+          rej(image.url);
+        };
+      });
+    });
+
+    Promise.allSettled(promises).then(() => resolve()); // Ensures function completes even with failures
+  });
+}
+
+
 // Preload Facebook Timelines when the page is loaded
 function preloadFBTimelines() {
   const wrappers = document.querySelectorAll('.fb-page-wrapper');
@@ -168,26 +188,6 @@ function revealFBTimelines() {
           FB.XFBML.parse(wrapper);
           wrapper.classList.add('fb-parsed'); // Prevent re-parsing
       }
-  });
-}
-
-
-// Function to preload images before they are used - for sliders in packages html and index.
-function preloadImages(images) {
-  return new Promise((resolve) => {
-    const promises = images.map(image => {
-      return new Promise((res, rej) => {
-        const img = new Image();
-        img.src = image.url;  // Ensure we use 'url' instead of 'path'
-        img.onload = () => res(image.url);
-        img.onerror = () => {
-          console.error(`Failed to preload image: ${image.url}`);
-          rej(image.url);
-        };
-      });
-    });
-
-    Promise.allSettled(promises).then(() => resolve()); // Ensures function completes even with failures
   });
 }
 
