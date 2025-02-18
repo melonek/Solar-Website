@@ -14,7 +14,7 @@ html {
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow-x: hidden; /* Prevents horizontal scrolling */
+    overflow-x: hidden;
 }
 
 body {
@@ -26,6 +26,7 @@ body {
     color: #333;
     background: #f4f4f4;
     width: 100%;
+    overflow-x: hidden;
 }
 
 /* Navigation Bar */
