@@ -1,3 +1,4 @@
+
 /* Import the font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
 
@@ -1679,7 +1680,6 @@ nav {
     padding: 30px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     perspective: 1000px;
-    overflow: visible !important;
   }
 
   .fb-page-wrapper {
