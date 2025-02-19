@@ -805,10 +805,20 @@ nav {
     .brand-card {
         max-width: 180px;
         height: 130px;
+        width: calc(50% - 5px); /* Brings cards closer */
+        max-width: 160px;
+        height: 120px;
+        margin: 0; /* Removes extra margin */
     }
     .brand-card.active {
         opacity: 1;
-}}
+}
+.brands-container {
+    justify-content: center; /* Prevents extra middle spacing */
+    gap: 5px; /* Further reduces spacing */
+}
+
+}
 
 @media (max-width: 480px) {
     .brands-container {
@@ -870,9 +880,9 @@ nav {
 .solar-brands-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-    gap: 10px;
-    padding: 20px 0;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
     width: 100%;
     max-width: 1600px;
 }
@@ -887,9 +897,8 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 2rem 1rem;
-    margin: 0 5px;
+    padding: 10px;
+    margin: 0 10px;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.8s ease, transform 0.8s ease;
@@ -930,15 +939,20 @@ nav {
     .solar-brand-card {
         max-width: 180px;
         height: 130px;
+        width: calc(50% - 5px); /* Brings cards closer */
+        max-width: 160px;
+        height: 120px;
+        margin: 0; /* Removes extra margin */
     }
     .solar-brand-card.active {
         opacity: 1;
     }
+    
 }
 
 @media (max-width: 480px) {
     .solar-brands-container {
-        gap: 5px;
+        gap: 10px;
     }
     .solar-brand-card {
         width: calc(50% - 20px);
