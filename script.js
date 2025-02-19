@@ -1,4 +1,3 @@
-
 // SIMPLE PARALLAX SCRIPT
 document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.querySelector('.hero-section');
@@ -166,6 +165,9 @@ document.querySelectorAll('.fancy-button').forEach(button => {
 // Run reveal effect on scroll
 window.addEventListener('scroll', revealButtons);
 document.addEventListener('DOMContentLoaded', revealButtons);
+
+
+
 
 
 // REVEAL SERVICES SECTIONS
