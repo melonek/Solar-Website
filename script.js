@@ -130,24 +130,19 @@ function revealButtons() {
       const buttonTop = button.getBoundingClientRect().top;
       const isRevealed = buttonTop < triggerBottom;
       button.classList.toggle('revealed', isRevealed);
-
-      // Fix: Ensure pointer-events are enabled on first reveal
-      if (isRevealed) {
-          button.style.pointerEvents = 'auto';
-      }
   });
 }
 
-// Fix: Ensure proper mobile behavior (Prevent duplicate clicks)
+// Fix: Ensure mobile browsers respond correctly without double taps
 document.querySelectorAll('.fancy-button').forEach(button => {
-  button.addEventListener('touchstart', function (event) {
-      // Prevents triggering twice in Safari
-      if (!this.dataset.clicked) {
-          this.dataset.clicked = "true"; // Mark as clicked
-          window.open(this.href, this.target || "_self"); 
-          setTimeout(() => delete this.dataset.clicked, 500); // Reset after a short time
+  button.addEventListener('click', function (event) {
+      const url = this.getAttribute('href');
+      const target = this.getAttribute('target');
+
+      if (target === "_blank") {
+          event.preventDefault(); // Prevent default navigation
+          window.open(url, '_blank'); // Open in new tab
       }
-      event.preventDefault(); // Stops unwanted behaviors
   });
 });
 
