@@ -130,20 +130,33 @@ function revealButtons() {
       const buttonTop = button.getBoundingClientRect().top;
       const isRevealed = buttonTop < triggerBottom;
       button.classList.toggle('revealed', isRevealed);
+
+      // Ensure pointer events are always enabled when revealed
+      if (isRevealed) {
+          button.style.pointerEvents = 'auto';
+      }
   });
 }
 
-// Fix: Ensure mobile browsers respond correctly without double taps
+// Ensure first tap registers immediately on mobile
 document.querySelectorAll('.fancy-button').forEach(button => {
   button.addEventListener('click', function (event) {
       const url = this.getAttribute('href');
       const target = this.getAttribute('target');
 
       if (target === "_blank") {
-          event.preventDefault(); // Prevent default navigation
-          window.open(url, '_blank'); // Open in new tab
+          event.preventDefault(); // Prevent default browser navigation
+          window.open(url, '_blank', 'noopener,noreferrer'); // Open in new tab
+      } else {
+          window.location.href = url; // Open in same tab
       }
   });
+
+  // Fix for Safari/Chrome mobile requiring a second tap
+  button.addEventListener('touchend', function (event) {
+      event.preventDefault(); // Prevent weird behavior
+      this.click(); // Force immediate action on first tap
+  }, { passive: false });
 });
 
 
