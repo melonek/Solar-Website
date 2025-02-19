@@ -1,3 +1,4 @@
+
 // SIMPLE PARALLAX SCRIPT
 document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.querySelector('.hero-section');
