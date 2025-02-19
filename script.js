@@ -121,7 +121,7 @@ function revealCards() {
   });
 }
 
-// FANCY BUTTONS REVEAL EFFECT//
+// FANCY BUTTONS REVEAL EFFECT
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button');
   const triggerBottom = window.innerHeight * 0.8;
@@ -130,61 +130,43 @@ function revealButtons() {
       const buttonTop = button.getBoundingClientRect().top;
       const isRevealed = buttonTop < triggerBottom;
       button.classList.toggle('revealed', isRevealed);
-      
-      // Always enable pointer events regardless of reveal state
-      button.style.pointerEvents = 'auto';
+
+      // Ensure pointer events are always enabled when revealed
+      if (isRevealed) {
+          button.style.pointerEvents = 'auto';
+      }
   });
 }
 
-// Mobile-friendly click handler
+// Handle clicks properly
 document.querySelectorAll('.fancy-button').forEach(button => {
-  // Store click state to prevent double execution
-  let isProcessing = false;
-  
-  const handleAction = (event) => {
-    if (isProcessing) return;
-    isProcessing = true;
-    
-    const url = button.getAttribute('href');
-    const target = button.getAttribute('target');
+  button.addEventListener('click', function (event) {
+      const url = this.getAttribute('href');
 
-    // Prevent default only for new tab links
-    if (target === "_blank") {
-      event.preventDefault();
-      const newWindow = window.open('', '_blank', 'noopener,noreferrer');
-      
-      // Add fallback for pop-up blocked scenario
-      if (!newWindow || newWindow.closed) {
-        window.location.href = url;
+      if (this.classList.contains('mirror-left')) {
+          // If it's the "Browse Solar Packages" button → open in new tab
+          event.preventDefault();
+          setTimeout(() => {
+              window.open(url, '_blank', 'noopener,noreferrer');
+          }, 100); // Small delay to prevent blocking
       } else {
-        newWindow.location.href = url;
+          // "Solar Savings Calculator" opens normally
+          window.location.href = url;
       }
-    }
-    
-    // Reset after short delay
-    setTimeout(() => {
-      isProcessing = false;
-    }, 500);
-  };
+  });
 
-  // Standard click handler
-  button.addEventListener('click', handleAction);
-
-  // Mobile touch handler
-  button.addEventListener('touchend', (event) => {
-    event.preventDefault();
-    handleAction(event);
+  // Fix for Safari/Chrome requiring second tap
+  button.addEventListener('touchend', function (event) {
+      event.preventDefault(); // Prevent weird behavior
+      this.click(); // Force immediate action on first tap
   }, { passive: false });
-
-  // Add visual feedback
-  button.addEventListener('touchstart', () => {
-    button.style.transform = 'scale(0.98)';
-  });
-
-  button.addEventListener('touchend', () => {
-    button.style.transform = 'scale(1)';
-  });
 });
+
+// Run reveal effect on scroll
+window.addEventListener('scroll', revealButtons);
+document.addEventListener('DOMContentLoaded', revealButtons);
+
+
 
 
 
