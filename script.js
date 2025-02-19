@@ -121,7 +121,7 @@ function revealCards() {
   });
 }
 
-// FANCY BUTTONS REVEAL EFFECT //
+// FANCY BUTTONS REVEAL EFFECT//
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button');
   const triggerBottom = window.innerHeight * 0.8;
@@ -130,35 +130,61 @@ function revealButtons() {
       const buttonTop = button.getBoundingClientRect().top;
       const isRevealed = buttonTop < triggerBottom;
       button.classList.toggle('revealed', isRevealed);
-
-      // Ensure pointer events are always enabled when revealed
-      if (isRevealed) {
-          button.style.pointerEvents = 'auto';
-      }
+      
+      // Always enable pointer events regardless of reveal state
+      button.style.pointerEvents = 'auto';
   });
 }
 
-// Ensure first tap registers immediately on mobile
+// Mobile-friendly click handler
 document.querySelectorAll('.fancy-button').forEach(button => {
-  button.addEventListener('click', function (event) {
-      const url = this.getAttribute('href');
-      const target = this.getAttribute('target');
+  // Store click state to prevent double execution
+  let isProcessing = false;
+  
+  const handleAction = (event) => {
+    if (isProcessing) return;
+    isProcessing = true;
+    
+    const url = button.getAttribute('href');
+    const target = button.getAttribute('target');
 
-      if (target === "_blank") {
-          event.preventDefault(); // Prevent default browser navigation
-          window.open(url, '_blank', 'noopener,noreferrer'); // Open in new tab
+    // Prevent default only for new tab links
+    if (target === "_blank") {
+      event.preventDefault();
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer');
+      
+      // Add fallback for pop-up blocked scenario
+      if (!newWindow || newWindow.closed) {
+        window.location.href = url;
       } else {
-          window.location.href = url; // Open in same tab
+        newWindow.location.href = url;
       }
+    }
+    
+    // Reset after short delay
+    setTimeout(() => {
+      isProcessing = false;
+    }, 500);
+  };
+
+  // Standard click handler
+  button.addEventListener('click', handleAction);
+
+  // Mobile touch handler
+  button.addEventListener('touchend', (event) => {
+    event.preventDefault();
+    handleAction(event);
+  }, { passive: false });
+
+  // Add visual feedback
+  button.addEventListener('touchstart', () => {
+    button.style.transform = 'scale(0.98)';
   });
 
-  // Fix for Safari/Chrome mobile requiring a second tap
-  button.addEventListener('touchend', function (event) {
-      event.preventDefault(); // Prevent weird behavior
-      this.click(); // Force immediate action on first tap
-  }, { passive: false });
+  button.addEventListener('touchend', () => {
+    button.style.transform = 'scale(1)';
+  });
 });
-
 
 
 
