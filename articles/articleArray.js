@@ -39,7 +39,7 @@
         <p>By taking advantage of federal and state incentives, homeowners in Western Australia can significantly reduce the upfront cost of solar power systems. Additionally, feed-in tariffs allow you to generate income by selling excess energy back to the grid. As solar technology continues to improve, the savings and benefits of solar power will only continue to grow.</p>
     
         <p><strong>Published Date:</strong> February 20, 2025</p>
-        <p><strong>Comment:</strong> This is an example article on solar rebates and financial incentives in Western Australia.</p>
+        <p><strong>Comment:</strong> This is an article on solar rebates and financial incentives in Western Australia.</p>
       `,
       publishedDate: "February 20, 2025",
       comment: "Solar incentives and rebates",
