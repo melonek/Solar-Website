@@ -291,11 +291,12 @@ header p {
 }
 .modal-fulltext h2{
   margin-top:10px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .modal-fulltext p {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .modal-fulltext img{
@@ -357,8 +358,8 @@ header p {
   margin: 10;
   font-size: 1.2em;
   text-align: left;
-  margin-top: 0px;
-  margin-bottom: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 #toc li {
@@ -403,9 +404,8 @@ header p {
 
 .solar-article h2 {
   font-size: 2em;
-  margin-bottom: 10px;
   color: #2c3e50;
-  margin-bottom: 30px; /* Add space after each header */
+  margin-bottom: 10px; /* Add space after each header */
 }
 
 .solar-article p {
