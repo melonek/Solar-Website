@@ -62,25 +62,33 @@ nav {
 }
 
 /* Links style */
+/* Remove underlines from all links */
 .nav-links a {
     color: #2c3e50;
-    text-decoration: none;
+    text-decoration: none;  /* Remove underline */
     text-align: center !important;
     font-size: 1rem;
     transition: all 0.3s ease;
-    padding: 10px 15px; /* Padding for the button effect */
-    border-radius: 4px; /* Rounded corners for buttons */
-    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white for button background */
+    padding: 10px 15px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
     display: inline-flex;
-    align-items: center; /* Align text inside the link vertically */
+    align-items: center;
+}
+
+/* Active link (for current page) */
+.nav-links a.active {
+    color: #2980b9; /* Active link color */
+    text-decoration: underline; /* Underline active link */
+    background-color: rgba(255, 255, 255, 0.4); /* Active link background */
 }
 
 /* Hover effect for links */
 .nav-links a:hover {
     color: #2980b9;
-    background-color: rgba(255, 255, 255, 0.4); /* More opaque background on hover */
-    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3); /* Subtle glow effect */
-    transform: translateY(-2px); /* Slight lift effect */
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 10px rgba(41, 128, 185, 0.3);
+    transform: translateY(-2px);
 }
 
 /* Gradual navbar element scaling below 1080px */

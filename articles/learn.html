@@ -1,44 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Articles & Learn Page</title>
-  <!-- Global styles for the whole site -->
-  <link rel="stylesheet" href="../styles.css" /> 
-  <!-- Specific styles for learn/articles section -->
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0"></script>
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="./styles.css">
+
+<title>Articles and Explore Solar Page</title>
+<!--One font-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
+        <!-- Ends here-->
 </head>
+
 <body>
-
-
-  <nav>
-    <!-- Moved logo outside of nav for fixed positioning -->
-    <div class="floating-logo">
-      <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
-    </div>
-    <ul class="nav-links">
-      <li><a href="../#about">About Us</a></li>
-      <li class="dropdown">
-        <a href="../#services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
-        <div class="dropdown-content">
-          <a href="../packages/packages.html">Solar Systems</a>
-          <a href="../#battery-storage">Battery Storage</a>
-          <a href=".../#ev-chargers">EV Chargers</a>
-        </div>
-      </li>
-      <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
-      <li><a href="../#articles">Articles/News</a></li>
-      <li><a href="./learn.html">Learn Solar</a></li>
-      <li><a href="../#installations">Installations</a></li>
-      <li><a href="../#faq">FAQ</a></li>
-      <li><a href="../#contact">Contact</a></li>
-    </ul>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
-      <div class="bar half start"></div>
-      <div class="bar"></div>
-      <div class="bar half end"></div>
-    </div>
-  </nav>
+  
+  <!-- Reuse your existing navigation -->
+    <!-- Your existing nav code -->
+    <nav>
+      <!-- Moved logo outside of nav for fixed positioning -->
+      <div class="floating-logo">
+        <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+      </div>
+      <ul class="nav-links">
+        <li><a href="../#about">About Us</a></li>
+        <li class="dropdown">
+          <a href="../#services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+          <div class="dropdown-content">
+            <a href="packages.html">Solar Systems</a>
+            <a href="../#battery-storage">Battery Storage</a>
+            <a href="../#ev-chargers">EV Chargers</a>
+          </div>
+        </li>
+        <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+        <li><a href="../#articles">Articles/News</a></li>
+        <li><a href="../articles/learn.html">Explore Solar</a></li>
+        <li><a href="../#installations">Installations</a></li>
+        <li><a href="../#faq">FAQ</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+        <div class="bar half start"></div>
+        <div class="bar"></div>
+        <div class="bar half end"></div>
+      </div>
+    </nav>
   
   
   

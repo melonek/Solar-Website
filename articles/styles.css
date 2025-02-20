@@ -1,276 +1,284 @@
 /* ========= Learn Page Section ========= */
-  
+
 /* Learn page container */
 #learn {
-    width: 100%;
-    max-width: 1400px;
-    margin: 50px auto;
-    padding: 0 10px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 50px auto;
+  padding: 0 10px;
 }
 
 .learn-container {
-    padding-bottom: 20px; /* Adds space at the bottom */
+  padding-bottom: 20px; /* Adds space at the bottom */
 }
 
 .learn-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Grid for Learn page square cards */
 #learn-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    margin-bottom: 30px;
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  margin-bottom: 30px;
+  margin-top: 20px;
 }
 
 /* Each learn card will be a square thumbnail */
 .learn-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Ensures proper alignment */
-    width: calc((100% - 40px) / 3); /* Keeps them equal width */
-    max-height: 450px; /* Prevents excessive stretching */
-    min-height: 400px; /* Ensures consistent size */
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures proper alignment */
+  width: calc((100% - 40px) / 3); /* Keeps them equal width */
+  max-height: 450px; /* Prevents excessive stretching */
+  min-height: 400px; /* Ensures consistent size */
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .learn-card.revealed {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .learn-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* The card’s image covers the full area */
 .learn-card img {
-    width: 100%;
-    height: 50%; /* Ensures it takes up proper space */
-    object-fit: cover; /* Prevents distortion */
+  width: 100%;
+  height: 50%; /* Ensures it takes up proper space */
+  object-fit: cover; /* Prevents distortion */
 }
 
-/* An overlay at the bottom for title, snippet, and read-more */
+/* Ensures snippet doesn't push card height */
 .learn-card .overlay {
-    position: absolute;
-    bottom: 0; /* Moves the overlay just below the image */
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centers content inside the overlay */
-    padding: 15px;
-    border-radius: 8px;
-    opacity: 1; /* Make the overlay visible by default */
-    text-align: center;
-    height: 50%; /* Stretches the overlay to cover the bottom half of the card */
+  position: absolute;
+  bottom: 0; /* Moves the overlay just below the image */
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers content inside the overlay */
+  padding: 15px;
+  border-radius: 8px;
+  opacity: 1; /* Make the overlay visible by default */
+  text-align: center;
+  height: 50%; /* Stretches the overlay to cover the bottom half of the card */
+  box-sizing: border-box; /* Ensures padding is included within height */
+  overflow: hidden; /* Prevents content from overflowing */
 }
 
 /* On hover, make the overlay visible */
 .learn-card:hover .overlay {
-    opacity: 1;
+  opacity: 1;
 }
 
 .learn-card .overlay h3,
 .learn-card .overlay p {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .learn-card .overlay h3 {
-    font-size: 1.2em;
-    font-weight: bold;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 .learn-card .overlay p {
-    font-size: 0.9em;
-    line-height: 1.5em;
+  font-size: 0.9em;
+  line-height: 1.5em;
 }
 
 /* Button positioning in the center of the card */
 .learn-card .overlay .learn-read-more-btn {
-    margin-top: 10px; /* Adds space between the text and button */
-    background-color: #e67e22; /* Orange color */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
-    display: block;
-    width: 100%; /* Full width for the button */
-    max-width: 200px; /* Max button width */
-    margin-left: auto; /* Centering the button */
-    margin-right: auto; /* Centering the button */
+  margin-top: 10px; /* Adds space between the text and button */
+  background-color: #e67e22; /* Orange color */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  display: block;
+  width: 100%; /* Full width for the button */
+  max-width: 200px; /* Max button width */
+  margin-left: auto; /* Centering the button */
+  margin-right: auto; /* Centering the button */
 }
 
 /* Hover effect for the button */
 .learn-read-more-btn:hover {
-    background-color: #d35400;
+  background-color: #d35400;
 }
 
 /* Pagination */
 .learn-pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px; /* Adjust spacing above pagination */
-    margin-bottom: 30px; /* Lift it above the bottom border */
-    position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Adjust spacing above pagination */
+  margin-bottom: 30px; /* Lift it above the bottom border */
+  position: relative;
 }
 
-/* Responsive design for mobile */
+/* Responsive Design for Learn Cards */
+@media screen and (max-width: 1200px) {
+  .learn-card {
+      width: calc((100% - 40px) / 3); /* 3 cards */
+  }
+}
+
 @media (max-width: 768px) {
-    .learn-card {
-        width: 100%; /* Full width on mobile */
-        min-height: 320px; /* Adjust card height on mobile */
-    }
-
-    /* Ensure the read-more button stays visible on smaller screens */
-    .learn-card .overlay .learn-read-more-btn {
-        position: relative;
-        top: 0; /* Reset the top position */
-    }
+  .learn-card {
+      width: 100%; /* Full width in mobile */
+      max-height: 420px; /* Keeps them proportional */
+  }
 }
 
+@media screen and (max-width: 480px) {
+  .learn-card {
+      width: 100%; /* 1 card */
+  }
+}
 
+/* ARTICLE CSS */
 
-  /* ARTICLE CSS */
-
-  /* Reset and base styles */
+/* Reset and base styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
-  }
-  a {
-    color: #3498db;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Header with background image and overlay */
-  header {
-    position: relative;
-    height: 300px;
-    background: url('header-banner.jpg') no-repeat center center/cover;
-    color: #fff;
-  }
-  header .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-  }
-  header .header-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0 20px;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header with background image and overlay */
+header {
+  position: relative;
+  height: 300px;
+  background: url('header-banner.jpg') no-repeat center center/cover;
+  color: #fff;
+}
+
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+header .header-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 20px;
+}
+
+header .header-content h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+/* Container for article content */
+.container {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.meta {
+  color: #777;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+.meta span {
+  margin-right: 15px;
+}
+
+/* Main article image */
+img.main-image {
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Article content styling */
+article {
+  margin-bottom: 40px;
+}
+
+article h2 {
+  font-size: 2em;
+  color: #2c3e50;
+  margin: 30px 0 10px;
+}
+
+article p {
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+/* Gallery of images */
+.gallery {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.gallery img {
+  width: calc(33.33% - 10px);
+  border-radius: 4px;
+}
+
+/* Highlighted quote block */
+.blockquote {
+  font-style: italic;
+  background: #f4f4f4;
+  padding: 15px;
+  border-left: 4px solid #3498db;
+  margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   header .header-content h1 {
-    font-size: 3em;
-    margin-bottom: 10px;
-  }
-  
-  /* Container for article content */
-  .container {
-    max-width: 1400px;
-    margin: 30px auto;
-    padding: 0 20px;
-  }
-  .meta {
-    color: #777;
-    font-size: 0.9em;
-    margin-bottom: 20px;
-  }
-  .meta span {
-    margin-right: 15px;
-  }
-  
-  /* Main article image */
-  img.main-image {
-    width: 100%;
-    border-radius: 4px;
-    margin-bottom: 20px;
-  }
-  
-  /* Article content styling */
-  article {
-    margin-bottom: 40px;
-  }
-  article h2 {
-    font-size: 2em;
-    color: #2c3e50;
-    margin: 30px 0 10px;
-  }
-  article p {
-    margin-bottom: 20px;
-    text-align: justify;
+      font-size: 2em;
   }
 
-  
-  /* Gallery of images */
   .gallery {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .gallery img {
-    width: calc(33.33% - 10px);
-    border-radius: 4px;
-  }
-  
-  /* Highlighted quote block */
-  .blockquote {
-    font-style: italic;
-    background: #f4f4f4;
-    padding: 15px;
-    border-left: 4px solid #3498db;
-    margin: 20px 0;
-  }
-  
-  /* Footer styling */
-  footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 15px;
-    font-size: 0.9em;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    header .header-content h1 {
-      font-size: 2em;
-    }
-    .gallery {
       flex-direction: column;
-    }
-    .gallery img {
-      width: 100%;
-    }
   }
-  
+
+  .gallery img {
+      width: 100%;
+  }
+}
