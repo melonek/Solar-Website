@@ -220,9 +220,10 @@ header p {
 /* Table of Contents */
 .table-of-contents {
   margin: 20px 0;
+  max-width:fit-content;
   padding: 10px;
   list-style-type: none;
-  background-color: #e9f7ef;
+  background-color: #e4e7e6;
   border-radius: 8px;
 }
 
