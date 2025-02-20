@@ -34,9 +34,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Function to preload images before they are used - for sliders in packages html and index.
+
+// Check the current page's URL to determine the correct relative path
+const pathPrefix = window.location.pathname.includes('packages.html') ? '../' : './';
+
+const brandImages = [
+  { name: 'Trina', url: `${pathPrefix}images/BrandLogos/Trina-Solar.png` },
+  { name: 'SMA', url: `${pathPrefix}images/BrandLogos/SMA.png` },
+  { name: 'Canadian Solar', url: `${pathPrefix}images/BrandLogos/Canadian-Solar.png` },
+  { name: 'DaSolar', url: `${pathPrefix}images/BrandLogos/DaSolar.png` },
+  { name: 'Fronius', url: `${pathPrefix}images/BrandLogos/Fronius.png` },
+  { name: 'Growatt', url: `${pathPrefix}images/BrandLogos/Growatt.png` },
+  { name: 'Huawei/iStore', url: `${pathPrefix}images/BrandLogos/Huawei.png` },
+  { name: 'JASolar', url: `${pathPrefix}images/BrandLogos/JASolar.png` },
+  { name: 'Goodwe', url: `${pathPrefix}images/BrandLogos/Goodwe.jpg` },
+  { name: 'Jinko', url: `${pathPrefix}images/BrandLogos/Jinko.png` },
+  { name: 'Longi', url: `${pathPrefix}images/BrandLogos/Longi.png` },
+  { name: 'Risen', url: `${pathPrefix}images/BrandLogos/Risen-Solar.png` },
+  { name: 'Seraphim', url: `${pathPrefix}images/BrandLogos/Seraphim.png` },
+  { name: 'Sofar', url: `${pathPrefix}images/BrandLogos/Sofar.png` },
+  { name: 'SolarEdge', url: `${pathPrefix}images/BrandLogos/Solar-Edge.png` },
+  { name: 'Solis', url: `${pathPrefix}images/BrandLogos/Solis.png` },
+  { name: 'Sungrow', url: `${pathPrefix}images/BrandLogos/Sungrow.png` },
+  { name: 'EgingPV', url: `${pathPrefix}images/BrandLogos/EgingPV.png` },
+  { name: 'QCells', url: `${pathPrefix}images/BrandLogos/QCells.png` }
+];
+
+// Function to preload the images
 function preloadImages(images) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const promises = images.map(image => {
       return new Promise((res, rej) => {
         const img = new Image();
@@ -49,23 +75,26 @@ function preloadImages(images) {
       });
     });
 
-    Promise.allSettled(promises).then(() => resolve()); // Ensures function completes even with failures
+    Promise.allSettled(promises).then((results) => {
+      // Log the results, successful or failed image loads
+      console.log('Preloading complete:', results);
+      resolve(results);
+    }).catch((error) => {
+      console.error('Error preloading images:', error);
+      reject(error);
+    });
   });
 }
 
-
-// Preload Facebook Timelines when the page is loaded
-function preloadFBTimelines() {
-  const wrappers = document.querySelectorAll('.fb-page-wrapper');
-
-  wrappers.forEach(wrapper => {
-    // Trigger XFBML parsing on page load to preload Facebook timelines
-    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-      FB.XFBML.parse(wrapper);
-      wrapper.classList.add('fb-parsed'); // Mark as parsed to prevent re-parsing
-    }
+// Preload images on page load
+preloadImages(brandImages)
+  .then(() => {
+    console.log('All images preloaded successfully');
+  })
+  .catch((error) => {
+    console.error('Some images failed to preload:', error);
   });
-}
+
 
 // Initialize all functions
 function initAll() {
@@ -349,41 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navLinks.classList.remove('open');
         });
     });
-});
-
-/// Check the current page's URL to determine the correct relative path
-const pathPrefix = window.location.pathname.includes('packages.html') ? '../' : './';
-
-const brandImages = [
-  { name: 'Trina', url: `${pathPrefix}images/BrandLogos/Trina-Solar.png` },
-  { name: 'SMA', url: `${pathPrefix}images/BrandLogos/SMA.png` },
-  { name: 'Canadian Solar', url: `${pathPrefix}images/BrandLogos/Canadian-Solar.png` },
-  { name: 'DaSolar', url: `${pathPrefix}images/BrandLogos/DaSolar.png` },
-  { name: 'Fronius', url: `${pathPrefix}images/BrandLogos/Fronius.png` },
-  { name: 'Growatt', url: `${pathPrefix}images/BrandLogos/Growatt.png` },
-  { name: 'Huawei/iStore', url: `${pathPrefix}images/BrandLogos/Huawei.png` },
-  { name: 'JASolar', url: `${pathPrefix}images/BrandLogos/JASolar.png` },
-  { name: 'Goodwe', url: `${pathPrefix}images/BrandLogos/Goodwe.jpg` },
-  { name: 'Jinko', url: `${pathPrefix}images/BrandLogos/Jinko.png` },
-  { name: 'Longi', url: `${pathPrefix}images/BrandLogos/Longi.png` },
-  { name: 'Risen', url: `${pathPrefix}images/BrandLogos/Risen-Solar.png` },
-  { name: 'Seraphim', url: `${pathPrefix}images/BrandLogos/Seraphim.png` },
-  { name: 'Sofar', url: `${pathPrefix}images/BrandLogos/Sofar.png` },
-  { name: 'SolarEdge', url: `${pathPrefix}images/BrandLogos/Solar-Edge.png` },
-  { name: 'Solis', url: `${pathPrefix}images/BrandLogos/Solis.png` },
-  { name: 'Sungrow', url: `${pathPrefix}images/BrandLogos/Sungrow.png` },
-  { name: 'EgingPV', url: `${pathPrefix}images/BrandLogos/EgingPV.png` },
-  { name: 'QCells', url: `${pathPrefix}images/BrandLogos/QCells.png` }
-];
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  // Wait for images to preload before starting the functionality
-  preloadImages(brandImages).then(() => {
-    initializeBrandSlider('.brand-card', '#brands');
-    initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
-  });
 });
 
 function initializeBrandSlider(cardSelector, containerSelector) {
