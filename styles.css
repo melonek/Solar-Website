@@ -3632,6 +3632,122 @@ footer {
     text-decoration: none;
 }
 
+/* Modal for Article Details */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    position: relative;
+}
+
+.modal-header {
+    text-align: center; /* Center-align the headline */
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.modal-published {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    text-align: left; /* Left-align the publish date */
+    margin-bottom: 0;
+    position: absolute; /* Position the publish date in the top-left corner */
+    top: 10px;
+    left: 20px;
+}
+
+.modal-banner {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    margin-bottom: 10px; /* Reduce margin to bring snippet closer */
+}
+
+.modal-snippet {
+    font-size: 0.9em;
+    color: #34495e;
+    margin-bottom: 15px;
+    margin-top: 0; /* Remove top margin to place snippet directly under image */
+}
+
+.modal-fulltext {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #34495e;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+.modal-comment {
+    font-size: 0.8em;
+    color: #7f8c8d;
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Responsive design for form */
+@media screen and (max-width: 768px) {
+    form {
+        padding: 15px;
+    }
+}
+
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+
+    .product {
+        width: 100%;
+    }
+    .section h1 {
+        font-size: 2em;
+    }
+
+    .service-category h2 {
+        font-size: 1.2em;
+    }
+}
+
 /* FAQ Styling */
 .faq-container {
     max-width: 800px;
@@ -3845,14 +3961,16 @@ footer {
 .article-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensures proper alignment */
+    justify-content: space-between;
     width: calc((100% - 40px) / 3); /* Keeps them equal width */
-    max-height: 450px; /* Prevents excessive stretching */
-    min-height: 400px; /* Ensures consistent size */
+    max-height: 450px;
+    min-height: 400px;
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0; /* Make the article invisible initially */
+    transform: translateY(50px); /* Move the article 50px down (out of the view) */
+    transition: transform 0.5s ease, opacity 0.5s ease; /* Smooth transition for opacity and position */
 }
 
 .article-card.revealed {

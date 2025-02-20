@@ -43,7 +43,9 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 1; /* Cards are visible by default */
+  transform: translateY(50px); /* Initial position off-screen */
+  transition: transform 0.3s ease; /* Only animate transform for smooth sliding */
 }
 
 .learn-card.revealed {
@@ -472,11 +474,11 @@ img {
       font-size: 1em;
   }
 
-  article h2 {
+  .solar-article h2 {
       font-size: 1.8em;
   }
 
-  article p {
+  .solar-article p {
       font-size: 1em;
   }
 }

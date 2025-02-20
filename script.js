@@ -36,19 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const promises = images.map(image => {
       return new Promise((res, rej) => {
         const img = new Image();
         img.src = image.url;  // Ensure we use 'url' instead of 'path'
-        
-        // Log when image has successfully loaded
-        img.onload = () => {
-          console.log(`Image loaded successfully: ${image.url}`);
-          res(image.url);
-        };
-
-        // Log when image fails to load
+        img.onload = () => res(image.url);
         img.onerror = () => {
           console.error(`Failed to preload image: ${image.url}`);
           rej(image.url);
@@ -56,20 +49,9 @@ function preloadImages(images) {
       });
     });
 
-    Promise.allSettled(promises).then((results) => {
-      // Log the result of each image preload attempt
-      results.forEach(result => {
-        if (result.status === 'fulfilled') {
-          console.log(`Successfully loaded: ${result.value}`);
-        } else {
-          console.error(`Failed to load: ${result.reason}`);
-        }
-      });
-      resolve(); // Resolves the main Promise once all images are processed
-    });
+    Promise.allSettled(promises).then(() => resolve()); // Ensures function completes even with failures
   });
 }
-
 
 
 // Preload Facebook Timelines when the page is loaded
@@ -186,31 +168,56 @@ window.addEventListener('scroll', revealButtons);
 document.addEventListener('DOMContentLoaded', revealButtons);
 
 
+// ARTICLE REVEAL EFFECT
+function revealArticles() {
+  const articles = document.querySelectorAll('.article-card');
+  const triggerBottom = window.innerHeight * 0.8; // 80% of the window height
 
+  articles.forEach((article, index) => {
+      const articleTop = article.getBoundingClientRect().top;
 
-
-// REVEAL SERVICES SECTIONS
-function revealServices() {
-  const services = document.querySelectorAll('.service-category');
-  const products = document.querySelectorAll('.product');
-  const triggerBottom = window.innerHeight * 0.8;
-
-  services.forEach(service => {
-      const serviceTop = service.getBoundingClientRect().top;
-      const isActive = serviceTop < triggerBottom;
-      service.classList.toggle('active', isActive);
-
-      service.querySelectorAll('.product').forEach((product, index) => {
-          product.classList.toggle('revealed', isActive);
-      });
-  });
-
-  products.forEach(product => {
-      product.classList.toggle('revealed', 
-          product.getBoundingClientRect().top < triggerBottom
-      );
+      // If the article is in view, add the 'revealed' class and apply staggered effect
+      if (articleTop < triggerBottom) {
+          setTimeout(() => {
+              article.classList.add('revealed');
+          }, index * 200); // 200ms stagger
+      } else {
+          // If the article is out of view, remove the 'revealed' class
+          article.classList.remove('revealed');
+      }
   });
 }
+
+// LEARN REVEAL EFFECT //
+// Learn Card Reveal Effect
+function revealLearnCards() {
+  const learnCards = document.querySelectorAll('.learn-card');
+  const triggerBottom = window.innerHeight * 0.8;
+
+  learnCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+      if (cardTop < triggerBottom) {
+          setTimeout(() => {
+              card.classList.add('revealed');
+          }, index * 200); // 200ms stagger for a smooth animation
+      } else {
+          card.classList.remove('revealed'); // Reset when out of view
+      }
+  });
+}
+
+// Trigger the reveal effect on scroll
+window.addEventListener('scroll', revealLearnCards);
+
+// Initial call to display the reveal effect when the page loads
+revealLearnCards();
+
+
+
+// Ensure to trigger the reveal on page load and on scroll
+window.addEventListener('load', revealArticles);
+window.addEventListener('scroll', revealArticles);
+
 
 // ARTICLE REVEAL EFFECT
 function revealArticles() {
