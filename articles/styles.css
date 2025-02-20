@@ -4,7 +4,7 @@
 #learn {
   width: 100%;
   max-width: 1400px;
-  margin: 50px auto;
+  margin: auto;
   padding: 0 10px;
 }
 
@@ -36,7 +36,7 @@
   flex-direction: column;
   justify-content: space-between; /* Ensures proper alignment */
   width: calc((100% - 40px) / 3); /* Keeps them equal width */
-  max-height: 450px; /* Prevents excessive stretching */
+  max-height: 500px; /* Set a flexible max height */
   min-height: 400px; /* Ensures consistent size */
   overflow: hidden;
   border-radius: 8px;
@@ -60,7 +60,6 @@
   width: 100%;
   height: 50%; /* Ensures it takes up proper space */
   object-fit: cover; /* Prevents distortion */
-  transition: all 0.3s ease; /* Ensures smooth resizing */
 }
 
 /* Ensures snippet doesn't push card height */
@@ -73,7 +72,7 @@
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers content inside the overlay */
+  justify-content: space-between; /* Ensure the content stays within bounds */
   padding: 15px;
   border-radius: 8px;
   opacity: 1; /* Make the overlay visible by default */
@@ -137,70 +136,175 @@
 }
 
 /* Responsive Design for Learn Cards */
-
-/* Desktop and larger tablets */
 @media screen and (max-width: 1200px) {
   .learn-card {
-    width: calc((100% - 40px) / 3); /* 3 cards per row */
+    width: calc((100% - 40px) / 3); /* 3 cards */
   }
 }
 
-/* Tablets and smaller devices */
+@media (max-width: 1000px) {
+  .learn-card {
+    width: 50%; /* Half width in this range */
+    max-height: 500px; /* Keeps them proportional */
+  }
+
+  /* Ensuring the overlay and button behave correctly */
+  .learn-card .overlay {
+    height: 50%; /* Keeps overlay at half height */
+    padding-bottom: 20px; /* Keeps space at the bottom */
+  }
+}
+
 @media (max-width: 768px) {
   .learn-card {
     width: 100%; /* Full width in mobile */
     max-height: 420px; /* Keeps them proportional */
-    height: auto; /* Ensures no distortion */
   }
 
-  .learn-card img {
-    height: auto;
-    object-fit: cover; /* Ensures image fits well */
-  }
-
+  /* Make sure that button and text fit well on smaller screens */
   .learn-card .overlay {
-    height: auto; /* Ensures overlay fits inside */
-    padding: 15px;
-  }
-
-  .learn-card .overlay h3 {
-    font-size: 1.1em; /* Slightly smaller heading on mobile */
-  }
-
-  .learn-card .overlay p {
-    font-size: 0.8em; /* Slightly smaller text */
+    height: auto; /* Allow overlay to adjust based on content */
+    padding-bottom: 20px; /* Prevents overflow */
   }
 
   .learn-card .overlay .learn-read-more-btn {
-    padding: 8px 16px; /* Adjust button size */
+    margin-top: 10px;
   }
 }
 
-/* Mobile phones */
 @media screen and (max-width: 480px) {
   .learn-card {
-    width: 100%; /* One card per row */
-    height: auto; /* Maintain natural height */
+    width: 100%; /* 1 card */
+  }
+}
+
+/* ARTICLE CSS */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header with background image and overlay */
+header {
+  position: relative;
+  height: 300px;
+  background: url('header-banner.jpg') no-repeat center center/cover;
+  color: #fff;
+}
+
+header .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+header .header-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 20px;
+}
+
+header .header-content h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+/* Container for article content */
+.container {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.meta {
+  color: #777;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+.meta span {
+  margin-right: 15px;
+}
+
+/* Main article image */
+img.main-image {
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Article content styling */
+article {
+  margin-bottom: 40px;
+}
+
+article h2 {
+  font-size: 2em;
+  color: #2c3e50;
+  margin: 30px 0 10px;
+}
+
+article p {
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+/* Gallery of images */
+.gallery {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.gallery img {
+  width: calc(33.33% - 10px);
+  border-radius: 4px;
+}
+
+/* Highlighted quote block */
+.blockquote {
+  font-style: italic;
+  background: #f4f4f4;
+  padding: 15px;
+  border-left: 4px solid #3498db;
+  margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header .header-content h1 {
+    font-size: 2em;
   }
 
-  .learn-card img {
-    height: auto; /* Ensure the image adapts to the card */
+  .gallery {
+    flex-direction: column;
   }
 
-  .learn-card .overlay {
-    padding: 10px; /* Adjust padding */
-    height: auto; /* Ensure overlay adjusts to content */
-  }
-
-  .learn-card .overlay h3 {
-    font-size: 1em; /* Smaller text size */
-  }
-
-  .learn-card .overlay p {
-    font-size: 0.8em; /* Smaller text size */
-  }
-
-  .learn-card .overlay .learn-read-more-btn {
-    padding: 7px 12px; /* Smaller button for mobile */
+  .gallery img {
+    width: 100%;
   }
 }
