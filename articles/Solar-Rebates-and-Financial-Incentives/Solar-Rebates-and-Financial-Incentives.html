@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="./articles/styles.css">
-    <link rel="stylesheet" href="../styles.css">  
+    <link rel="stylesheet" href="/articles/styles.css"> <!-- Correct path for article-specific styles -->
+    <link rel="stylesheet" href="/styles.css"> <!-- Correct path for main styles -->
     <title>Solar Rebates and Financial Incentives in Western Australia</title>
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 
   <nav>
     <div class="floating-logo">
-      <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+      <img src="/images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
     <ul class="nav-links">
       <li><a href="../#about">About Us</a></li>
@@ -66,7 +66,7 @@
       <p>In Western Australia, solar power has become a widely adopted solution for homeowners aiming to reduce their electricity bills and carbon footprint. With government incentives, the initial investment in solar systems has become more affordable. This article explores the available rebates, how they work, and the financial incentives for switching to solar power in Western Australia. Solar energy is not just an environmental choice, but also a financially savvy decision that can pay off in the long run.</p>
 
       <!-- Table of Contents -->
-      <ul class="table-of-contents">
+      <ul id="article-toc" class="table-of-contents">
         <li><a href="#stcs">Small-Scale Technology Certificates (STCs)</a></li>
         <li><a href="#rebates">State Rebates in WA</a></li>
         <li><a href="#feedintariffs">Feed-in Tariffs</a></li>
