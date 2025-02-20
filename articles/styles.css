@@ -291,7 +291,7 @@ header p {
 }
 .modal-fulltext h2{
   margin-top:10px;
-  margin-bottom:10px;
+  margin-bottom: 30px;
 }
 
 .modal-fulltext p {
@@ -301,6 +301,7 @@ header p {
 .modal-fulltext img{
   height: auto;
   max-width: 600px;
+  Margin-top: 20px;
 }
 .modal-comment {
   font-size: 0.8em;
@@ -353,9 +354,11 @@ header p {
   position: relative;
   list-style-type: none;
   padding: 5;
-  margin: 0;
+  margin: 10;
   font-size: 1.2em;
   text-align: left;
+  margin-top: 0px;
+  margin-bottom: 40px;
 }
 
 #toc li {
