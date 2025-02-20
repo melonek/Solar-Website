@@ -1,5 +1,6 @@
 /* ========= Learn Page Section ========= */
 
+/* Learn card styling*/
 /* Learn page container */
 #learn {
   width: 100%;
@@ -108,7 +109,7 @@
   margin-top: 10px; /* Adds space between the text and button */
   background-color: #e67e22; /* Orange color */
   color: white;
-  padding: 10px 20px;
+  padding: 6px 20px;
   border-radius: 5px;
   text-align: center;
   font-weight: bold;
@@ -116,7 +117,7 @@
   transition: background-color 0.3s ease;
   display: block;
   width: 100%; /* Full width for the button */
-  max-width: 200px; /* Max button width */
+  max-width: 150px; /* Max button width */
   margin-left: auto; /* Centering the button */
   margin-right: auto; /* Centering the button */
 }
@@ -217,30 +218,179 @@ header p {
   margin-top: 10px;
 }
 
-/* Table of Contents */
-.table-of-contents {
-  margin: 20px 0;
-  max-width:fit-content;
-  padding: 10px;
-  list-style-type: none;
-  background-color: #e4e7e6;
+/* JAVASCRIPT APPENDED MODAL ARTICLE STYLING */
+
+/* Modal for Article Details */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); /* Overlay background */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   border-radius: 8px;
+  position: relative;
 }
 
-.table-of-contents li {
-  margin: 5px 0;
+.modal-header {
+  text-align: center; /* Center-align the headline */
+  margin-bottom: 20px;
 }
 
-.table-of-contents a {
+.modal-title {
+  font-size: 2em;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.modal-published {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  text-align: left; /* Left-align the publish date */
+  margin-bottom: 0;
+  position: absolute; /* Position the publish date in the top-left corner */
+  top: 10px;
+  left: 20px;
+}
+
+.modal-banner {
+  width: 100%;
+  height: 350px;;
+  max-height: 800px;
+  margin-bottom: 10px; /* Reduce margin to bring snippet closer */
+}
+
+.modal-snippet {
+  font-size: 0.9em;
+  color: #34495e;
+  margin-bottom: 15px;
+  margin-top: 0; /* Remove top margin to place snippet directly under image */
+}
+
+.modal-fulltext {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #34495e;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  margin-top: 25px;
+}
+.modal-fulltext h2{
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.modal-fulltext p {
+  margin-bottom: 20px;
+}
+
+.modal-fulltext img{
+  height: auto;
+  max-width: 600px;
+}
+.modal-comment {
+  font-size: 0.8em;
+  color: #7f8c8d;
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Responsive design for form */
+@media screen and (max-width: 768px) {
+  form {
+      padding: 15px;
+  }
+}
+
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+
+  .product {
+      width: 100%;
+  }
+  .section h1 {
+      font-size: 2em;
+  }
+
+  .service-category h2 {
+      font-size: 1.2em;
+  }
+}
+
+
+/*Table of Contents (TOC) for Javascript appended modal */
+#toc {
+  position: relative;
+  list-style-type: none;
+  padding: 5;
+  margin: 0;
+  font-size: 1.2em;
+  text-align: left;
+}
+
+#toc li {
+  margin: 15px 0;
+}
+#toc li {
+  margin: 15px 0;
+}
+
+#toc a {
   text-decoration: none;
   color: #3498db;
-  font-size: 1.1em;
 }
 
-.table-of-contents a:hover {
-  text-decoration: underline;
+#toc a:hover {
+  color: #2c3e50;
 }
 
+/* Overlay effect for Table of Contents */
+#toc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2); /* Light dark overlay */
+  border-radius: 10px;
+  z-index: -1; /* Placing the overlay behind the content */
+}
+
+
+
+
+/* ARTICLE CONTENT STYLING - LEARN ARTICLE */
 /* Article Container */
 .container {
   max-width: 1400px;
@@ -248,23 +398,27 @@ header p {
   padding: 20px;
 }
 
-/* Article Content Styling */
-article h2 {
+.solar-article h2 {
   font-size: 2em;
   margin-bottom: 10px;
   color: #2c3e50;
+  margin-bottom: 30px; /* Add space after each header */
 }
 
-article p {
+.solar-article p {
   font-size: 1.1em;
   margin-bottom: 20px;
   line-height: 1.8;
+  margin-left: 10px;
+  margin-right: 10px;
+
 }
 
 img {
   width: 100%;
   height: auto;
   border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 /* Main article image */
@@ -280,7 +434,8 @@ img {
 /* Photo and Text Layout */
 .photo-text {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
@@ -321,4 +476,29 @@ img {
   article p {
       font-size: 1em;
   }
+}
+
+/* TOC FOR LEARN ARTCILES HTML*/
+
+.table-of-contents {
+  margin: 20px 0;
+  max-width:fit-content;
+  padding: 10px;
+  list-style-type: none;
+  background-color: #e4e7e6;
+  border-radius: 8px;
+}
+
+.table-of-contents li {
+  margin: 5px 0;
+}
+
+.table-of-contents a {
+  text-decoration: none;
+  color: #3498db;
+  font-size: 1.1em;
+}
+
+.table-of-contents a:hover {
+  text-decoration: underline;
 }
