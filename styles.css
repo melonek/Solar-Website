@@ -79,7 +79,7 @@ nav {
 /* Active link (for current page) */
 .nav-links a.active {
     color: #2980b9; /* Active link color */
-    text-decoration: underline; /* Underline active link */
+    text-decoration: none; /* Underline active link */
     background-color: rgba(255, 255, 255, 0.4); /* Active link background */
 }
 
@@ -3629,7 +3629,7 @@ footer {
 .active-page {
     background-color: #3498db;
     color: white;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* Modal for Article Details */
@@ -4078,7 +4078,7 @@ footer {
 .active-page {
     background-color: #3498db;
     color: white;
-    text-decoration: underline;
+    text-decoration: none;;
 }
 
 /* Modal for Article Details */
