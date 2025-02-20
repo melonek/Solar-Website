@@ -178,9 +178,13 @@
   }
 }
 
-/* ARTICLE CSS */
 
-/* Reset and base styles */
+
+
+
+/* ARTICLE TEMPLATE CSS */
+
+/* Basic Reset */
 * {
   margin: 0;
   padding: 0;
@@ -191,120 +195,129 @@ body {
   font-family: 'Arial', sans-serif;
   line-height: 1.6;
   color: #333;
+  background-color: #f4f4f4;
 }
 
-a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-/* Header with background image and overlay */
+/* Header Styling */
 header {
-  position: relative;
-  height: 300px;
-  background: url('header-banner.jpg') no-repeat center center/cover;
-  color: #fff;
-}
-
-header .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-header .header-content {
-  position: relative;
-  z-index: 2;
+  background-color: #163530;
+  color: white;
+  padding: 30px;
   text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 0 20px;
+  margin-bottom: 20px;
 }
 
-header .header-content h1 {
-  font-size: 3em;
+header h1 {
+  font-size: 2.5em;
   margin-bottom: 10px;
 }
 
-/* Container for article content */
+header p {
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* Table of Contents */
+.table-of-contents {
+  margin: 20px 0;
+  padding: 10px;
+  list-style-type: none;
+  background-color: #e9f7ef;
+  border-radius: 8px;
+}
+
+.table-of-contents li {
+  margin: 5px 0;
+}
+
+.table-of-contents a {
+  text-decoration: none;
+  color: #3498db;
+  font-size: 1.1em;
+}
+
+.table-of-contents a:hover {
+  text-decoration: underline;
+}
+
+/* Article Container */
 .container {
   max-width: 1400px;
-  margin: 30px auto;
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.meta {
-  color: #777;
-  font-size: 0.9em;
-  margin-bottom: 20px;
-}
-
-.meta span {
-  margin-right: 15px;
-}
-
-/* Main article image */
-img.main-image {
-  width: 100%;
-  border-radius: 4px;
-  margin-bottom: 20px;
-}
-
-/* Article content styling */
-article {
-  margin-bottom: 40px;
-}
-
+/* Article Content Styling */
 article h2 {
   font-size: 2em;
+  margin-bottom: 10px;
   color: #2c3e50;
-  margin: 30px 0 10px;
 }
 
 article p {
+  font-size: 1.1em;
   margin-bottom: 20px;
-  text-align: justify;
+  line-height: 1.8;
 }
 
-/* Gallery of images */
-.gallery {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.gallery img {
-  width: calc(33.33% - 10px);
+img {
+  width: 100%;
+  height: auto;
   border-radius: 4px;
 }
 
-/* Highlighted quote block */
-.blockquote {
-  font-style: italic;
-  background: #f4f4f4;
-  padding: 15px;
-  border-left: 4px solid #3498db;
-  margin: 20px 0;
+/* Main article image */
+.main-image {
+  width: 100%;
+  height: 350px; /* Adjusted height for narrower, proportional size */
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 20px;
 }
 
-/* Responsive adjustments */
+
+/* Photo and Text Layout */
+.photo-text {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.photo-text img {
+  width: 100%;  
+  max-width: 550px; 
+  height: auto; 
+  border-radius: 8px;
+}
+
+/* Make sure the text flows around the image */
+.photo-text p {
+  flex: 1; /* Allow text to fill the remaining space */
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  header .header-content h1 {
-    font-size: 2em;
+  .photo-text {
+      flex-direction: column;
+      align-items: flex-start;
   }
 
-  .gallery {
-    flex-direction: column;
+  .photo-text img {
+      width: 100%;
   }
 
-  .gallery img {
-    width: 100%;
+  .photo-text p {
+      width: 100%;
+      font-size: 1em;
+  }
+
+  article h2 {
+      font-size: 1.8em;
+  }
+
+  article p {
+      font-size: 1em;
   }
 }

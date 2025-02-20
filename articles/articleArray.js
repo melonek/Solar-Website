@@ -42,7 +42,7 @@
         <p><strong>Comment:</strong> This is an example article on solar rebates and financial incentives in Western Australia.</p>
       `,
       publishedDate: "February 20, 2025",
-      comment: "My first ever article upload",
+      comment: "Solar incentives and rebates",
       displayOnMain: true,
       displayOnLearn: true,
       fullArticlePath: "../articles/Solar-Rebates-and-Financial-Incentives/Solar-Rebates-and-Financial-Incentives.html"
