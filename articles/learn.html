@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Articles & Learn Page</title>
+  <!-- Global styles for the whole site -->
+  <link rel="stylesheet" href="../styles.css" /> 
+  <!-- Specific styles for learn/articles section -->
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+
+  <nav>
+    <!-- Moved logo outside of nav for fixed positioning -->
+    <div class="floating-logo">
+      <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+    </div>
+    <ul class="nav-links">
+      <li><a href="../#about">About Us</a></li>
+      <li class="dropdown">
+        <a href="../#services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <div class="dropdown-content">
+          <a href="../packages/packages.html">Solar Systems</a>
+          <a href="../#battery-storage">Battery Storage</a>
+          <a href=".../#ev-chargers">EV Chargers</a>
+        </div>
+      </li>
+      <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+      <li><a href="../#articles">Articles/News</a></li>
+      <li><a href="./learn.html">Learn Solar</a></li>
+      <li><a href="../#installations">Installations</a></li>
+      <li><a href="../#faq">FAQ</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+      <div class="bar half start"></div>
+      <div class="bar"></div>
+      <div class="bar half end"></div>
+    </div>
+  </nav>
+  
+  
+  
+
+  <!-- Learn Page Section -->
+  <section id="learn" class="section">
+    <h1>Learn</h1>
+    <div class="learn-container">
+      <h3>Explore a range of topics related to solar energy.</h3>
+      <div id="learn-grid" class="grid-container"></div>
+      <div class="pagination" id="learn-pagination">
+        <div id="learn-page-numbers"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Page Articles Section -->
+  <section id="articles" class="section">
+    <h1>Articles/News</h1>
+    <h3>Stay up-to-date with the latest advancements in solar technology.</h3>
+    <div class="articles-container">
+      <div id="articles-grid"></div>
+    </div>
+    <div class="pagination" id="articles-pagination">
+      <div id="page-numbers"></div>
+    </div>
+    <!-- Modal for Main Articles -->
+    <div id="article-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <div id="modal-article-content"></div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+      </footer>
+
+  <script src="../script.js"></script>
+  <script src="./articleArray.js"></script>
+</body>
+</html>

@@ -3594,113 +3594,6 @@ footer {
     }
   }
 
-/* Article Cards */
-#articles {
-    width: 100%;
-    max-width: 1400px;
-    margin: auto;
-}
-
-.articles-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    flex-direction: row !important;
-    padding: 0 10;
-    width: 100%;
-}
-
-/* Articles Grid */
-#articles-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    margin-bottom: 40px;
-    margin-top: 20px;
-}
-
-.article-card {
-    width: calc((100% - 80px) / 5);
-    min-width: 180px;
-    max-width: none;
-    flex: 1 1 calc(20% - 16px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    margin: 10 0;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 0 10px;
-    transform: translateY(50px);
-    transition: all 0.6s ease-out;
-}
-
-.article-card.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.article-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.article-card img {
-    width: 100%;
-    height: 200px; /* Fixed height, adjust as needed */
-    object-fit: cover;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.article-card h3 {
-    padding: 10px;
-    margin: 0;
-    font-size: 1.1em;
-    white-space: normal;
-}
-
-.article-card p {
-    padding: 0 10px 10px;
-    font-size: 0.9em;
-    white-space: normal;
-}
-
-.read-more-btn {
-    display: block;
-    margin: 10px auto;
-    padding: 5px 10px;
-    background-color: #3498db;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.read-more-btn:hover {
-    background-color: #2980b9;
-}
-
-/* Responsive Design for Article Cards */
-@media screen and (max-width: 1200px) {
-    .article-card {
-      width: calc((100% - 40px) / 3); /* 3 cards */
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .article-card {
-      width: calc((100% - 20px) / 2); /* 2 cards */
-    }
-  }
-
-  @media screen and (max-width: 480px) {
-    .article-card {
-      width: 100%; /* 1 card */
-    }
-  }
-
 /* Pagination */
 .pagination {
     display: flex;
@@ -3822,29 +3715,6 @@ footer {
     color: black;
     text-decoration: none;
     cursor: pointer;
-}
-
-/* Responsive Design for article cards */
-@media screen and (max-width: 1200px) {
-    .article-card {
-        width: calc(33.333% - 20px);
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .article-card {
-        width: calc(50% - 20px);
-    }
-
-    .modal-content {
-        width: 90%;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .article-card {
-        width: 100%;
-    }
 }
 
 /* Responsive design for form */
@@ -4068,9 +3938,6 @@ footer {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    flex-direction: row !important;
-    padding: 0 10;
-    width: 100%;
 }
 
 /* Articles Grid */
@@ -4079,23 +3946,21 @@ footer {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     margin-top: 20px;
 }
 
 .article-card {
-    width: calc((100% - 80px) / 5);
-    min-width: 180px;
-    max-width: none;
-    flex: 1 1 calc(20% - 16px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    margin: 10 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures proper alignment */
+    width: calc((100% - 40px) / 3); /* Keeps them equal width */
+    max-height: 450px; /* Prevents excessive stretching */
+    min-height: 400px; /* Ensures consistent size */
     overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 0 10px;
-    transform: translateY(50px);
-    transition: all 0.6s ease-out;
 }
 
 .article-card.revealed {
@@ -4110,10 +3975,18 @@ footer {
 
 .article-card img {
     width: 100%;
-    height: 200px; /* Fixed height, adjust as needed */
-    object-fit: cover;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    height: 50%; /* Ensures it takes up proper space */
+    object-fit: cover; /* Prevents distortion */
+}
+
+/* Ensures snippet doesn't push card height */
+.article-snippet {
+    height: 4.8em; /* Limits text to 4 lines */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
 }
 
 .article-card h3 {
@@ -4128,6 +4001,12 @@ footer {
     font-size: 0.9em;
     white-space: normal;
 }
+
+.article-card .read-more-btn {
+    align-self: flex-start;
+    margin-top: auto; /* Pushes it down */
+}
+
 
 .read-more-btn {
     display: block;
@@ -4151,11 +4030,12 @@ footer {
     }
   }
 
-  @media screen and (max-width: 768px) {
+  @media (max-width: 768px) {
     .article-card {
-      width: calc((100% - 20px) / 2); /* 2 cards */
+        width: 100%; /* Full width in mobile */
+        max-height: 420px; /* Keeps them proportional */
     }
-  }
+}
 
   @media screen and (max-width: 480px) {
     .article-card {
