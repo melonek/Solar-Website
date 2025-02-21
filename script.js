@@ -447,7 +447,7 @@ function getPathPrefix() {
   if (path.includes('packages.html')) {
     return '../'; // Parent folder (for packages.html)
   } else {
-    return '/'; // Root folder (for index.html)
+    return './'; // Root folder (for index.html)
   }
 }
 
