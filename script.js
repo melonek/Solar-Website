@@ -213,10 +213,67 @@ window.addEventListener('scroll', revealLearnCards);
 revealLearnCards();
 
 
+// REVEAL SERVICES SECTIONS - Packages.html (inverter and panels reveal)
+function revealServices() {
+  const services = document.querySelectorAll('.service-category');
+  const products = document.querySelectorAll('.product');
+  const triggerBottom = window.innerHeight * 0.8;
 
-// Ensure to trigger the reveal on page load and on scroll
-window.addEventListener('load', revealArticles);
-window.addEventListener('scroll', revealArticles);
+  services.forEach(service => {
+      const serviceTop = service.getBoundingClientRect().top;
+      const isActive = serviceTop < triggerBottom;
+      service.classList.toggle('active', isActive);
+
+      service.querySelectorAll('.product').forEach((product, index) => {
+          product.classList.toggle('revealed', isActive);
+      });
+  });
+
+  products.forEach(product => {
+      product.classList.toggle('revealed', 
+          product.getBoundingClientRect().top < triggerBottom
+      );
+  });
+
+  // REVEAL UNIQUE SERVICE PRODUCT EFFECT (specific to #unique-services)
+function revealUniqueServices() {
+  const products = document.querySelectorAll('#unique-services .unique-service-product'); // Scoped to #unique-services
+  const triggerBottom = window.innerHeight * 0.8;
+
+  products.forEach((product, index) => {
+      const productTop = product.getBoundingClientRect().top;
+      const isActive = productTop < triggerBottom;
+      const revealDirection = product.getAttribute('data-reveal-direction');
+      const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
+
+      if (isActive) {
+          setTimeout(() => {
+              product.classList.add('revealed');
+              // Add specific direction-based reveal
+              product.style.transform = revealDirection === 'right' ? 'translateX(0)' : 'translateX(0)';
+          }, delay * 200); // 200ms stagger
+      } else {
+          product.classList.remove('revealed');
+          // Reset position based on direction
+          product.style.transform = revealDirection === 'right' ? 'translateX(100px)' : 'translateX(-100px)'; // Reset position
+      }
+  });
+}
+
+// Trigger reveal effect on scroll
+window.addEventListener('scroll', revealUniqueServices);
+
+// Initial call to display the reveal effect when the page loads
+revealUniqueServices();
+
+
+// Trigger reveal effect on scroll
+window.addEventListener('scroll', revealUniqueServices);
+
+// Initial call to display the reveal effect when the page loads
+revealUniqueServices();
+
+}
 
 
 // ARTICLE REVEAL EFFECT
@@ -235,6 +292,11 @@ function revealArticles() {
       }
   });
 }
+
+// Ensure to trigger the reveal on page load and on scroll
+window.addEventListener('load', revealArticles);
+window.addEventListener('scroll', revealArticles);
+
 
 // FACEBOOK TIMELINE REVEAL
 function revealFBTimelines() {
@@ -376,39 +438,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+// Brand images array with relative image URLs
 const brandImages = [
-  { name: 'Trina', url: `../images/BrandLogos/Trina-Solar.png` },
-  { name: 'SMA', url: `../images/BrandLogos/SMA.png` },
-  { name: 'Canadian Solar', url: `../images/BrandLogos/Canadian-Solar.png` },
-  { name: 'DaSolar', url: `../images/BrandLogos/DaSolar.png` },
-  { name: 'Fronius', url: `../images/BrandLogos/Fronius.png` },
-  { name: 'Growatt', url: `../images/BrandLogos/Growatt.png` },
-  { name: 'Huawei/iStore', url: `../images/BrandLogos/Huawei.png` },
-  { name: 'JASolar', url: `../images/BrandLogos/JASolar.png` },
-  { name: 'Goodwe', url: `../images/BrandLogos/Goodwe.jpg` },
-  { name: 'Jinko', url: `../images/BrandLogos/Jinko.png` },
-  { name: 'Longi', url: `../images/BrandLogos/Longi.png` },
-  { name: 'Risen', url: `../images/BrandLogos/Risen-Solar.png` },
-  { name: 'Seraphim', url: `../images/BrandLogos/Seraphim.png` },
-  { name: 'Sofar', url: `../images/BrandLogos/Sofar.png` },
-  { name: 'SolarEdge', url: `../images/BrandLogos/Solar-Edge.png` },
-  { name: 'Solis', url: `../images/BrandLogos/Solis.png` },
-  { name: 'Sungrow', url: `../images/BrandLogos/Sungrow.png` },
-  { name: 'EgingPV', url: `../images/BrandLogos/EgingPV.png` },
-  { name: 'QCells', url: `../images/BrandLogos/QCells.png` }
+  { name: 'Trina', url: '/images/BrandLogos/Trina-Solar.png' },
+  { name: 'SMA', url: '/images/BrandLogos/SMA.png' },
+  { name: 'Canadian Solar', url: '/images/BrandLogos/Canadian-Solar.png' },
+  { name: 'DaSolar', url: '/images/BrandLogos/DaSolar.png' },
+  { name: 'Fronius', url: '/images/BrandLogos/Fronius.png' },
+  { name: 'Growatt', url: '/images/BrandLogos/Growatt.png' },
+  { name: 'Huawei/iStore', url: '/images/BrandLogos/Huawei.png' },
+  { name: 'JASolar', url: '/images/BrandLogos/JASolar.png' },
+  { name: 'Goodwe', url: '/images/BrandLogos/Goodwe.jpg' },
+  { name: 'Jinko', url: '/images/BrandLogos/Jinko.png' },
+  { name: 'Longi', url: '/images/BrandLogos/Longi.png' },
+  { name: 'Risen', url: '/images/BrandLogos/Risen-Solar.png' },
+  { name: 'Seraphim', url: '/images/BrandLogos/Seraphim.png' },
+  { name: 'Sofar', url: '/images/BrandLogos/Sofar.png' },
+  { name: 'SolarEdge', url: '/images/BrandLogos/Solar-Edge.png' },
+  { name: 'Solis', url: '/images/BrandLogos/Solis.png' },
+  { name: 'Sungrow', url: '/images/BrandLogos/Sungrow.png' },
+  { name: 'EgingPV', url: '/images/BrandLogos/EgingPV.png' },
+  { name: 'QCells', url: '/images/BrandLogos/QCells.png' }
 ];
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Wait for images to preload before starting the functionality
-  preloadImages(brandImages).then(() => {
-    initializeBrandSlider('.brand-card', '#brands');
-    initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
-  });
-});
+// Function to preload images before they are used
+function preloadImages(images) {
+  return new Promise((resolve, reject) => {
+    const promises = images.map(image => {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.src = image.url;  // Use the relative URL directly
+        img.onload = () => res(image.url);
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${image.url}`);
+          rej(image.url);
+        };
+      });
+    });
 
+    // Wait for all images to be preloaded
+    Promise.all(promises).then(() => resolve()).catch((err) => reject(err));
+  });
+}
+
+// Wait for images to preload before initializing the brand slider
+document.addEventListener('DOMContentLoaded', function () {
+  preloadImages(brandImages)
+    .then(() => {
+      initializeBrandSlider('.brand-card', '#brands');
+      initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
+    })
+    .catch((error) => {
+      console.error("Error preloading images:", error);
+    });
+});
+// Slider Initialization Function
 function initializeBrandSlider(cardSelector, containerSelector) {
   const brandCards = document.querySelectorAll(cardSelector);
-  if (brandCards.length === 0) return; // Exit if no brand cards exist
+  if (brandCards.length === 0) return;
 
   let currentIndex = 0;
 
@@ -422,12 +510,12 @@ function initializeBrandSlider(cardSelector, containerSelector) {
       imgElement.alt = brandImage.name;
 
       card.classList.remove('active');
-      setTimeout(() => card.classList.add('active'), 50); // Animate cards into view
+      setTimeout(() => card.classList.add('active'), 50);
     });
   }
 
   function cycleBrands() {
-    brandCards.forEach((card) => card.classList.remove('active')); // Fade out effect
+    brandCards.forEach((card) => card.classList.remove('active'));
 
     setTimeout(() => {
       currentIndex = (currentIndex + 4) % brandImages.length;
@@ -435,10 +523,8 @@ function initializeBrandSlider(cardSelector, containerSelector) {
     }, 500);
   }
 
-  // Start cycling brands every 5 seconds
   let brandInterval = setInterval(cycleBrands, 5000);
 
-  // Pause cycling on hover
   const container = document.querySelector(containerSelector);
   if (container) {
     container.addEventListener('mouseenter', () => clearInterval(brandInterval));
@@ -447,14 +533,15 @@ function initializeBrandSlider(cardSelector, containerSelector) {
     });
   }
 
-  // Initialize first set of images
   updateBrandCards();
 
-  // Initial fade-in effect
   setTimeout(() => {
     brandCards.forEach((card) => card.classList.add('active'));
   }, 500);
 }
+
+
+
 
 
 // Function to find image URL for a given brand

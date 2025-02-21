@@ -3968,9 +3968,9 @@ footer {
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition */
     opacity: 0; /* Make the article invisible initially */
-    transform: translateY(50px); /* Move the article 50px down (out of the view) */
-    transition: transform 0.5s ease, opacity 0.5s ease; /* Smooth transition for opacity and position */
+    transform: translateY(50px); /* Initial off-screen position */
 }
 
 .article-card.revealed {
@@ -4220,3 +4220,90 @@ footer {
         font-size: 1.2em;
     }
 }
+
+/* Unique Service Product Styling */
+#unique-services .unique-service-product {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px; /* All cards have the same width */
+    margin-bottom: 30px;
+    opacity: 0; /* Initially hidden */
+    transform: translateY(50px); /* Initially offset vertically */
+    transition: opacity 0.6s ease, transform 0.6s ease; /* Slow down the reveal */
+    border-radius: 8px; /* Rounded corners */
+  }
+
+  #unique-services .unique-service-product.revealed {
+    opacity: 1; /* Fade-in effect */
+    transform: translateY(0); /* Slide-in effect */
+  }
+  
+  
+/* Hover effects - Slight zoom effect on card and box shadow */
+#unique-services .unique-service-product:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Adding box shadow */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smoother transition for scale and shadow */
+  }
+/* Product Image Styling */
+#unique-services .unique-service-product img {
+    width: 100%;
+    height: 200px; /* Set fixed height for uniform images */
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease; /* Smooth transition for the scaling effect */
+  }
+
+  /* Hover effect for image: scale it slightly */
+#unique-services .unique-service-product:hover img {
+    transform: scale(1.05); /* Zoom in on image */
+  }
+  
+  #unique-services .unique-service-product h3 {
+    margin-top: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+  }
+
+  #unique-services .unique-service-product p {
+    font-size: 0.9em;
+    color: #7f8c8d;
+  }
+  
+  /* Unique Service Product Styling */
+#unique-services {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .unique-services-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px; /* Space between the service categories */
+  }
+  
+  /* Unique Service Product Grid */
+#unique-services .unique-product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px; /* Space between the product cards */
+  }
+
+  /* Responsive Design */
+@media screen and (max-width: 768px) {
+    #unique-services .unique-product-grid {
+      flex-direction: column;
+    }
+  
+    #unique-services .unique-service-product {
+      width: 100%;
+      max-width: none; /* Full width on mobile */
+    }
+  }
