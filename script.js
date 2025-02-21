@@ -439,92 +439,70 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Brand images array with relative image URLs
-const brandImages = [
-  { name: 'Trina', url: '/images/BrandLogos/Trina-Solar.png' },
-  { name: 'SMA', url: '/images/BrandLogos/SMA.png' },
-  { name: 'Canadian Solar', url: '/images/BrandLogos/Canadian-Solar.png' },
-  { name: 'DaSolar', url: '/images/BrandLogos/DaSolar.png' },
-  { name: 'Fronius', url: '/images/BrandLogos/Fronius.png' },
-  { name: 'Growatt', url: '/images/BrandLogos/Growatt.png' },
-  { name: 'Huawei/iStore', url: '/images/BrandLogos/Huawei.png' },
-  { name: 'JASolar', url: '/images/BrandLogos/JASolar.png' },
-  { name: 'Goodwe', url: '/images/BrandLogos/Goodwe.jpg' },
-  { name: 'Jinko', url: '/images/BrandLogos/Jinko.png' },
-  { name: 'Longi', url: '/images/BrandLogos/Longi.png' },
-  { name: 'Risen', url: '/images/BrandLogos/Risen-Solar.png' },
-  { name: 'Seraphim', url: '/images/BrandLogos/Seraphim.png' },
-  { name: 'Sofar', url: '/images/BrandLogos/Sofar.png' },
-  { name: 'SolarEdge', url: '/images/BrandLogos/Solar-Edge.png' },
-  { name: 'Solis', url: '/images/BrandLogos/Solis.png' },
-  { name: 'Sungrow', url: '/images/BrandLogos/Sungrow.png' },
-  { name: 'EgingPV', url: '/images/BrandLogos/EgingPV.png' },
-  { name: 'QCells', url: '/images/BrandLogos/QCells.png' }
-];
+// Function to determine the path prefix dynamically based on the current page
+function getPathPrefix() {
+  const path = window.location.pathname;
 
-// Function to preload images before they are used
-function preloadImages(images) {
-  return new Promise((resolve, reject) => {
-    const promises = images.map(image => {
-      return new Promise((res, rej) => {
-        const img = new Image();
-        img.src = image.url;  // Use the relative URL directly
-        img.onload = () => res(image.url);
-        img.onerror = () => {
-          console.error(`Failed to preload image: ${image.url}`);
-          rej(image.url);
-        };
-      });
-    });
-
-    // Wait for all images to be preloaded
-    Promise.all(promises).then(() => resolve()).catch((err) => reject(err));
-  });
+  // If on packages.html, use ../, otherwise use / for index.html
+  if (path.includes('packages.html')) {
+    return '../'; // Parent folder (for packages.html)
+  } else {
+    return '/'; // Root folder (for index.html)
+  }
 }
 
-// Wait for images to preload before initializing the brand slider
-document.addEventListener('DOMContentLoaded', function () {
-  preloadImages(brandImages)
-    .then(() => {
-      initializeBrandSlider('.brand-card', '#brands');
-      initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
-    })
-    .catch((error) => {
-      console.error("Error preloading images:", error);
-    });
-});
-// Slider Initialization Function
-function initializeBrandSlider(cardSelector, containerSelector) {
-  const brandCards = document.querySelectorAll(cardSelector);
-  if (brandCards.length === 0) return;
+// Dynamically define the brand image paths based on the page
+const brandImagePaths = [
+  { name: 'Trina', url: `${getPathPrefix()}images/BrandLogos/Trina-Solar.png` },
+  { name: 'SMA', url: `${getPathPrefix()}images/BrandLogos/SMA.png` },
+  { name: 'Canadian Solar', url: `${getPathPrefix()}images/BrandLogos/Canadian-Solar.png` },
+  { name: 'DaSolar', url: `${getPathPrefix()}images/BrandLogos/DaSolar.png` },
+  { name: 'Fronius', url: `${getPathPrefix()}images/BrandLogos/Fronius.png` },
+  { name: 'Growatt', url: `${getPathPrefix()}images/BrandLogos/Growatt.png` },
+  { name: 'Huawei/iStore', url: `${getPathPrefix()}images/BrandLogos/Huawei.png` },
+  { name: 'JASolar', url: `${getPathPrefix()}images/BrandLogos/JASolar.png` },
+  { name: 'Goodwe', url: `${getPathPrefix()}images/BrandLogos/Goodwe.jpg` },
+  { name: 'Jinko', url: `${getPathPrefix()}images/BrandLogos/Jinko.png` },
+  { name: 'Longi', url: `${getPathPrefix()}images/BrandLogos/Longi.png` },
+  { name: 'Risen', url: `${getPathPrefix()}images/BrandLogos/Risen-Solar.png` },
+  { name: 'Seraphim', url: `${getPathPrefix()}images/BrandLogos/Seraphim.png` },
+  { name: 'Sofar', url: `${getPathPrefix()}images/BrandLogos/Sofar.png` },
+  { name: 'SolarEdge', url: `${getPathPrefix()}images/BrandLogos/Solar-Edge.png` },
+  { name: 'Solis', url: `${getPathPrefix()}images/BrandLogos/Solis.png` },
+  { name: 'Sungrow', url: `${getPathPrefix()}images/BrandLogos/Sungrow.png` },
+  { name: 'EgingPV', url: `${getPathPrefix()}images/BrandLogos/EgingPV.png` },
+  { name: 'QCells', url: `${getPathPrefix()}images/BrandLogos/QCells.png` }
+];
 
+// Function to cycle brand images dynamically for both index.html and packages.html
+function cycleBrandImages(containerSelector, brandImages) {
+  const brandCards = document.querySelectorAll(containerSelector + ' .brand-card, .solar-brand-card');
   let currentIndex = 0;
 
   function updateBrandCards() {
     brandCards.forEach((card, i) => {
       const imgIndex = (currentIndex + i) % brandImages.length;
       const brandImage = brandImages[imgIndex];
-
       const imgElement = card.querySelector('img');
       imgElement.src = brandImage.url;
       imgElement.alt = brandImage.name;
-
       card.classList.remove('active');
-      setTimeout(() => card.classList.add('active'), 50);
+      setTimeout(() => card.classList.add('active'), 50); // Animate cards into view
     });
   }
 
   function cycleBrands() {
-    brandCards.forEach((card) => card.classList.remove('active'));
+    brandCards.forEach(card => card.classList.remove('active')); // Fade out effect
 
     setTimeout(() => {
-      currentIndex = (currentIndex + 4) % brandImages.length;
+      currentIndex = (currentIndex + 1) % brandImages.length; // Cycle through images
       updateBrandCards();
     }, 500);
   }
 
   let brandInterval = setInterval(cycleBrands, 5000);
 
+  // Pause cycling on hover
   const container = document.querySelector(containerSelector);
   if (container) {
     container.addEventListener('mouseenter', () => clearInterval(brandInterval));
@@ -533,22 +511,26 @@ function initializeBrandSlider(cardSelector, containerSelector) {
     });
   }
 
+  // Initialize first set of images
   updateBrandCards();
-
   setTimeout(() => {
-    brandCards.forEach((card) => card.classList.add('active'));
+    brandCards.forEach(card => card.classList.add('active'));
   }, 500);
 }
 
+// Ensure the function is applied for both pages
+document.addEventListener('DOMContentLoaded', function () {
+  // For index.html
+  if (document.getElementById('brands')) {
+    cycleBrandImages('#brands .brands-container', brandImagePaths);
+  }
 
+  // For packages.html
+  if (document.getElementById('solar-logo-cards-container')) {
+    cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImagePaths);
+  }
+});
 
-
-
-// Function to find image URL for a given brand
-function getBrandImage(brandName) {
-  const brand = brandImages.find((b) => b.name === brandName);
-  return brand ? brand.url : "/images/default-image.png"; // Fallback image
-}
 
 // Product Data Array
 const solarProducts = {
