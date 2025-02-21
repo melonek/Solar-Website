@@ -471,9 +471,9 @@ function preloadImages(images) {
 function getPathPrefix() {
   const path = window.location.pathname;
   if (path.includes('packages.html')) {
-    return './'; // Parent folder (for packages.html)
+    return '../'; // Parent folder (for packages.html)
   } else {
-    return '../'; // Root folder (for index.html)
+    return './'; // Root folder (for index.html)
   }
 }
 
