@@ -439,15 +439,41 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Function to preload images before they are used
+function preloadImages(images) {
+  return new Promise((resolve, reject) => {
+    const promises = images.map(image => {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.src = image.url;  // Ensure we use 'url' instead of 'path'
+        img.onload = () => res(image.url);
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${image.url}`);
+          rej(image.url);
+        };
+      });
+    });
+
+    // Wait for all images to load or reject if any fail
+    Promise.allSettled(promises)
+      .then(results => {
+        const failed = results.filter(result => result.status === "rejected");
+        if (failed.length > 0) {
+          reject(`Some images failed to load: ${failed.map(item => item.reason).join(', ')}`);
+        } else {
+          resolve();
+        }
+      });
+  });
+}
+
 // Function to determine the path prefix dynamically based on the current page
 function getPathPrefix() {
   const path = window.location.pathname;
-
-  // If on packages.html, use ../, otherwise use / for index.html
   if (path.includes('packages.html')) {
     return '../'; // Parent folder (for packages.html)
   } else {
-    return './'; // Root folder (for index.html)
+    return '/'; // Root folder (for index.html)
   }
 }
 
@@ -517,6 +543,25 @@ function cycleBrandImages(containerSelector, brandImages) {
     brandCards.forEach(card => card.classList.add('active'));
   }, 500);
 }
+
+// Ensure the function is applied for both pages
+document.addEventListener('DOMContentLoaded', function () {
+  // Preload images before starting the functionality
+  preloadImages(brandImagePaths).then(() => {
+    // For index.html
+    if (document.getElementById('brands')) {
+      cycleBrandImages('#brands .brands-container', brandImagePaths);
+    }
+
+    // For packages.html
+    if (document.getElementById('solar-logo-cards-container')) {
+      cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImagePaths);
+    }
+  }).catch((error) => {
+    console.error('Error preloading images:', error);
+  });
+});
+
 
 // Ensure the function is applied for both pages
 document.addEventListener('DOMContentLoaded', function () {
