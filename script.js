@@ -1,38 +1,47 @@
 
-// SIMPLE PARALLAX SCRIPT
 document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.querySelector('.hero-section');
   const heroImage = document.querySelector('.hero-image img');
   let lastScroll = 0;
 
+  // Manually set the dimensions of the image
+  const imageWidth = 4000;  // Set to your desired width (e.g., 6000px)
+  const imageHeight = 1000; // Set to your desired height (e.g., 3000px)
+
+  // Set the image to the desired size
+  heroImage.style.width = `${imageWidth}px`;
+  heroImage.style.height = `${imageHeight}px`;
+
+  // Update parallax function
   function updateParallax() {
-      const scrollY = window.scrollY;
-      const sectionTop = heroSection.offsetTop;
-      const sectionHeight = heroSection.clientHeight;
-      
-      // Only animate when section is visible
-      if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
+    const scrollY = window.scrollY;
+    const sectionTop = heroSection.offsetTop;
+    const sectionHeight = heroSection.clientHeight;
+    
+    // Only animate when section is visible
+    if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
 
-      // Calculate parallax movement (25% of scroll distance)
-      const progress = (scrollY - sectionTop) / sectionHeight;
-      const parallaxY = progress * sectionHeight * 0.25;
+    // Calculate parallax movement (25% of scroll distance)
+    const progress = (scrollY - sectionTop) / sectionHeight;
+    const parallaxY = progress * sectionHeight * 0.25;
 
-      // Apply transform with hardware acceleration
-      heroImage.style.transform = `
-          translate3d(-50%, calc(-50% + ${parallaxY}px), 0)
-      `;
+    // Apply the parallax transform
+    heroImage.style.transform = `
+        translate3d(-50%, calc(-50% + ${parallaxY}px), 0)
+    `;
 
-      requestAnimationFrame(updateParallax);
+    requestAnimationFrame(updateParallax);
   }
 
   // Initialize parallax on scroll
   window.addEventListener('scroll', () => {
-      if (Math.abs(window.scrollY - lastScroll) > 2) {
-          requestAnimationFrame(updateParallax);
-          lastScroll = window.scrollY;
-      }
+    if (Math.abs(window.scrollY - lastScroll) > 2) {
+        requestAnimationFrame(updateParallax);
+        lastScroll = window.scrollY;
+    }
   });
 });
+
 
 // Function to preload images before they are used - for sliders in packages html and index.
 function preloadImages(images) {
@@ -439,6 +448,45 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+let brandImages = []; // Declare globally
+
+// Function to get the path prefix dynamically based on the current page
+function getPathPrefix() {
+  const path = window.location.pathname;
+  if (path.includes('packages.html')) {
+    return '../'; // Parent folder (for packages.html)
+  } else {
+    return '../'; // Root folder (for index.html)
+  }
+}
+
+// Initialize brandImages with the correct paths
+function initializeBrandImages() {
+  const prefix = getPathPrefix(); // Dynamically get the path prefix
+
+  brandImages = [
+    { name: 'Trina', url: `${prefix}images/BrandLogos/Trina-Solar.png` },
+    { name: 'SMA', url: `${prefix}images/BrandLogos/SMA.png` },
+    { name: 'Canadian Solar', url: `${prefix}images/BrandLogos/Canadian-Solar.png` },
+    { name: 'DaSolar', url: `${prefix}images/BrandLogos/DaSolar.png` },
+    { name: 'Fronius', url: `${prefix}images/BrandLogos/Fronius.png` },
+    { name: 'Growatt', url: `${prefix}images/BrandLogos/Growatt.png` },
+    { name: 'Huawei/iStore', url: `${prefix}images/BrandLogos/Huawei.png` },
+    { name: 'JASolar', url: `${prefix}images/BrandLogos/JASolar.png` },
+    { name: 'Goodwe', url: `${prefix}images/BrandLogos/Goodwe.jpg` },
+    { name: 'Jinko', url: `${prefix}images/BrandLogos/Jinko.png` },
+    { name: 'Longi', url: `${prefix}images/BrandLogos/Longi.png` },
+    { name: 'Risen', url: `${prefix}images/BrandLogos/Risen-Solar.png` },
+    { name: 'Seraphim', url: `${prefix}images/BrandLogos/Seraphim.png` },
+    { name: 'Sofar', url: `${prefix}images/BrandLogos/Sofar.png` },
+    { name: 'SolarEdge', url: `${prefix}images/BrandLogos/Solar-Edge.png` },
+    { name: 'Solis', url: `${prefix}images/BrandLogos/Solis.png` },
+    { name: 'Sungrow', url: `${prefix}images/BrandLogos/Sungrow.png` },
+    { name: 'EgingPV', url: `${prefix}images/BrandLogos/EgingPV.png` },
+    { name: 'QCells', url: `${prefix}images/BrandLogos/QCells.png` }
+  ];
+}
+
 // Function to preload images before they are used
 function preloadImages(images) {
   return new Promise((resolve, reject) => {
@@ -467,38 +515,18 @@ function preloadImages(images) {
   });
 }
 
-// Function to determine the path prefix dynamically based on the current page
-function getPathPrefix() {
-  const path = window.location.pathname;
-  if (path.includes('packages.html')) {
-    return '../'; // Parent folder (for packages.html)
-  } else {
-    return './'; // Root folder (for index.html)
-  }
-}
+// Call the function to initialize brandImages when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initializeBrandImages(); // Ensure brandImages is initialized
+  preloadImages(brandImages).then(() => {
+    console.log('All images preloaded successfully');
+    // Now you can run any code that relies on the preloaded images (e.g., initialize sliders, show brand images)
+  }).catch(error => {
+    console.error('Error preloading images:', error);
+  });
 
-// Dynamically define the brand image paths based on the page
-const brandImagePaths = [
-  { name: 'Trina', url: `${getPathPrefix()}images/BrandLogos/Trina-Solar.png` },
-  { name: 'SMA', url: `${getPathPrefix()}images/BrandLogos/SMA.png` },
-  { name: 'Canadian Solar', url: `${getPathPrefix()}images/BrandLogos/Canadian-Solar.png` },
-  { name: 'DaSolar', url: `${getPathPrefix()}images/BrandLogos/DaSolar.png` },
-  { name: 'Fronius', url: `${getPathPrefix()}images/BrandLogos/Fronius.png` },
-  { name: 'Growatt', url: `${getPathPrefix()}images/BrandLogos/Growatt.png` },
-  { name: 'Huawei/iStore', url: `${getPathPrefix()}images/BrandLogos/Huawei.png` },
-  { name: 'JASolar', url: `${getPathPrefix()}images/BrandLogos/JASolar.png` },
-  { name: 'Goodwe', url: `${getPathPrefix()}images/BrandLogos/Goodwe.jpg` },
-  { name: 'Jinko', url: `${getPathPrefix()}images/BrandLogos/Jinko.png` },
-  { name: 'Longi', url: `${getPathPrefix()}images/BrandLogos/Longi.png` },
-  { name: 'Risen', url: `${getPathPrefix()}images/BrandLogos/Risen-Solar.png` },
-  { name: 'Seraphim', url: `${getPathPrefix()}images/BrandLogos/Seraphim.png` },
-  { name: 'Sofar', url: `${getPathPrefix()}images/BrandLogos/Sofar.png` },
-  { name: 'SolarEdge', url: `${getPathPrefix()}images/BrandLogos/Solar-Edge.png` },
-  { name: 'Solis', url: `${getPathPrefix()}images/BrandLogos/Solis.png` },
-  { name: 'Sungrow', url: `${getPathPrefix()}images/BrandLogos/Sungrow.png` },
-  { name: 'EgingPV', url: `${getPathPrefix()}images/BrandLogos/EgingPV.png` },
-  { name: 'QCells', url: `${getPathPrefix()}images/BrandLogos/QCells.png` }
-];
+  updatePackageDisplay(); // Call your update function after initialization
+});
 
 // Function to cycle brand images dynamically for both index.html and packages.html
 function cycleBrandImages(containerSelector, brandImages) {
@@ -544,38 +572,23 @@ function cycleBrandImages(containerSelector, brandImages) {
   }, 500);
 }
 
-// Ensure the function is applied for both pages
+// Apply for both pages
 document.addEventListener('DOMContentLoaded', function () {
   // Preload images before starting the functionality
-  preloadImages(brandImagePaths).then(() => {
+  preloadImages(brandImages).then(() => {
     // For index.html
     if (document.getElementById('brands')) {
-      cycleBrandImages('#brands .brands-container', brandImagePaths);
+      cycleBrandImages('#brands .brands-container', brandImages);
     }
 
     // For packages.html
     if (document.getElementById('solar-logo-cards-container')) {
-      cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImagePaths);
+      cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImages);
     }
   }).catch((error) => {
     console.error('Error preloading images:', error);
   });
 });
-
-
-// Ensure the function is applied for both pages
-document.addEventListener('DOMContentLoaded', function () {
-  // For index.html
-  if (document.getElementById('brands')) {
-    cycleBrandImages('#brands .brands-container', brandImagePaths);
-  }
-
-  // For packages.html
-  if (document.getElementById('solar-logo-cards-container')) {
-    cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImagePaths);
-  }
-});
-
 
 // Product Data Array
 const solarProducts = {
@@ -593,10 +606,10 @@ const solarProducts = {
       popularity: 3,
       description: "Solar panel description goes here...",
     },
-      {
+    {
       id: 2,
       name: "Trina Solar 410W",
-      brand: "Trina",      
+      brand: "Trina",
       specs: "410W Mono PERC",
       country: "China",
       warranty: "25 years",
@@ -611,7 +624,7 @@ const solarProducts = {
     {
       id: 1,
       name: "Fronius Primo 5.0",
-      brand: "Fronius",  
+      brand: "Fronius",
       specs: "5kW Single Phase",
       country: "Austria",
       warranty: "10 years",
@@ -624,7 +637,7 @@ const solarProducts = {
     {
       id: 2,
       name: "SMA Sunny Boy 5.0",
-      brand: "SMA",  
+      brand: "SMA",
       specs: "5kW Single Phase",
       country: "Germany",
       warranty: "10 years",
@@ -637,9 +650,6 @@ const solarProducts = {
   ]
 };
 
-
-//Create product cards and Update package
-
 let selectedPanel = null;
 let selectedInverter = null;
 
@@ -647,7 +657,7 @@ function createProductCard(product, type) {
   const card = document.createElement('div');
   card.className = 'product-card product';
   card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}Best Perth Solar panel">
+    <img src="${product.image}" alt="${product.name} Solar Product">
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
@@ -655,12 +665,12 @@ function createProductCard(product, type) {
     <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
     <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
-  
+
   card.querySelector('.read-more-btn').addEventListener('click', handleModalOpen);
-  
+
   card.addEventListener('click', (e) => {
     if (e.target.classList.contains('read-more-btn')) return;
-    
+
     if (type === 'panel') {
       document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -674,36 +684,41 @@ function createProductCard(product, type) {
     }
     updatePackageDisplay();
   });
-  
+
   return card;
 }
-
 
 function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
   const inverterImage = document.getElementById('selected-inverter-image');
+
+  if (!panelImage || !inverterImage) {
+    console.error("Selected images are missing!");
+    return; // Exit if the elements are not found
+  }
+
   const packageDescription = document.getElementById('package-description');
   const confirmButton = document.getElementById('confirm-selection');
 
-  // Create or find logo elements
   let panelLogo = document.getElementById('panel-logo');
   let inverterLogo = document.getElementById('inverter-logo');
 
+  // Check if the logos exist, if not, create them
   if (!panelLogo) {
     panelLogo = document.createElement('img');
     panelLogo.id = 'panel-logo';
-    panelLogo.classList.add('logo-overlay'); // Add the new class for logos
+    panelLogo.classList.add('logo-overlay');
     panelImage.parentNode.appendChild(panelLogo);
   }
 
   if (!inverterLogo) {
     inverterLogo = document.createElement('img');
     inverterLogo.id = 'inverter-logo';
-    inverterLogo.classList.add('logo-overlay'); // Add the new class for logos
+    inverterLogo.classList.add('logo-overlay');
     inverterImage.parentNode.appendChild(inverterLogo);
   }
 
-  // Update panel image and logo
+  // For the selected panel
   if (selectedPanel) {
     panelImage.src = selectedPanel.image;
     panelImage.style.visibility = 'visible';
@@ -713,11 +728,12 @@ function updatePackageDisplay() {
       panelLogo.src = panelBrand.url;
       panelLogo.style.visibility = 'visible';
     } else {
+      console.warn(`Panel brand logo not found: ${selectedPanel.brand}`);
       panelLogo.style.visibility = 'hidden';
     }
   }
 
-  // Update inverter image and logo
+  // For the selected inverter
   if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
     inverterImage.style.visibility = 'visible';
@@ -727,11 +743,12 @@ function updatePackageDisplay() {
       inverterLogo.src = inverterBrand.url;
       inverterLogo.style.visibility = 'visible';
     } else {
+      console.warn(`Inverter brand logo not found: ${selectedInverter.brand}`);
       inverterLogo.style.visibility = 'hidden';
     }
   }
 
-  // Update package description and button visibility
+  // Update package description and confirm button visibility
   if (selectedPanel && selectedInverter) {
     packageDescription.innerHTML = `
       My installation will consist of <strong>${selectedPanel.name}</strong> panels 
@@ -745,6 +762,36 @@ function updatePackageDisplay() {
     confirmButton.style.visibility = 'hidden';
   }
 }
+
+function showSolarPackageSection() {
+  const solarPackageSection = document.getElementById('solar-package');
+  if (selectedPanel && selectedInverter) {
+    solarPackageSection.style.display = 'block';  // Show the section
+    scrollToSection('solar-package');  // Scroll to "My Solar Package" section
+  }
+}
+
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    window.scrollTo({
+      top: section.offsetTop - 0, // Adjust for header/nav if needed
+      behavior: 'smooth'
+    });
+  }
+}
+
+function scrollToForm() {
+  const packageForm = document.querySelector('.package-form');
+  if (packageForm) {
+    window.scrollTo({
+      top: packageForm.offsetTop - 50,  // Adjust for any fixed header if needed
+      behavior: 'smooth'
+    });
+  }
+}
+
+
 
 
 function showSolarPackageSection() {
