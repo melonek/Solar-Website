@@ -811,31 +811,61 @@ function showTextCloud(message, duration) {
 // IntersectionObservers for panels and battery sections
 function initObservers() {
   const panelsSection = document.getElementById('panels-section');
+  const systemSizeSection = document.getElementById('system-size-input');
+  const invertersSection = document.getElementById('inverters-section');
   const batterySection = document.getElementById('battery-storage');
   const observerOptions = { threshold: 0.5 };
-  
+
   const panelsObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && !panelMessageShown) {
         showTextCloud("Choose your panel", 2000);
         panelMessageShown = true;
+      } else if (!entry.isIntersecting) {
+        panelMessageShown = false;
       }
     });
   }, observerOptions);
-  
   if (panelsSection) panelsObserver.observe(panelsSection);
-  
+
+  const systemSizeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !systemSizeMessageShown) {
+        showTextCloud("Choose your system size", 2000);
+        systemSizeMessageShown = true;
+      } else if (!entry.isIntersecting) {
+        systemSizeMessageShown = false;
+      }
+    });
+  }, observerOptions);
+  if (systemSizeSection) systemSizeObserver.observe(systemSizeSection);
+
+  const invertersObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !inverterMessageShown) {
+        showTextCloud("Choose your inverter", 2000);
+        inverterMessageShown = true;
+      } else if (!entry.isIntersecting) {
+        inverterMessageShown = false;
+      }
+    });
+  }, observerOptions);
+  if (invertersSection) invertersObserver.observe(invertersSection);
+
   const batteryObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && !batteryMessageShown) {
         showTextCloud("Choose your battery storage", 2000);
         batteryMessageShown = true;
+      } else if (!entry.isIntersecting) {
+        batteryMessageShown = false;
       }
     });
   }, observerOptions);
-  
   if (batterySection) batteryObserver.observe(batterySection);
 }
+
+
 
 // Modal handling for product details (price removed)
 function handleModalOpen(e) {
