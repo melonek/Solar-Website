@@ -448,22 +448,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-let brandImages = []; // Declare globally
+let brandImages = []; // Global array for brand images
 
-// Function to get the path prefix dynamically based on the current page
+// Global variables for selections
+let selectedPanel = null;
+let selectedInverter = null;
+let selectedBattery = null;
+let selectedSystemSize = "6.6kW"; // default system size
+
+// Default panels count (price is defined for 15 panels)
+const defaultPanels = 15;
+
+// Flags for text cloud messages
+let panelMessageShown = false;
+let systemSizeMessageShown = false;
+let inverterMessageShown = false;
+let batteryMessageShown = false;
+
+// Function to get path prefix dynamically
 function getPathPrefix() {
   const path = window.location.pathname;
-  if (path.includes('packages.html')) {
-    return '../'; // Parent folder (for packages.html)
-  } else {
-    return '../'; // Root folder (for index.html)
-  }
+  return path.includes('packages.html') ? './' : '../';
 }
 
-// Initialize brandImages with the correct paths
+// Initialize brandImages array
 function initializeBrandImages() {
-  const prefix = getPathPrefix(); // Dynamically get the path prefix
-
+  const prefix = getPathPrefix();
   brandImages = [
     { name: 'Trina', url: `${prefix}images/BrandLogos/Trina-Solar.png` },
     { name: 'SMA', url: `${prefix}images/BrandLogos/SMA.png` },
@@ -487,13 +497,13 @@ function initializeBrandImages() {
   ];
 }
 
-// Function to preload images before they are used
+// Preload images
 function preloadImages(images) {
   return new Promise((resolve, reject) => {
     const promises = images.map(image => {
       return new Promise((res, rej) => {
         const img = new Image();
-        img.src = image.url;  // Ensure we use 'url' instead of 'path'
+        img.src = image.url;
         img.onload = () => res(image.url);
         img.onerror = () => {
           console.error(`Failed to preload image: ${image.url}`);
@@ -501,94 +511,13 @@ function preloadImages(images) {
         };
       });
     });
-
-    // Wait for all images to load or reject if any fail
     Promise.allSettled(promises)
       .then(results => {
         const failed = results.filter(result => result.status === "rejected");
-        if (failed.length > 0) {
-          reject(`Some images failed to load: ${failed.map(item => item.reason).join(', ')}`);
-        } else {
-          resolve();
-        }
+        failed.length > 0 ? reject(failed.map(item => item.reason).join(', ')) : resolve();
       });
   });
 }
-
-// Call the function to initialize brandImages when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  initializeBrandImages(); // Ensure brandImages is initialized
-  preloadImages(brandImages).then(() => {
-    console.log('All images preloaded successfully');
-    // Now you can run any code that relies on the preloaded images (e.g., initialize sliders, show brand images)
-  }).catch(error => {
-    console.error('Error preloading images:', error);
-  });
-
-  updatePackageDisplay(); // Call your update function after initialization
-});
-
-// Function to cycle brand images dynamically for both index.html and packages.html
-function cycleBrandImages(containerSelector, brandImages) {
-  const brandCards = document.querySelectorAll(containerSelector + ' .brand-card, .solar-brand-card');
-  let currentIndex = 0;
-
-  function updateBrandCards() {
-    brandCards.forEach((card, i) => {
-      const imgIndex = (currentIndex + i) % brandImages.length;
-      const brandImage = brandImages[imgIndex];
-      const imgElement = card.querySelector('img');
-      imgElement.src = brandImage.url;
-      imgElement.alt = brandImage.name;
-      card.classList.remove('active');
-      setTimeout(() => card.classList.add('active'), 50); // Animate cards into view
-    });
-  }
-
-  function cycleBrands() {
-    brandCards.forEach(card => card.classList.remove('active')); // Fade out effect
-
-    setTimeout(() => {
-      currentIndex = (currentIndex + 1) % brandImages.length; // Cycle through images
-      updateBrandCards();
-    }, 500);
-  }
-
-  let brandInterval = setInterval(cycleBrands, 5000);
-
-  // Pause cycling on hover
-  const container = document.querySelector(containerSelector);
-  if (container) {
-    container.addEventListener('mouseenter', () => clearInterval(brandInterval));
-    container.addEventListener('mouseleave', () => {
-      brandInterval = setInterval(cycleBrands, 5000);
-    });
-  }
-
-  // Initialize first set of images
-  updateBrandCards();
-  setTimeout(() => {
-    brandCards.forEach(card => card.classList.add('active'));
-  }, 500);
-}
-
-// Apply for both pages
-document.addEventListener('DOMContentLoaded', function () {
-  // Preload images before starting the functionality
-  preloadImages(brandImages).then(() => {
-    // For index.html
-    if (document.getElementById('brands')) {
-      cycleBrandImages('#brands .brands-container', brandImages);
-    }
-
-    // For packages.html
-    if (document.getElementById('solar-logo-cards-container')) {
-      cycleBrandImages('#solar-logo-cards-container .solar-brands-container', brandImages);
-    }
-  }).catch((error) => {
-    console.error('Error preloading images:', error);
-  });
-});
 
 // Product Data Array
 const solarProducts = {
@@ -596,15 +525,15 @@ const solarProducts = {
     {
       id: 1,
       name: "Canadian Solar 400W",
-      brand: 'Canadian Solar',
+      brand: "Canadian Solar",
       specs: "400W Mono PERC",
       country: "Canada",
       warranty: "25 years",
       datasheet: "canadian-400w.pdf",
       image: "../images/Panels/Canadian-Solar-440-W.webp",
-      price: 250,
+      price: 1500, // Price for 15 panels
       popularity: 3,
-      description: "Solar panel description goes here...",
+      description: "Solar panel description goes here..."
     },
     {
       id: 2,
@@ -615,9 +544,9 @@ const solarProducts = {
       warranty: "25 years",
       datasheet: "trina-410w.pdf",
       image: "../images/Panels/Trina.webp",
-      price: 260,
+      price: 1560,
       popularity: 5,
-      description: "Solar panel description goes here...",
+      description: "Solar panel description goes here..."
     }
   ],
   inverters: [
@@ -632,7 +561,7 @@ const solarProducts = {
       image: "../images/Inverters/FroniusSymo.png",
       price: 1200,
       popularity: 4,
-      description: "Inverter description goes here...",
+      description: "Inverter description goes here..."
     },
     {
       id: 2,
@@ -645,14 +574,27 @@ const solarProducts = {
       image: "../images/Inverters/SMA.png",
       price: 1150,
       popularity: 2,
-      description: "Inverter description goes here...",
+      description: "Inverter description goes here..."
+    }
+  ],
+  batteries: [
+    {
+      id: 1,
+      name: "Tesla Powerwall",
+      brand: "Tesla",
+      specs: "13.5 kWh",
+      country: "USA",
+      warranty: "10 years",
+      datasheet: "tesla-powerwall.pdf",
+      image: "https://switchtecsolutions.com.au/wp-content/uploads/2024/08/powerwall-2.png.webp",
+      price: 8000,
+      popularity: 5,
+      description: "Battery storage system description..."
     }
   ]
 };
 
-let selectedPanel = null;
-let selectedInverter = null;
-
+// Create product card (price line removed)
 function createProductCard(product, type) {
   const card = document.createElement('div');
   card.className = 'product-card product';
@@ -661,101 +603,146 @@ function createProductCard(product, type) {
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
-    <p>Price: $${product.price}</p>
     <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
     <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
-
+  
   card.querySelector('.read-more-btn').addEventListener('click', handleModalOpen);
-
+  
   card.addEventListener('click', (e) => {
     if (e.target.classList.contains('read-more-btn')) return;
-
+    
     if (type === 'panel') {
       document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedPanel = product;
-      scrollToSection('inverters-section');
+      document.getElementById('system-size-input').style.display = 'block';
+      if (!systemSizeMessageShown) {
+        showTextCloud("Choose your system size", 2000);
+        systemSizeMessageShown = true;
+      }
+      scrollToSection('system-size-input');
     } else if (type === 'inverter') {
       document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedInverter = product;
+      scrollToSection('battery-storage');
+    } else if (type === 'battery') {
+      document.querySelectorAll('#battery-grid .product-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedBattery = product;
       showSolarPackageSection();
     }
     updatePackageDisplay();
   });
-
+  
   return card;
 }
 
+// Handle system size selection; scroll to inverters section when an option is selected
+function handleSystemSizeSelection(value) {
+  if(value === "") return; // do nothing if "Choose size" is selected
+  selectedSystemSize = value;
+  scrollToSection('inverters-section');
+  if (!inverterMessageShown) {
+    showTextCloud("Choose your inverter", 2000);
+    inverterMessageShown = true;
+  }
+}
+
+// Update package display (images, logos, description, total cost)
 function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
   const inverterImage = document.getElementById('selected-inverter-image');
-
-  if (!panelImage || !inverterImage) {
-    console.error("Selected images are missing!");
-    return; // Exit if the elements are not found
-  }
-
+  const batteryImage = document.getElementById('selected-battery-image');
   const packageDescription = document.getElementById('package-description');
   const confirmButton = document.getElementById('confirm-selection');
-
+  
   let panelLogo = document.getElementById('panel-logo');
   let inverterLogo = document.getElementById('inverter-logo');
-
-  // Check if the logos exist, if not, create them
+  
   if (!panelLogo) {
     panelLogo = document.createElement('img');
     panelLogo.id = 'panel-logo';
     panelLogo.classList.add('logo-overlay');
     panelImage.parentNode.appendChild(panelLogo);
   }
-
   if (!inverterLogo) {
     inverterLogo = document.createElement('img');
     inverterLogo.id = 'inverter-logo';
     inverterLogo.classList.add('logo-overlay');
     inverterImage.parentNode.appendChild(inverterLogo);
   }
-
-  // For the selected panel
+  
   if (selectedPanel) {
     panelImage.src = selectedPanel.image;
     panelImage.style.visibility = 'visible';
-
-    const panelBrand = brandImages.find(brand => brand.name === selectedPanel.brand);
+    const panelBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedPanel.brand.toLowerCase());
     if (panelBrand) {
       panelLogo.src = panelBrand.url;
       panelLogo.style.visibility = 'visible';
     } else {
-      console.warn(`Panel brand logo not found: ${selectedPanel.brand}`);
       panelLogo.style.visibility = 'hidden';
     }
   }
-
-  // For the selected inverter
+  
   if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
     inverterImage.style.visibility = 'visible';
-
-    const inverterBrand = brandImages.find(brand => brand.name === selectedInverter.brand);
+    const inverterBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedInverter.brand.toLowerCase());
     if (inverterBrand) {
       inverterLogo.src = inverterBrand.url;
       inverterLogo.style.visibility = 'visible';
     } else {
-      console.warn(`Inverter brand logo not found: ${selectedInverter.brand}`);
       inverterLogo.style.visibility = 'hidden';
     }
   }
-
-  // Update package description and confirm button visibility
+  
+  if (selectedBattery) {
+    batteryImage.src = selectedBattery.image;
+    batteryImage.style.visibility = 'visible';
+    
+    let batteryLogo = document.getElementById('battery-logo');
+    if (!batteryLogo) {
+      batteryLogo = document.createElement('img');
+      batteryLogo.id = 'battery-logo';
+      batteryLogo.classList.add('logo-overlay');
+      batteryImage.parentNode.appendChild(batteryLogo);
+    }
+    const batteryBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedBattery.brand.toLowerCase());
+    if (batteryBrand) {
+      batteryLogo.src = batteryBrand.url;
+      batteryLogo.style.visibility = 'visible';
+    } else {
+      batteryLogo.style.visibility = 'hidden';
+    }
+  } else {
+    batteryImage.style.visibility = 'hidden';
+    let batteryLogo = document.getElementById('battery-logo');
+    if (batteryLogo) {
+      batteryLogo.style.visibility = 'hidden';
+    }
+  }
+  
   if (selectedPanel && selectedInverter) {
-    packageDescription.innerHTML = `
-      My installation will consist of <strong>${selectedPanel.name}</strong> panels 
-      and <strong>${selectedInverter.name}</strong> inverter
-    `;
-    document.getElementById('solar-package-input').value = 
-      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}`;
+    let description = `My installation will consist of <strong>${selectedPanel.name}</strong> panels, <strong>${selectedInverter.name}</strong> inverter`;
+    if (selectedBattery) {
+      description += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
+    }
+    packageDescription.innerHTML = description;
+    document.getElementById('solar-package-input').value =
+      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}` +
+      (selectedBattery ? `, Battery: ${selectedBattery.name}` : '');
+    
+    // Total cost calculation:
+    const pricePerPanel = selectedPanel.price / defaultPanels;
+    const systemPanels = { "6.6kW": 15, "10kW": 24, "13kW": 30, "20kW": 46 }[selectedSystemSize];
+    const panelCost = systemPanels * pricePerPanel;
+    const inverterCost = selectedInverter.price;
+    const batteryCost = selectedBattery ? selectedBattery.price : 0;
+    const total = panelCost + inverterCost + batteryCost;
+    document.getElementById('total-cost').textContent = `Total = $${total} AUD`;
+    
     confirmButton.style.visibility = 'visible';
   } else {
     packageDescription.textContent = '';
@@ -763,19 +750,33 @@ function updatePackageDisplay() {
   }
 }
 
+// Show the solar package section, scroll to it, and ask user if happy with package
 function showSolarPackageSection() {
   const solarPackageSection = document.getElementById('solar-package');
   if (selectedPanel && selectedInverter) {
-    solarPackageSection.style.display = 'block';  // Show the section
-    scrollToSection('solar-package');  // Scroll to "My Solar Package" section
+    solarPackageSection.style.display = 'block';
+    scrollToSection('solar-package');
+    showTextCloud("Are you happy with this package?", 4000);
   }
 }
 
+// Handle "Not Interested" for battery: resets battery selection
+function handleNotInterested() {
+  selectedBattery = null;
+  updatePackageDisplay();
+  showSolarPackageSection();
+}
+
+// Smooth scroll helper
 function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
+    let topPosition = section.offsetTop;
+    if (sectionId === 'system-size-input') {
+      topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
+    }
     window.scrollTo({
-      top: section.offsetTop - 0, // Adjust for header/nav if needed
+      top: topPosition,
       behavior: 'smooth'
     });
   }
@@ -785,77 +786,76 @@ function scrollToForm() {
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
     window.scrollTo({
-      top: packageForm.offsetTop - 50,  // Adjust for any fixed header if needed
+      top: packageForm.offsetTop - 50,
       behavior: 'smooth'
     });
   }
 }
 
-
-
-
-function showSolarPackageSection() {
-  const solarPackageSection = document.getElementById('solar-package');
-  if (selectedPanel && selectedInverter) {
-    solarPackageSection.style.display = 'block';  // Show the section
-    scrollToSection('solar-package');  // Scroll to "My Solar Package" section
-  }
+// Show a temporary text cloud message for a given duration (ms)
+// Cloud appears at 30% from top
+function showTextCloud(message, duration) {
+  const cloud = document.createElement('div');
+  cloud.className = 'text-cloud';
+  cloud.textContent = message;
+  cloud.style.opacity = '1';
+  document.body.appendChild(cloud);
+  setTimeout(() => {
+    cloud.style.opacity = '0';
+    setTimeout(() => {
+      cloud.remove();
+    }, 500);
+  }, duration);
 }
 
-function scrollToSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    window.scrollTo({
-      top: section.offsetTop - 0, // Adjust for header/nav if needed
-      behavior: 'smooth'
-    });
-  }
-}
-
-function scrollToForm() {
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    window.scrollTo({
-      top: packageForm.offsetTop - 50,  // Adjust for any fixed header if needed
-      behavior: 'smooth'
-    });
-  }
-}
-
-function initPackagesPage() {
-  const panelsGrid = document.getElementById('panels-grid');
-  const invertersGrid = document.getElementById('inverters-grid');
+// IntersectionObservers for panels and battery sections
+function initObservers() {
+  const panelsSection = document.getElementById('panels-section');
+  const batterySection = document.getElementById('battery-storage');
+  const observerOptions = { threshold: 0.5 };
   
-  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, 'panel')));
-  solarProducts.inverters.forEach(inverter => invertersGrid.appendChild(createProductCard(inverter, 'inverter')));
-
-  // Initially hide the "My Solar Package" section
-  document.getElementById('solar-package').style.display = 'none';
-
-  // Add event listener to "That's correct!" button
-  document.getElementById('confirm-selection').addEventListener('click', () => {
-    scrollToForm();  // Scroll to the package form section
-  });
+  const panelsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !panelMessageShown) {
+        showTextCloud("Choose your panel", 2000);
+        panelMessageShown = true;
+      }
+    });
+  }, observerOptions);
+  
+  if (panelsSection) panelsObserver.observe(panelsSection);
+  
+  const batteryObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !batteryMessageShown) {
+        showTextCloud("Choose your battery storage", 2000);
+        batteryMessageShown = true;
+      }
+    });
+  }, observerOptions);
+  
+  if (batterySection) batteryObserver.observe(batterySection);
 }
 
-document.addEventListener('DOMContentLoaded', initPackagesPage)
-
-// Open modal when a product card is clicked
+// Modal handling for product details (price removed)
 function handleModalOpen(e) {
   e.preventDefault();
   const type = e.target.dataset.type;
   const id = parseInt(e.target.dataset.id);
-  const product = solarProducts[type + 's'].find(p => p.id === id);
-
+  let product;
+  if (type === 'panel') {
+    product = solarProducts.panels.find(p => p.id === id);
+  } else if (type === 'inverter') {
+    product = solarProducts.inverters.find(p => p.id === id);
+  } else if (type === 'battery') {
+    product = solarProducts.batteries.find(p => p.id === id);
+  }
   if (!product) return;
-
-  // Find brand logo URL from brandImages array
+  
   const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
   const brandLogoUrl = brand ? brand.url : '';
-
-  // Determine the logo class based on type (panel or inverter)
-  const logoClass = type === 'panel' ? 'brand-logo-panel' : 'brand-logo-inverter';
-
+  const logoClass = type === 'panel' ? 'brand-logo-panel' : (type === 'inverter' ? 'brand-logo-inverter' : 'brand-logo-battery');
+  
   const modal = document.getElementById('product-modal');
   document.querySelector('.modal-product-image').innerHTML = `
     <div class="product-image-container">
@@ -863,44 +863,84 @@ function handleModalOpen(e) {
       ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="${logoClass}">` : ''}
     </div>
   `;
-
   document.querySelector('.modal-product-details').innerHTML = `
     <h2>${product.name}</h2>
-    <p><strong>Brand Name: </strong>${product.brand}<br></br></p>
+    <p><strong>Brand Name:</strong> ${product.brand}</p>
     <p><strong>Specifications:</strong> ${product.specs}</p>
     <p><strong>Country:</strong> ${product.country}</p>
     <p><strong>Warranty:</strong> ${product.warranty}</p>
-    <p><strong>Price:</strong> $${product.price}</p>
-    <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a><br></br></p>
-    <p><strong>Product Description: </strong>${product.description}
+    <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
+    <p><strong>Product Description:</strong> ${product.description}</p>
   `;
-
-  modal.style.display = 'block'; // Show the modal
+  
+  modal.style.display = 'block';
 }
 
-
-
-// Close modal when clicking outside or on the "X" button
+// Close modal when clicking outside or on close button
 document.addEventListener('click', (e) => {
   const modal = document.getElementById('product-modal');
-  const closeButton = modal.querySelector('.close'); // Get the close button inside the modal
-
-  // If the user clicks the background (modal itself) or the close button, hide the modal
+  const closeButton = modal.querySelector('.close');
   if (e.target === modal || e.target === closeButton) {
-    modal.style.display = 'none'; // Close the modal
+    modal.style.display = 'none';
+  }
+});
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('product-modal');
+  const closeButton = document.querySelector('.modal-close');
+  if (e.target === modal || e.target === closeButton) {
+    modal.style.display = 'none';
   }
 });
 
-
-// Close modal when clicking outside or on the "X" button
-document.addEventListener('click', (e) => {
-  const modal = document.getElementById('product-modal');
-  const closeButton = document.querySelector('.modal-close'); // Assuming your close button has this class
-
-  if (e.target === modal || e.target === closeButton) {
-    modal.style.display = 'none'; // Close modal
+// Initialize everything when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  initializeBrandImages();
+  preloadImages(brandImages).then(() => {
+    console.log('All images preloaded successfully');
+  }).catch(error => {
+    console.error('Error preloading images:', error);
+  });
+  
+  updatePackageDisplay();
+  initObservers();
+  
+  const panelsGrid = document.getElementById('panels-grid');
+  const invertersGrid = document.getElementById('inverters-grid');
+  const batteryGrid = document.getElementById('battery-grid');
+  
+  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, 'panel')));
+  solarProducts.inverters.forEach(inverter => invertersGrid.appendChild(createProductCard(inverter, 'inverter')));
+  if (solarProducts.batteries) {
+    solarProducts.batteries.forEach(battery => batteryGrid.appendChild(createProductCard(battery, 'battery')));
+  }
+  
+  // Initially hide the solar package section
+  document.getElementById('solar-package').style.display = 'none';
+  
+  // "Let's enquire!" button: when clicked, show cloud and scroll to form
+  document.getElementById('confirm-selection').addEventListener('click', () => {
+    showTextCloud("Fill in your details", 3000);
+    setTimeout(scrollToForm, 3000);
+  });
+  
+  // "Not Interested" button: resets battery selection and updates display
+  document.getElementById('not-interested-btn').addEventListener('click', () => {
+    handleNotInterested();
+  });
+  
+  // When package form is submitted, show final cloud message
+  const packageForm = document.querySelector('.package-form');
+  if (packageForm) {
+    packageForm.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevent actual submission for testing
+      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
+      setTimeout(() => {
+        packageForm.submit();
+      }, 4000);
+    });
   }
 });
+
 
 
 //Articles - logic

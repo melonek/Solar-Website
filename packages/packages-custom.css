@@ -1,0 +1,337 @@
+/* ----------------- PRODUCT IMAGE & BRAND LOGO STYLES ----------------- */
+.product-image-container {
+    position: relative;
+    display: inline-block;
+  }
+  .main-product-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .brand-logo-panel {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    width: 80px !important;
+    height: auto;
+    background: white;
+    padding: 2px;
+    border-radius: 4px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  .brand-logo-inverter {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 100px !important;
+    height: auto;
+    background: white;
+    padding: 4px;
+    border-radius: 6px;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* ----------------- BRAND LOGOS FOR SELECTED PRODUCTS ----------------- */
+  #panel-logo {
+    position: absolute;
+    top: 80px;
+    left: 90px;
+    width: 100px !important;
+    height: auto;
+  }
+  #inverter-logo {
+    position: absolute;
+    top: 138px;
+    left: 90px;
+    width: 100px !important;
+    height: auto;
+  }
+  #battery-logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 80px !important;
+    height: auto;
+    background: white;
+    padding: 2px;
+    border-radius: 4px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    visibility: hidden;
+  }
+  
+  /* Additional overlay style if needed */
+  .logo-overlay {
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    width: 50px;
+    height: auto;
+    z-index: 10;
+    background: rgba(255,255,255,0.8);
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  /* ----------------- GENERAL SECTIONS & PRODUCT CARDS ----------------- */
+  .section {
+    width: 100%;
+    max-width: 1400px;
+    box-sizing: border-box;
+    margin: 1rem auto;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .section h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+  
+  /* Category Titles */
+  .panel-category, .inverter-category, .battery-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .panels-title {
+    color: #2ecc71 !important;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  .inverters-title {
+    color: #3498db !important;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  .battery-title {
+    color: orange !important;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  
+  /* Filter Bar Styling */
+  .filter-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  .filter-bar label {
+    margin-right: 8px;
+    font-weight: bold;
+  }
+  .filter-bar select {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  /* ----------------- SYSTEM SIZE SECTION ----------------- */
+  #system-size-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  #system-size-input label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  #system-size-input select {
+    font-size: 1rem;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  #system-size-input select:focus {
+    border-color: #007BFF;
+  }
+  #system-size-input p {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 0;
+  }
+  
+  /* ----------------- BATTERY CATEGORY STYLING (for filtering) ----------------- */
+  .battery-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .battery-grid {
+    border: 2px solid orange;
+    background: #fff4e6;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 100%;
+  }
+  .battery-category .filter-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  .battery-category .filter-bar label {
+    margin-right: 8px;
+    font-weight: bold;
+  }
+  .battery-category .filter-bar select {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  /* ----------------- PACKAGE DISPLAY (MY SOLAR PACKAGE) ----------------- */
+  #package-description {
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #total-cost {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0 20px 0;
+    display: block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border-radius: 5px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Buttons: stacked vertically */
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .button-container button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: #fff;
+    transition: background-color 0.3s;
+    margin: 10px;
+  }
+  .button-container button:hover {
+    background-color: #0056b3;
+  }
+  
+/* Styling for Not Interested button */
+#not-interested-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #e74c3c;
+    color: #fff;
+    transition: background-color 0.3s;
+    margin: 10px;
+  }
+  #not-interested-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  /* ----------------- MY SOLAR PACKAGE IMAGE COMBINATION ----------------- */
+  .image-combination {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .panel-inverter-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    height: 500px;
+  }
+  #selected-panel-image {
+    width: 400px;
+    height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    visibility: hidden;
+  }
+  #selected-inverter-image {
+    position: absolute;
+    max-width: 250px;
+    max-height: 200px;
+    bottom: 10px;
+    right: 10px;
+    object-fit: contain;
+    visibility: hidden;
+  }
+  /* Battery image overlaid inside panel/inverter container */
+  #selected-battery-image {
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+    bottom: -70px;
+    left: -40px;
+    visibility: hidden;
+  }
+  
+  /* ----------------- TEXT CLOUD STYLE ----------------- */
+  /* Cloud now appears at 50% of viewport height (centered) */
+  .text-cloud {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+  }
+  
+  /* Ensure all product cards are visible by default */
+  .product-card {
+    opacity: 1 !important;
+  }
+  
