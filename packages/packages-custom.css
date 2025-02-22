@@ -35,30 +35,26 @@
   /* ----------------- BRAND LOGOS FOR SELECTED PRODUCTS ----------------- */
   #panel-logo {
     position: absolute;
-    top: 80px;
+    top: 30px;
     left: 90px;
     width: 100px !important;
     height: auto;
   }
   #inverter-logo {
     position: absolute;
-    top: 138px;
+    top: 88px;
     left: 90px;
     width: 100px !important;
     height: auto;
   }
-  #battery-logo {
+/* Battery Logo for Combined Images and Modal */
+#battery-logo {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 160px;
+    left: 90px;
     width: 80px !important;
     height: auto;
-    background: white;
-    padding: 2px;
-    border-radius: 4px;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
-    visibility: hidden;
-  }
+}
   
   /* Additional overlay style if needed */
   .logo-overlay {
@@ -303,15 +299,16 @@
     visibility: hidden;
   }
   /* Battery image overlaid inside panel/inverter container */
-  #selected-battery-image {
+#selected-battery-image {
     position: absolute;
-    width: 300px;
-    height: 400px;
+    width: 300px; /* adjust as needed */
+    height: 400px; /* adjust as needed */
     object-fit: contain;
     border-radius: 8px;
-    bottom: -70px;
-    left: -40px;
+    top: 170px;  
+    left: 20px;
     visibility: hidden;
+    z-index: 11; /* will be set visible when a battery is selected */
   }
   
   /* ----------------- TEXT CLOUD STYLE ----------------- */
@@ -334,4 +331,5 @@
   .product-card {
     opacity: 1 !important;
   }
+  
   
