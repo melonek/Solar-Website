@@ -2618,7 +2618,7 @@ nav {
     position: relative;
     height: 100vh;
     overflow: hidden;
-    overflow-x:hidden;
+    overflow-y: hidden;
   }
   
   .build-solar-video {
@@ -2646,16 +2646,19 @@ nav {
   
   /* Center the content absolutely */
   .build-solar-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 100%;
-    max-width: 1200px;
-    text-align: center;
-    color: #fff;
-    padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  /* Constrain height so content never overflows the section */
+  max-height: calc(100vh - 40px); /* 40px accounts for top & bottom padding */
+  overflow-y: auto; /* Add vertical scrolling if content is too tall */
   }
   
   .build-solar-content h2 {
@@ -2666,31 +2669,10 @@ nav {
   }
   
   .build-solar-content h3 {
-    font-size: 2.25rem;
+    font-size: 1.5rem;
     margin-bottom: 40px;
     background: rgba(0, 0, 0, 0.3); /* Black with 50% opacity */
     border-radius: 5px; /* Rounded corners to match the button */
-  }
-  
-  .build-solar-content {
-    color: #fff;
-    padding: 20px 40px;
-    text-decoration: none;
-    font-size: 1.5rem;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-/* Base fancy-button styles */
-.fancy-button {
-    padding: 25px 50px;
-    font-size: 1.75rem;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
-    color: #fff;
-    transition: transform 0.6s ease-out, background-color 0.3s ease;
   }
   
   /* Unique styles for the build-solar button */
@@ -2742,6 +2724,8 @@ nav {
   .banner-content {
     position: relative;
     z-index: 1;
+    text-align: center;
+    padding: 20px;
   }
   
   #\$btn-savings.fancy-button {
@@ -2759,7 +2743,6 @@ nav {
   #banner h2,
   #banner h3 {
     background: rgba(0, 0, 0, 0.7);
-    display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     color: #fff;
@@ -2771,7 +2754,7 @@ nav {
   }
   
   #banner h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin-bottom: 40px;
   }
   
