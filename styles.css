@@ -15,7 +15,7 @@ html {
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow-x: visible; /* or remove any global overflow hidden */
+    overflow-x: hidden; /* or remove any global overflow hidden */
 }
 
 body {
@@ -27,7 +27,7 @@ body {
     color: #333;
     background: #f4f4f4;
     width: 100%;
-    overflow-x: visible; /* or remove any global overflow hidden */
+    overflow-x: hidden; /* or remove any global overflow hidden */
 }
 
 /* Navigation Bar */
@@ -2619,7 +2619,7 @@ nav {
 #build-solar {
     position: relative;
     height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden; /* or remove any global overflow hidden */
   }
   
   .build-solar-video {
@@ -2629,7 +2629,7 @@ nav {
     width: 100%;
     height: 100%;
     z-index: 1;
-    overflow: hidden;
+    overflow-x: hidden; /* or remove any global overflow hidden */
   }
   
   .build-solar-video video {
@@ -2722,6 +2722,7 @@ nav {
     border-top: 3px solid #009688;
     margin: 40px auto;
     max-width: 1600px;
+    overflow-x: hidden;
     /* Remove the background image from here */
   }
   
@@ -2737,12 +2738,14 @@ nav {
     background-size: cover;
     opacity: 0.5; /* Adjust the opacity here */
     z-index: 0;   /* Ensure it sits behind the content */
+    overflow-x: hidden;
   }
   
   /* Ensure content is positioned above the background */
   .banner-content {
     position: relative;
     z-index: 1;
+    overflow-x: hidden;
   }
   
   #\$btn-savings.fancy-button {
@@ -4356,6 +4359,7 @@ footer {
     transform: translateY(50px); /* Initially offset vertically */
     transition: opacity 0.6s ease, transform 0.6s ease; /* Slow down the reveal */
     border-radius: 8px; /* Rounded corners */
+    overflow-x: hidden;
   }
 
   #unique-services .unique-service-product.revealed {

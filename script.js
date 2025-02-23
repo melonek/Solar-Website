@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, delay * 200);
       } else {
         product.classList.remove('revealed');
-        product.style.transform = revealDirection === 'right' ? 'translateX(100px)' : 'translateX(-100px)';
+        product.style.transform = revealDirection === 'right' ? 'translateX(50px)' : 'translateX(-50px)';
       }
     });
   }
