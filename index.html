@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="styles.css"> 
-<link rel="stylesheet" href="./articles/styles.css">
-
-<title>Nature's Spark Solar</title>
-<!--One font-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
-        <!-- Ends here-->
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="styles.css"> 
+  <link rel="stylesheet" href="./articles/styles.css">
   
+  <title>Nature's Spark Solar</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
+  
+  <!-- NOTE: Facebook SDK script removed from here. We load it via JS below. -->
 </head>
 <body>
+  <!-- Facebook Root -->
   <div id="fb-root"></div>
+  
+  <!-- Navigation -->
   <nav>
-    <!-- Moved logo outside of nav for fixed positioning -->
     <div class="floating-logo">
       <img src="./images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
@@ -45,335 +49,296 @@
     </div>
   </nav>
   
-
-    <!-- HTML STRUCTURE -->
-    <section class="hero-section">
-      <div class="hero-image">
-          <!-- Replace with your compressed image path -->
-          <img src="./images/AboutUs/solarek.webp" alt="Solar Panels">
-      </div>
-      <div class="hero-content">
-          <h1 class="main-title">Clean Energy Solutions</h1>
-          <h3 class="subtitle">Welcome to</h3>
-          <h3 class="subtitle">Our Solar World</h3>
-      </div>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-image">
+      <img src="./images/AboutUs/solarek.webp" alt="Solar Panels">
+    </div>
+    <div class="hero-content">
+      <h1 class="main-title">Clean Energy Solutions</h1>
+      <h3 class="subtitle">Welcome to</h3>
+      <h3 class="subtitle">Our Solar World</h3>
+    </div>
   </section>
-
-  <!-- About Us Section
-<section id="about">
- Hero Banner
-  <div class="about-banner">
-    <div class="banner-content">
-        <div class="text-background">
-          <h1>Natures Spark</h1>
-          <h2>Perth’s Local Solar Experts</h2>
-        </div>
-        <p>
-          With over a decade of experience, we have completed thousands of solar installations across Perth. 
-          Our mission is to bring high-quality solar solutions with a commitment to sustainability.
-        </p>
+  
+  <!-- About Content -->
+  <div class="about-container">
+    <div class="about-text">
+      <h2>Our Commitment to Quality</h2>
+      <p>At Nature's Spark Solar, we install top-tier solar systems with precision and care.</p>
+      <p>We offer industry-leading warranties to ensure durability and reliability:</p>
+      <ul>
+        <li><strong>25-30 Year Panel Warranty:</strong> Ensuring long-term investment security.</li>
+        <li><strong>5-10 Year Inverter Warranty:</strong> High-efficiency inverters for your home or business.</li>
+      </ul>
+      <p>Join us in harnessing the power of the sun for a sustainable future.</p>
     </div>
-</div> -->
-
-
-<!-- About Content -->
-<div class="about-container">
-  <div class="about-text">
-    <h2>Our Commitment to Quality</h2>
-    <p>At Nature's Spark Solar, we install top-tier solar systems with precision and care.</p>
-    <p>We offer industry-leading warranties to ensure durability and reliability:</p>
-    <ul>
-      <li><strong>25-30 Year Panel Warranty:</strong> Ensuring long-term investment security.</li>
-      <li><strong>5-10 Year Inverter Warranty:</strong> High-efficiency inverters for your home or business.</li>
-    </ul>
-    <p>Join us in harnessing the power of the sun for a sustainable future.</p>
-  </div>
-  <div class="about-images">
-    <img src="./images/AboutUs/about1.png" alt="Solar installation by Pert's best solar - Nature's Spark Solar" class="about-image">
-    <img src="./images/AboutUs/about2.jpg" alt="Another Pert's best solar project by Nature's Spark Solar" class="about-image">
-  </div>
-</div>
-
-
-
-<!-- Brands Section -->
-<section id="brands">
-  <h2>Brands we install</h2> <!-- Heading centered above the cards -->
-  <div class="brands-container">
-    <!-- Brand Cards, dynamically populated by JS -->
-    <div class="brand-card">
-      <img src="" alt="Brand Logo"> <!-- Image will be populated by JS -->
-    </div>
-    <div class="brand-card">
-      <img src="" alt="Brand Logo"> <!-- Image will be populated by JS -->
-    </div>
-    <div class="brand-card">
-      <img src="" alt="Brand Logo"> <!-- Image will be populated by JS -->
-    </div>
-    <div class="brand-card">
-      <img src="" alt="Brand Logo"> <!-- Image will be populated by JS -->
+    <div class="about-images">
+      <img src="./images/AboutUs/about1.png" alt="Solar installation by Pert's best solar - Nature's Spark Solar" class="about-image">
+      <img src="./images/AboutUs/about2.jpg" alt="Another Pert's best solar project by Nature's Spark Solar" class="about-image">
     </div>
   </div>
-</section>
-
-<section id="build-solar">
-  <div class="build-solar-video">
-    <video autoplay muted loop playsinline>
-      <source src="videos/solar-panels-timelapse-Perth.webm" type="video/webm">
-      Your browser does not support HTML5 video.
-    </video>
-  </div>
-  <div class="build-solar-content">
-    <h2>Design Your Custom Solar Solution</h2>
-    <h3>Create a personalized solar system tailored to your energy needs</h3>
-    <a id="build-solar-btn" href="./packages/packages.html" class="fancy-button" data-reveal="left" target="_blank">
-      Browse Solar Packages
-    </a>
-  </div>
-</section>
-
-
-
-<!-- Unlock Solar Savings Today Section -->
-<section id="banner">
-  <div class="banner-content">
-    <h2>Unlock Solar Savings Today</h2>
-    <h3>Estimate your energy savings and make the smart switch to solar</h3>
-    <div>
-      <a id="$btn-savings" href="/solarCalculator/solarCalculator.html" class="fancy-button" data-reveal="right">
-        Start Savings Calculator
+  
+  <!-- Brands Section -->
+  <section id="brands">
+    <h2>Brands we install</h2>
+    <div class="brands-container">
+      <div class="brand-card">
+        <img src="" alt="Brand Logo">
+      </div>
+      <div class="brand-card">
+        <img src="" alt="Brand Logo">
+      </div>
+      <div class="brand-card">
+        <img src="" alt="Brand Logo">
+      </div>
+      <div class="brand-card">
+        <img src="" alt="Brand Logo">
+      </div>
+    </div>
+  </section>
+  
+  <!-- Build Solar Section -->
+  <section id="build-solar">
+    <div class="build-solar-video">
+      <video autoplay muted loop playsinline>
+        <source src="videos/solar-panels-timelapse-Perth.webm" type="video/webm">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+    <div class="build-solar-content">
+      <h2>Design Your Custom Solar Solution</h2>
+      <h3>Create a personalized solar system tailored to your energy needs</h3>
+      <a id="build-solar-btn" href="./packages/packages.html" class="fancy-button" data-reveal="left" target="_blank">
+        Browse Solar Packages
       </a>
     </div>
-  </div>
-</section>
-
-<!-- Services Section -->
-<section id="services" class="section">
-  <section id="unique-services" class="unique-section">
-    <h1>Services</h1>
-    
-    <div class="unique-services-wrapper">
-        <!-- Solar Systems -->
-        <div id="unique-solar-systems" class="unique-service-category unique-section">
-            <h2>Solar Panels</h2>
-            <div class="unique-product-grid">
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
-                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar">
-                    <h3>Residential Solar Panels</h3>
-                    <p>High-efficiency panels for homes with a 25-year warranty.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
-                    <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar">
-                    <h3>Commercial Solar Solutions</h3>
-                    <p>Scalable systems for businesses to reduce energy costs.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
-                    <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof">
-                    <h3>Solar Roof Tiles</h3>
-                    <p>Aesthetic solar tiles that blend with your roof design.</p>
-                </div>
-            </div>
-        </div>
+  </section>
   
-        <!-- Battery Storage -->
-        <div id="unique-battery-storage" class="unique-service-category unique-section">
-            <h2>Battery Storage</h2>
-            <div class="unique-product-grid">
-                <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.4">
-                    <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Battery">
-                    <h3>Home Energy Storage</h3>
-                    <p>Store excess solar energy for nighttime use.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.2">
-                    <img src="https://images.pexels.com/photos/5239114/pexels-photo-5239114.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Industrial Battery">
-                    <h3>Industrial Battery Banks</h3>
-                    <p>High-capacity storage for large-scale energy needs.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0">
-                    <img src="https://images.pexels.com/photos/6153141/pexels-photo-6153141.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Portable Battery">
-                    <h3>Portable Power Stations</h3>
-                    <p>Compact batteries for emergencies and outdoor use.</p>
-                </div>
-            </div>
-        </div>
-  
-        <!-- EV Chargers -->
-        <div id="unique-ev-chargers" class="unique-service-category unique-section">
-            <h2>EV Chargers</h2>
-            <div class="unique-product-grid">
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
-                    <img src="https://images.pexels.com/photos/6977167/pexels-photo-6977167.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Charger">
-                    <h3>Home EV Chargers</h3>
-                    <p>Fast and safe charging for your electric vehicle at home.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
-                    <img src="https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Commercial Charger">
-                    <h3>Commercial Charging Stations</h3>
-                    <p>Public charging stations for businesses and parking lots.</p>
-                </div>
-                <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
-                    <img src="https://images.pexels.com/photos/4979470/pexels-photo-4979470.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Smart Charger">
-                    <h3>Smart EV Chargers</h3>
-                    <p>WiFi-enabled chargers with app control and scheduling.</p>
-                </div>
-            </div>
-        </div>
+  <!-- Unlock Solar Savings Section -->
+  <section id="banner">
+    <div class="banner-content">
+      <h2>Unlock Solar Savings Today</h2>
+      <h3>Estimate your energy savings and make the smart switch to solar</h3>
+      <div>
+        <a id="$btn-savings" href="/solarCalculator/solarCalculator.html" class="fancy-button" data-reveal="right">
+          Start Savings Calculator
+        </a>
+      </div>
     </div>
   </section>
   
-  
-
-    <!-- Articles Section -->
-    <section id="articles" class="section">
-      <h1>Articles/News</h1>
-      <div class="articles-container">
-        <div id="articles-grid"></div>
-      </div>
-      <div class="pagination">
-        <div id="page-numbers"></div>
-      </div>
-      <div id="article-modal" class="modal">
-        <div class="modal-content">
-          <span class="close">×</span>
-          <div id="modal-article-content"></div>
+  <!-- Services Section -->
+  <section id="services" class="section">
+    <section id="unique-services" class="unique-section">
+      <h1>Services</h1>
+      <div class="unique-services-wrapper">
+        <!-- Solar Systems -->
+        <div id="unique-solar-systems" class="unique-service-category unique-section">
+          <h2>Solar Panels</h2>
+          <div class="unique-product-grid">
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
+              <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar">
+              <h3>Residential Solar Panels</h3>
+              <p>High-efficiency panels for homes with a 25-year warranty.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
+              <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar">
+              <h3>Commercial Solar Solutions</h3>
+              <p>Scalable systems for businesses to reduce energy costs.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
+              <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof">
+              <h3>Solar Roof Tiles</h3>
+              <p>Aesthetic solar tiles that blend with your roof design.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Battery Storage -->
+        <div id="unique-battery-storage" class="unique-service-category unique-section">
+          <h2>Battery Storage</h2>
+          <div class="unique-product-grid">
+            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.4">
+              <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Battery">
+              <h3>Home Energy Storage</h3>
+              <p>Store excess solar energy for nighttime use.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.2">
+              <img src="https://images.pexels.com/photos/5239114/pexels-photo-5239114.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Industrial Battery">
+              <h3>Industrial Battery Banks</h3>
+              <p>High-capacity storage for large-scale energy needs.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0">
+              <img src="https://images.pexels.com/photos/6153141/pexels-photo-6153141.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Portable Battery">
+              <h3>Portable Power Stations</h3>
+              <p>Compact batteries for emergencies and outdoor use.</p>
+            </div>
+          </div>
+        </div>
+        <!-- EV Chargers -->
+        <div id="unique-ev-chargers" class="unique-service-category unique-section">
+          <h2>EV Chargers</h2>
+          <div class="unique-product-grid">
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
+              <img src="https://images.pexels.com/photos/6977167/pexels-photo-6977167.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Charger">
+              <h3>Home EV Chargers</h3>
+              <p>Fast and safe charging for your electric vehicle at home.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
+              <img src="https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Commercial Charger">
+              <h3>Commercial Charging Stations</h3>
+              <p>Public charging stations for businesses and parking lots.</p>
+            </div>
+            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
+              <img src="https://images.pexels.com/photos/4979470/pexels-photo-4979470.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Smart Charger">
+              <h3>Smart EV Chargers</h3>
+              <p>WiFi-enabled chargers with app control and scheduling.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-
-<!-- Facebook SDK -->
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" 
-        src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0"></script>
-
-<!-- Facebook section -->
-<section id="social-timelines" class="section">
-  <h1>Social Solar Updates</h1>
-  <div class="timeline-wrapper">
-    <div class="timeline-container solar-quotes">
-      <div class="fb-page-wrapper">
-        <div class="fb-page" 
-             data-href="https://www.facebook.com/SolarQuotes" 
-             data-tabs="timeline" 
-             data-width="" 
-             data-height="" 
-             data-small-header="false" 
-             data-adapt-container-width="true" 
-             data-hide-cover="false" 
-             data-show-facepile="true">
-          <blockquote cite="https://www.facebook.com/SolarQuotes" 
-                      class="fb-xfbml-parse-ignore">
-            <a href="https://www.facebook.com/SolarQuotes">SolarQuotes</a>
-          </blockquote>
+  
+  <!-- Articles Section -->
+  <section id="articles" class="section">
+    <h1>Articles/News</h1>
+    <div class="articles-container">
+      <div id="articles-grid"></div>
+    </div>
+    <div class="pagination">
+      <div id="page-numbers"></div>
+    </div>
+    <div id="article-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <div id="modal-article-content"></div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Facebook Timelines Section -->
+  <section id="social-timelines" class="section">
+    <h1>Social Solar Updates</h1>
+    <div class="timeline-wrapper">
+      <div class="timeline-container solar-quotes">
+        <div class="fb-page-wrapper" style="min-height:600px;">
+          <div class="fb-page" 
+               data-href="https://www.facebook.com/SolarQuotes" 
+               data-tabs="timeline" 
+               data-width="500" 
+               data-height="600" 
+               data-small-header="false" 
+               data-adapt-container-width="true" 
+               data-hide-cover="false" 
+               data-show-facepile="true">
+            <blockquote cite="https://www.facebook.com/SolarQuotes" class="fb-xfbml-parse-ignore">
+              <a href="https://www.facebook.com/SolarQuotes">SolarQuotes</a>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-container one-step-off-the-grid">
+        <div class="fb-page-wrapper" style="min-height:600px;">
+          <div class="fb-page" 
+               data-href="https://www.facebook.com/OneStepOffTheGrid" 
+               data-tabs="timeline" 
+               data-width="500" 
+               data-height="600" 
+               data-small-header="false" 
+               data-adapt-container-width="true" 
+               data-hide-cover="false" 
+               data-show-facepile="true">
+            <blockquote cite="https://www.facebook.com/OneStepOffTheGrid" class="fb-xfbml-parse-ignore">
+              <a href="https://www.facebook.com/OneStepOffTheGrid">OneStepOffTheGrid</a>
+            </blockquote>
+          </div>
         </div>
       </div>
     </div>
-    
-    <div class="timeline-container one-step-off-the-grid">
-      <div class="fb-page-wrapper">
-        <div class="fb-page" 
-             data-href="https://www.facebook.com/OneStepOffTheGrid" 
-             data-tabs="timeline" 
-             data-width="" 
-             data-height="" 
-             data-small-header="false" 
-             data-adapt-container-width="true" 
-             data-hide-cover="false" 
-             data-show-facepile="true">
-          <blockquote cite="https://www.facebook.com/OneStepOffTheGrid" 
-                      class="fb-xfbml-parse-ignore">
-            <a href="https://www.facebook.com/OneStepOffTheGrid">OneStepOffTheGrid</a>
-          </blockquote>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+  </section>
+  
   <!-- Installations Section -->
   <section id="installations" class="section">
     <h1>Installations</h1>
     <p>Explore our past projects and installations.</p>
     <!-- Add installation gallery/content here -->
   </section>
-
+  
   <!-- FAQ Section -->
-<section id="faq" class="section">
-  <h1>FAQ</h1>
-  <div class="faq-container">
-    <div class="faq-item">
-      <h3>Q1: How do solar panels work?<span class="arrow">▼</span></h3>
-      <div class="answer">
-        <p><strong>A1:</strong> Solar panels convert sunlight into electricity through photovoltaic cells. These cells contain a semiconductor material, often silicon, which absorbs photons of light and releases electrons, generating an electric current.</p>
+  <section id="faq" class="section">
+    <h1>FAQ</h1>
+    <div class="faq-container">
+      <div class="faq-item">
+        <h3>Q1: How do solar panels work?<span class="arrow">▼</span></h3>
+        <div class="answer">
+          <p><strong>A1:</strong> Solar panels convert sunlight into electricity through photovoltaic cells. These cells contain a semiconductor material, often silicon, which absorbs photons of light and releases electrons, generating an electric current.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <h3>Q2: What are the benefits of installing solar panels at home?<span class="arrow">▼</span></h3>
+        <div class="answer">
+          <p><strong>A2:</strong> 
+            - <strong>Cost Savings:</strong> Solar panels can significantly reduce or even eliminate your electricity bill.<br>
+            - <strong>Environmental Impact:</strong> They reduce your carbon footprint by using renewable energy.<br>
+            - <strong>Energy Independence:</strong> Less reliance on grid electricity, which can be particularly beneficial during power outages or in areas with unreliable power supply.<br>
+            - <strong>Increased Property Value:</strong> Homes with solar installations often have higher resale values.
+          </p>
+        </div>
       </div>
     </div>
-    <!-- Repeat for each FAQ item -->
-    <div class="faq-item">
-      <h3>Q2: What are the benefits of installing solar panels at home?<span class="arrow">▼</span></h3>
-      <div class="answer">
-        <p><strong>A2:</strong> 
-          - <strong>Cost Savings:</strong> Solar panels can significantly reduce or even eliminate your electricity bill.<br>
-          - <strong>Environmental Impact:</strong> They reduce your carbon footprint by using renewable energy.<br>
-          - <strong>Energy Independence:</strong> Less reliance on grid electricity, which can be particularly beneficial during power outages or in areas with unreliable power supply.<br>
-          - <strong>Increased Property Value:</strong> Homes with solar installations often have higher resale values.
-        </p>
-      </div>
-    </div>
-    <!-- Continue with this pattern for the rest of the FAQs -->
-  </div>
-</section>
-
+  </section>
+  
   <!-- Contact Section -->
-<section id="contact" class="section">
-  <h1>Contact Us</h1>
-  <form action="https://formspree.io/f/mgvoybrr" method="POST">
-    <label for="fullName">
-      Full Name:
-      <input type="text" id="fullName" name="fullName" required>
-    </label>
-    
-    <label for="mobilePhone">
-      Mobile Phone:
-      <input type="tel" id="mobilePhone" name="mobilePhone" required>
-    </label>
-    
-    <label for="email">
-      Your Email:
-      <input type="email" id="email" name="email" required>
-    </label>
-    
-    <label for="installationAddress">
-      Installation Address:
-      <textarea id="installationAddress" name="installationAddress" required></textarea>
-    </label>
-    
-    <label for="serviceType">
-      Service Type:
-      <select id="serviceType" name="serviceType" required>
-        <option value="">Select Service</option>
-        <option value="solar-install">Solar Installation</option>
-        <option value="battery-install">Battery Storage Installation</option>
-        <option value="ev-charger">EV Charger Installation</option>
-      </select>
-    </label>
-    
-    <label for="message">
-      Message:
-      <textarea id="message" name="message" required></textarea>
-    </label>
-    
-    <button id="send-button" type="submit">Send</button>
-  </form>
-</section>
-
+  <section id="contact" class="section">
+    <h1>Contact Us</h1>
+    <form action="https://formspree.io/f/mgvoybrr" method="POST">
+      <label for="fullName">
+        Full Name:
+        <input type="text" id="fullName" name="fullName" required>
+      </label>
+      
+      <label for="mobilePhone">
+        Mobile Phone:
+        <input type="tel" id="mobilePhone" name="mobilePhone" required>
+      </label>
+      
+      <label for="email">
+        Your Email:
+        <input type="email" id="email" name="email" required>
+      </label>
+      
+      <label for="installationAddress">
+        Installation Address:
+        <textarea id="installationAddress" name="installationAddress" required></textarea>
+      </label>
+      
+      <label for="serviceType">
+        Service Type:
+        <select id="serviceType" name="serviceType" required>
+          <option value="">Select Service</option>
+          <option value="solar-install">Solar Installation</option>
+          <option value="battery-install">Battery Storage Installation</option>
+          <option value="ev-charger">EV Charger Installation</option>
+        </select>
+      </label>
+      
+      <label for="message">
+        Message:
+        <textarea id="message" name="message" required></textarea>
+      </label>
+      
+      <button id="send-button" type="submit">Send</button>
+    </form>
+  </section>
+  
   <!-- Footer -->
   <footer>
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
-
+  
+  <!-- Scripts -->
   <script src="./packages/packages.js"></script>
   <script src="script.js"></script>
   <script src="./articles/articleArray.js"></script>
-  
 </body>
 </html>
-

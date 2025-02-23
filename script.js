@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   // -------------------------
   // HERO SECTION PARALLAX
@@ -57,8 +56,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // -------------------------
-  // FACEBOOK TIMELINES PRELOAD
+  // FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION
   // -------------------------
+  // Define fbAsyncInit to initialize the FB SDK (version v19.0) and parse XFBML
+  window.fbAsyncInit = function() {
+    FB.init({
+      xfbml   : true,
+      version : 'v19.0'
+    });
+    // Parse FB elements that haven't been parsed yet
+    const wrappers = document.querySelectorAll('.fb-page-wrapper');
+    wrappers.forEach(wrapper => {
+      if (!wrapper.classList.contains('fb-parsed')) {
+        FB.XFBML.parse(wrapper);
+        wrapper.classList.add('fb-parsed');
+      }
+    });
+  };
+
+  // Asynchronously load the Facebook SDK
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
   function preloadFBTimelines() {
     const wrappers = document.querySelectorAll('.fb-page-wrapper');
     wrappers.forEach(wrapper => {
@@ -110,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Moved to global scope for clarity
   function revealUniqueServices() {
     const products = document.querySelectorAll('#unique-services .unique-service-product');
     const triggerBottom = window.innerHeight * 0.8;
@@ -131,15 +154,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Combined scroll handler with throttling
+  // -------------------------
+  // COMBINED SCROLL HANDLER WITH THROTTLING
+  // -------------------------
   let lastCall = 0;
-  let timeout;
+  let scrollTimeout;
   function handleScroll() {
     const now = Date.now();
     if (now - lastCall < 100) return;
     lastCall = now;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => {
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
       requestAnimationFrame(() => {
         revealButtons();
         revealCards();
@@ -150,7 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.addEventListener('scroll', handleScroll, { passive: true });
 
-  // Initial calls on load
+  // -------------------------
+  // INITIAL CALLS ON LOAD
+  // -------------------------
   function initAll() {
     revealButtons();
     revealCards();
@@ -167,23 +194,23 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', function (event) {
       const url = this.getAttribute('href');
       if (this.classList.contains('mirror-left')) {
-        // For "Browse Solar Packages", open in a new tab
+        // Open in a new tab
         event.preventDefault();
         setTimeout(() => {
           window.open(url, '_blank', 'noopener,noreferrer');
         }, 100);
       } else {
-        // For "Solar Savings Calculator", navigate normally
+        // Navigate normally
         window.location.href = url;
       }
     });
-    // Fix for Safari/Chrome needing a second tap
     button.addEventListener('touchend', function (event) {
       event.preventDefault();
       this.click();
     }, { passive: false });
   });
 });
+
 
 //Navigation Dropdown menu/sumbenu//
 
