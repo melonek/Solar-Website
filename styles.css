@@ -15,7 +15,6 @@ html {
     padding: 0;
     height: 100%;
     width: 100%;
-    overflow-x: visible; /* or remove any global overflow hidden */
 }
 
 body {
@@ -27,7 +26,6 @@ body {
     color: #333;
     background: #f4f4f4;
     width: 100%;
-    overflow-x: visible; /* or remove any global overflow hidden */
 }
 
 /* Navigation Bar */
@@ -2698,8 +2696,10 @@ nav {
   /* Unique styles for the build-solar button */
   #build-solar-btn.fancy-button {
     background: linear-gradient(135deg, #2196f3, #21cbf3);
+    color: #fff;
     padding: 30px 60px;
     font-size: 2rem;
+
   }
   
   #build-solar-btn.fancy-button:hover {
@@ -2708,6 +2708,7 @@ nav {
   
   /* When revealed, slide to natural position */
   #build-solar-btn.fancy-button.revealed {
+    transform: translateX(0);
   }
 
 
