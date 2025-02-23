@@ -35,17 +35,17 @@
 .learn-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Ensures proper alignment */
-  width: calc((100% - 40px) / 3); /* Keeps them equal width */
-  max-height: 500px; /* Set a flexible max height */
-  min-height: 400px; /* Ensures consistent size */
+  justify-content: space-between;
+  width: calc((100% - 40px) / 3);
+  max-height: 500px;
+  min-height: 400px;
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  opacity: 1; /* Cards are visible by default */
-  transform: translateY(50px); /* Initial position off-screen */
-  transition: transform 0.3s ease; /* Only animate transform for smooth sliding */
+  opacity: 1;
+  transform: translateY(50px);
+  transition: transform 0.8s ease; /* Increased from 0.3s to 0.8s */
 }
 
 .learn-card.revealed {

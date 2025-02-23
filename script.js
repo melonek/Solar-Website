@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lastScroll = window.scrollY;
     }
   });
-
+  
   // -------------------------
   // BUILD SOLAR SECTION PARALLAX
   // -------------------------
@@ -54,17 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
       lastScrollBuild = window.scrollY;
     }
   });
-
+  
   // -------------------------
   // FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION
   // -------------------------
-  // Define fbAsyncInit to initialize the FB SDK (version v19.0) and parse XFBML
   window.fbAsyncInit = function() {
     FB.init({
       xfbml   : true,
       version : 'v19.0'
     });
-    // Parse FB elements that haven't been parsed yet
     const wrappers = document.querySelectorAll('.fb-page-wrapper');
     wrappers.forEach(wrapper => {
       if (!wrapper.classList.contains('fb-parsed')) {
@@ -73,8 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   };
-
-  // Asynchronously load the Facebook SDK
+  
   (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
@@ -82,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     js.src = 'https://connect.facebook.net/en_US/sdk.js';
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
+  
   function preloadFBTimelines() {
     const wrappers = document.querySelectorAll('.fb-page-wrapper');
     wrappers.forEach(wrapper => {
@@ -92,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
+  
   // -------------------------
   // REVEAL FUNCTIONS
   // -------------------------
@@ -101,15 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const triggerBottom = window.innerHeight * 0.8;
     buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
-      const isRevealed = buttonTop < triggerBottom;
-      if (isRevealed) {
+      if (buttonTop < triggerBottom) {
         button.classList.add('revealed');
       } else {
         button.classList.remove('revealed');
       }
     });
   }
-
+  
   function revealCards() {
     const cards = document.querySelectorAll('.brand-card');
     const triggerBottom = window.innerHeight * 0.9;
@@ -118,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.toggle('active', cardTop < triggerBottom);
     });
   }
-
+  
   function revealArticles() {
     const articles = document.querySelectorAll('.article-card');
     const triggerBottom = window.innerHeight * 0.8;
@@ -133,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
+  
   function revealUniqueServices() {
     const products = document.querySelectorAll('#unique-services .unique-service-product');
     const triggerBottom = window.innerHeight * 0.8;
@@ -154,6 +150,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+function revealLearnCards() {
+  const learnCards = document.querySelectorAll('.learn-card');
+  const triggerBottom = window.innerHeight * 0.8;
+  learnCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+      if (cardTop < triggerBottom) {
+          setTimeout(() => {
+              card.classList.add('revealed');
+          }, index * 300); // increased delay from 200ms to 300ms per card
+      } else {
+          card.classList.remove('revealed');
+      }
+  })
+}
+  
   // -------------------------
   // COMBINED SCROLL HANDLER WITH THROTTLING
   // -------------------------
@@ -170,11 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
         revealCards();
         revealArticles();
         revealUniqueServices();
+        revealLearnCards();
       });
     }, 100);
   }
   window.addEventListener('scroll', handleScroll, { passive: true });
-
+  
   // -------------------------
   // INITIAL CALLS ON LOAD
   // -------------------------
@@ -183,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     revealCards();
     revealArticles();
     revealUniqueServices();
+    revealLearnCards();
     preloadFBTimelines();
   }
   window.addEventListener('load', initAll);
