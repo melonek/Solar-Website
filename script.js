@@ -1,321 +1,189 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+  // -------------------------
+  // HERO SECTION PARALLAX
+  // -------------------------
   const heroSection = document.querySelector('.hero-section');
   const heroImage = document.querySelector('.hero-image img');
   let lastScroll = 0;
-
-  // Manually set the dimensions of the image
-  const imageWidth = 4000;  // Set to your desired width (e.g., 6000px)
-  const imageHeight = 1000; // Set to your desired height (e.g., 3000px)
-
-  // Set the image to the desired size
-  heroImage.style.width = `${imageWidth}px`;
-  heroImage.style.height = `${imageHeight}px`;
-
-  // Update parallax function
+  const imageWidth = 4000;  // desired width
+  const imageHeight = 1000; // desired height
+  if (heroImage) {
+    heroImage.style.width = `${imageWidth}px`;
+    heroImage.style.height = `${imageHeight}px`;
+  }
   function updateParallax() {
     const scrollY = window.scrollY;
+    if (!heroSection) return;
     const sectionTop = heroSection.offsetTop;
     const sectionHeight = heroSection.clientHeight;
-    
-    // Only animate when section is visible
     if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-
-    // Calculate parallax movement (25% of scroll distance)
     const progress = (scrollY - sectionTop) / sectionHeight;
     const parallaxY = progress * sectionHeight * 0.25;
-
-    // Apply the parallax transform
-    heroImage.style.transform = `
-        translate3d(-50%, calc(-50% + ${parallaxY}px), 0)
-    `;
-
+    heroImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0)`;
     requestAnimationFrame(updateParallax);
   }
-
-  // Initialize parallax on scroll
   window.addEventListener('scroll', () => {
     if (Math.abs(window.scrollY - lastScroll) > 2) {
-        requestAnimationFrame(updateParallax);
-        lastScroll = window.scrollY;
+      requestAnimationFrame(updateParallax);
+      lastScroll = window.scrollY;
     }
   });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
+  // -------------------------
+  // BUILD SOLAR SECTION PARALLAX
+  // -------------------------
   const buildSolarSection = document.getElementById('build-solar');
   const buildSolarVideo = document.querySelector('.build-solar-video video');
   let lastScrollBuild = 0;
-
   function updateParallaxBuild() {
     const scrollY = window.scrollY;
+    if (!buildSolarSection) return;
     const sectionTop = buildSolarSection.offsetTop;
     const sectionHeight = buildSolarSection.clientHeight;
-
-    // Only animate when the section is visible
     if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-
-    // Calculate parallax movement (25% of the section height)
     const progress = (scrollY - sectionTop) / sectionHeight;
     const parallaxY = progress * sectionHeight * 0.25;
-
-    // Apply the parallax transform to the video element
-    buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
-
+    if (buildSolarVideo) {
+      buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
+    }
     requestAnimationFrame(updateParallaxBuild);
   }
-
-  // Initialize parallax effect on scroll
   window.addEventListener('scroll', () => {
     if (Math.abs(window.scrollY - lastScrollBuild) > 2) {
       requestAnimationFrame(updateParallaxBuild);
       lastScrollBuild = window.scrollY;
     }
   });
-});
 
+  // -------------------------
+  // FACEBOOK TIMELINES PRELOAD
+  // -------------------------
+  function preloadFBTimelines() {
+    const wrappers = document.querySelectorAll('.fb-page-wrapper');
+    wrappers.forEach(wrapper => {
+      if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
+        FB.XFBML.parse(wrapper);
+        wrapper.classList.add('fb-parsed');
+      }
+    });
+  }
 
-// Preload Facebook Timelines when the page is loaded
-function preloadFBTimelines() {
-  const wrappers = document.querySelectorAll('.fb-page-wrapper');
-
-  wrappers.forEach(wrapper => {
-    // Trigger XFBML parsing on page load to preload Facebook timelines
-    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-      FB.XFBML.parse(wrapper);
-      wrapper.classList.add('fb-parsed'); // Mark as parsed to prevent re-parsing
-    }
-  });
-}
-
-// Initialize all functions
-function initAll() {
-    revealButtons();
-    revealServices();
-    revealCards();
-    revealArticles();
-    revealFBTimelines();
-    preloadFBTimelines();  // Preload Facebook timelines
-}
-
-// Event Listeners (REPLACES ALL OTHERS)
-window.addEventListener('load', initAll);
-window.addEventListener('scroll', handleScroll, { passive: true });
-
-// Combined Scroll Handler with Throttling
-let lastCall = 0;
-let timeout;
-
-function handleScroll() {
-    const now = Date.now();
-    if (now - lastCall < 100) return; // Throttle to 10fps
-    lastCall = now;
-
-    // Throttle the revealFBTimelines function to prevent constant re-parsing
-    if (timeout) {
-        clearTimeout(timeout); // Clear the previous timeout if any
-    }
-
-    timeout = setTimeout(() => {
-        // Use requestAnimationFrame to optimize rendering
-        requestAnimationFrame(() => {
-            revealButtons();
-            revealServices();
-            revealCards();
-            revealArticles();
-            revealFBTimelines(); // Facebook timelines reveal logic
-        });
-    }, 100); // Delay the execution of FB.XFBML.parse to 100ms (adjust as needed)
-}
-
-// =================================================================
-// REVEAL FUNCTIONS (KEEP THESE AS IS)
-// =================================================================
-
-// BRANDS CARDS REVEAL BOUNCE EFFECT
-function revealCards() {
-  const cards = document.querySelectorAll('.brand-card');
-  const triggerBottom = window.innerHeight * 0.9;
-
-  cards.forEach(card => {
-      const cardTop = card.getBoundingClientRect().top;
-      card.classList.toggle('active', cardTop < triggerBottom);
-  });
-}
-
-// FANCY BUTTONS REVEAL EFFECT
-function revealButtons() {
-  const buttons = document.querySelectorAll('.fancy-button');
-  const triggerBottom = window.innerHeight * 0.8;
-
-  buttons.forEach(button => {
+  // -------------------------
+  // REVEAL FUNCTIONS
+  // -------------------------
+  function revealButtons() {
+    const buttons = document.querySelectorAll('.fancy-button');
+    const triggerBottom = window.innerHeight * 0.8;
+    buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
       const isRevealed = buttonTop < triggerBottom;
-      button.classList.toggle('revealed', isRevealed);
-
-      // Ensure pointer events are always enabled when revealed
       if (isRevealed) {
-          button.style.pointerEvents = 'auto';
-      }
-  });
-}
-
-// Handle clicks properly
-document.querySelectorAll('.fancy-button').forEach(button => {
-  button.addEventListener('click', function (event) {
-      const url = this.getAttribute('href');
-
-      if (this.classList.contains('mirror-left')) {
-          // If it's the "Browse Solar Packages" button → open in new tab
-          event.preventDefault();
-          setTimeout(() => {
-              window.open(url, '_blank', 'noopener,noreferrer');
-          }, 100); // Small delay to prevent blocking
+        button.classList.add('revealed');
       } else {
-          // "Solar Savings Calculator" opens normally
-          window.location.href = url;
+        button.classList.remove('revealed');
       }
-  });
+    });
+  }
 
-  // Fix for Safari/Chrome requiring second tap
-  button.addEventListener('touchend', function (event) {
-      event.preventDefault(); // Prevent weird behavior
-      this.click(); // Force immediate action on first tap
-  }, { passive: false });
-});
-
-// Run reveal effect on scroll
-window.addEventListener('scroll', revealButtons);
-document.addEventListener('DOMContentLoaded', revealButtons);
-
-// LEARN REVEAL EFFECT //
-// Learn Card Reveal Effect
-function revealLearnCards() {
-  const learnCards = document.querySelectorAll('.learn-card');
-  const triggerBottom = window.innerHeight * 0.8;
-
-  learnCards.forEach((card, index) => {
+  function revealCards() {
+    const cards = document.querySelectorAll('.brand-card');
+    const triggerBottom = window.innerHeight * 0.9;
+    cards.forEach(card => {
       const cardTop = card.getBoundingClientRect().top;
-      if (cardTop < triggerBottom) {
-          setTimeout(() => {
-              card.classList.add('revealed');
-          }, index * 200); // 200ms stagger for a smooth animation
+      card.classList.toggle('active', cardTop < triggerBottom);
+    });
+  }
+
+  function revealArticles() {
+    const articles = document.querySelectorAll('.article-card');
+    const triggerBottom = window.innerHeight * 0.8;
+    articles.forEach((article, index) => {
+      const articleTop = article.getBoundingClientRect().top;
+      if (articleTop < triggerBottom) {
+        setTimeout(() => {
+          article.classList.add('revealed');
+        }, index * 200);
       } else {
-          card.classList.remove('revealed'); // Reset when out of view
+        article.classList.remove('revealed');
       }
-  });
-}
+    });
+  }
 
-// Trigger the reveal effect on scroll
-window.addEventListener('scroll', revealLearnCards);
-
-// Initial call to display the reveal effect when the page loads
-revealLearnCards();
-
-
-// REVEAL SERVICES SECTIONS - Packages.html (inverter and panels reveal)
-function revealServices() {
-  const services = document.querySelectorAll('.service-category');
-  const products = document.querySelectorAll('.product');
-  const triggerBottom = window.innerHeight * 0.8;
-
-  services.forEach(service => {
-      const serviceTop = service.getBoundingClientRect().top;
-      const isActive = serviceTop < triggerBottom;
-      service.classList.toggle('active', isActive);
-
-      service.querySelectorAll('.product').forEach((product, index) => {
-          product.classList.toggle('revealed', isActive);
-      });
-  });
-
-  products.forEach(product => {
-      product.classList.toggle('revealed', 
-          product.getBoundingClientRect().top < triggerBottom
-      );
-  });
-
-  // REVEAL UNIQUE SERVICE PRODUCT EFFECT (specific to #unique-services)
-function revealUniqueServices() {
-  const products = document.querySelectorAll('#unique-services .unique-service-product'); // Scoped to #unique-services
-  const triggerBottom = window.innerHeight * 0.8;
-
-  products.forEach((product, index) => {
+  // Moved to global scope for clarity
+  function revealUniqueServices() {
+    const products = document.querySelectorAll('#unique-services .unique-service-product');
+    const triggerBottom = window.innerHeight * 0.8;
+    products.forEach((product, index) => {
       const productTop = product.getBoundingClientRect().top;
       const isActive = productTop < triggerBottom;
       const revealDirection = product.getAttribute('data-reveal-direction');
       const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
-
       if (isActive) {
-          setTimeout(() => {
-              product.classList.add('revealed');
-              // Add specific direction-based reveal
-              product.style.transform = revealDirection === 'right' ? 'translateX(0)' : 'translateX(0)';
-          }, delay * 200); // 200ms stagger
+        setTimeout(() => {
+          product.classList.add('revealed');
+          product.style.transform = 'translateX(0)';
+        }, delay * 200);
       } else {
-          product.classList.remove('revealed');
-          // Reset position based on direction
-          product.style.transform = revealDirection === 'right' ? 'translateX(100px)' : 'translateX(-100px)'; // Reset position
+        product.classList.remove('revealed');
+        product.style.transform = revealDirection === 'right' ? 'translateX(100px)' : 'translateX(-100px)';
       }
-  });
-}
+    });
+  }
 
-// Trigger reveal effect on scroll
-window.addEventListener('scroll', revealUniqueServices);
+  // Combined scroll handler with throttling
+  let lastCall = 0;
+  let timeout;
+  function handleScroll() {
+    const now = Date.now();
+    if (now - lastCall < 100) return;
+    lastCall = now;
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      requestAnimationFrame(() => {
+        revealButtons();
+        revealCards();
+        revealArticles();
+        revealUniqueServices();
+      });
+    }, 100);
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
-// Initial call to display the reveal effect when the page loads
-revealUniqueServices();
+  // Initial calls on load
+  function initAll() {
+    revealButtons();
+    revealCards();
+    revealArticles();
+    revealUniqueServices();
+    preloadFBTimelines();
+  }
+  window.addEventListener('load', initAll);
 
-
-// Trigger reveal effect on scroll
-window.addEventListener('scroll', revealUniqueServices);
-
-// Initial call to display the reveal effect when the page loads
-revealUniqueServices();
-
-}
-
-
-// ARTICLE REVEAL EFFECT
-function revealArticles() {
-  const articles = document.querySelectorAll('.article-card');
-  const triggerBottom = window.innerHeight * 0.8;
-
-  articles.forEach((article, index) => {
-      const articleTop = article.getBoundingClientRect().top;
-      if (articleTop < triggerBottom) {
-          setTimeout(() => {
-              article.classList.add('revealed');
-          }, index * 200); // 200ms stagger
+  // -------------------------
+  // BUTTON CLICK HANDLERS
+  // -------------------------
+  document.querySelectorAll('.fancy-button').forEach(button => {
+    button.addEventListener('click', function (event) {
+      const url = this.getAttribute('href');
+      if (this.classList.contains('mirror-left')) {
+        // For "Browse Solar Packages", open in a new tab
+        event.preventDefault();
+        setTimeout(() => {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }, 100);
       } else {
-          article.classList.remove('revealed'); // Reset when out of view
+        // For "Solar Savings Calculator", navigate normally
+        window.location.href = url;
       }
+    });
+    // Fix for Safari/Chrome needing a second tap
+    button.addEventListener('touchend', function (event) {
+      event.preventDefault();
+      this.click();
+    }, { passive: false });
   });
-}
-
-// Ensure to trigger the reveal on page load and on scroll
-window.addEventListener('load', revealArticles);
-window.addEventListener('scroll', revealArticles);
-
-
-// FACEBOOK TIMELINE REVEAL
-function revealFBTimelines() {
-  const wrappers = document.querySelectorAll('.fb-page-wrapper');
-  const triggerBottom = window.innerHeight * 0.9;
-
-  wrappers.forEach(wrapper => {
-      const top = wrapper.getBoundingClientRect().top;
-      
-      // Toggle visibility based on scroll position
-      wrapper.classList.toggle('revealed', top < triggerBottom);
-      
-      // Ensure Facebook XFBML parsing only happens once when the element comes into view
-      if (top < triggerBottom && typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-          FB.XFBML.parse(wrapper);
-          wrapper.classList.add('fb-parsed'); // Prevent re-parsing
-      }
-  });
-}
+});
 
 //Navigation Dropdown menu/sumbenu//
 
