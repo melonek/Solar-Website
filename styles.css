@@ -2631,7 +2631,6 @@ nav {
     height: 100%;
     z-index: 1;
     overflow: hidden;
-    overflow-x:hidden;
   }
   
   .build-solar-video video {
@@ -2659,7 +2658,6 @@ nav {
     text-align: center;
     color: #fff;
     padding: 20px;
-    overflow-x:hidden;
   }
   
   .build-solar-content h2 {
@@ -2725,7 +2723,7 @@ nav {
     border-top: 3px solid #009688;
     margin: 40px auto;
     max-width: 1600px;
-    overflow-x:hidden;
+    overflow-x: hidden;
     /* Remove the background image from here */
   }
   
@@ -2741,7 +2739,6 @@ nav {
     background-size: cover;
     opacity: 0.5; /* Adjust the opacity here */
     z-index: 0;   /* Ensure it sits behind the content */
-    overflow-x:hidden;
   }
   
   /* Ensure content is positioned above the background */
