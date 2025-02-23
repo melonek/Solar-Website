@@ -2652,7 +2652,7 @@ nav {
   transform: translate(-50%, -50%);
   z-index: 2;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   text-align: center;
   color: #fff;
   padding: 20px;
@@ -2703,7 +2703,6 @@ nav {
     margin: 40px auto;
     max-width: 1600px;
     overflow-x: hidden;
-    /* Remove the background image from here */
   }
   
   /* Create a pseudo-element that holds the background image */
@@ -2724,7 +2723,10 @@ nav {
   .banner-content {
     position: relative;
     z-index: 1;
-    text-align: center;
+    width:100%;
+    text-align:center;
+    max-width:1000px;
+    margin: 0 auto;
     padding: 20px;
   }
   
@@ -3437,88 +3439,87 @@ nav {
     font-weight: normal !important;
 }
 
-/* Facebook */
-/* Wrapper for both timelines */
-.timeline-wrapper {
-    display: flex;
-    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
-    justify-content: space-between;
-  }
-  
-  /* Container for each timeline */
-  .timeline-container {
-    width: calc(50% - 10px); /* Half width minus some margin */
-    margin-bottom: 20px;
-    flex: 1;
-    min-width: 300px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    perspective: 1000px;
-    overflow: visible !important;
-  }
-
-  .fb-page-wrapper {
-    position: relative;
-    transform-style: preserve-3d;
-    opacity: 0;
-    transform: rotateY(180deg) scale(0.8);
-}
-
-.fb-page-wrapper.revealed {
-    opacity: 1;
-    transform: rotateY(0deg) scale(1);
-}
-  
-  /* Styling for FB timelines */
-  .fb-page {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    height: 400px !important; /* Force height */
-    width: 100%; /* Full width of its container */
-  }
-  
-  /* Responsive design for screens up to 780px wide */
-  @media screen and (max-width: 780px) {
-    .timeline-container {
-      width: 100%; /* Full width on smaller screens */
-      margin-bottom: 20px; /* Space below each timeline */
-    }
-
+    /* =========================
+       Facebook Timelines CSS
+    ============================ */
     .timeline-wrapper {
-        flex-direction: column; /* Stack timelines vertically */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
     }
     
-    .section h1 {
-      font-size: 2em;
+    .timeline-container {
+      width: calc(50% - 10px);
+      margin-bottom: 20px;
+      flex: 1;
+      min-width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      perspective: 1000px;
+      overflow: visible !important;
+    }
+    
+    .fb-page-wrapper {
+      position: relative;
+      transform-style: preserve-3d;
+      opacity: 0;
+      transform: rotateY(180deg) scale(0.8);
+    }
+    
+    .fb-page-wrapper.revealed {
+      opacity: 1;
+      transform: rotateY(0deg) scale(1);
     }
     
     .fb-page {
-      height: 500px; /* Adjust the height for visibility */
-    }
-
-    .fb-page-wrapper { 
-        transform: rotateY(180deg) scale(0.9); }
-
-        .fb-page-wrapper:not(.revealed) {
-            visibility: hidden;
-        }
-        
-    .fb-page { 
-        height: 500px !important; }
-  }
-  
-  /* Responsive design for screens up to 440px wide */
-  @media screen and (max-width: 440px) {
-    .fb-page {
-      height: 400px; /* Further adjust height for very small screens */
+      backface-visibility: hidden;
+      transform: translateZ(0);
+      height: 400px !important;
+      width: 100%;
     }
     
-    .section h1 {
-      font-size: 1.5em;
+    @media screen and (max-width: 780px) {
+      .timeline-container {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    
+      .timeline-wrapper {
+        flex-direction: column;
+      }
+      
+      .section h1 {
+        font-size: 2em;
+      }
+      
+      .fb-page {
+        height: 500px;
+      }
+      
+      .fb-page-wrapper { 
+          transform: rotateY(180deg) scale(0.9);
+      }
+      
+      .fb-page-wrapper:not(.revealed) {
+          visibility: hidden;
+      }
+      
+      .fb-page { 
+          height: 500px !important;
+      }
     }
-  }
+    
+    @media screen and (max-width: 440px) {
+      .fb-page {
+        height: 400px;
+      }
+      
+      .section h1 {
+        font-size: 1.5em;
+      }
+    }
 
 
 /* FAQ Styling */

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // -------------------------
-  // HERO SECTION PARALLAX
+  // HERO SECTION PARALLAX (Example Functionality)
   // -------------------------
   const heroSection = document.querySelector('.hero-section');
   const heroImage = document.querySelector('.hero-image img');
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // -------------------------
-  // BUILD SOLAR SECTION PARALLAX
+  // BUILD SOLAR SECTION PARALLAX (Example Functionality)
   // -------------------------
   const buildSolarSection = document.getElementById('build-solar');
   const buildSolarVideo = document.querySelector('.build-solar-video video');
@@ -56,12 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // -------------------------
-  // FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION
+  // FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION (v16.0)
   // -------------------------
   window.fbAsyncInit = function() {
     FB.init({
       xfbml   : true,
-      version : 'v19.0'
+      version : 'v16.0'
     });
     const wrappers = document.querySelectorAll('.fb-page-wrapper');
     wrappers.forEach(wrapper => {
@@ -149,21 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
-function revealLearnCards() {
-  const learnCards = document.querySelectorAll('.learn-card');
-  const triggerBottom = window.innerHeight * 0.8;
-  learnCards.forEach((card, index) => {
+  
+  function revealLearnCards() {
+    const learnCards = document.querySelectorAll('.learn-card');
+    const triggerBottom = window.innerHeight * 0.8;
+    learnCards.forEach((card, index) => {
       const cardTop = card.getBoundingClientRect().top;
       if (cardTop < triggerBottom) {
-          setTimeout(() => {
-              card.classList.add('revealed');
-          }, index * 300); // increased delay from 200ms to 300ms per card
+        setTimeout(() => {
+          card.classList.add('revealed');
+        }, index * 300);
       } else {
-          card.classList.remove('revealed');
+        card.classList.remove('revealed');
       }
-  })
-}
+    });
+  }
   
   // -------------------------
   // COMBINED SCROLL HANDLER WITH THROTTLING
@@ -199,7 +199,7 @@ function revealLearnCards() {
     preloadFBTimelines();
   }
   window.addEventListener('load', initAll);
-
+  
   // -------------------------
   // BUTTON CLICK HANDLERS
   // -------------------------
@@ -207,13 +207,11 @@ function revealLearnCards() {
     button.addEventListener('click', function (event) {
       const url = this.getAttribute('href');
       if (this.classList.contains('mirror-left')) {
-        // Open in a new tab
         event.preventDefault();
         setTimeout(() => {
           window.open(url, '_blank', 'noopener,noreferrer');
         }, 100);
       } else {
-        // Navigate normally
         window.location.href = url;
       }
     });
