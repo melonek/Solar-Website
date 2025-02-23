@@ -343,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-//Articles - logic
 document.addEventListener('DOMContentLoaded', function() {
 
   // ----- MAIN PAGE: ARTICLES WITH MODAL & PAGINATION -----
@@ -355,8 +354,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) return;
 
-    // Filter based on displayOnMain
-    const mainArticles = allArticles.filter(article => article.displayOnMain); 
+    // Filter based on displayOnMain and sort by publishedDate (newest first)
+    const mainArticles = allArticles.filter(article => article.displayOnMain).sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate)); 
     const startIndex = (page - 1) * articlesPerPage;
     const endIndex = startIndex + articlesPerPage;
     const articlesToShow = mainArticles.slice(startIndex, endIndex);
@@ -488,8 +487,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const learnGrid = document.getElementById('learn-grid');
     if (!learnGrid) return;
 
-    // Filter articles that have displayOnLearn or displayOnMain set to true
-    const learnArticles = allArticles.filter(article => article.displayOnLearn || article.displayOnMain);
+    // Filter articles that have displayOnLearn set to true (NOT displayOnMain) and sort by publishedDate (newest first)
+    const learnArticles = allArticles.filter(article => article.displayOnLearn).sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
     const startIndex = (page - 1) * learnArticlesPerPage;
     const endIndex = startIndex + learnArticlesPerPage;
     const articlesToShow = learnArticles.slice(startIndex, endIndex);
@@ -555,8 +554,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (document.getElementById('learn-grid')) {
     displayLearnArticles(currentLearnPage);
   }
-
 });
+
 
 
 // Filter Bar , function () sorting the solar by cheapest, most popular and most expensive
