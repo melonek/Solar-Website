@@ -2700,9 +2700,6 @@ nav {
     background: linear-gradient(135deg, #2196f3, #21cbf3);
     padding: 30px 60px;
     font-size: 2rem;
-    border-radius: 25px;
-    /* Initially offset to the left; !important ensures this isn't overridden */
-    transform: translateX(-50px) !important;
   }
   
   #build-solar-btn.fancy-button:hover {
@@ -2711,7 +2708,6 @@ nav {
   
   /* When revealed, slide to natural position */
   #build-solar-btn.fancy-button.revealed {
-    transform: translateX(0) !important;
   }
 
 
