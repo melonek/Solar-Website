@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0"></script>
 <link rel="stylesheet" href="styles.css"> 
-<link rel="stylesheet" href="./articles/styles.css">  
+<link rel="stylesheet" href="./articles/styles.css">
+
 <title>Nature's Spark Solar</title>
 <!--One font-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +15,7 @@
   
 </head>
 <body>
-  
+  <div id="fb-root"></div>
   <nav>
     <!-- Moved logo outside of nav for fixed positioning -->
     <div class="floating-logo">
@@ -117,6 +116,21 @@
   </div>
 </section>
 
+<section id="build-solar">
+  <div class="build-solar-video">
+    <video autoplay muted loop playsinline>
+      <source src="videos/solar-panels-timelapse-Perth.webm" type="video/webm">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+  <div class="build-solar-content">
+    <h2>Design Your Custom Solar Solution</h2>
+    <h3>Create a personalized solar system tailored to your energy needs</h3>
+    <a id="build-solar-btn" href="./packages/packages.html" class="fancy-button" target="_blank">
+      Browse Solar Packages
+    </a>
+</section>
+
 
 <!-- Services Section -->
 <section id="services" class="section">
@@ -125,10 +139,6 @@
   <!-- Centered Button Pair -->
   <div class="button-wrapper">
   <div class="button-split-container">
-      <a href="./packages/packages.html" 
-         class="fancy-button mirror-left" 
-         data-reveal="left"
-         target="_blank">Browse Solar Packages</a>
       <a href="./solarCalculator/solarCalculator.html" 
          class="fancy-button mirror-right"
          data-reveal="right">Solar Savings Calculator</a>
@@ -356,6 +366,7 @@
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
+  <script src="./packages/packages.js"></script>
   <script src="script.js"></script>
   <script src="./articles/articleArray.js"></script>
   
