@@ -211,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
 //Navigation Dropdown menu/sumbenu//
 
 document.addEventListener('DOMContentLoaded', function() {
