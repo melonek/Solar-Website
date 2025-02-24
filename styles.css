@@ -4375,6 +4375,12 @@ footer {
     color: #333;
   }
 
+  #unique-services h1,
+#unique-services h2 {
+  text-align: center;
+}
+  
+
   #unique-services .unique-service-product p {
     font-size: 0.9em;
     color: #7f8c8d;
