@@ -55,113 +55,163 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // -------------------------
-// FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION (v16.0)
+// -------------------------
+// FACEBOOK TIMELINES PRELOAD & SDK INITIALIZATION (v22.0)
 // -------------------------
 window.fbAsyncInit = function() {
   FB.init({
-      appId     : '956735296637387',  // Replace with your Facebook App ID
+      appId     : '1426450195430892',  // Replace with your actual Facebook App ID
       xfbml     : true,
-      version   : 'v16.0'
+      version   : 'v22.0' // Correct version based on what you mentioned
   });
 
-  // After FB initialization, parse the timelines
+  // After FB initialization, parse the timelines and reveal them
   preloadFBTimelines();
 };
 
+// Load the Facebook SDK
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
-  js.src = 'https://connect.facebook.net/en_US/sdk.js';
+  js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892'; // Using your App ID and correct language region
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
+// Function to parse and reveal the Facebook timelines
 function preloadFBTimelines() {
   const wrappers = document.querySelectorAll('.fb-page-wrapper');
   wrappers.forEach(wrapper => {
       if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-          FB.XFBML.parse(wrapper);
+          FB.XFBML.parse(wrapper); // Parse the timeline content
           wrapper.classList.add('fb-parsed');
+          wrapper.classList.add('revealed'); // Ensure timelines are visible after parsing
       }
   });
 }
 
-  
-  // -------------------------
-  // REVEAL FUNCTIONS
-  // -------------------------
-  function revealButtons() {
-    const buttons = document.querySelectorAll('.fancy-button');
-    const triggerBottom = window.innerHeight * 0.8;
-    buttons.forEach(button => {
-      const buttonTop = button.getBoundingClientRect().top;
-      if (buttonTop < triggerBottom) {
-        button.classList.add('revealed');
-      } else {
-        button.classList.remove('revealed');
-      }
-    });
-  }
-  
-  function revealCards() {
-    const cards = document.querySelectorAll('.brand-card');
-    const triggerBottom = window.innerHeight * 0.9;
-    cards.forEach(card => {
-      const cardTop = card.getBoundingClientRect().top;
-      card.classList.toggle('active', cardTop < triggerBottom);
-    });
-  }
-  
-  function revealArticles() {
-    const articles = document.querySelectorAll('.article-card');
-    const triggerBottom = window.innerHeight * 0.8;
-    articles.forEach((article, index) => {
-      const articleTop = article.getBoundingClientRect().top;
-      if (articleTop < triggerBottom) {
-        setTimeout(() => {
-          article.classList.add('revealed');
-        }, index * 200);
-      } else {
-        article.classList.remove('revealed');
-      }
-    });
-  }
-  
-  function revealUniqueServices() {
-    const products = document.querySelectorAll('#unique-services .unique-service-product');
-    const triggerBottom = window.innerHeight * 0.8;
-    products.forEach((product, index) => {
-      const productTop = product.getBoundingClientRect().top;
-      const isActive = productTop < triggerBottom;
-      const revealDirection = product.getAttribute('data-reveal-direction');
-      const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
-      if (isActive) {
-        setTimeout(() => {
-          product.classList.add('revealed');
-          product.style.transform = 'translateX(0)';
-        }, delay * 200);
-      } else {
-        product.classList.remove('revealed');
-        product.style.transform = revealDirection === 'right' ? 'translateX(50px)' : 'translateX(-50px)';
-      }
-    });
-  }
-  
-  function revealLearnCards() {
-    const learnCards = document.querySelectorAll('.learn-card');
-    const triggerBottom = window.innerHeight * 0.8;
-    learnCards.forEach((card, index) => {
-      const cardTop = card.getBoundingClientRect().top;
-      if (cardTop < triggerBottom) {
-        setTimeout(() => {
-          card.classList.add('revealed');
-        }, index * 300);
-      } else {
-        card.classList.remove('revealed');
-      }
-    });
-  }
+// -------------------------
+// REVEAL FACEBOOK TIMELINES
+// -------------------------
+function revealFacebookTimelines() {
+  const timelines = document.querySelectorAll('.fb-page-wrapper');
+  const triggerBottom = window.innerHeight * 0.8;
+
+  timelines.forEach(timeline => {
+    const timelineTop = timeline.getBoundingClientRect().top;
+    if (timelineTop < triggerBottom) {
+      timeline.classList.add('revealed'); // Trigger the flip effect
+    } else {
+      timeline.classList.remove('revealed'); // Reset the timeline if it's out of view
+    }
+  });
+}
+
+// Listen for scroll events to trigger the reveal
+window.addEventListener('scroll', revealFacebookTimelines);
+
+// Also trigger on page load to ensure visible elements are revealed
+document.addEventListener('DOMContentLoaded', revealFacebookTimelines);
+
+// -------------------------
+// REVEAL FUNCTIONS
+// -------------------------
+function revealButtons() {
+  const buttons = document.querySelectorAll('.fancy-button');
+  const triggerBottom = window.innerHeight * 0.8;
+  buttons.forEach(button => {
+    const buttonTop = button.getBoundingClientRect().top;
+    if (buttonTop < triggerBottom) {
+      button.classList.add('revealed');
+    } else {
+      button.classList.remove('revealed');
+    }
+  });
+}
+
+function revealCards() {
+  const cards = document.querySelectorAll('.brand-card');
+  const triggerBottom = window.innerHeight * 0.9;
+  cards.forEach(card => {
+    const cardTop = card.getBoundingClientRect().top;
+    card.classList.toggle('active', cardTop < triggerBottom);
+  });
+}
+
+function revealArticles() {
+  const articles = document.querySelectorAll('.article-card');
+  const triggerBottom = window.innerHeight * 0.8;
+  articles.forEach((article, index) => {
+    const articleTop = article.getBoundingClientRect().top;
+    if (articleTop < triggerBottom) {
+      setTimeout(() => {
+        article.classList.add('revealed');
+      }, index * 200);
+    } else {
+      article.classList.remove('revealed');
+    }
+  });
+}
+
+function revealUniqueServices() {
+  const products = document.querySelectorAll('#unique-services .unique-service-product');
+  const triggerBottom = window.innerHeight * 0.8;
+  products.forEach((product, index) => {
+    const productTop = product.getBoundingClientRect().top;
+    const isActive = productTop < triggerBottom;
+    const revealDirection = product.getAttribute('data-reveal-direction');
+    const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
+    if (isActive) {
+      setTimeout(() => {
+        product.classList.add('revealed');
+        product.style.transform = 'translateX(0)';
+      }, delay * 200);
+    } else {
+      product.classList.remove('revealed');
+      product.style.transform = revealDirection === 'right' ? 'translateX(50px)' : 'translateX(-50px)';
+    }
+  });
+}
+
+function revealLearnCards() {
+  const learnCards = document.querySelectorAll('.learn-card');
+  const triggerBottom = window.innerHeight * 0.8;
+  learnCards.forEach((card, index) => {
+    const cardTop = card.getBoundingClientRect().top;
+    if (cardTop < triggerBottom) {
+      setTimeout(() => {
+        card.classList.add('revealed');
+      }, index * 300);
+    } else {
+      card.classList.remove('revealed');
+    }
+  });
+}
+
+// -------------------------
+// REVEAL THE PANELS, INVERTERS, AND BATTERY STORAGE SECTIONS
+// -------------------------
+function revealProductSections() {
+  const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
+  const triggerBottom = window.innerHeight * 0.8;
+
+  sections.forEach(section => {
+    const sectionTop = section.getBoundingClientRect().top;
+    if (sectionTop < triggerBottom) {
+      section.classList.add('revealed');  // Add reveal class to initiate animations
+    } else {
+      section.classList.remove('revealed'); // Reset the element if it's out of view
+    }
+  });
+}
+
+// Listen for scroll events to trigger the reveal
+window.addEventListener('scroll', revealProductSections);
+
+// Trigger on page load to ensure visible elements are revealed
+document.addEventListener('DOMContentLoaded', revealProductSections);
+
+
   
   // -------------------------
   // COMBINED SCROLL HANDLER WITH THROTTLING
@@ -583,4 +633,75 @@ document.getElementById("panel-filter").addEventListener("change", function() {
 
 document.getElementById("inverter-filter").addEventListener("change", function() {
   sortProducts("inverter", this.value);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  let isScrolling = false; // Flag to track if scrolling is happening
+  let isTouching = false; // Flag to track if a touch event is happening
+
+  // Function to prevent accidental button clicks while scrolling
+  const preventButtonClickWhileScrolling = (e) => {
+    if (isScrolling || isTouching) {
+      e.preventDefault(); // Prevent button click or touch during scroll
+      return false;
+    }
+    return true;
+  };
+
+  // Track scrolling events
+  window.addEventListener('scroll', () => {
+    isScrolling = true;
+    setTimeout(() => {
+      isScrolling = false;
+    }, 100); // 100ms delay to allow scrolling to stop
+  });
+
+  // Track touch events for mobile devices
+  document.querySelectorAll('.fancy-button, .savings-btn, .build-button').forEach(button => {
+    button.addEventListener('touchstart', (e) => {
+      isTouching = true;
+    });
+
+    button.addEventListener('touchend', (e) => {
+      isTouching = false;
+      if (!preventButtonClickWhileScrolling(e)) return; // Check if it's safe to trigger
+    });
+
+    button.addEventListener('click', (e) => {
+      if (!preventButtonClickWhileScrolling(e)) return; // Check if it's safe to trigger
+    });
+  });
+
+  // For click handlers
+  document.querySelectorAll('.fancy-button').forEach(button => {
+    button.addEventListener('click', function (event) {
+      if (event.target.classList.contains('mirror-left')) {
+        event.preventDefault();
+        setTimeout(() => {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }, 100);
+      } else {
+        window.location.href = url;
+      }
+    });
+  });
+
+  // Handle saving button and build button click (for preventing accidental navigation)
+  document.querySelector('.savings-btn').addEventListener('click', function (event) {
+    if (isScrolling || isTouching) {
+      event.preventDefault(); // Prevent click during scroll/touch
+      return false;
+    }
+    // Proceed with the original click action
+    // Put your click logic here
+  });
+
+  document.querySelector('.build-button').addEventListener('click', function (event) {
+    if (isScrolling || isTouching) {
+      event.preventDefault(); // Prevent click during scroll/touch
+      return false;
+    }
+    // Proceed with the original click action
+    // Put your click logic here
+  });
 });

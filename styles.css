@@ -1086,6 +1086,7 @@ nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    transform: translateY(-10px); /* Lift the entire grid slightly above */
 }
 
 .product {
@@ -2856,6 +2857,7 @@ nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    transform: translateY(-10px); /* Lift the entire grid slightly above */
 }
 
 .product {
@@ -3438,87 +3440,86 @@ nav {
     font-weight: normal !important;
 }
 
-    /* =========================
+/* =========================
        Facebook Timelines CSS
     ============================ */
     .timeline-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-    
-    .timeline-container {
-      width: calc(50% - 10px);
-      margin-bottom: 20px;
-      flex: 1;
-      min-width: 300px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      perspective: 1000px;
-      overflow: visible !important;
-    }
-    
-    .fb-page-wrapper {
-      position: relative;
-      transform-style: preserve-3d;
-      opacity: 0;
-      transform: rotateY(180deg) scale(0.8);
-    }
-    
-    .fb-page-wrapper.revealed {
-      opacity: 1;
-      transform: rotateY(0deg) scale(1);
-    }
-    
-    .fb-page {
-      backface-visibility: hidden;
-      transform: translateZ(0);
-      height: 400px !important;
-      width: 100%;
-    }
-    
-    @media screen and (max-width: 780px) {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      
       .timeline-container {
-        width: 100%;
+        width: calc(50% - 10px);
         margin-bottom: 20px;
-      }
-    
-      .timeline-wrapper {
-        flex-direction: column;
+        flex: 1;
+        min-width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        perspective: 1000px;
+        overflow: visible !important;
       }
       
-      .section h1 {
-        font-size: 2em;
+      .fb-page-wrapper {
+        position: relative;
+        transform-style: preserve-3d;
+        opacity: 0;
+        transform: rotateY(180deg) scale(0.8);
+        transition: transform 1s, opacity 1s; /* Smooth transition for flip */
+      }
+      
+      /* When revealed, the timeline flips around */
+      .fb-page-wrapper.revealed {
+        opacity: 1;
+        transform: rotateY(0deg) scale(1);
       }
       
       .fb-page {
-        height: 500px;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        height: 400px !important;
+        width: 100%;
       }
       
-      .fb-page-wrapper { 
-          transform: rotateY(180deg) scale(0.9);
-      }
+      @media screen and (max-width: 780px) {
+        .timeline-container {
+          width: 100%;
+          margin-bottom: 20px;
+        }
       
-      .fb-page-wrapper:not(.revealed) {
-          visibility: hidden;
-      }
+        .timeline-wrapper {
+          flex-direction: column;
+        }
       
-      .fb-page { 
+        .section h1 {
+          font-size: 2em;
+        }
+      
+        .fb-page-wrapper { 
+          transform: rotateY(180deg) scale(0.9); /* Adjust for small screens */
+        }
+      
+        .fb-page-wrapper {
+          visibility: visible; /* Make sure it's visible */
+        }
+      
+        .fb-page { 
           height: 500px !important;
-      }
-    }
-    
-    @media screen and (max-width: 440px) {
-      .fb-page {
-        height: 400px;
+        }
       }
       
-      .section h1 {
-        font-size: 1.5em;
+      @media screen and (max-width: 440px) {
+        .fb-page {
+          height: 400px;
+        }
+      
+        .section h1 {
+          font-size: 1.5em;
+        }
       }
-    }
+      
 
 
 /* FAQ Styling */
