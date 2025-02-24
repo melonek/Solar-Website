@@ -6,6 +6,8 @@ let selectedPanel = null;
 let selectedInverter = null;
 let selectedBattery = null;
 let selectedSystemSize = "6.6kW"; // default system size
+let selectedHomeType = "";       // User's home type selection
+let selectedPowerSupply = "";    // User's power supply selection
 
 // Default panels count (price is defined for 15 panels)
 const defaultPanels = 15;
@@ -18,23 +20,53 @@ const systemPanelsMapping = {
   "20kW": 46
 };
 
-// Flags for text cloud messages
-let panelMessageShown = false;
-let systemSizeMessageShown = false;
-let inverterMessageShown = false;
-let batteryMessageShown = false;
-let solarPackageMessageShown = false; // For "Are you happy with this package?" cloud
-let packageFormMessageShown = false;  // For "Fill in your details" on the package form
+// Extra charges object for surcharges (editable later)
+const extraCharges = {
+  doubleStorey: 250,  // Additional cost for double storey home
+  threePhase: 100     // Additional cost for three-phase power supply
+};
+
+// -------------------
+// Text Cloud Configuration
+// -------------------
+// These are the targets (by CSS selector), the message to show, and a key to track its state.
+const textCloudConfig = [
+  { selector: '#panels-section', message: "Choose your panel", key: 'panels' },
+  { selector: '#system-size-input', message: "Choose your system size", key: 'systemSize' },
+  { selector: '#home-type-input', message: "Is your home single or double-storey?", key: 'homeType' },
+  { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
+  { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
+  { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
+  { selector: '#solar-package', message: "Are you happy with this package?", key: 'solarPackage' },
+  { selector: '.package-form', message: "Fill in your details", key: 'packageForm' }
+];
+// Flags for each text cloud so they re-trigger when scrolled away.
+let textCloudFlags = {
+  panels: false,
+  systemSize: false,
+  homeType: false,
+  powerSupply: false,
+  inverter: false,
+  battery: false,
+  solarPackage: false,
+  packageForm: false
+};
+
+// Global variable to hold the active text cloud (to cancel overlapping)
+let activeTextCloud = null;
+
+// Flag to detect auto-scrolling so that programmatic scrolls don’t cancel text clouds
+let isAutoScrolling = false;
 
 // ===================== HELPER FUNCTIONS =====================
 
-// getPathPrefix: For packages.html (inside /packages/) return "../", for index.html (in root) return ""
+// Returns "../" if on packages.html, else ""
 function getPathPrefix() {
   const path = window.location.pathname;
   return path.includes('packages.html') ? "../" : "";
 }
 
-// Initialize brandImages using the appropriate prefix
+// Initialize brandImages using appropriate prefix
 function initializeBrandImages() {
   const prefix = getPathPrefix();
   brandImages = [
@@ -59,11 +91,9 @@ function initializeBrandImages() {
     { name: 'QCells', url: `${prefix}images/BrandLogos/QCells.webp` },
     { name: 'Tesla', url: `${prefix}images/BrandLogos/Tesla.webp` }
   ];
-  
 }
 
-// Preload images function (returns a promise)
-// Progressive loading: this preloads images in the background without blocking carousel startup.
+// Preload images (returns a promise)
 function preloadImages(images) {
   return new Promise((resolve, reject) => {
     const promises = images.map(image =>
@@ -85,56 +115,112 @@ function preloadImages(images) {
   });
 }
 
-// Smooth scroll to a section by its ID
+// Smooth scroll to a section by its ID; centers inputs if needed.
 function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     let topPosition = section.offsetTop;
-    if (sectionId === 'system-size-input') {
+    if (sectionId === 'system-size-input' ||
+        sectionId === 'home-type-input' ||
+        sectionId === 'power-supply-input') {
       topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
     }
-    window.scrollTo({
-      top: topPosition,
-      behavior: 'smooth'
-    });
+    isAutoScrolling = true;
+    window.scrollTo({ top: topPosition, behavior: 'smooth' });
+    setTimeout(() => { isAutoScrolling = false; }, 1000);
   }
 }
 
-// Smooth scroll to package form
+// Smooth scroll to package form.
 function scrollToForm() {
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
-    window.scrollTo({
-      top: packageForm.offsetTop - 50,
-      behavior: 'smooth'
-    });
+    isAutoScrolling = true;
+    window.scrollTo({ top: packageForm.offsetTop - 50, behavior: 'smooth' });
+    setTimeout(() => { isAutoScrolling = false; }, 1000);
   }
 }
 
-// Show a temporary text cloud message
+// Show a temporary text cloud message (cancelling any previous cloud).
 function showTextCloud(message, duration = 2000) {
+  if (activeTextCloud) {
+    clearTimeout(activeTextCloud.fadeTimeout);
+    clearTimeout(activeTextCloud.removeTimeout);
+    activeTextCloud.remove();
+    activeTextCloud = null;
+  }
   const cloud = document.createElement('div');
   cloud.className = 'text-cloud';
   cloud.textContent = message;
   cloud.style.opacity = '1';
   document.body.appendChild(cloud);
-  setTimeout(() => {
+  activeTextCloud = cloud;
+  cloud.fadeTimeout = setTimeout(() => {
     cloud.style.opacity = '0';
-    setTimeout(() => {
+    cloud.removeTimeout = setTimeout(() => {
       cloud.remove();
+      if (activeTextCloud === cloud) { activeTextCloud = null; }
     }, 500);
   }, duration);
 }
 
-// ===================== BRAND CAROUSEL & PROGRESSIVE LOADING =====================
+// --------------------
+// Scroll-Triggered Text Clouds
+// --------------------
+// On each scroll, check each target element (by selector) to see if its center is near the viewport center.
+// If yes and its flag is not set, trigger the text cloud and set its flag; otherwise, reset the flag.
+function checkTextClouds() {
+  const tolerance = 100; // tolerance in pixels around the viewport center
+  const viewportCenter = window.innerHeight / 2;
+  textCloudConfig.forEach(config => {
+    const el = document.querySelector(config.selector);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const elCenter = rect.top + rect.height / 2;
+      if (Math.abs(elCenter - viewportCenter) < tolerance) {
+        if (!textCloudFlags[config.key]) {
+          showTextCloud(config.message, 2000);
+          textCloudFlags[config.key] = true;
+        }
+      } else {
+        textCloudFlags[config.key] = false;
+      }
+    }
+  });
+}
+window.addEventListener('scroll', checkTextClouds);
+// Also run once on load.
+checkTextClouds();
 
+// ===================== INPUT HANDLERS =====================
+function handleSystemSizeSelection(value) {
+  if (value === "") return;
+  selectedSystemSize = value;
+  updatePanelPrice();
+  document.getElementById('home-type-input').style.display = 'block';
+  scrollToSection('home-type-input');
+  updatePackageDisplay();
+}
+
+function handleHomeTypeSelection(value) {
+  if (value === "") return;
+  selectedHomeType = value;
+  document.getElementById('power-supply-input').style.display = 'block';
+  scrollToSection('power-supply-input');
+}
+
+function handlePowerSupplySelection(value) {
+  if (value === "") return;
+  selectedPowerSupply = value;
+  scrollToSection('inverters-section');
+  updatePackageDisplay();
+}
+
+// ===================== BRAND CAROUSEL & PROGRESSIVE LOADING =====================
 function initializeBrandSlider(cardSelector, containerSelector) {
   const brandCards = document.querySelectorAll(cardSelector);
-  if (brandCards.length === 0) return; // Exit if no brand cards exist
-
+  if (!brandCards.length) return;
   let currentIndex = 0;
-
-  // Update the brand cards with images from brandImages.
   function updateBrandCards() {
     brandCards.forEach((card, i) => {
       const imgIndex = (currentIndex + i) % brandImages.length;
@@ -144,13 +230,10 @@ function initializeBrandSlider(cardSelector, containerSelector) {
         imgElement.src = brandImage.url;
         imgElement.alt = brandImage.name;
       }
-      // For a fade-in effect, remove then add the active class.
       card.classList.remove('active');
       setTimeout(() => card.classList.add('active'), 50);
     });
   }
-
-  // Cycle to the next set of images.
   function cycleBrands() {
     brandCards.forEach(card => card.classList.remove('active'));
     setTimeout(() => {
@@ -158,11 +241,7 @@ function initializeBrandSlider(cardSelector, containerSelector) {
       updateBrandCards();
     }, 500);
   }
-
-  // Start cycling every 5 seconds.
   let brandInterval = setInterval(cycleBrands, 5000);
-
-  // Pause cycling on hover.
   const container = document.querySelector(containerSelector);
   if (container) {
     container.addEventListener('mouseenter', () => clearInterval(brandInterval));
@@ -170,8 +249,6 @@ function initializeBrandSlider(cardSelector, containerSelector) {
       brandInterval = setInterval(cycleBrands, 5000);
     });
   }
-
-  // Initialize images immediately.
   updateBrandCards();
   setTimeout(() => {
     brandCards.forEach(card => card.classList.add('active'));
@@ -179,7 +256,6 @@ function initializeBrandSlider(cardSelector, containerSelector) {
 }
 
 // ===================== PACKAGE & MODAL FUNCTIONS =====================
-
 const solarProducts = {
   panels: [
     {
@@ -273,10 +349,6 @@ function createProductCard(product, type) {
       card.classList.add('selected');
       selectedPanel = product;
       document.getElementById('system-size-input').style.display = 'block';
-      if (!systemSizeMessageShown) {
-        showTextCloud("Choose your system size", 2000);
-        systemSizeMessageShown = true;
-      }
       scrollToSection('system-size-input');
     } else if (type === 'inverter') {
       document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
@@ -343,18 +415,7 @@ function updatePanelPrice() {
   }
 }
 
-function handleSystemSizeSelection(value) {
-  if (value === "") return;
-  selectedSystemSize = value;
-  updatePanelPrice();
-  scrollToSection('inverters-section');
-  if (!inverterMessageShown) {
-    showTextCloud("Choose your inverter", 2000);
-    inverterMessageShown = true;
-  }
-  updatePackageDisplay();
-}
-
+// ===================== PACKAGE DISPLAY & MODAL UPDATES =====================
 function updatePackageDisplay() {
   const panelImage = document.getElementById('selected-panel-image');
   const inverterImage = document.getElementById('selected-inverter-image');
@@ -440,7 +501,14 @@ function updatePackageDisplay() {
     const panelCost = numPanels * pricePerPanel;
     const inverterCost = selectedInverter.price;
     const batteryCost = selectedBattery ? selectedBattery.price : 0;
-    const total = panelCost + inverterCost + batteryCost;
+    let extraCost = 0;
+    if (selectedHomeType && selectedHomeType.toLowerCase().includes("double")) {
+      extraCost += extraCharges.doubleStorey;
+    }
+    if (selectedPowerSupply && selectedPowerSupply.toLowerCase().includes("three")) {
+      extraCost += extraCharges.threePhase;
+    }
+    const total = panelCost + inverterCost + batteryCost + extraCost;
     document.getElementById('total-cost').textContent = `Total = $${total} AUD`;
     
     confirmButton.style.visibility = 'visible';
@@ -455,7 +523,7 @@ function showSolarPackageSection() {
   if (selectedPanel && selectedInverter) {
     solarPackageSection.style.display = 'block';
     scrollToSection('solar-package');
-    showTextCloud("Are you happy with this package?", 2000);
+    // The scroll event will trigger the corresponding text cloud.
   }
 }
 
@@ -465,99 +533,10 @@ function handleNotInterested() {
   showSolarPackageSection();
 }
 
-// ===================== OBSERVERS =====================
-
-function initObservers() {
-  const panelsSection = document.getElementById('panels-section');
-  const systemSizeSection = document.getElementById('system-size-input');
-  const invertersSection = document.getElementById('inverters-section');
-  const batterySection = document.getElementById('battery-storage');
-  const solarPackageSection = document.getElementById('solar-package');
-  const observerOptions = { threshold: 0.5 };
-  
-  const panelsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !panelMessageShown) {
-        showTextCloud("Choose your panel", 2000);
-        panelMessageShown = true;
-      } else if (!entry.isIntersecting) {
-        panelMessageShown = false;
-      }
-    });
-  }, observerOptions);
-  if (panelsSection) panelsObserver.observe(panelsSection);
-  
-  const systemSizeObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !systemSizeMessageShown) {
-        showTextCloud("Choose your system size", 2000);
-        systemSizeMessageShown = true;
-      } else if (!entry.isIntersecting) {
-        systemSizeMessageShown = false;
-      }
-    });
-  }, observerOptions);
-  if (systemSizeSection) systemSizeObserver.observe(systemSizeSection);
-  
-  const invertersObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !inverterMessageShown) {
-        showTextCloud("Choose your inverter", 2000);
-        inverterMessageShown = true;
-      } else if (!entry.isIntersecting) {
-        inverterMessageShown = false;
-      }
-    });
-  }, observerOptions);
-  if (invertersSection) invertersObserver.observe(invertersSection);
-  
-  const batteryObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !batteryMessageShown) {
-        showTextCloud("Choose your battery storage", 2000);
-        batteryMessageShown = true;
-      } else if (!entry.isIntersecting) {
-        batteryMessageShown = false;
-      }
-    });
-  }, observerOptions);
-  if (batterySection) batteryObserver.observe(batterySection);
-  
-  const solarPackageObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !solarPackageMessageShown) {
-        showTextCloud("Are you happy with this package?", 2000);
-        solarPackageMessageShown = true;
-      } else if (!entry.isIntersecting) {
-        solarPackageMessageShown = false;
-      }
-    });
-  }, observerOptions);
-  if (solarPackageSection) solarPackageObserver.observe(solarPackageSection);
-
-  // Observer for the package form: Show "Fill in your details" and reset on scroll
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    const packageFormObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !packageFormMessageShown) {
-          showTextCloud("Fill in your details", 2000);
-          packageFormMessageShown = true;
-        } else if (!entry.isIntersecting) {
-          packageFormMessageShown = false;
-        }
-      });
-    }, observerOptions);
-    packageFormObserver.observe(packageForm);
-  }
-}
-
 // ===================== FINAL INITIALIZATION =====================
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize brand images and start progressive loading for the carousel.
   initializeBrandImages();
   
-  // Progressive loading: Start the carousel immediately.
   if (document.getElementById('brands')) {
     initializeBrandSlider('.brand-card', '#brands');
   }
@@ -565,18 +544,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
   }
   
-  // Also, preload brand images in the background.
   preloadImages(brandImages)
-    .then(() => {
-      console.log('All brand images have been progressively loaded.');
-    })
-    .catch((error) => {
-      console.error('Error preloading some brand images:', error);
-    });
+    .then(() => console.log('All brand images have been progressively loaded.'))
+    .catch((error) => console.error('Error preloading some brand images:', error));
   
   updatePackageDisplay();
-  initObservers();
   
+  // The scroll event handler (checkTextClouds) is already attached.
   const panelsGrid = document.getElementById('panels-grid');
   const invertersGrid = document.getElementById('inverters-grid');
   const batteryGrid = document.getElementById('battery-grid');
@@ -587,33 +561,26 @@ document.addEventListener('DOMContentLoaded', function() {
     solarProducts.batteries.forEach(battery => batteryGrid.appendChild(createProductCard(battery, 'battery')));
   }
   
-  // Initially hide the solar package section.
   document.getElementById('solar-package').style.display = 'none';
   
-  // "Let's enquire!" button: when clicked, show text cloud and scroll to the package form.
   document.getElementById('confirm-selection').addEventListener('click', () => {
-    showTextCloud("Fill in your details", 2000);
     scrollToForm();
+    // The scroll event will trigger "Fill in your details".
   });
   
-  // "Not Interested" button: resets battery selection and updates display.
   document.getElementById('not-interested-btn').addEventListener('click', () => {
     handleNotInterested();
   });
   
-  // When package form is submitted, show final cloud message then submit.
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
     packageForm.addEventListener('submit', (e) => {
       e.preventDefault();
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-      setTimeout(() => {
-        packageForm.submit();
-      }, 4000);
+      setTimeout(() => { packageForm.submit(); }, 4000);
     });
   }
   
-  // Modal closing: close when clicking outside modal content or on a close element.
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
     if (!modal) return;
@@ -628,4 +595,27 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.style.display = 'none';
     }
   });
+});
+
+// -------------------------
+// FILTER BAR SORTING FOR SOLAR PRODUCTS
+// -------------------------
+function sortProducts(type, criteria) {
+  const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
+  let products = [...solarProducts[type + "s"]];
+  if (criteria === "expensive") {
+    products.sort((a, b) => b.price - a.price);
+  } else if (criteria === "cheap") {
+    products.sort((a, b) => a.price - b.price);
+  } else if (criteria === "popular") {
+    products.sort((a, b) => b.popularity - a.popularity);
+  }
+  grid.innerHTML = "";
+  products.forEach(product => grid.appendChild(createProductCard(product, type)));
+}
+document.getElementById("panel-filter").addEventListener("change", function() {
+  sortProducts("panel", this.value);
+});
+document.getElementById("inverter-filter").addEventListener("change", function() {
+  sortProducts("inverter", this.value);
 });

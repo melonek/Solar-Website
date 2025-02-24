@@ -4339,6 +4339,7 @@ footer {
     transform: translateY(50px); /* Initially offset vertically */
     transition: opacity 0.6s ease, transform 0.6s ease; /* Slow down the reveal */
     border-radius: 8px; /* Rounded corners */
+    margin-top: 10px; /* Adjust the value as needed */
   }
 
   #unique-services .unique-service-product.revealed {

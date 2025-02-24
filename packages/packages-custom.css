@@ -145,46 +145,62 @@
     font-size: 14px;
   }
   
-  /* ----------------- SYSTEM SIZE SECTION ----------------- */
-  #system-size-input {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  #system-size-input label {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  #system-size-input select {
-    font-size: 1rem;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #fff;
-    color: #333;
-    outline: none;
-    transition: border-color 0.3s;
-    margin-bottom: 10px;
-    width: 100%;
-  }
-  #system-size-input select:focus {
-    border-color: #007BFF;
-  }
-  #system-size-input p {
-    font-size: 1.1rem;
-    color: #555;
-    margin: 0;
-  }
+/* Shared styling for all input sections */
+#system-size-input,
+#home-type-input,
+#power-supply-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#system-size-input label,
+#home-type-input label,
+#power-supply-input label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#system-size-input select,
+#home-type-input select,
+#power-supply-input select {
+  font-size: 1rem;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #fff;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+#system-size-input select:focus,
+#home-type-input select:focus,
+#power-supply-input select:focus {
+  border-color: #007BFF;
+}
+
+#system-size-input p,
+#home-type-input p,
+#power-supply-input p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0;
+}
+
+  
   
   /* ----------------- BATTERY CATEGORY STYLING (for filtering) ----------------- */
   .battery-category {

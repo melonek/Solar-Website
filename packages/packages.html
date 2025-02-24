@@ -76,17 +76,38 @@
       </select>
     </div>
     <div class="product-grid panels-grid" id="panels-grid"></div>
-    <!-- System Size Input Dropdown (initially hidden) -->
-    <div id="system-size-input" style="display:none; text-align:center; margin-top:20px;">
-      <label for="system-size-select">Choose your system size:</label>
-      <select id="system-size-select" onchange="handleSystemSizeSelection(this.value)">
-        <option value="">Choose size</option>
-        <option value="6.6kW">6.6kW (15 Panels)</option>
-        <option value="10kW">10kW (24 Panels)</option>
-        <option value="13kW">13kW (30 Panels)</option>
-        <option value="20kW">20kW (46 Panels)</option>
-      </select>
-    </div>
+<!-- System Size Input Dropdown (initially hidden) -->
+<div id="system-size-input" style="display:none; text-align:center; margin-top:20px;">
+  <label for="system-size-select">Choose your system size:</label>
+  <select id="system-size-select" onchange="handleSystemSizeSelection(this.value)">
+    <option value="">Choose size</option>
+    <option value="6.6kW">6.6kW (15 Panels)</option>
+    <option value="10kW">10kW (24 Panels)</option>
+    <option value="13kW">13kW (30 Panels)</option>
+    <option value="20kW">20kW (46 Panels)</option>
+  </select>
+</div>
+
+<!-- New: Home Type Input (initially hidden) -->
+<div id="home-type-input" style="display:none; text-align:center; margin-top:20px;">
+  <label for="home-type-select">Is your home single or double-storey?</label>
+  <select id="home-type-select" onchange="handleHomeTypeSelection(this.value)">
+    <option value="">Choose your home type</option>
+    <option value="single">Single Storey</option>
+    <option value="double">Double Storey</option>
+  </select>
+</div>
+
+<!-- New: Power Supply Input (initially hidden) -->
+<div id="power-supply-input" style="display:none; text-align:center; margin-top:20px;">
+  <label for="power-supply-select">Select your power supply</label>
+  <select id="power-supply-select" onchange="handlePowerSupplySelection(this.value)">
+    <option value="">Choose power supply</option>
+    <option value="single">Single-Phase (1 Phase)</option>
+    <option value="three">Three-Phase (3 Phase)</option>
+  </select>
+</div>
+
   </section>
 
   <!-- Inverters Section -->
