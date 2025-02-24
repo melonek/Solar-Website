@@ -27,7 +27,7 @@ function preloadFBTimelines() {
     }
   });
 }
-1426450195430892
+
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
 // -------------------------
