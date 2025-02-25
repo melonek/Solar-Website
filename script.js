@@ -37,16 +37,43 @@ function updateFBTimeline(container) {
   }
 }
 
+function scaleFacebookTimelines() {
+  const containers = document.querySelectorAll('.timeline-container');
 
-// Run the scaling function on page load and whenever the window is resized
+  containers.forEach(container => {
+    const fbWrapper = container.querySelector('.fb-page-wrapper');
+    const fbPage = container.querySelector('.fb-page');
+
+    if (fbWrapper && fbPage) {
+      const containerWidth = container.clientWidth - 40; // Subtract 20px left/right margin
+      const containerHeight = container.clientHeight - 40; // Subtract 20px top/bottom margin
+      
+      // Default Facebook iframe dimensions
+      const defaultWidth = 500;
+      const defaultHeight = 600;
+
+      // Calculate scale factors for width and height
+      const scaleX = containerWidth / defaultWidth;
+      const scaleY = containerHeight / defaultHeight;
+      const scale = Math.min(scaleX, scaleY); // Maintain aspect ratio
+
+      // Apply scaling to wrapper
+      fbWrapper.style.transform = `scale(${scale})`;
+      fbWrapper.style.transformOrigin = 'top left';
+      fbWrapper.style.width = `${defaultWidth}px`;
+      fbWrapper.style.height = `${defaultHeight}px`;
+
+      // Ensure fb-page takes full width of wrapper
+      fbPage.style.width = `${defaultWidth}px`;
+      fbPage.style.height = `${defaultHeight}px`;
+    }
+  });
+}
+
+// Run on page load and resize
 window.addEventListener('resize', scaleFacebookTimelines);
 document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
 
-  
-  // Run the scaling function on page load and whenever the window is resized.
-  window.addEventListener('resize', scaleFacebookTimelines);
-  document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
-  
 
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
