@@ -105,7 +105,6 @@ function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     let topPosition = section.offsetTop;
-    // For some input sections, center the element.
     if (['system-size-input', 'home-type-input', 'power-supply-input'].includes(sectionId)) {
       topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
     }
@@ -405,8 +404,8 @@ function updatePanelPrice() {
 }
 
 // ===================== PACKAGE DISPLAY & MODAL UPDATES =====================
+// In full mode, if panel and inverter are not both selected, hide the package section.
 function updatePackageDisplay() {
-  // In full mode, if panel and inverter are not selected, hide package section.
   if (!batteryOnlyMode && (!(selectedPanel && selectedInverter))) {
     const solarPackageSection = document.getElementById('solar-package');
     if (solarPackageSection) {
@@ -497,8 +496,17 @@ function updatePackageDisplay() {
     } else {
       inverterLogo.style.visibility = 'hidden';
     }
-    // Battery logo in full mode.
+    // Battery image and logo in full mode.
     if (selectedBattery) {
+      let batteryImage = document.getElementById('selected-battery-image');
+      if (!batteryImage) {
+        batteryImage = document.createElement('img');
+        batteryImage.id = 'selected-battery-image';
+        const container = document.getElementById('image-combination');
+        if (container) container.appendChild(batteryImage);
+      }
+      batteryImage.src = selectedBattery.image;
+      batteryImage.style.visibility = 'visible';
       let batteryLogo = document.getElementById('battery-logo');
       if (!batteryLogo) {
         batteryLogo = document.createElement('img');
@@ -564,7 +572,7 @@ function showSolarPackageSection() {
 
 function handleNotInterested() {
   selectedBattery = null;
-  // Remove battery logo if exists.
+  // Remove battery logo if it exists.
   const batteryLogo = document.getElementById('battery-logo');
   if (batteryLogo) batteryLogo.remove();
   updatePackageDisplay();
@@ -572,7 +580,7 @@ function handleNotInterested() {
 }
 
 // ===================== MODE TOGGLING =====================
-// Reset full mode: clear package section and hide standalone battery image and toggle buttons.
+// Reset full mode and clear selections.
 function resetFullMode() {
   const panelsSection = document.getElementById('panels-section');
   if (panelsSection) panelsSection.style.display = 'block';
@@ -598,14 +606,17 @@ function resetFullMode() {
   if (batteryAloneImage) batteryAloneImage.style.display = 'none';
   const pairBtn = document.getElementById('pair-battery-btn');
   if (pairBtn) pairBtn.style.display = 'none';
-  // Also, hide the "Battery only" button if present.
   const batteryOnlyBtn = document.getElementById('battery-only-btn');
   if (batteryOnlyBtn) batteryOnlyBtn.style.display = 'none';
+  // Clear full-mode selections.
+  selectedPanel = null;
+  selectedInverter = null;
 }
 
-// Listen for hash changes.
 window.addEventListener("hashchange", function() {
   if (window.location.hash === "#unique-battery-storage") {
+     // Scroll to top when nav link is used.
+     window.scrollTo({ top: 0, behavior: 'smooth' });
      batteryOnlyMode = true;
      // Clear previous full mode selections.
      selectedPanel = null;
@@ -623,6 +634,7 @@ window.addEventListener("hashchange", function() {
 function switchToBatteryOnly() {
   selectedPanel = null;
   selectedInverter = null;
+  selectedBattery = null;
   batteryOnlyMode = true;
   updatePackageDisplay();
   setupBatteryOnlyMode();
@@ -647,13 +659,15 @@ function setupBatteryOnlyMode() {
     solarPackageSection.id = 'battery-package';
     const header = solarPackageSection.querySelector('h2');
     if (header) header.textContent = 'My Battery Package';
+    // Clear its display until a battery is selected.
+    solarPackageSection.style.display = 'none';
   }
   const imageCombination = document.getElementById('image-combination');
   if (imageCombination) imageCombination.style.display = 'none';
   // Clear previous full selections.
   selectedPanel = null;
   selectedInverter = null;
-  // Append the "Pair it with solar system" toggle button.
+  // Append the toggle button ("Pair it with solar system") in battery-only mode.
   const batteryGrid = document.getElementById('battery-grid');
   if (batteryGrid) {
     let pairBtn = document.getElementById('pair-battery-btn');
@@ -668,7 +682,6 @@ function setupBatteryOnlyMode() {
         batteryOnlyMode = false;
         resetFullMode();
         updatePackageDisplay();
-        // Scroll to the panels-grid (product cards) section.
         scrollToSection('panels-grid');
       });
       batteryGrid.parentNode.insertBefore(pairBtn, batteryGrid.nextSibling);
@@ -676,10 +689,11 @@ function setupBatteryOnlyMode() {
     pairBtn.style.display = 'block';
     pairBtn.style.margin = '20px auto';
   }
-  // Also, remove the "Battery only" button if present.
+  // Remove the "Battery only" button if present.
   const batteryOnlyBtn = document.getElementById('battery-only-btn');
   if (batteryOnlyBtn) batteryOnlyBtn.remove();
-  scrollToSection('battery-grid');
+  // For nav link: scroll to top.
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ===================== FINAL INITIALIZATION =====================
@@ -707,6 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
     batteryOnlyMode = true;
     selectedPanel = null;
     selectedInverter = null;
+    selectedBattery = null;
     updatePackageDisplay();
     setupBatteryOnlyMode();
   }
@@ -729,21 +744,32 @@ document.addEventListener('DOMContentLoaded', function() {
     handleNotInterested();
   });
   
-  // In full mode, append the "Battery only" button next to "Not Interested"
+  // In full mode, create a container for buttons and append "Not Interested" and "Battery only" buttons side-by-side.
   if (!batteryOnlyMode) {
     const batteryStorageSection = document.getElementById('battery-storage');
     if (batteryStorageSection) {
+      let btnContainer = document.getElementById('button-container');
+      if (!btnContainer) {
+        btnContainer = document.createElement('div');
+        btnContainer.id = 'button-container';
+        // Horizontal layout is controlled by CSS.
+        batteryStorageSection.appendChild(btnContainer);
+      }
       let notInterestedBtn = document.getElementById('not-interested-btn');
+      if (notInterestedBtn && notInterestedBtn.parentNode !== btnContainer) {
+        btnContainer.appendChild(notInterestedBtn);
+      }
       let batteryOnlyBtn = document.getElementById('battery-only-btn');
       if (!batteryOnlyBtn) {
         batteryOnlyBtn = document.createElement('a');
         batteryOnlyBtn.id = 'battery-only-btn';
         batteryOnlyBtn.textContent = 'Battery only';
         batteryOnlyBtn.href = "../packages/packages.html#unique-battery-storage";
-        // Styling will be controlled by CSS.
-        notInterestedBtn.parentNode.insertBefore(batteryOnlyBtn, notInterestedBtn.nextSibling);
+        btnContainer.appendChild(batteryOnlyBtn);
       }
-      batteryOnlyBtn.style.display = 'inline-block';
+      btnContainer.style.display = 'flex';
+      btnContainer.style.justifyContent = 'center';
+      btnContainer.style.gap = '10px';
     }
   }
   
