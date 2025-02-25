@@ -1,0 +1,272 @@
+/* Battery-Only Page Styles */
+
+.battery-image-combination {
+    position: relative; /* Ensures brand logo is positioned relative to this container */
+    display: inline-block;
+  }
+
+  .brand-logo-overlay {
+    position: absolute;
+    top: 10px;
+    left: 150px;
+    width: 50px; /* Adjust size if needed */
+    height: auto;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.8); /* Optional: White background */
+    padding: 5px;
+    border-radius: 5px; /* Optional: Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Soft shadow */
+  }
+  
+
+/* Ensure smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Highlight selected battery */
+.selected-battery {
+    border: 2px solid #FFA500 !important;
+}
+
+/* Intro Section */
+#battery-logo-cards-text-section {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Battery Brand Cards */
+  #battery-logo-cards-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  .battery-brands-container {
+    display: flex;
+    gap: 20px;
+  }
+  .battery-brand-card img {
+    width: 100px;
+    height: auto;
+  }
+  
+  /* Battery Products Grid */
+  #battery-grid-only {
+    padding: 20px;
+    text-align: center;
+  }
+  .product-grid.battery-grid-only {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .product-grid.battery-grid-only .product-card {
+    width: 250px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    transition: border 0.3s;
+    cursor: pointer;
+  }
+  .product-grid.battery-grid-only .product-card:hover {
+    border-color: #FFA500;
+  }
+  /* Highlight selected battery card */
+  .product-card.selected-battery {
+    border: 2px solid #FFA500 !important;
+  }
+  
+  /* My Battery Package Section */
+  #battery-package {
+    padding: 20px;
+    text-align: center;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 600px;
+  }
+  .battery-image-combination {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 600px;
+  }
+  
+  #selected-battery-alone-image {
+    display: block;
+    margin: 0 auto;
+    width: 70% !important;
+    max-width: 70% !important;
+    height: auto !important;
+  }
+  
+  /* Button Container */
+  .button-container {
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* You can keep your existing styles for .total-cost-display and other elements */
+  
+  .total-cost-display {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    margin: 10px auto;
+}
+
+  /* === BATTERY STORAGE INTRO SECTION === */
+#battery-logo-cards-text-section {
+    background-color: #eff8f2; /* Light background for a soft, clean look */
+    padding: 60px 20px; /* Spacing around the section */
+    text-align: center; /* Center align text */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 20px 0; /* Margin above and below */
+}
+
+#battery-logo-cards-text-section h1 {
+    font-size: 36px; /* Larger size for the main title */
+    font-weight: 700; /* Bold title */
+    color: #2C3E50; /* Dark color for the main title */
+    margin-bottom: 15px; /* Space below the title */
+}
+
+#battery-logo-cards-text-section h2 {
+    font-size: 24px; /* Medium size for the subtitle */
+    font-weight: 500; /* Slightly lighter weight */
+    color: #16A085; /* Greenish accent color */
+    margin-bottom: 20px; /* Space below the subtitle */
+}
+
+#battery-logo-cards-text-section p {
+    font-size: 18px; /* Comfortable size for text */
+    font-weight: 400; /* Regular weight */
+    color: #7F8C8D; /* Lighter text color */
+    line-height: 1.6; /* Improved readability */
+    max-width: 800px; /* Maximum width for readability */
+    margin: 0 auto; /* Center the text */
+}
+
+/* === BATTERY BRANDS SECTION === */
+#battery-logo-cards-container {
+    padding: 0;
+    margin-top: -5px;
+    justify-content: center;
+    text-align: center;
+}
+
+.battery-brands-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 0;
+    width: 100%;
+    max-width: 1600px;
+}
+
+.battery-brand-card {
+    width: calc(100% - 20px); /* Full width minus margin */
+    max-width: 240px; /* Set a max width for larger screens */
+    height: 180px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin: 0 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.battery-brand-card.active {
+    opacity: 1;
+    transform: translateY(0);
+    animation: bounce 0.8s ease;
+}
+
+.battery-brand-card img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.battery-brand-card:hover img {
+    transform: scale(1.1);
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+    .battery-brand-card {
+        width: calc(50% - 5px); /* Brings cards closer */
+        max-width: 160px;
+        height: 120px;
+        margin: 0; /* Removes extra margin */
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .battery-brands-container {
+        gap: 10px;
+    }
+    .battery-brand-card {
+        width: calc(50% - 20px);
+        height: 100px;
+    }
+    .battery-brand-card.active {
+        opacity: 1;
+        width: 100%;
+    }
+}
+
+/* ----------------- BATTERY-ONLY Button Styling ----------------- */
+#bundle-btn.fancy-button,
+#bundle-btn.fancy-button:link,
+#bundle-btn.fancy-button:visited {
+  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  color: #fff;
+  padding: 30px 60px;
+  font-size: 2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin: 20px auto;
+}
+
+#bundle-btn.fancy-button:hover {
+  background: linear-gradient(135deg, #FF8C00, #FF7F50);
+}
+

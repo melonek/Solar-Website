@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Battery Storage - Nature's Spark Solar</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="battery-only.css">
+  <link rel="stylesheet" href="packages-custom.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="floating-logo">
+      <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About Us</a></li>
+      <li class="dropdown">
+        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <div class="dropdown-content">
+          <a href="packages.html">Solar Systems</a>
+          <a href="battery-only.html">Battery Storage</a>
+          <a href="../index.html#unique-ev-chargers">EV Chargers</a>
+        </div>
+      </li>
+      <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+      <li><a href="../index.html#articles">Articles/News</a></li>
+      <li><a href="../articles/learn.html">Explore Solar</a></li>
+      <li><a href="../index.html#installations">Installations</a></li>
+      <li><a href="../index.html#faq">FAQ</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+      <div class="bar half start"></div>
+      <div class="bar"></div>
+      <div class="bar half end"></div>
+    </div>
+  </nav>
+
+  <!-- Battery Storage Intro Section -->
+  <section id="battery-logo-cards-text-section">
+    <h1>Our Battery Storage Options</h1>
+    <h2>Choose the best for your energy needs</h2>
+    <p>Get a quote and explore our top battery storage systems.</p>
+  </section>
+
+  <!-- Solar Brand Cards (Populated via JS) -->
+  <section id="solar-logo-cards-container">
+    <div class="solar-brands-container"></div>
+  </section>
+
+<!-- Battery Storage Section -->
+<section class="battery-category section battery-storage" id="battery-storage">
+    <h1 class="battery-title">Battery Storage</h1>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <label for="battery-filter">Sort by:</label>
+        <select id="battery-filter">
+            <option value="default">Default</option>
+            <option value="expensive">Most Expensive</option>
+            <option value="cheap">Cheapest</option>
+            <option value="popular">Most Popular</option>
+        </select>
+    </div>
+
+    <!-- Battery Product Grid -->
+    <div class="product-grid battery-grid" id="battery-grid"></div>
+</section>
+
+<!-- My Battery Package Section -->
+<div id="battery-package" class="section" style="display:none;">
+    <h1>My Battery Package</h1>
+    <div class="package-combination">
+        <!-- Battery Image Container with Brand Logo -->
+        <div class="battery-image-combination" id="battery-image-combination">
+            <img id="brand-logo-overlay" class="brand-logo-overlay" src="" alt="Brand Logo" style="display: none;">
+            <img id="selected-battery-alone-image" src="" alt="Selected Battery" style="visibility:hidden;">
+        </div>
+        
+        <p id="package-description"></p>
+        <div id="total-cost" class="total-cost-display"></div>
+
+        <div class="button-container">
+            <button id="confirm-selection">Let's Enquire!</button>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Package Form Section -->
+  <section class="section">
+    <form action="https://formspree.io/f/mgvoybrr" method="POST" class="package-form">
+      <input type="hidden" name="solar-package" id="solar-package-input">
+      <div class="form-group">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required>
+      </div>
+      <div class="form-group">
+        <label for="mobilePhone">Mobile Phone:</label>
+        <input type="tel" id="mobilePhone" name="mobilePhone" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Your Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="installationAddress">Installation Address:</label>
+        <textarea id="installationAddress" name="installationAddress" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button id="enquire-button" type="submit">Enquire about this package</button>
+    </form>
+  </section>
+
+  <!-- Modal for Product Details -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="modal-product-image"></div>
+      <div class="modal-product-details"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="packages.js"></script>
+  <script src="battery-only.js"></script>
+  <script src="../script.js"></script>
+</body>
+</html>

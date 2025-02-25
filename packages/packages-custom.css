@@ -8,14 +8,23 @@
     height: auto;
   }
 
-  .logo-overlay {
+  .brand-logo-overlay {
     position: absolute;
+    top: 10px;
+    left: 155px;
+    width: 50px; /* Adjust size as needed */
+    height: auto;
     z-index: 12;
-    background: white;
-    padding: 2px;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
+    background: rgba(255, 255, 255, 0.85); /* Slightly transparent white background */
+    padding: 4px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+.brand-logo-overlay:hover {
+    opacity: 0.9; /* Slightly more visible on hover */
+}
   
   .brand-logo-panel {
     position: absolute;
@@ -77,18 +86,18 @@
     height: auto;
 }
   
-  /* Additional overlay style if needed */
-  .logo-overlay {
-    position: absolute;
-    top: 10px;
-    left: 100px;
-    width: 50px;
-    height: auto;
-    z-index: 10;
-    background: rgba(255,255,255,0.8);
-    border-radius: 5px;
-    padding: 5px;
-  }
+.brand-logo-overlay {
+  position: absolute;
+  top: 260px;
+  left: 140px;
+  width: 70px; /* Adjust size as needed */
+  height: auto;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.7); /* More transparent background */
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Lighter shadow */
+}
   
   /* ----------------- GENERAL SECTIONS & PRODUCT CARDS ----------------- */
   .section {
@@ -241,6 +250,18 @@
   }
   
   /* ----------------- PACKAGE DISPLAY (MY SOLAR PACKAGE) ----------------- */
+  /* My Solar Package Section */
+#solar-package {
+  padding: 20px;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 700px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* Ensuring it remains hidden until triggered */
+}
+  
   #package-description {
     font-size: 1.1rem;
     text-align: center;
@@ -269,6 +290,7 @@
     gap: 10px;
     margin-top: 20px;
   }
+
   .button-container button {
     padding: 10px 20px;
     font-size: 1rem;
@@ -284,6 +306,14 @@
     background-color: #0056b3;
   }
   
+  /* ----------------- BUTTON CONTAINER ----------------- */
+  #button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+
 /* Styling for Not Interested button */
 #not-interested-btn {
     padding: 10px 20px;
@@ -298,6 +328,23 @@
   }
   #not-interested-btn:hover {
     background-color: #c0392b;
+  }
+
+ /* Styling for Not Interested button */
+#battery-only-btn {
+    padding: 7px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #f89260;
+    color: #fff;
+    transition: background-color 0.3s;
+    margin: 10px;
+    text-decoration: none;
+  }
+  #battery-only-btn:hover {
+    background-color: #ee7039;
   }
   
   /* ----------------- MY SOLAR PACKAGE IMAGE COMBINATION ----------------- */
@@ -370,52 +417,8 @@
     opacity: 1 !important;
   }
   
-/* ----------------- BATTERY-ONLY Button Styling ----------------- */
-#pair-battery-btn.fancy-button,
-#pair-battery-btn.fancy-button:link,
-#pair-battery-btn.fancy-button:visited {
-  background: linear-gradient(135deg, #FFA500, #FF8C00);
-  color: #fff;
-  padding: 30px 60px;
-  font-size: 2rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin: 20px auto;
-}
-#pair-battery-btn.fancy-button:hover {
-  background: linear-gradient(135deg, #FF8C00, #FF7F50);
-}
 
-
-/* ----------------- BATTERY-ONLY Package Image Styling ----------------- */
-#selected-battery-alone-image {
-  display: block;
-  margin: 0 auto;
-  width: 30% !important;
-  max-width: 40% !important;
-  height: auto !important;
+  /* ----------------- Selected State for Battery Cards ----------------- */
+.product-card.selected-battery {
+  border: 2px solid #FFA500 !important;
 }
-
-/* Center the image-combination container */
-#image-combination {
-  margin: 0 auto;
-}
- /* Styling for Not Interested button */
-#battery-only-btn {
-    padding: 7px 25px;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #f89260;
-    color: #fff;
-    transition: background-color 0.3s;
-    margin: 10px;
-    text-decoration: none;
-  }
-  #battery-only-btn:hover {
-    background-color: #ee7039;
-  }

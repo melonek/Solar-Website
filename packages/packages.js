@@ -1,29 +1,30 @@
 // ===================== GLOBAL VARIABLES =====================
 let brandImages = []; // Array for brand images
 
-// Product selection globals
+// Product selection globals (for package display and modal)
 let selectedPanel = null;
 let selectedInverter = null;
 let selectedBattery = null;
 let selectedSystemSize = "6.6kW"; // default system size
-let selectedHomeType = "";
-let selectedPowerSupply = "";
+let selectedHomeType = "";       // User's home type selection
+let selectedPowerSupply = "";    // User's power supply selection
 
-// Defaults
+// Default panels count (price is defined for 15 panels)
 const defaultPanels = 15;
+
+// Mapping for number of panels per system size
 const systemPanelsMapping = {
   "6.6kW": 15,
   "10kW": 24,
   "13kW": 30,
   "20kW": 46
 };
-const extraCharges = {
-  doubleStorey: 250,
-  threePhase: 100
-};
 
-// Mode flag
-let batteryOnlyMode = false;
+// Extra charges object for surcharges (editable later)
+const extraCharges = {
+  doubleStorey: 250,  // Additional cost for double storey home
+  threePhase: 100     // Additional cost for three-phase power supply
+};
 
 // -------------------
 // Text Cloud Configuration
@@ -35,7 +36,7 @@ const textCloudConfig = [
   { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
-  { selector: '#solar-package, #battery-package', message: "Are you happy with this package?", key: 'solarPackage' },
+  { selector: '#solar-package', message: "Are you happy with this package?", key: 'solarPackage' },
   { selector: '.package-form', message: "Fill in your details", key: 'packageForm' }
 ];
 let textCloudFlags = {
@@ -48,14 +49,13 @@ let textCloudFlags = {
   solarPackage: false,
   packageForm: false
 };
-
 let activeTextCloud = null;
 let isAutoScrolling = false;
 
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  return path.includes('packages.html') ? "../" : "./";
+  return path.includes('packages.html') ? "../" : "/";
 }
 
 function initializeBrandImages() {
@@ -91,13 +91,17 @@ function preloadImages(images) {
         const img = new Image();
         img.src = image.url;
         img.onload = () => res(image.url);
-        img.onerror = () => rej(image.url);
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${image.url}`);
+          rej(image.url);
+        };
       })
     );
-    Promise.allSettled(promises).then(results => {
-      const failed = results.filter(result => result.status === "rejected");
-      failed.length > 0 ? reject(failed.map(item => item.reason).join(', ')) : resolve();
-    });
+    Promise.allSettled(promises)
+      .then(results => {
+        const failed = results.filter(result => result.status === "rejected");
+        failed.length > 0 ? reject(failed.map(item => item.reason).join(', ')) : resolve();
+      });
   });
 }
 
@@ -105,7 +109,9 @@ function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     let topPosition = section.offsetTop;
-    if (['system-size-input', 'home-type-input', 'power-supply-input'].includes(sectionId)) {
+    if (sectionId === 'system-size-input' ||
+        sectionId === 'home-type-input' ||
+        sectionId === 'power-supply-input') {
       topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
     }
     isAutoScrolling = true;
@@ -140,22 +146,18 @@ function showTextCloud(message, duration = 2000) {
     cloud.style.opacity = '0';
     cloud.removeTimeout = setTimeout(() => {
       cloud.remove();
-      if (activeTextCloud === cloud) activeTextCloud = null;
+      if (activeTextCloud === cloud) { activeTextCloud = null; }
     }, 500);
   }, duration);
 }
 
 function checkTextClouds() {
-  const defaultTolerance = 100;
+  const tolerance = 100;
   const viewportCenter = window.innerHeight / 2;
   textCloudConfig.forEach(config => {
     const el = document.querySelector(config.selector);
     if (el) {
       const rect = el.getBoundingClientRect();
-      let tolerance = defaultTolerance;
-      if (config.selector === "#inverters-section") {
-        tolerance = 50;
-      }
       const elCenter = rect.top + rect.height / 2;
       if (Math.abs(elCenter - viewportCenter) < tolerance) {
         if (!textCloudFlags[config.key]) {
@@ -173,7 +175,7 @@ checkTextClouds();
 
 // ===================== INPUT HANDLERS =====================
 function handleSystemSizeSelection(value) {
-  if (!value) return;
+  if (value === "") return;
   selectedSystemSize = value;
   updatePanelPrice();
   document.getElementById('home-type-input').style.display = 'block';
@@ -182,14 +184,14 @@ function handleSystemSizeSelection(value) {
 }
 
 function handleHomeTypeSelection(value) {
-  if (!value) return;
+  if (value === "") return;
   selectedHomeType = value;
   document.getElementById('power-supply-input').style.display = 'block';
   scrollToSection('power-supply-input');
 }
 
 function handlePowerSupplySelection(value) {
-  if (!value) return;
+  if (value === "") return;
   selectedPowerSupply = value;
   scrollToSection('inverters-section');
   updatePackageDisplay();
@@ -335,19 +337,10 @@ function createProductCard(product, type) {
       selectedInverter = product;
       scrollToSection('battery-storage');
     } else if (type === 'battery') {
-      document.querySelectorAll('#battery-grid .product-card').forEach(c => {
-         c.classList.remove('selected');
-         c.classList.remove('selected-battery');
-      });
-      card.classList.add('selected');
+      document.querySelectorAll('#battery-grid .product-card').forEach(c => c.classList.remove('selected-battery'));
       card.classList.add('selected-battery');
       selectedBattery = product;
-      if (batteryOnlyMode) {
-         updatePackageDisplay();
-         scrollToSection('battery-package');
-      } else {
-         showSolarPackageSection();
-      }
+      showSolarPackageSection();
     }
     updatePackageDisplay();
   });
@@ -403,141 +396,86 @@ function updatePanelPrice() {
   }
 }
 
-// ===================== PACKAGE DISPLAY & MODAL UPDATES =====================
-// In full mode, if panel and inverter are not both selected, hide the package section.
 function updatePackageDisplay() {
-  if (!batteryOnlyMode && (!(selectedPanel && selectedInverter))) {
-    const solarPackageSection = document.getElementById('solar-package');
-    if (solarPackageSection) {
-      solarPackageSection.style.display = 'none';
-    }
-    return;
+  const panelImage = document.getElementById('selected-panel-image');
+  const inverterImage = document.getElementById('selected-inverter-image');
+  const batteryImage = document.getElementById('selected-battery-image');
+  const packageDescription = document.getElementById('package-description');
+  const confirmButton = document.getElementById('confirm-selection');
+
+  let panelLogo = document.getElementById('panel-logo');
+  let inverterLogo = document.getElementById('inverter-logo');
+
+  if (!panelLogo) {
+    panelLogo = document.createElement('img');
+    panelLogo.id = 'panel-logo';
+    panelLogo.classList.add('logo-overlay');
+    panelImage.parentNode.appendChild(panelLogo);
   }
-  // BATTERY-ONLY MODE:
-  if (batteryOnlyMode && selectedBattery) {
-    const panelImage = document.getElementById('selected-panel-image');
-    const inverterImage = document.getElementById('selected-inverter-image');
-    if (panelImage) panelImage.style.visibility = 'hidden';
-    if (inverterImage) inverterImage.style.visibility = 'hidden';
-    const imageCombination = document.getElementById('image-combination');
-    if (imageCombination) imageCombination.style.display = 'none';
-    const batteryPackageContainer = document.getElementById('battery-package');
-    if (batteryPackageContainer) batteryPackageContainer.style.display = 'block';
-    let batteryAloneImage = document.getElementById('selected-battery-alone-image');
-    if (!batteryAloneImage) {
-      batteryAloneImage = document.createElement('img');
-      batteryAloneImage.id = 'selected-battery-alone-image';
-      batteryAloneImage.className = 'battery-alone';
-      if (batteryPackageContainer) {
-         batteryPackageContainer.insertBefore(batteryAloneImage, batteryPackageContainer.firstChild);
-      }
-    }
-    batteryAloneImage.src = selectedBattery.image;
-    batteryAloneImage.style.visibility = 'visible';
-    const packageDescription = document.getElementById('package-description');
-    if (packageDescription) {
-      packageDescription.innerHTML = `I would like to enquire about <strong>${selectedBattery.name}</strong>`;
-    }
-    document.getElementById('total-cost').textContent = `Total = $${selectedBattery.price} AUD`;
-    document.getElementById('confirm-selection').style.visibility = 'visible';
-    return;
+  if (!inverterLogo) {
+    inverterLogo = document.createElement('img');
+    inverterLogo.id = 'inverter-logo';
+    inverterLogo.classList.add('logo-overlay');
+    inverterImage.parentNode.appendChild(inverterLogo);
   }
-  // FULL MODE:
-  if (selectedPanel && selectedInverter) {
-    // Panel image and logo.
-    let panelImage = document.getElementById('selected-panel-image');
-    if (!panelImage) {
-      panelImage = document.createElement('img');
-      panelImage.id = 'selected-panel-image';
-      const container = document.getElementById('panel-inverter-container');
-      if (container) container.appendChild(panelImage);
-    }
+
+  if (selectedPanel) {
     panelImage.src = selectedPanel.image;
     panelImage.style.visibility = 'visible';
-    let panelLogo = document.getElementById('panel-logo');
-    if (!panelLogo) {
-      panelLogo = document.createElement('img');
-      panelLogo.id = 'panel-logo';
-      panelLogo.classList.add('logo-overlay', 'brand-logo-panel');
-      const container = document.getElementById('panel-inverter-container');
-      if (container) container.appendChild(panelLogo);
-    }
-    const panelBrand = brandImages.find(b => b.name.toLowerCase() === selectedPanel.brand.toLowerCase());
+    const panelBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedPanel.brand.toLowerCase());
     if (panelBrand) {
       panelLogo.src = panelBrand.url;
       panelLogo.style.visibility = 'visible';
-      panelLogo.style.display = 'block';
     } else {
       panelLogo.style.visibility = 'hidden';
     }
-    // Inverter image and logo.
-    let inverterImage = document.getElementById('selected-inverter-image');
-    if (!inverterImage) {
-      inverterImage = document.createElement('img');
-      inverterImage.id = 'selected-inverter-image';
-      const container = document.getElementById('panel-inverter-container');
-      if (container) container.appendChild(inverterImage);
-    }
+  }
+
+  if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
     inverterImage.style.visibility = 'visible';
-    let inverterLogo = document.getElementById('inverter-logo');
-    if (!inverterLogo) {
-      inverterLogo = document.createElement('img');
-      inverterLogo.id = 'inverter-logo';
-      inverterLogo.classList.add('logo-overlay', 'brand-logo-inverter');
-      const container = document.getElementById('panel-inverter-container');
-      if (container) container.appendChild(inverterLogo);
-    }
-    const inverterBrand = brandImages.find(b => b.name.toLowerCase() === selectedInverter.brand.toLowerCase());
+    const inverterBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedInverter.brand.toLowerCase());
     if (inverterBrand) {
       inverterLogo.src = inverterBrand.url;
       inverterLogo.style.visibility = 'visible';
-      inverterLogo.style.display = 'block';
     } else {
       inverterLogo.style.visibility = 'hidden';
     }
-    // Battery image and logo in full mode.
-    if (selectedBattery) {
-      let batteryImage = document.getElementById('selected-battery-image');
-      if (!batteryImage) {
-        batteryImage = document.createElement('img');
-        batteryImage.id = 'selected-battery-image';
-        const container = document.getElementById('image-combination');
-        if (container) container.appendChild(batteryImage);
-      }
-      batteryImage.src = selectedBattery.image;
-      batteryImage.style.visibility = 'visible';
-      let batteryLogo = document.getElementById('battery-logo');
-      if (!batteryLogo) {
-        batteryLogo = document.createElement('img');
-        batteryLogo.id = 'battery-logo';
-        batteryLogo.classList.add('logo-overlay', 'brand-logo-battery');
-        const container = document.getElementById('panel-inverter-container');
-        if (container) container.appendChild(batteryLogo);
-      }
-      const batteryBrand = brandImages.find(b => b.name.toLowerCase() === selectedBattery.brand.toLowerCase());
-      if (batteryBrand) {
-        batteryLogo.src = batteryBrand.url;
-        batteryLogo.style.visibility = 'visible';
-        batteryLogo.style.display = 'block';
-      } else {
-        batteryLogo.style.visibility = 'hidden';
-      }
-    } else {
-      const batteryLogo = document.getElementById('battery-logo');
-      if (batteryLogo) batteryLogo.remove();
+  }
+
+  if (selectedBattery) {
+    batteryImage.src = selectedBattery.image;
+    batteryImage.style.visibility = 'visible';
+    const panelInverterContainer = document.getElementById('panel-inverter-container');
+    let batteryLogo = document.getElementById('battery-logo');
+    if (!batteryLogo) {
+      batteryLogo = document.createElement('img');
+      batteryLogo.id = 'battery-logo';
+      batteryLogo.classList.add('logo-overlay', 'brand-logo-battery');
+      panelInverterContainer.appendChild(batteryLogo);
     }
-    // Restore image-combination container.
-    const imageCombination = document.getElementById('image-combination');
-    if (imageCombination) imageCombination.style.display = 'flex';
+    batteryLogo.src = getPathPrefix() + "images/BrandLogos/Tesla.webp";
+    batteryLogo.style.visibility = 'visible';
+    document.getElementById('image-combination').classList.add('with-battery');
+  } else {
+    batteryImage.style.visibility = 'hidden';
+    let batteryLogo = document.getElementById('battery-logo');
+    if (batteryLogo) {
+      batteryLogo.style.visibility = 'hidden';
+    }
+    document.getElementById('image-combination').classList.remove('with-battery');
+  }
+
+  if (selectedPanel && selectedInverter) {
     let description = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
     if (selectedBattery) {
       description += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
     }
-    document.getElementById('package-description').innerHTML = description;
+    packageDescription.innerHTML = description;
     document.getElementById('solar-package-input').value =
       `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}` +
       (selectedBattery ? `, Battery: ${selectedBattery.name}` : '');
+    
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
     const panelCost = numPanels * pricePerPanel;
@@ -552,13 +490,11 @@ function updatePackageDisplay() {
     }
     const total = panelCost + inverterCost + batteryCost + extraCost;
     document.getElementById('total-cost').textContent = `Total = $${total} AUD`;
-    document.getElementById('confirm-selection').style.visibility = 'visible';
-    // Ensure standalone battery image is hidden in full mode.
-    const batteryAloneImage = document.getElementById('selected-battery-alone-image');
-    if (batteryAloneImage) batteryAloneImage.style.display = 'none';
+    
+    confirmButton.style.visibility = 'visible';
   } else {
-    document.getElementById('package-description').textContent = '';
-    document.getElementById('confirm-selection').style.visibility = 'hidden';
+    packageDescription.textContent = '';
+    confirmButton.style.visibility = 'hidden';
   }
 }
 
@@ -572,128 +508,8 @@ function showSolarPackageSection() {
 
 function handleNotInterested() {
   selectedBattery = null;
-  // Remove battery logo if it exists.
-  const batteryLogo = document.getElementById('battery-logo');
-  if (batteryLogo) batteryLogo.remove();
   updatePackageDisplay();
   showSolarPackageSection();
-}
-
-// ===================== MODE TOGGLING =====================
-// Reset full mode and clear selections.
-function resetFullMode() {
-  const panelsSection = document.getElementById('panels-section');
-  if (panelsSection) panelsSection.style.display = 'block';
-  const invertersSection = document.getElementById('inverters-section');
-  if (invertersSection) invertersSection.style.display = 'block';
-  const systemSizeInput = document.getElementById('system-size-input');
-  if (systemSizeInput) systemSizeInput.style.display = 'block';
-  const homeTypeInput = document.getElementById('home-type-input');
-  if (homeTypeInput) homeTypeInput.style.display = 'block';
-  const powerSupplyInput = document.getElementById('power-supply-input');
-  if (powerSupplyInput) powerSupplyInput.style.display = 'block';
-  const notInterestedBtn = document.getElementById('not-interested-btn');
-  if (notInterestedBtn) notInterestedBtn.style.display = 'block';
-  const batteryPackageSection = document.getElementById('battery-package');
-  if (batteryPackageSection) {
-      batteryPackageSection.id = 'solar-package';
-      const header = batteryPackageSection.querySelector('h2');
-      if (header) header.textContent = 'My Solar Package';
-  }
-  const imageCombination = document.getElementById('image-combination');
-  if (imageCombination) imageCombination.style.display = 'flex';
-  const batteryAloneImage = document.getElementById('selected-battery-alone-image');
-  if (batteryAloneImage) batteryAloneImage.style.display = 'none';
-  const pairBtn = document.getElementById('pair-battery-btn');
-  if (pairBtn) pairBtn.style.display = 'none';
-  const batteryOnlyBtn = document.getElementById('battery-only-btn');
-  if (batteryOnlyBtn) batteryOnlyBtn.style.display = 'none';
-  // Clear full-mode selections.
-  selectedPanel = null;
-  selectedInverter = null;
-}
-
-window.addEventListener("hashchange", function() {
-  if (window.location.hash === "#unique-battery-storage") {
-     // Scroll to top when nav link is used.
-     window.scrollTo({ top: 0, behavior: 'smooth' });
-     batteryOnlyMode = true;
-     // Clear previous full mode selections.
-     selectedPanel = null;
-     selectedInverter = null;
-     updatePackageDisplay();
-     setupBatteryOnlyMode();
-  } else {
-     batteryOnlyMode = false;
-     resetFullMode();
-     updatePackageDisplay();
-  }
-});
-
-// In full mode, switch to battery-only mode.
-function switchToBatteryOnly() {
-  selectedPanel = null;
-  selectedInverter = null;
-  selectedBattery = null;
-  batteryOnlyMode = true;
-  updatePackageDisplay();
-  setupBatteryOnlyMode();
-}
-
-// ===================== BATTERY-ONLY MODE SETUP =====================
-function setupBatteryOnlyMode() {
-  const panelsSection = document.getElementById('panels-section');
-  if (panelsSection) panelsSection.style.display = 'none';
-  const invertersSection = document.getElementById('inverters-section');
-  if (invertersSection) invertersSection.style.display = 'none';
-  const systemSizeInput = document.getElementById('system-size-input');
-  if (systemSizeInput) systemSizeInput.style.display = 'none';
-  const homeTypeInput = document.getElementById('home-type-input');
-  if (homeTypeInput) homeTypeInput.style.display = 'none';
-  const powerSupplyInput = document.getElementById('power-supply-input');
-  if (powerSupplyInput) powerSupplyInput.style.display = 'none';
-  const notInterestedBtn = document.getElementById('not-interested-btn');
-  if (notInterestedBtn) notInterestedBtn.style.display = 'none';
-  const solarPackageSection = document.getElementById('solar-package');
-  if (solarPackageSection) {
-    solarPackageSection.id = 'battery-package';
-    const header = solarPackageSection.querySelector('h2');
-    if (header) header.textContent = 'My Battery Package';
-    // Clear its display until a battery is selected.
-    solarPackageSection.style.display = 'none';
-  }
-  const imageCombination = document.getElementById('image-combination');
-  if (imageCombination) imageCombination.style.display = 'none';
-  // Clear previous full selections.
-  selectedPanel = null;
-  selectedInverter = null;
-  // Append the toggle button ("Pair it with solar system") in battery-only mode.
-  const batteryGrid = document.getElementById('battery-grid');
-  if (batteryGrid) {
-    let pairBtn = document.getElementById('pair-battery-btn');
-    if (!pairBtn) {
-      pairBtn = document.createElement('a');
-      pairBtn.id = 'pair-battery-btn';
-      pairBtn.className = 'fancy-button';
-      pairBtn.textContent = 'Pair it with solar system';
-      pairBtn.href = "#";
-      pairBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        batteryOnlyMode = false;
-        resetFullMode();
-        updatePackageDisplay();
-        scrollToSection('panels-grid');
-      });
-      batteryGrid.parentNode.insertBefore(pairBtn, batteryGrid.nextSibling);
-    }
-    pairBtn.style.display = 'block';
-    pairBtn.style.margin = '20px auto';
-  }
-  // Remove the "Battery only" button if present.
-  const batteryOnlyBtn = document.getElementById('battery-only-btn');
-  if (batteryOnlyBtn) batteryOnlyBtn.remove();
-  // For nav link: scroll to top.
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ===================== FINAL INITIALIZATION =====================
@@ -711,20 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(() => console.log('All brand images have been progressively loaded.'))
     .catch((error) => console.error('Error preloading some brand images:', error));
   
-  // Initially hide the package section.
-  const solarPackageSection = document.getElementById('solar-package');
-  if (solarPackageSection) solarPackageSection.style.display = 'none';
-  
   updatePackageDisplay();
-  
-  if (window.location.hash === "#unique-battery-storage") {
-    batteryOnlyMode = true;
-    selectedPanel = null;
-    selectedInverter = null;
-    selectedBattery = null;
-    updatePackageDisplay();
-    setupBatteryOnlyMode();
-  }
   
   const panelsGrid = document.getElementById('panels-grid');
   const invertersGrid = document.getElementById('inverters-grid');
@@ -736,6 +539,8 @@ document.addEventListener('DOMContentLoaded', function() {
     solarProducts.batteries.forEach(battery => batteryGrid.appendChild(createProductCard(battery, 'battery')));
   }
   
+  document.getElementById('solar-package').style.display = 'none';
+  
   document.getElementById('confirm-selection').addEventListener('click', () => {
     scrollToForm();
   });
@@ -744,43 +549,51 @@ document.addEventListener('DOMContentLoaded', function() {
     handleNotInterested();
   });
   
-  // In full mode, create a container for buttons and append "Not Interested" and "Battery only" buttons side-by-side.
-  if (!batteryOnlyMode) {
-    const batteryStorageSection = document.getElementById('battery-storage');
-    if (batteryStorageSection) {
-      let btnContainer = document.getElementById('button-container');
-      if (!btnContainer) {
-        btnContainer = document.createElement('div');
-        btnContainer.id = 'button-container';
-        // Horizontal layout is controlled by CSS.
-        batteryStorageSection.appendChild(btnContainer);
-      }
-      let notInterestedBtn = document.getElementById('not-interested-btn');
-      if (notInterestedBtn && notInterestedBtn.parentNode !== btnContainer) {
-        btnContainer.appendChild(notInterestedBtn);
-      }
-      let batteryOnlyBtn = document.getElementById('battery-only-btn');
-      if (!batteryOnlyBtn) {
-        batteryOnlyBtn = document.createElement('a');
-        batteryOnlyBtn.id = 'battery-only-btn';
-        batteryOnlyBtn.textContent = 'Battery only';
-        batteryOnlyBtn.href = "../packages/packages.html#unique-battery-storage";
-        btnContainer.appendChild(batteryOnlyBtn);
-      }
-      btnContainer.style.display = 'flex';
-      btnContainer.style.justifyContent = 'center';
-      btnContainer.style.gap = '10px';
+  function attachFormSubmitHandler() {
+    const packageForm = document.querySelector('.package-form');
+    if (packageForm) {
+        packageForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(packageForm);
+
+            // Append Panel, Inverter, and Battery Selection
+            if (selectedPanel) {
+                formData.append('panelSelection', selectedPanel.name);
+            }
+            if (selectedInverter) {
+                formData.append('inverterSelection', selectedInverter.name);
+            }
+            if (selectedBattery) {
+                formData.append('batterySelection', selectedBattery.name);
+            }
+
+            // Append System Size, Home Type, and Power Supply Type
+            formData.append('systemSize', selectedSystemSize || "Not selected");
+            formData.append('homeType', selectedHomeType || "Not selected");
+            formData.append('powerSupply', selectedPowerSupply || "Not selected");
+
+            // Append Overall Description
+            let description = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, `;
+            description += `Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, `;
+            description += `Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, `;
+            description += `System Size: ${selectedSystemSize}, `;
+            description += `Home Type: ${selectedHomeType}, `;
+            description += `Power Supply: ${selectedPowerSupply}`;
+
+            formData.append('description', description);
+
+            // Show confirmation message
+            showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
+
+            // Delay submission to allow the message to be read
+            setTimeout(() => {
+                packageForm.submit(); // Submit the form after 4 seconds
+            }, 4000);
+        });
     }
-  }
-  
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    packageForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-      setTimeout(() => { packageForm.submit(); }, 4000);
-    });
-  }
+}
+
   
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
