@@ -3464,20 +3464,27 @@ nav {
     perspective: 1000px; /* Enables 3D transforms for animation */
   }
   
-  /* Wrapper for Animation */
+
+  /* Default (Hidden) State - Starts Flipped */
   .fb-page-wrapper {
-    top: 50%;
-    left: 50%;
-    transform-origin: top left;
-    transition: transform 0.3s ease-in-out;
+    position: relative;
+    transform-style: preserve-3d;
+    opacity: 0;
+    transform: rotateY(180deg) scale(0.8);
+    transition: transform 1s, opacity 1s;
   }
   
-  /* Revealed State for Animation */
   .fb-page-wrapper.revealed {
-    opacity: 1; /* Fully visible */
-    transform: rotateY(0deg) scale(1); /* Final position */
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
   }
   
+  /* New scaler wrapper – purely for scaling */
+  .scaler {
+    transform-origin: top left;
+  }
+  
+
   /* Facebook Page Plugin */
 .fb-page {
     max-width: 100%;

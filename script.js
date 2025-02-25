@@ -41,10 +41,11 @@ function scaleFacebookTimelines() {
   const containers = document.querySelectorAll('.timeline-container');
 
   containers.forEach(container => {
-    const fbWrapper = container.querySelector('.fb-page-wrapper');
+    // Target the new .scaler element instead of .fb-page-wrapper
+    const scaler = container.querySelector('.scaler');
     const fbPage = container.querySelector('.fb-page');
 
-    if (fbWrapper && fbPage) {
+    if (scaler && fbPage) {
       const containerWidth = container.clientWidth - 40; // Subtract 20px left/right margin
       const defaultWidth = 500;
       const defaultHeight = 600;
@@ -52,12 +53,13 @@ function scaleFacebookTimelines() {
       // Calculate scale factor based on width
       const scale = containerWidth / defaultWidth; // Maintain aspect ratio
 
-      // Apply scaling
-      fbWrapper.style.transform = `scale(${scale})`;
-      fbWrapper.style.transformOrigin = 'top left';
-      fbWrapper.style.width = `${defaultWidth}px`;
-      fbWrapper.style.height = `${defaultHeight}px`;
+      // Apply scaling to the scaler wrapper
+      scaler.style.transform = `scale(${scale})`;
+      scaler.style.transformOrigin = 'top left';
+      scaler.style.width = `${defaultWidth}px`;
+      scaler.style.height = `${defaultHeight}px`;
 
+      // Set dimensions on the fb-page if needed
       fbPage.style.width = `${defaultWidth}px`;
       fbPage.style.height = `${defaultHeight}px`;
 
@@ -66,6 +68,10 @@ function scaleFacebookTimelines() {
     }
   });
 }
+
+window.addEventListener('resize', scaleFacebookTimelines);
+document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
+
 
 // Run on page load and resize
 window.addEventListener('resize', scaleFacebookTimelines);
@@ -169,6 +175,7 @@ revealFacebookTimelines();
       button.classList.toggle('revealed', buttonTop < triggerBottom);
     });
   }
+  
   function revealCards() {
     const cards = document.querySelectorAll('.brand-card'),
           triggerBottom = window.innerHeight * 0.9;
