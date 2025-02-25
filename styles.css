@@ -3440,85 +3440,64 @@ nav {
     font-weight: normal !important;
 }
 
-/* =========================
-       Facebook Timelines CSS
-    ============================ */
+/* Facebook Timelines CSS */
+/* Container holding both timelines */
+.timeline-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+  }
+  
+  /* Individual timeline container */
+  .timeline-container {
+    width: calc(50% - 20px); /* Two containers side by side, accounting for margins */
+    margin: 10px;
+    min-width: 300px; /* Ensures containers don't get too narrow */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px; /* Desired padding around the iframe */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    overflow: hidden; /* Prevents overflow; use overflow: auto if scrolling is acceptable */
+  }
+  
+  /* Wrapper for animation */
+  .fb-page-wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 600px; /* Ensures space for the iframe height, can be adjusted */
+    transform-style: preserve-3d; /* For animations, if needed */
+    opacity: 0;
+    transform: rotateY(180deg) scale(0.8); /* Initial state for flip animation */
+    transition: transform 1s, opacity 1s;
+  }
+  
+  /* Revealed state for animation */
+  .fb-page-wrapper.revealed {
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
+  }
+  
+  /* Facebook page div */
+  .fb-page {
+    width: 100%;
+    backface-visibility: hidden;
+    transform: translateZ(0); /* For better rendering during animations */
+  }
+  
+  /* Responsive design for smaller screens */
+  @media screen and (max-width: 780px) {
+    .timeline-container {
+      width: 100%;
+      margin: 10px 0;
+    }
+  
     .timeline-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      
-      .timeline-container {
-        width: calc(50% - 10px);
-        margin-bottom: 20px;
-        flex: 1;
-        min-width: 300px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        perspective: 1000px;
-        overflow: visible !important;
-      }
-      
-      .fb-page-wrapper {
-        position: relative;
-        transform-style: preserve-3d;
-        opacity: 0;
-        transform: rotateY(180deg) scale(0.8);
-        transition: transform 1s, opacity 1s; /* Smooth transition for flip */
-      }
-      
-      /* When revealed, the timeline flips around */
-      .fb-page-wrapper.revealed {
-        opacity: 1;
-        transform: rotateY(0deg) scale(1);
-      }
-      
-      .fb-page {
-        backface-visibility: hidden;
-        transform: translateZ(0);
-        height: 400px !important;
-        width: 100%;
-      }
-      
-      @media screen and (max-width: 780px) {
-        .timeline-container {
-          width: 100%;
-          margin-bottom: 20px;
-        }
-      
-        .timeline-wrapper {
-          flex-direction: column;
-        }
-      
-        .section h1 {
-          font-size: 2em;
-        }
-      
-        .fb-page-wrapper { 
-          transform: rotateY(180deg) scale(0.9); /* Adjust for small screens */
-        }
-      
-        .fb-page-wrapper {
-          visibility: visible; /* Make sure it's visible */
-        }
-      
-        .fb-page { 
-          height: 500px !important;
-        }
-      }
-      
-      @media screen and (max-width: 440px) {
-        .fb-page {
-          height: 400px;
-        }
-      
-        .section h1 {
-          font-size: 1.5em;
-        }
-      }
+      flex-direction: column;
+      margin: 0;
+    }
+  }
       
 
 

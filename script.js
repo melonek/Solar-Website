@@ -3,7 +3,7 @@
 // -------------------------
 window.fbAsyncInit = function() {
   FB.init({
-      appId     : '',  // Your Facebook App ID
+      appId     : '1426450195430892',  // Your Facebook App ID
       xfbml     : true,
       version   : 'v22.0'
   });
@@ -27,6 +27,26 @@ function preloadFBTimelines() {
     }
   });
 }
+
+// Re-render Facebook timelines when needed
+function updateFBTimeline(container) {
+  if (container && typeof FB !== 'undefined') {
+    FB.XFBML.parse(container);
+  } else {
+    console.error("Container not found or FB is not defined.");
+  }
+}
+
+
+// Run the scaling function on page load and whenever the window is resized
+window.addEventListener('resize', scaleFacebookTimelines);
+document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
+
+  
+  // Run the scaling function on page load and whenever the window is resized.
+  window.addEventListener('resize', scaleFacebookTimelines);
+  document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
+  
 
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
