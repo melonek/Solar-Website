@@ -3485,13 +3485,27 @@ nav {
   }
   
   /* Media Query for Smaller Screens */
-  @media screen and (max-width: 780px) {
+
+  @media screen and (max-width: 1080px) {
     .timeline-container {
-      flex: 1 1 100%; /* Stacks containers vertically */
+      min-height: auto !important; /* Allow JS to control height */
+      padding: 20px;
     }
   
     .fb-page-wrapper {
-      height: 600px; /* Maintains height on smaller screens */
+      height: auto !important;
+    }
+  }
+
+  @media screen and (max-width: 780px) {
+    .timeline-container {
+      flex: 1 1 100%;
+      min-height: auto !important; /* Allow JS to control height */
+      padding: 20px;
+    }
+  
+    .fb-page-wrapper {
+      height: auto !important;
     }
   }
       

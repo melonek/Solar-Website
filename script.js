@@ -46,26 +46,23 @@ function scaleFacebookTimelines() {
 
     if (fbWrapper && fbPage) {
       const containerWidth = container.clientWidth - 40; // Subtract 20px left/right margin
-      const containerHeight = container.clientHeight - 40; // Subtract 20px top/bottom margin
-      
-      // Default Facebook iframe dimensions
       const defaultWidth = 500;
       const defaultHeight = 600;
 
-      // Calculate scale factors for width and height
-      const scaleX = containerWidth / defaultWidth;
-      const scaleY = containerHeight / defaultHeight;
-      const scale = Math.min(scaleX, scaleY); // Maintain aspect ratio
+      // Calculate scale factor based on width
+      const scale = containerWidth / defaultWidth; // Maintain aspect ratio
 
-      // Apply scaling to wrapper
+      // Apply scaling
       fbWrapper.style.transform = `scale(${scale})`;
       fbWrapper.style.transformOrigin = 'top left';
       fbWrapper.style.width = `${defaultWidth}px`;
       fbWrapper.style.height = `${defaultHeight}px`;
 
-      // Ensure fb-page takes full width of wrapper
       fbPage.style.width = `${defaultWidth}px`;
       fbPage.style.height = `${defaultHeight}px`;
+
+      // Adjust the container height dynamically
+      container.style.height = `${defaultHeight * scale + 40}px`; // Add 20px margin top/bottom
     }
   });
 }
