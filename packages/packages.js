@@ -53,13 +53,14 @@ let activeTextCloud = null;
 let isAutoScrolling = false;
 
 // ===================== HELPER FUNCTIONS =====================
+// ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  // If the file is inside the packages folder (or is battery-only.html), use one level up
-  if (path.includes('/packages/') || path.includes('battery-only.html')) {
+  // If the current file is inside the packages folder, return one level up
+  if (path.includes('/packages/')) {
     return "../";
   }
-  // For pages in the root folder (like index.html), use current directory prefix
+  // Otherwise, assume it's in the root folder and use the current directory prefix
   return "./";
 }
 function initializeBrandImages() {
