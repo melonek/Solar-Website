@@ -47,7 +47,7 @@ function populateBatteryGrid() {
     bundleButton.id = 'bundle-btn';
     bundleButton.classList.add('fancy-button');
     bundleButton.textContent = 'Bundle with solar system';
-    bundleButton.href = '/packages/packages.html'; // Update with your desired path later.
+    bundleButton.href = '../packages/packages.html'; // Update with your desired path later.
     batteryGrid.insertAdjacentElement('afterend', bundleButton);
 }
 

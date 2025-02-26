@@ -55,7 +55,7 @@ let isAutoScrolling = false;
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  return path.includes('packages.html') ? "../" : "/";
+  return path.includes('packages.html') ? "../" : "../";
 }
 
 function initializeBrandImages() {
