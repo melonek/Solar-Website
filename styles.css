@@ -2693,64 +2693,6 @@ nav {
   #build-solar-btn.fancy-button.revealed {
     transform: translateX(0);
   }
-
-  /* 
-  Mobile adjustments:
-  On mobile, we remove the fixed 100vh height and inner scrolling so that the 
-  build-solar section becomes a regular (auto-height) section. This way, the entire 
-  section (video plus content) will scroll normally with the page.
-*/
-@media (max-width: 768px) {
-    /* Force the build-solar section to be full viewport height and hide any overflow */
-    #build-solar {
-      position: relative;
-      height: 100vh;
-      max-height: 100vh;
-      width: 100%;
-      overflow: hidden;
-    }
-    
-    /* Background video remains absolutely positioned to cover the section */
-    .build-solar-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      overflow: hidden;
-    }
-    
-    .build-solar-video video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-    }
-    
-    /* Center the overlay content and force it to be confined within 100vh */
-    .build-solar-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      width: 90%;
-      max-width: 1000px;
-      padding: 20px;
-      box-sizing: border-box;
-      text-align: center;
-      color: #fff;
-      overflow: hidden;      /* Prevent internal scrolling */
-      height: 100%;          /* Force it to fill the parent height */
-      max-height: 100vh;     /* Ensure it never exceeds viewport height */
-    }
-  }
   
   
 
