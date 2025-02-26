@@ -318,100 +318,112 @@ revealFacebookTimelines();
     });
   });
   
-  // -------------------------
-  // NAVIGATION DROPDOWN & TOGGLER
-  // -------------------------
-  const mobileMenu = document.getElementById('mobile-menu');
-  const navLinks = document.querySelector('.nav-links');
-  const mediaQuery = window.matchMedia('(max-width: 768px)');
-  
-  function toggleHrefs() {
-    document.querySelectorAll('.dropdown > a').forEach(toggle => {
-      if (mediaQuery.matches) {
-        toggle.dataset.originalHref = toggle.href;
-        toggle.href = 'javascript:void(0);';
-      } else if (toggle.dataset.originalHref) {
-        toggle.href = toggle.dataset.originalHref;
-      }
-    });
-  }
-  toggleHrefs();
-  
-  if (mobileMenu && navLinks) {
-    mobileMenu.addEventListener('click', (e) => {
-      e.stopPropagation();
-      navLinks.classList.toggle('active');
-    });
-  }
-  
+// -------------------------
+// NAVIGATION DROPDOWN & TOGGLER
+// -------------------------
+const mobileMenu = document.getElementById('mobile-menu');
+const navLinks = document.querySelector('.nav-links');
+const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+// Toggle hrefs for dropdowns on mobile only,
+// but do NOT override links that start with '#' (anchor links)
+function toggleHrefs() {
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
-    toggle.addEventListener('click', function(e) {
-      if (!mediaQuery.matches) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const dropdown = this.parentElement,
-            dropdownContent = dropdown.querySelector('.dropdown-content'),
-            isActive = dropdownContent.classList.contains('active');
-      closeAllDropdowns();
-      navLinks.classList.remove('active');
-      if (!isActive) {
-        dropdownContent.classList.add('active');
-        dropdown.classList.add('active');
-      }
-    });
+    const href = toggle.getAttribute('href');
+    // If the link is an anchor (starts with "#"), let it remain unchanged
+    if (href.startsWith('#')) {
+      return;
+    }
+    if (mediaQuery.matches) {
+      toggle.dataset.originalHref = href;
+      toggle.href = 'javascript:void(0);';
+    } else if (toggle.dataset.originalHref) {
+      toggle.href = toggle.dataset.originalHref;
+    }
   });
-  
-  document.querySelectorAll('.dropdown-content a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (mediaQuery.matches) {
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-      }
-    });
+}
+toggleHrefs();
+
+// Handle clicks on dropdown toggles
+document.querySelectorAll('.dropdown > a').forEach(toggle => {
+  toggle.addEventListener('click', function(e) {
+    // Allow default navigation if the link's href is an anchor (like "#unique-services")
+    const href = this.getAttribute('href');
+    if (href.startsWith('#')) {
+      // The user should be taken to the section.
+      return;
+    }
+    // For other links on mobile, prevent default and toggle dropdown
+    if (!mediaQuery.matches) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const dropdown = this.parentElement,
+          dropdownContent = dropdown.querySelector('.dropdown-content'),
+          isActive = dropdownContent.classList.contains('active');
+    closeAllDropdowns();
+    navLinks.classList.remove('active');
+    if (!isActive) {
+      dropdownContent.classList.add('active');
+      dropdown.classList.add('active');
+    }
   });
-  
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.nav-links')) {
+});
+
+// Close dropdown when a link inside is clicked (on mobile)
+document.querySelectorAll('.dropdown-content a').forEach(link => {
+  link.addEventListener('click', () => {
+    if (mediaQuery.matches) {
       closeAllDropdowns();
       navLinks.classList.remove('active');
     }
   });
-  
-  window.addEventListener('resize', () => {
-    toggleHrefs();
-    if (!mediaQuery.matches) {
-      closeAllDropdowns();
-      navLinks.classList.remove('active');
-    }
-  });
-  
-  function closeAllDropdowns() {
-    document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
-      element.classList.remove('active');
-    });
+});
+
+// Close dropdown if clicking outside of the nav
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-links')) {
+    closeAllDropdowns();
+    navLinks.classList.remove('active');
   }
-  
-  // Navigation toggler for .nav-logg
-  const navLogg = document.querySelector('.nav-logg');
-  if (mobileMenu && navLogg) {
-    mobileMenu.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.classList.toggle('open');
-      navLogg.classList.toggle('open');
-    });
+});
+
+// On window resize, update the href toggles and reset dropdowns if necessary
+window.addEventListener('resize', () => {
+  toggleHrefs();
+  if (!mediaQuery.matches) {
+    closeAllDropdowns();
+    navLinks.classList.remove('active');
   }
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.nav-logg') && !e.target.closest('#mobile-menu')) {
-      mobileMenu && mobileMenu.classList.remove('open');
-      navLogg && navLogg.classList.remove('open');
-    }
+});
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
+    element.classList.remove('active');
   });
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu && mobileMenu.classList.remove('open');
-      navLogg && navLogg.classList.remove('open');
-    });
+}
+
+// Navigation toggler for mobile menu icon (if using a nav-logg as well)
+const navLogg = document.querySelector('.nav-logg');
+if (mobileMenu && navLogg) {
+  mobileMenu.addEventListener('click', function(e) {
+    e.stopPropagation();
+    this.classList.toggle('open');
+    navLogg.classList.toggle('open');
   });
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-logg') && !e.target.closest('#mobile-menu')) {
+    mobileMenu && mobileMenu.classList.remove('open');
+    navLogg && navLogg.classList.remove('open');
+  }
+});
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu && mobileMenu.classList.remove('open');
+    navLogg && navLogg.classList.remove('open');
+  });
+});
+
   
   // -------------------------
   // MAIN PAGE ARTICLES (MODAL & PAGINATION)
