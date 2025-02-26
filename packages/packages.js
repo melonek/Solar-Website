@@ -53,7 +53,6 @@ let activeTextCloud = null;
 let isAutoScrolling = false;
 
 // ===================== HELPER FUNCTIONS =====================
-// ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
   // If the current file is inside the packages folder, return one level up
@@ -164,9 +163,9 @@ function checkTextClouds() {
     if (el) {
       const rect = el.getBoundingClientRect();
       let triggerPoint;
-      // For inverters-section, trigger using the top of the element (or header) to fire the text cloud higher
+      // For inverters-section, add an extra 100px offset so its text cloud triggers lower in the viewport
       if (config.selector === '#inverters-section') {
-        triggerPoint = rect.top;
+        triggerPoint = rect.top + 100;
       } else {
         triggerPoint = rect.top + rect.height / 2;
       }
@@ -560,33 +559,33 @@ document.addEventListener('DOMContentLoaded', function() {
     handleNotInterested();
   });
   
-// Append Battery Only button next to Not Interested button in battery storage section
-(function addBatteryOnlyButton() {
-  const batterySection = document.getElementById('battery-storage');
-  const notInterestedBtn = document.getElementById('not-interested-btn');
-  if (batterySection && notInterestedBtn) {
-    // Create a container div if not already present
-    let buttonContainer = batterySection.querySelector('.button-container');
-    if (!buttonContainer) {
-      buttonContainer = document.createElement('div');
-      buttonContainer.className = 'button-container';
-      // Insert the container before the Not Interested button
-      batterySection.insertBefore(buttonContainer, notInterestedBtn);
+  // Append Battery Only button next to Not Interested button in battery storage section
+  (function addBatteryOnlyButton() {
+    const batterySection = document.getElementById('battery-storage');
+    const notInterestedBtn = document.getElementById('not-interested-btn');
+    if (batterySection && notInterestedBtn) {
+      // Create a container div if not already present
+      let buttonContainer = batterySection.querySelector('.button-container');
+      if (!buttonContainer) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+        // Insert the container before the Not Interested button
+        batterySection.insertBefore(buttonContainer, notInterestedBtn);
+      }
+      // Ensure the Not Interested button is inside the container
+      if (!buttonContainer.contains(notInterestedBtn)) {
+        buttonContainer.appendChild(notInterestedBtn);
+      }
+      
+      // Create the Battery Only anchor styled as a button
+      const batteryOnlyBtn = document.createElement('a');
+      batteryOnlyBtn.id = 'battery-only-btn';
+      batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
+      batteryOnlyBtn.textContent = 'Battery only';
+      
+      buttonContainer.appendChild(batteryOnlyBtn);
     }
-    // Ensure the Not Interested button is inside the container
-    if (!buttonContainer.contains(notInterestedBtn)) {
-      buttonContainer.appendChild(notInterestedBtn);
-    }
-    
-    // Create the Battery Only anchor styled as a button
-    const batteryOnlyBtn = document.createElement('a');
-    batteryOnlyBtn.id = 'battery-only-btn';
-    batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
-    batteryOnlyBtn.textContent = 'Battery only';
-    
-    buttonContainer.appendChild(batteryOnlyBtn);
-  }
-})();
+  })();
 
   function attachFormSubmitHandler() {
     const packageForm = document.querySelector('.package-form');
