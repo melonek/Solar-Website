@@ -55,15 +55,13 @@ let isAutoScrolling = false;
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  if (path.includes('packages.html')) {
-    return "../";  // One level up
-  } else if (path.includes('dashboard.html')) {
-    return "./";   // Current directory
-  } else {
-    return "/";    // Root directory
+  // If the file is inside the packages folder (or is battery-only.html), use one level up
+  if (path.includes('/packages/') || path.includes('battery-only.html')) {
+    return "../";
   }
+  // For pages in the root folder (like index.html), use current directory prefix
+  return "./";
 }
-
 function initializeBrandImages() {
   const prefix = getPathPrefix();
   brandImages = [
