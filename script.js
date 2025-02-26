@@ -325,17 +325,15 @@ const mobileMenu = document.getElementById('mobile-menu');
 const navLinks = document.querySelector('.nav-links');
 const mediaQuery = window.matchMedia('(max-width: 768px)');
 
-// Toggle hrefs for dropdowns on mobile only,
-// but do NOT override links that start with '#' (anchor links)
+// Update dropdown links:
+// - For non-"Services" links, override href on mobile.
+// - For the "Services" link (href="#unique-services"), leave it unchanged.
 function toggleHrefs() {
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
     const href = toggle.getAttribute('href');
-    // If the link is an anchor (starts with "#"), let it remain unchanged
-    if (href.startsWith('#')) {
-      return;
-    }
+    if (href === "#unique-services") return; // Leave Services intact.
     if (mediaQuery.matches) {
-      toggle.dataset.originalHref = href;
+      toggle.dataset.originalHref = toggle.href;
       toggle.href = 'javascript:void(0);';
     } else if (toggle.dataset.originalHref) {
       toggle.href = toggle.dataset.originalHref;
@@ -344,32 +342,64 @@ function toggleHrefs() {
 }
 toggleHrefs();
 
-// Handle clicks on dropdown toggles
+// Toggle the main navigation when the mobile menu icon is clicked.
+if (mobileMenu && navLinks) {
+  mobileMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navLinks.classList.toggle('active');
+  });
+}
+
+// Handle dropdown clicks for each dropdown link on mobile.
 document.querySelectorAll('.dropdown > a').forEach(toggle => {
   toggle.addEventListener('click', function(e) {
-    // Allow default navigation if the link's href is an anchor (like "#unique-services")
+    if (!mediaQuery.matches) return; // On desktop, normal behavior.
     const href = this.getAttribute('href');
-    if (href.startsWith('#')) {
-      // The user should be taken to the section.
-      return;
-    }
-    // For other links on mobile, prevent default and toggle dropdown
-    if (!mediaQuery.matches) return;
-    e.preventDefault();
-    e.stopPropagation();
-    const dropdown = this.parentElement,
-          dropdownContent = dropdown.querySelector('.dropdown-content'),
-          isActive = dropdownContent.classList.contains('active');
-    closeAllDropdowns();
-    navLinks.classList.remove('active');
-    if (!isActive) {
-      dropdownContent.classList.add('active');
-      dropdown.classList.add('active');
+    if (href === "#unique-services") {
+      // "Services" link: use double-click behavior.
+      if (!this.dataset.toggledOnce) {
+        // First click: prevent navigation, open submenu.
+        e.preventDefault();
+        e.stopPropagation();
+        const dropdown = this.parentElement,
+              dropdownContent = dropdown.querySelector('.dropdown-content'),
+              isActive = dropdownContent.classList.contains('active');
+        closeAllDropdowns();
+        navLinks.classList.remove('active');
+        if (!isActive) {
+          dropdownContent.classList.add('active');
+          dropdown.classList.add('active');
+        }
+        // Set flag to allow navigation on second click.
+        this.dataset.toggledOnce = "true";
+        setTimeout(() => {
+          delete this.dataset.toggledOnce;
+        }, 2000);
+      } else {
+        // Second click: allow default navigation.
+        delete this.dataset.toggledOnce;
+        closeAllDropdowns();
+        navLinks.classList.remove('active');
+        // Do not preventDefault, so navigation to "#unique-services" occurs.
+      }
+    } else {
+      // For other dropdown links: simply toggle the submenu.
+      e.preventDefault();
+      e.stopPropagation();
+      const dropdown = this.parentElement,
+            dropdownContent = dropdown.querySelector('.dropdown-content'),
+            isActive = dropdownContent.classList.contains('active');
+      closeAllDropdowns();
+      navLinks.classList.remove('active');
+      if (!isActive) {
+        dropdownContent.classList.add('active');
+        dropdown.classList.add('active');
+      }
     }
   });
 });
 
-// Close dropdown when a link inside is clicked (on mobile)
+// When a link inside a dropdown is clicked on mobile, close all dropdowns and the nav.
 document.querySelectorAll('.dropdown-content a').forEach(link => {
   link.addEventListener('click', () => {
     if (mediaQuery.matches) {
@@ -379,7 +409,7 @@ document.querySelectorAll('.dropdown-content a').forEach(link => {
   });
 });
 
-// Close dropdown if clicking outside of the nav
+// Close dropdowns if clicking outside the nav.
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.nav-links')) {
     closeAllDropdowns();
@@ -387,7 +417,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// On window resize, update the href toggles and reset dropdowns if necessary
+// Update href overrides on window resize and reset dropdowns when switching to desktop.
 window.addEventListener('resize', () => {
   toggleHrefs();
   if (!mediaQuery.matches) {
@@ -401,28 +431,6 @@ function closeAllDropdowns() {
     element.classList.remove('active');
   });
 }
-
-// Navigation toggler for mobile menu icon (if using a nav-logg as well)
-const navLogg = document.querySelector('.nav-logg');
-if (mobileMenu && navLogg) {
-  mobileMenu.addEventListener('click', function(e) {
-    e.stopPropagation();
-    this.classList.toggle('open');
-    navLogg.classList.toggle('open');
-  });
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-logg') && !e.target.closest('#mobile-menu')) {
-    mobileMenu && mobileMenu.classList.remove('open');
-    navLogg && navLogg.classList.remove('open');
-  }
-});
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', () => {
-    mobileMenu && mobileMenu.classList.remove('open');
-    navLogg && navLogg.classList.remove('open');
-  });
-});
 
   
   // -------------------------
