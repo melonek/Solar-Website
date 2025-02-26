@@ -326,12 +326,12 @@ const navLinks = document.querySelector('.nav-links');
 const mediaQuery = window.matchMedia('(max-width: 768px)');
 
 // Update dropdown links:
-// - For non-"Services" links, override href on mobile.
-// - For the "Services" link (href="#unique-services"), leave it unchanged.
+// For non-"Services" links, override href on mobile.
+// For the "Services" link (href="#unique-services"), leave it unchanged.
 function toggleHrefs() {
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
     const href = toggle.getAttribute('href');
-    if (href === "#unique-services") return; // Leave Services intact.
+    if (href === "#unique-services") return; // Leave Services link intact.
     if (mediaQuery.matches) {
       toggle.dataset.originalHref = toggle.href;
       toggle.href = 'javascript:void(0);';
@@ -350,45 +350,44 @@ if (mobileMenu && navLinks) {
   });
 }
 
-// Handle dropdown clicks for each dropdown link on mobile.
+// Handle clicks for each dropdown link on mobile.
 document.querySelectorAll('.dropdown > a').forEach(toggle => {
   toggle.addEventListener('click', function(e) {
-    if (!mediaQuery.matches) return; // On desktop, normal behavior.
+    if (!mediaQuery.matches) return; // On desktop, let links work normally.
     const href = this.getAttribute('href');
     if (href === "#unique-services") {
-      // "Services" link: use double-click behavior.
+      // Services link: use double-click behavior.
       if (!this.dataset.toggledOnce) {
-        // First click: prevent navigation, open submenu.
+        // First click: open submenu and prevent navigation.
         e.preventDefault();
         e.stopPropagation();
-        const dropdown = this.parentElement,
-              dropdownContent = dropdown.querySelector('.dropdown-content'),
-              isActive = dropdownContent.classList.contains('active');
+        const dropdown = this.parentElement;
+        const dropdownContent = dropdown.querySelector('.dropdown-content');
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        if (!isActive) {
+        if (!dropdownContent.classList.contains('active')) {
           dropdownContent.classList.add('active');
           dropdown.classList.add('active');
         }
-        // Set flag to allow navigation on second click.
+        // Set flag so that the next click will navigate.
         this.dataset.toggledOnce = "true";
         setTimeout(() => {
           delete this.dataset.toggledOnce;
         }, 2000);
       } else {
-        // Second click: allow default navigation.
+        // Second click: close dropdowns and manually navigate.
         delete this.dataset.toggledOnce;
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        // Do not preventDefault, so navigation to "#unique-services" occurs.
+        window.location.href = "#unique-services";
       }
     } else {
       // For other dropdown links: simply toggle the submenu.
       e.preventDefault();
       e.stopPropagation();
-      const dropdown = this.parentElement,
-            dropdownContent = dropdown.querySelector('.dropdown-content'),
-            isActive = dropdownContent.classList.contains('active');
+      const dropdown = this.parentElement;
+      const dropdownContent = dropdown.querySelector('.dropdown-content');
+      const isActive = dropdownContent.classList.contains('active');
       closeAllDropdowns();
       navLinks.classList.remove('active');
       if (!isActive) {
