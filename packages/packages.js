@@ -36,7 +36,7 @@ const textCloudConfig = [
   { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
-  { selector: '#solar-package', message: "Are you happy with this package?", key: 'solarPackage' },
+  { selector: '#solar-package', message: "Here’s a glimpse of your future solar package.", key: 'solarPackage' },
   { selector: '.package-form', message: "Fill in your details", key: 'packageForm' }
 ];
 let textCloudFlags = {

@@ -60,7 +60,8 @@ function handleBatterySelection(battery, card) {
 
     setTimeout(() => {
         scrollToSection('battery-package');
-        showTextCloud("Are you happy with this package?", 2000);
+        // Updated text cloud message:
+        showTextCloud("Here’s a glimpse of your future solar package.", 2000);
     }, 300);
 }
 
@@ -115,8 +116,6 @@ function updateBatteryPackageDisplay() {
     batteryPackage.style.display = 'block';
 }
 
-
-
 // ===================== SCROLL TO FORM & SHOW TEXT CLOUD =====================
 function attachEnquiryScroll() {
     // Only the confirm-selection button scrolls to the form
@@ -132,6 +131,13 @@ function attachFormSubmitHandler() {
     if (packageForm) {
         packageForm.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Update the solar package input field with battery info if it exists
+            const solarPackageInput = document.getElementById('solar-package-input');
+            if (selectedBattery && solarPackageInput) {
+                solarPackageInput.value = `Battery: ${selectedBattery.name}`;
+            }
+
             const formData = new FormData(packageForm);
             // Append battery selection info if a battery has been selected
             if (selectedBattery) {
