@@ -2708,6 +2708,7 @@ nav {
       max-height: 100vh;
       width: 100%;
       overflow: hidden;
+      overflow-y:hidden;
     }
     
     /* Background video remains absolutely positioned to cover the section */
@@ -2719,6 +2720,7 @@ nav {
       height: 100%;
       z-index: 1;
       overflow: hidden;
+      overflow-y:hidden;
     }
     
     .build-solar-video video {
@@ -2731,6 +2733,7 @@ nav {
       height: auto;
       transform: translate(-50%, -50%);
       object-fit: cover;
+      overflow-y:hidden;
     }
     
     /* Center the overlay content and force it to be confined within 100vh */
@@ -2749,6 +2752,7 @@ nav {
       overflow: hidden;      /* Prevent internal scrolling */
       height: 100%;          /* Force it to fill the parent height */
       max-height: 100vh;     /* Ensure it never exceeds viewport height */
+      overflow-y:hidden;
     }
   }
 
