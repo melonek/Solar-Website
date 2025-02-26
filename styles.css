@@ -2619,7 +2619,7 @@ nav {
     position: relative;
     height: 100vh;
     overflow: hidden;
-    overflow-y: hidden;
+    overflow-x:hidden;
   }
   
   .build-solar-video {
@@ -2630,6 +2630,7 @@ nav {
     height: 100%;
     z-index: 1;
     overflow: hidden;
+    overflow-x:hidden;
   }
   
   .build-solar-video video {
@@ -2647,19 +2648,17 @@ nav {
   
   /* Center the content absolutely */
   .build-solar-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  width: 100%;
-  max-width: 1000px;
-  text-align: center;
-  color: #fff;
-  padding: 20px;
-  /* Constrain height so content never overflows the section */
-  max-height: calc(100vh - 40px); /* 40px accounts for top & bottom padding */
-  overflow-y: auto; /* Add vertical scrolling if content is too tall */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    overflow-x:hidden;
   }
   
   .build-solar-content h2 {
@@ -2670,19 +2669,41 @@ nav {
   }
   
   .build-solar-content h3 {
-    font-size: 1.5rem;
+    font-size: 2.25rem;
     margin-bottom: 40px;
     background: rgba(0, 0, 0, 0.3); /* Black with 50% opacity */
     border-radius: 5px; /* Rounded corners to match the button */
   }
   
+  .build-solar-content {
+    color: #fff;
+    padding: 20px 40px;
+    text-decoration: none;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+/* Base fancy-button styles */
+.fancy-button {
+    padding: 25px 50px;
+    font-size: 1.75rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    color: #fff;
+    transition: transform 0.6s ease-out, background-color 0.3s ease;
+  }
+  
   /* Unique styles for the build-solar button */
   #build-solar-btn.fancy-button {
     background: linear-gradient(135deg, #2196f3, #21cbf3);
-    color: #fff;
     padding: 30px 60px;
     font-size: 2rem;
-
+    border-radius: 25px;
+    /* Initially offset to the left; !important ensures this isn't overridden */
+    transform: translateX(-50px) !important;
   }
   
   #build-solar-btn.fancy-button:hover {
@@ -2691,8 +2712,22 @@ nav {
   
   /* When revealed, slide to natural position */
   #build-solar-btn.fancy-button.revealed {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
+
+
+
+  #banner {
+    position: relative;
+    text-align: center;
+    padding: 60px 20px;
+    border-top: 3px solid #009688;
+    margin: 40px auto;
+    max-width: 1600px;
+    overflow-x:hidden;
+    /* Remove the background image from here */
+  }
+
   
   
 
