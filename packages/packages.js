@@ -57,9 +57,9 @@ function getPathPrefix() {
   const path = window.location.pathname;
 
   if (path.includes('packages.html')) {
-    return "../";  // One level up
-  } else if (path.includes('dashboard.html')) {
-    return "./";   // Current directory
+    return "/";  // One level up
+  } else if (path.includes('index.html')) {
+    return "/";   // Current directory
   } else {
     return "/";    // Root directory
   }
