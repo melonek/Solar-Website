@@ -331,7 +331,7 @@ const mediaQuery = window.matchMedia('(max-width: 768px)');
 function toggleHrefs() {
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
     const href = toggle.getAttribute('href');
-    if (href === "#unique-services") return; // Leave Services link intact.
+    if (href === "#unique-services") return; // Leave Services intact.
     if (mediaQuery.matches) {
       toggle.dataset.originalHref = toggle.href;
       toggle.href = 'javascript:void(0);';
@@ -356,30 +356,27 @@ document.querySelectorAll('.dropdown > a').forEach(toggle => {
     if (!mediaQuery.matches) return; // On desktop, let links work normally.
     const href = this.getAttribute('href');
     if (href === "#unique-services") {
-      // Services link: use double-click behavior.
+      // For the Services link, implement double-click behavior.
       if (!this.dataset.toggledOnce) {
-        // First click: open submenu and prevent navigation.
+        // First click: prevent default and open submenu.
         e.preventDefault();
         e.stopPropagation();
         const dropdown = this.parentElement;
         const dropdownContent = dropdown.querySelector('.dropdown-content');
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        if (!dropdownContent.classList.contains('active')) {
-          dropdownContent.classList.add('active');
-          dropdown.classList.add('active');
-        }
-        // Set flag so that the next click will navigate.
+        dropdownContent.classList.add('active');
+        dropdown.classList.add('active');
         this.dataset.toggledOnce = "true";
         setTimeout(() => {
           delete this.dataset.toggledOnce;
         }, 2000);
       } else {
-        // Second click: close dropdowns and manually navigate.
+        // Second click: allow default navigation to #unique-services.
         delete this.dataset.toggledOnce;
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        window.location.href = "#unique-services";
+        // Do NOT call preventDefault() so the browser follows the anchor.
       }
     } else {
       // For other dropdown links: simply toggle the submenu.

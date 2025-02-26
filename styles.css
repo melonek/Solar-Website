@@ -2701,27 +2701,31 @@ nav {
   section (video plus content) will scroll normally with the page.
 */
 @media (max-width: 768px) {
-    /* Make the entire section auto-height, full width, and hide horizontal overflow */
-    #build-solar {
-      height: auto;
-      overflow: visible;
-      width: 100%;
-      overflow-x: hidden;
-    }
-    /* Make the overlay content part of the normal flow and confined to the viewport */
-    .build-solar-content {
-      position: relative;
-      transform: none;
-      max-height: none;
-      overflow-y: visible;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box; /* include padding in width calculations */
-      margin: 0 auto;
-      padding: 20px;
-      word-wrap: break-word;  /* ensure long words or URLs break if necessary */
-      overflow-wrap: break-word;
-    }
+    @media (max-width: 768px) {
+        /* Let the build-solar section grow naturally and hide any unwanted horizontal overflow */
+        #build-solar {
+          height: auto;
+          width: 100%;
+          overflow-x: hidden;
+          /* You can keep overflow-y: visible or remove it entirely */
+          overflow-y: visible;
+        }
+        /* Make the overlay content part of the normal document flow without internal scrolling */
+        .build-solar-content {
+          position: relative;
+          transform: none;
+          width: 90%;           /* Use 90% width to add side margins */
+          max-width: 100%;
+          margin: 0 auto;       /* Center the content */
+          padding: 20px;
+          box-sizing: border-box;
+          /* Remove internal scroll settings */
+          overflow: visible;
+          max-height: none;
+        }
+      }
+      
+  
     /* Keep the video as a background, if needed */
     .build-solar-video {
       position: absolute;
