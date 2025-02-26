@@ -561,38 +561,34 @@ document.addEventListener('DOMContentLoaded', function() {
     handleNotInterested();
   });
   
-  // Append Battery Only button next to Not Interested button in battery storage section
-  (function addBatteryOnlyButton() {
-    const batterySection = document.getElementById('battery-storage');
-    const notInterestedBtn = document.getElementById('not-interested-btn');
-    if (batterySection && notInterestedBtn) {
-      // Create a container div if not already present
-      let buttonContainer = batterySection.querySelector('.button-container');
-      if (!buttonContainer) {
-        buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
-        // Insert the container after the battery grid
-        batterySection.insertBefore(buttonContainer, notInterestedBtn);
-      }
-      // Move the Not Interested button into the container
-      buttonContainer.appendChild(notInterestedBtn);
-      
-      // Create the Battery Only button
-      const batteryOnlyBtn = document.createElement('button');
-      batteryOnlyBtn.id = 'battery-only-btn';
-      batteryOnlyBtn.textContent = 'Battery only';
-      // Example event listener – adjust functionality as needed
-      batteryOnlyBtn.addEventListener('click', function() {
-        // For instance, clear panel and inverter selection while keeping battery selection
-        selectedPanel = null;
-        selectedInverter = null;
-        updatePackageDisplay();
-        scrollToSection('battery-storage');
-      });
-      buttonContainer.appendChild(batteryOnlyBtn);
+// Append Battery Only button next to Not Interested button in battery storage section
+(function addBatteryOnlyButton() {
+  const batterySection = document.getElementById('battery-storage');
+  const notInterestedBtn = document.getElementById('not-interested-btn');
+  if (batterySection && notInterestedBtn) {
+    // Create a container div if not already present
+    let buttonContainer = batterySection.querySelector('.button-container');
+    if (!buttonContainer) {
+      buttonContainer = document.createElement('div');
+      buttonContainer.className = 'button-container';
+      // Insert the container before the Not Interested button
+      batterySection.insertBefore(buttonContainer, notInterestedBtn);
     }
-  })();
-  
+    // Ensure the Not Interested button is inside the container
+    if (!buttonContainer.contains(notInterestedBtn)) {
+      buttonContainer.appendChild(notInterestedBtn);
+    }
+    
+    // Create the Battery Only anchor styled as a button
+    const batteryOnlyBtn = document.createElement('a');
+    batteryOnlyBtn.id = 'battery-only-btn';
+    batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
+    batteryOnlyBtn.textContent = 'Battery only';
+    
+    buttonContainer.appendChild(batteryOnlyBtn);
+  }
+})();
+
   function attachFormSubmitHandler() {
     const packageForm = document.querySelector('.package-form');
     if (packageForm) {

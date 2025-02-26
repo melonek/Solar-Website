@@ -307,11 +307,11 @@
   }
   
   /* ----------------- BUTTON CONTAINER ----------------- */
-  #button-container {
+  .button-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    gap: 10px;
-    margin: 10px 0;
+    align-items: center;
   }
 
 /* Styling for Not Interested button */
@@ -332,7 +332,7 @@
 
  /* Styling for Not Interested button */
 #battery-only-btn {
-    padding: 7px 25px;
+    padding: 6px 29px;
     font-size: 1rem;
     cursor: pointer;
     border: none;
