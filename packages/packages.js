@@ -55,9 +55,15 @@ let isAutoScrolling = false;
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  return path.includes('packages.html') ? "../" : "./";
-}
 
+  if (path.includes('packages.html')) {
+    return "../";  // One level up
+  } else if (path.includes('dashboard.html')) {
+    return "./";   // Current directory
+  } else {
+    return "/";    // Root directory
+  }
+}
 function initializeBrandImages() {
   const prefix = getPathPrefix();
   brandImages = [
