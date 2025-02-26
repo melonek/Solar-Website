@@ -55,15 +55,15 @@ let isAutoScrolling = false;
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-
   if (path.includes('packages.html')) {
-    return "/";  // One level up
-  } else if (path.includes('index.html')) {
-    return "/";   // Current directory
+    return "../";  // One level up
+  } else if (path.includes('dashboard.html')) {
+    return "./";   // Current directory
   } else {
     return "/";    // Root directory
   }
 }
+
 function initializeBrandImages() {
   const prefix = getPathPrefix();
   brandImages = [
@@ -164,8 +164,14 @@ function checkTextClouds() {
     const el = document.querySelector(config.selector);
     if (el) {
       const rect = el.getBoundingClientRect();
-      const elCenter = rect.top + rect.height / 2;
-      if (Math.abs(elCenter - viewportCenter) < tolerance) {
+      let triggerPoint;
+      // For inverters-section, trigger using the top of the element (or header) to fire the text cloud higher
+      if (config.selector === '#inverters-section') {
+        triggerPoint = rect.top;
+      } else {
+        triggerPoint = rect.top + rect.height / 2;
+      }
+      if (Math.abs(triggerPoint - viewportCenter) < tolerance) {
         if (!textCloudFlags[config.key]) {
           showTextCloud(config.message, 2000);
           textCloudFlags[config.key] = true;
@@ -555,6 +561,38 @@ document.addEventListener('DOMContentLoaded', function() {
     handleNotInterested();
   });
   
+  // Append Battery Only button next to Not Interested button in battery storage section
+  (function addBatteryOnlyButton() {
+    const batterySection = document.getElementById('battery-storage');
+    const notInterestedBtn = document.getElementById('not-interested-btn');
+    if (batterySection && notInterestedBtn) {
+      // Create a container div if not already present
+      let buttonContainer = batterySection.querySelector('.button-container');
+      if (!buttonContainer) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+        // Insert the container after the battery grid
+        batterySection.insertBefore(buttonContainer, notInterestedBtn);
+      }
+      // Move the Not Interested button into the container
+      buttonContainer.appendChild(notInterestedBtn);
+      
+      // Create the Battery Only button
+      const batteryOnlyBtn = document.createElement('button');
+      batteryOnlyBtn.id = 'battery-only-btn';
+      batteryOnlyBtn.textContent = 'Battery only';
+      // Example event listener – adjust functionality as needed
+      batteryOnlyBtn.addEventListener('click', function() {
+        // For instance, clear panel and inverter selection while keeping battery selection
+        selectedPanel = null;
+        selectedInverter = null;
+        updatePackageDisplay();
+        scrollToSection('battery-storage');
+      });
+      buttonContainer.appendChild(batteryOnlyBtn);
+    }
+  })();
+  
   function attachFormSubmitHandler() {
     const packageForm = document.querySelector('.package-form');
     if (packageForm) {
@@ -598,9 +636,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 4000);
         });
     }
-}
+  }
 
-  
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
     if (!modal) return;
