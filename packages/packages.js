@@ -482,9 +482,10 @@ function updatePackageDisplay() {
       description += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
     }
     packageDescription.innerHTML = description;
+    // Consolidate all selections into the hidden input
     document.getElementById('solar-package-input').value =
-      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}` +
-      (selectedBattery ? `, Battery: ${selectedBattery.name}` : '');
+      `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
+      (selectedBattery ? `\nBattery: ${selectedBattery.name}` : '');
     
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
@@ -520,6 +521,35 @@ function handleNotInterested() {
   selectedBattery = null;
   updatePackageDisplay();
   showSolarPackageSection();
+}
+
+// --------------------
+// Consolidate all selections into a multi-line string for the form
+// --------------------
+function updateSolarPackageInput() {
+  let details = "";
+  if (selectedPanel) {
+    details += `Panels: ${selectedPanel.name}\n`;
+  }
+  if (selectedInverter) {
+    details += `Inverter: ${selectedInverter.name}\n`;
+  }
+  if (selectedBattery) {
+    details += `Battery: ${selectedBattery.name}\n`;
+  }
+  if (selectedSystemSize) {
+    details += `System Size: ${selectedSystemSize}\n`;
+  }
+  if (selectedHomeType) {
+    details += `Home Type: ${selectedHomeType}\n`;
+  }
+  if (selectedPowerSupply) {
+    details += `Power Supply: ${selectedPowerSupply}\n`;
+  }
+  const solarPackageInput = document.getElementById('solar-package-input');
+  if (solarPackageInput) {
+    solarPackageInput.value = details;
+  }
 }
 
 // ===================== FINAL INITIALIZATION =====================
@@ -564,20 +594,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const batterySection = document.getElementById('battery-storage');
     const notInterestedBtn = document.getElementById('not-interested-btn');
     if (batterySection && notInterestedBtn) {
-      // Create a container div if not already present
       let buttonContainer = batterySection.querySelector('.button-container');
       if (!buttonContainer) {
         buttonContainer = document.createElement('div');
         buttonContainer.className = 'button-container';
-        // Insert the container before the Not Interested button
         batterySection.insertBefore(buttonContainer, notInterestedBtn);
       }
-      // Ensure the Not Interested button is inside the container
       if (!buttonContainer.contains(notInterestedBtn)) {
         buttonContainer.appendChild(notInterestedBtn);
       }
       
-      // Create the Battery Only anchor styled as a button
       const batteryOnlyBtn = document.createElement('a');
       batteryOnlyBtn.id = 'battery-only-btn';
       batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
@@ -592,10 +618,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (packageForm) {
         packageForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            // Consolidate all selections into one field
+            updateSolarPackageInput();
 
             const formData = new FormData(packageForm);
-
-            // Append Panel, Inverter, and Battery Selection
+            // Optionally, you can also append individual selections if needed:
             if (selectedPanel) {
                 formData.append('panelSelection', selectedPanel.name);
             }
@@ -605,29 +632,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selectedBattery) {
                 formData.append('batterySelection', selectedBattery.name);
             }
-
-            // Append System Size, Home Type, and Power Supply Type
             formData.append('systemSize', selectedSystemSize || "Not selected");
             formData.append('homeType', selectedHomeType || "Not selected");
             formData.append('powerSupply', selectedPowerSupply || "Not selected");
+            // Append overall consolidated description from the hidden input
+            formData.append('description', document.getElementById('solar-package-input').value);
 
-            // Append Overall Description
-            let description = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, `;
-            description += `Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, `;
-            description += `Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, `;
-            description += `System Size: ${selectedSystemSize}, `;
-            description += `Home Type: ${selectedHomeType}, `;
-            description += `Power Supply: ${selectedPowerSupply}`;
-
-            formData.append('description', description);
-
-            // Show confirmation message
+            // Show confirmation message and stay on form section (no redirection)
             showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-
-            // Delay submission to allow the message to be read
-            setTimeout(() => {
-                packageForm.submit(); // Submit the form after 4 seconds
-            }, 4000);
         });
     }
   }
@@ -646,6 +658,8 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.style.display = 'none';
     }
   });
+
+  attachFormSubmitHandler();
 });
 
 // -------------------------
