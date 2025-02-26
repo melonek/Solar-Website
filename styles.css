@@ -2701,15 +2701,16 @@ nav {
   section (video plus content) will scroll normally with the page.
 */
 @media (max-width: 768px) {
-    /* Keep the build-solar section full-screen without internal scrolling */
+    /* Force the build-solar section to be full viewport height and hide any overflow */
     #build-solar {
       position: relative;
-      height: 100vh; /* fixed height */
+      height: 100vh;
+      max-height: 100vh;
       width: 100%;
-      overflow: hidden; /* no scrolling inside the section */
+      overflow: hidden;
     }
     
-    /* The video remains as a background */
+    /* Background video remains absolutely positioned to cover the section */
     .build-solar-video {
       position: absolute;
       top: 0;
@@ -2730,35 +2731,27 @@ nav {
       height: auto;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      /* Remove any extra transforms if needed */
     }
     
-    /* The overlay content is centered and its overflow is hidden */
+    /* Center the overlay content and force it to be confined within 100vh */
     .build-solar-content {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 2;
-      width: 90%;           /* Constrain width to give some side margins */
+      width: 90%;
       max-width: 1000px;
       padding: 20px;
       box-sizing: border-box;
       text-align: center;
       color: #fff;
-      overflow: hidden;     /* Disable internal scrolling */
-      /* Remove any max-height constraints so it doesn't scroll internally */
+      overflow: hidden;      /* Prevent internal scrolling */
+      height: 100%;          /* Force it to fill the parent height */
+      max-height: 100vh;     /* Ensure it never exceeds viewport height */
     }
   }
   
-    /* Keep the video as a background, if needed */
-    .build-solar-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
   
 
 
