@@ -2694,6 +2694,34 @@ nav {
     transform: translateX(0);
   }
 
+  /* 
+  Mobile adjustments:
+  On mobile, we remove the fixed 100vh height and inner scrolling so that the 
+  build-solar section becomes a regular (auto-height) section. This way, the entire 
+  section (video plus content) will scroll normally with the page.
+*/
+@media (max-width: 768px) {
+    #build-solar {
+      height: auto;      /* Let the section grow with its content */
+      overflow: visible; /* Allow normal page scrolling */
+    }
+    .build-solar-content {
+      position: relative; /* Make it part of the normal document flow */
+      transform: none;    /* Remove centering transform */
+      max-height: none;   /* Remove height constraint */
+      overflow-y: visible;/* Remove inner scroll */
+      padding: 20px;
+    }
+    /* You may want to adjust the video as well – if you want it to remain a background,
+       consider keeping it absolute or use a fixed height (or hide it) on mobile. */
+    .build-solar-video {
+      position: absolute; /* You can choose to keep it as background */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
 
 
   #banner {
