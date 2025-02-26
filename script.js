@@ -326,14 +326,17 @@ const navLinks = document.querySelector('.nav-links');
 const mediaQuery = window.matchMedia('(max-width: 768px)');
 
 // Update dropdown links:
-// For non-"Services" links, override href on mobile.
-// For the "Services" link (href="#unique-services"), leave it unchanged.
+// If a link’s href ends with "#unique-services" (even with a prefix), we leave it alone.
+// Otherwise, on mobile we override its href.
 function toggleHrefs() {
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
     const href = toggle.getAttribute('href');
-    if (href === "#unique-services") return; // Leave Services intact.
+    // Use endsWith to catch variants like "./#unique-services" or "../#unique-services"
+    if (href && href.endsWith("#unique-services")) {
+      return; // Do not override Services link
+    }
     if (mediaQuery.matches) {
-      toggle.dataset.originalHref = toggle.href;
+      toggle.dataset.originalHref = href;
       toggle.href = 'javascript:void(0);';
     } else if (toggle.dataset.originalHref) {
       toggle.href = toggle.dataset.originalHref;
@@ -342,7 +345,7 @@ function toggleHrefs() {
 }
 toggleHrefs();
 
-// Toggle the main navigation when the mobile menu icon is clicked.
+// Toggle main navigation when the mobile menu icon is clicked.
 if (mobileMenu && navLinks) {
   mobileMenu.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -353,12 +356,13 @@ if (mobileMenu && navLinks) {
 // Handle clicks for each dropdown link on mobile.
 document.querySelectorAll('.dropdown > a').forEach(toggle => {
   toggle.addEventListener('click', function(e) {
-    if (!mediaQuery.matches) return; // On desktop, let links work normally.
+    if (!mediaQuery.matches) return; // On desktop, do nothing special.
     const href = this.getAttribute('href');
-    if (href === "#unique-services") {
-      // For the Services link, implement double-click behavior.
+    // Check if this is the "Services" link by testing if the href ends with "#unique-services"
+    if (href && href.endsWith("#unique-services")) {
+      // For "Services" link: implement double-click behavior.
       if (!this.dataset.toggledOnce) {
-        // First click: prevent default and open submenu.
+        // First click: open submenu and prevent navigation.
         e.preventDefault();
         e.stopPropagation();
         const dropdown = this.parentElement;
@@ -372,11 +376,12 @@ document.querySelectorAll('.dropdown > a').forEach(toggle => {
           delete this.dataset.toggledOnce;
         }, 2000);
       } else {
-        // Second click: allow default navigation to #unique-services.
+        // Second click (flag is present): allow navigation.
         delete this.dataset.toggledOnce;
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        // Do NOT call preventDefault() so the browser follows the anchor.
+        // Manually navigate using the actual href (which might be relative).
+        window.location.href = this.getAttribute('href');
       }
     } else {
       // For other dropdown links: simply toggle the submenu.
