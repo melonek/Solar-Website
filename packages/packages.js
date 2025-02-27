@@ -164,7 +164,7 @@ function checkTextClouds() {
   const tolerance = 100;
   const viewportCenter = window.innerHeight / 2;
   // Adjust this value to change when the inverters text cloud triggers
-  const inverterExtraOffset = 300;  // Increase this value to trigger lower
+  const inverterExtraOffset = 400;  // Increase this value to trigger lower
   
   textCloudConfig.forEach(config => {
     const el = document.querySelector(config.selector);

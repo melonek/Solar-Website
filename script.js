@@ -345,11 +345,11 @@ function toggleHrefs() {
 }
 toggleHrefs();
 
-// Toggle main navigation when the mobile menu icon is clicked.
 if (mobileMenu && navLinks) {
   mobileMenu.addEventListener('click', (e) => {
     e.stopPropagation();
     navLinks.classList.toggle('active');
+    mobileMenu.classList.toggle('open'); // Activates the toggler animation
   });
 }
 
