@@ -132,9 +132,11 @@ function scrollToSection(sectionId) {
 function scrollToForm() {
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
-    isAutoScrolling = true;
-    window.scrollTo({ top: packageForm.offsetTop - 50, behavior: 'smooth' });
-    setTimeout(() => { isAutoScrolling = false; }, 1000);
+    // Set desiredOffset to a positive number to scroll further down.
+    const desiredOffset = 300; // Increase this value to scroll lower.
+    const elementTop = packageForm.getBoundingClientRect().top + window.pageYOffset;
+    const targetPosition = elementTop + desiredOffset;
+    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
   }
 }
 
@@ -299,8 +301,8 @@ function handleSystemSizeSelection(value) {
   selectedSystemSize = value;
   updatePanelPrice();
   document.getElementById('home-type-input').style.display = 'block';
-  // Scroll to Home Type container with offset 320
-  scrollToSectionWithOffset('home-type-input', 320);
+  // Scroll to Home Type container with offset 350
+  scrollToSectionWithOffset('home-type-input', 350);
   updatePackageDisplay();
 }
 
@@ -309,8 +311,8 @@ function handleHomeTypeSelection(value) {
   selectedHomeType = value;
   updatePackageDisplay();
   document.getElementById('power-supply-input').style.display = 'block';
-  // Scroll to Power Supply container with offset 300
-  scrollToSectionWithOffset('power-supply-input', 300);
+  // Scroll to Power Supply container with offset 360
+  scrollToSectionWithOffset('power-supply-input', 360);
 }
 
 function handlePowerSupplySelection(value) {
@@ -456,8 +458,8 @@ function createProductCard(product, type) {
       card.classList.add('selected');
       selectedPanel = product;
       document.getElementById('system-size-input').style.display = 'block';
-      // Scroll to System Size container with offset 340
-      scrollToSectionWithOffset('system-size-input', 340);
+      // Scroll to System Size container with offset 350
+      scrollToSectionWithOffset('system-size-input', 350);
     } else if (type === 'inverter') {
       document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -633,9 +635,21 @@ function showSolarPackageSection() {
   const solarPackageSection = document.getElementById('solar-package');
   if (selectedPanel && selectedInverter) {
     solarPackageSection.style.display = 'block';
-    scrollToSection('solar-package');
+    // Scroll to solar-package with a custom offset, e.g., 300 pixels
+    scrollToSolarPackage(-30);
   }
 }
+
+function scrollToSolarPackage(offset = 0) {
+  const solarPackageSection = document.getElementById('solar-package');
+  if (solarPackageSection) {
+    console.log('Scrolling to solar-package with offset', offset);
+    const topPosition = solarPackageSection.offsetTop - offset;
+    window.scrollTo({ top: topPosition, behavior: 'smooth' });
+  }
+}
+
+
 
 function handleNotInterested() {
   selectedBattery = null;
@@ -648,7 +662,7 @@ function handleNotInterested() {
 function scrollToConfirmButton() {
   const confirmBtn = document.getElementById('confirm-selection');
   if (confirmBtn) {
-    window.scrollTo({ top: confirmBtn.offsetTop - 300, behavior: 'smooth' });
+    window.scrollTo({ top: confirmBtn.offsetTop - -100, behavior: 'smooth' });
   }
 }
 
