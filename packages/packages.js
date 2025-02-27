@@ -36,7 +36,7 @@ const textCloudConfig = [
   { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
-  { selector: '#solar-package', message: "Here’s a glimpse of your future solar package.", key: 'solarPackage' },
+  { selector: '#solar-package', message: "Here’s a glimpse of your future solar package", key: 'solarPackage' },
   { selector: '.package-form', message: "Fill in your details", key: 'packageForm' }
 ];
 let textCloudFlags = {
@@ -62,6 +62,7 @@ function getPathPrefix() {
   // Otherwise, assume it's in the root folder and use the current directory prefix
   return "./";
 }
+
 function initializeBrandImages() {
   const prefix = getPathPrefix();
   brandImages = [
@@ -163,9 +164,9 @@ function checkTextClouds() {
     if (el) {
       const rect = el.getBoundingClientRect();
       let triggerPoint;
-      // For inverters-section, add an extra 100px offset so its text cloud triggers lower in the viewport
+      // For inverters-section, trigger using the top of the element (or header) to fire the text cloud higher
       if (config.selector === '#inverters-section') {
-        triggerPoint = rect.top + 100;
+        triggerPoint = rect.top;
       } else {
         triggerPoint = rect.top + rect.height / 2;
       }
@@ -182,6 +183,51 @@ function checkTextClouds() {
 }
 window.addEventListener('scroll', checkTextClouds);
 checkTextClouds();
+
+// ===================== PACKAGE DATA HELPER FUNCTIONS =====================
+// This function collects all the package data into a nicely formatted list,
+// applying the improved text for system size, home type, and power supply.
+function collectPackageData() {
+  const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
+  const homeTypeText = selectedHomeType 
+    ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey household" 
+       : selectedHomeType.toLowerCase() === 'double' ? "Double storey household" 
+       : selectedHomeType)
+    : "Not selected";
+  const powerSupplyText = selectedPowerSupply 
+    ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase power supply (1 phase)" 
+       : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase power supply (3 phase)" 
+       : selectedPowerSupply)
+    : "Not selected";
+    
+  return `
+    <ul class="package-summary-list">
+      <li>Panel: <strong>${selectedPanel ? selectedPanel.name : "Not selected"}</strong></li>
+      <li>Inverter: <strong>${selectedInverter ? selectedInverter.name : "Not selected"}</strong></li>
+      <li>Battery: <strong>${selectedBattery ? selectedBattery.name : "Not selected"}</strong></li>
+      <li>System Size: <strong>${systemSizeText}</strong></li>
+      <li>Home Type: <strong>${homeTypeText}</strong></li>
+      <li>Power Supply: <strong>${powerSupplyText}</strong></li>
+      <br>
+    </ul>
+  `;
+}
+
+// This function inserts (or updates) the package summary at the very top of the form
+function updateFormSummary() {
+  const packageForm = document.querySelector('.package-form');
+  if (packageForm) {
+    let packageSummary = document.getElementById('package-summary');
+    if (!packageSummary) {
+      packageSummary = document.createElement('div');
+      packageSummary.id = 'package-summary';
+      // Insert the summary before the first visible form group
+      const firstFormGroup = packageForm.querySelector('.form-group');
+      packageForm.insertBefore(packageSummary, firstFormGroup);
+    }
+    packageSummary.innerHTML = collectPackageData();
+  }
+}
 
 // ===================== INPUT HANDLERS =====================
 function handleSystemSizeSelection(value) {
@@ -316,6 +362,19 @@ const solarProducts = {
       image: "https://switchtecsolutions.com.au/wp-content/uploads/2024/08/powerwall-2.png.webp",
       price: 8000,
       popularity: 5,
+      description: "Battery storage system description..."
+    },
+    {
+      id: 2,
+      name: "Tesla Gøwnowall",
+      brand: "Tesla",
+      specs: "18.5 kWh",
+      country: "USA",
+      warranty: "10 years",
+      datasheet: "tesla-powerwall.pdf",
+      image: "https://switchtecsolutions.com.au/wp-content/uploads/2024/08/powerwall-2.png.webp",
+      price: 9000,
+      popularity: 8,
       description: "Battery storage system description..."
     }
   ]
@@ -482,10 +541,9 @@ function updatePackageDisplay() {
       description += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
     }
     packageDescription.innerHTML = description;
-    // Consolidate all selections into the hidden input
     document.getElementById('solar-package-input').value =
-      `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
-      (selectedBattery ? `\nBattery: ${selectedBattery.name}` : '');
+      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}` +
+      (selectedBattery ? `, Battery: ${selectedBattery.name}` : '');
     
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
@@ -507,6 +565,11 @@ function updatePackageDisplay() {
     packageDescription.textContent = '';
     confirmButton.style.visibility = 'hidden';
   }
+  
+  // If the package summary has already been added to the form, update it dynamically.
+  if (document.getElementById('package-summary')) {
+    updateFormSummary();
+  }
 }
 
 function showSolarPackageSection() {
@@ -521,35 +584,6 @@ function handleNotInterested() {
   selectedBattery = null;
   updatePackageDisplay();
   showSolarPackageSection();
-}
-
-// --------------------
-// Consolidate all selections into a multi-line string for the form
-// --------------------
-function updateSolarPackageInput() {
-  let details = "";
-  if (selectedPanel) {
-    details += `Panels: ${selectedPanel.name}\n`;
-  }
-  if (selectedInverter) {
-    details += `Inverter: ${selectedInverter.name}\n`;
-  }
-  if (selectedBattery) {
-    details += `Battery: ${selectedBattery.name}\n`;
-  }
-  if (selectedSystemSize) {
-    details += `System Size: ${selectedSystemSize}\n`;
-  }
-  if (selectedHomeType) {
-    details += `Home Type: ${selectedHomeType}\n`;
-  }
-  if (selectedPowerSupply) {
-    details += `Power Supply: ${selectedPowerSupply}\n`;
-  }
-  const solarPackageInput = document.getElementById('solar-package-input');
-  if (solarPackageInput) {
-    solarPackageInput.value = details;
-  }
 }
 
 // ===================== FINAL INITIALIZATION =====================
@@ -581,9 +615,34 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('solar-package').style.display = 'none';
   
+
+  //Cannot submit form unless selection is made//
+
   document.getElementById('confirm-selection').addEventListener('click', () => {
-    scrollToForm();
+    if (!selectedPowerSupply) {
+      showTextCloud("Please complete all selections before confirming. Missing: Power Supply", 3000);
+  
+      const powerSupplyElement = document.getElementById('power-supply-input');
+      
+      if (powerSupplyElement) {
+        setTimeout(() => {
+          // Check if the element is in view, and scroll to it if needed
+          const rect = powerSupplyElement.getBoundingClientRect();
+          if (rect.top < 0 || rect.bottom > window.innerHeight) {
+            // Force scroll to the power supply section
+            window.scrollTo({
+              top: powerSupplyElement.offsetTop - 50, // Adjust as needed
+              behavior: 'smooth'
+            });
+          }
+        }, 3500); // Allow text cloud to show for 3.5 seconds
+      }
+    } else {
+      updateFormSummary();
+      scrollToForm();
+    }
   });
+
   
   document.getElementById('not-interested-btn').addEventListener('click', () => {
     handleNotInterested();
@@ -594,16 +653,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const batterySection = document.getElementById('battery-storage');
     const notInterestedBtn = document.getElementById('not-interested-btn');
     if (batterySection && notInterestedBtn) {
+      // Create a container div if not already present
       let buttonContainer = batterySection.querySelector('.button-container');
       if (!buttonContainer) {
         buttonContainer = document.createElement('div');
         buttonContainer.className = 'button-container';
+        // Insert the container before the Not Interested button
         batterySection.insertBefore(buttonContainer, notInterestedBtn);
       }
+      // Ensure the Not Interested button is inside the container
       if (!buttonContainer.contains(notInterestedBtn)) {
         buttonContainer.appendChild(notInterestedBtn);
       }
       
+      // Create the Battery Only anchor styled as a button
       const batteryOnlyBtn = document.createElement('a');
       batteryOnlyBtn.id = 'battery-only-btn';
       batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
@@ -612,37 +675,6 @@ document.addEventListener('DOMContentLoaded', function() {
       buttonContainer.appendChild(batteryOnlyBtn);
     }
   })();
-
-  function attachFormSubmitHandler() {
-    const packageForm = document.querySelector('.package-form');
-    if (packageForm) {
-        packageForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Consolidate all selections into one field
-            updateSolarPackageInput();
-
-            const formData = new FormData(packageForm);
-            // Optionally, you can also append individual selections if needed:
-            if (selectedPanel) {
-                formData.append('panelSelection', selectedPanel.name);
-            }
-            if (selectedInverter) {
-                formData.append('inverterSelection', selectedInverter.name);
-            }
-            if (selectedBattery) {
-                formData.append('batterySelection', selectedBattery.name);
-            }
-            formData.append('systemSize', selectedSystemSize || "Not selected");
-            formData.append('homeType', selectedHomeType || "Not selected");
-            formData.append('powerSupply', selectedPowerSupply || "Not selected");
-            // Append overall consolidated description from the hidden input
-            formData.append('description', document.getElementById('solar-package-input').value);
-
-            // Show confirmation message and stay on form section (no redirection)
-            showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-        });
-    }
-  }
 
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
@@ -658,8 +690,61 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.style.display = 'none';
     }
   });
-
-  attachFormSubmitHandler();
+  
+  // Override form submission to use AJAX and show thank you message without scrolling or redirecting.
+  // Also, prevent submission if required selections are missing.
+  const packageForm = document.querySelector('.package-form');
+  if (packageForm) {
+    packageForm.addEventListener('submit', function(e) {
+      // Check if all required selections are complete
+      if (!selectedPanel || !selectedInverter || !selectedSystemSize || !selectedHomeType || !selectedPowerSupply) {
+        e.preventDefault();
+        showTextCloud("Please complete all selections before submitting the form.", 3000);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      
+      e.preventDefault();
+      
+      // Build a plain text version using the improved mapping for system size, home type, and power supply.
+      const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
+      const homeTypeText = selectedHomeType 
+        ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey household" 
+           : selectedHomeType.toLowerCase() === 'double' ? "Double storey household" 
+           : selectedHomeType)
+        : "Not selected";
+      const powerSupplyText = selectedPowerSupply 
+        ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase power supply (1 phase)" 
+           : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase power supply (3 phase)" 
+           : selectedPowerSupply)
+        : "Not selected";
+      const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, Home Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
+      document.getElementById('solar-package-input').value = descriptionText;
+      
+      // Show confirmation message (text cloud) without scrolling
+      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
+      
+      // Use fetch to submit the form data to Formspree without redirecting
+      const formData = new FormData(packageForm);
+      fetch(packageForm.action, {
+        method: packageForm.method,
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      }).then(response => {
+        if (response.ok) {
+          console.log("Message sent successfully.");
+          // Optionally, reset the form here:
+          // packageForm.reset();
+        } else {
+          console.error("Error in sending message.");
+        }
+      }).catch(error => {
+        console.error("Error submitting form:", error);
+      });
+    });
+  }
 });
 
 // -------------------------

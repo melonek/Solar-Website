@@ -60,14 +60,12 @@ function handleBatterySelection(battery, card) {
 
     setTimeout(() => {
         scrollToSection('battery-package');
-        // Updated text cloud message:
-        showTextCloud("Here’s a glimpse of your future solar package.", 2000);
+        // Updated text cloud message for battery-only page:
+        showTextCloud("Here’s a glimpse of your future battery package.", 2000);
     }, 300);
 }
 
 // ===================== UPDATE BATTERY PACKAGE DISPLAY =====================
-// ... (Other functions remain unchanged)
-
 function updateBatteryPackageDisplay() {
     const batteryImage = document.getElementById('selected-battery-alone-image');
     const batteryPackage = document.getElementById('battery-package');
@@ -96,7 +94,7 @@ function updateBatteryPackageDisplay() {
         brandLogo.style.display = 'none'; // Hide if no brand matches
     }
 
-    // Update text descriptions and cost
+    // Update text descriptions and cost with improved text mapping
     document.getElementById('package-description').innerHTML = 
         `<strong>${selectedBattery.name}</strong> - ${selectedBattery.specs}`;
     
@@ -114,36 +112,87 @@ function updateBatteryPackageDisplay() {
     enquiryDescription.innerHTML = `I would like to enquire about ${selectedBattery.specs}, <strong>${selectedBattery.name}</strong> battery storage system.`;
 
     batteryPackage.style.display = 'block';
+
+    // Dynamic updating: If a summary already exists, update it.
+    if (document.getElementById('package-summary')) {
+        updateBatteryFormSummary();
+    }
+}
+
+// ===================== BATTERY PACKAGE SUMMARY HELPER FUNCTIONS =====================
+function collectBatteryPackageData() {
+    return `
+        <ul class="package-summary-list">
+            <li>Battery: <strong>${selectedBattery ? selectedBattery.name : "Not selected"}</strong></li>
+            <li>Specs: <strong>${selectedBattery ? selectedBattery.specs : "Not selected"}</strong></li>
+        </ul>
+    `;
+}
+
+function updateBatteryFormSummary() {
+    const packageForm = document.querySelector('.package-form');
+    if (packageForm) {
+        let packageSummary = document.getElementById('package-summary');
+        if (!packageSummary) {
+            packageSummary = document.createElement('div');
+            packageSummary.id = 'package-summary';
+            // Insert the summary before the first visible form group (if any)
+            const firstFormGroup = packageForm.querySelector('.form-group');
+            if (firstFormGroup) {
+                packageForm.insertBefore(packageSummary, firstFormGroup);
+            } else {
+                packageForm.insertAdjacentElement('afterbegin', packageSummary);
+            }
+        }
+        packageSummary.innerHTML = collectBatteryPackageData();
+    }
 }
 
 // ===================== SCROLL TO FORM & SHOW TEXT CLOUD =====================
 function attachEnquiryScroll() {
     // Only the confirm-selection button scrolls to the form
     document.getElementById('confirm-selection').addEventListener('click', () => {
-        scrollToForm();
+        if (!selectedBattery) {
+            showTextCloud("Please select a battery before enquiring.", 3000);
+            // Wait for the text cloud duration before scrolling to the battery selection section
+            setTimeout(() => {
+                scrollToSection('battery-grid');
+            }, 3000);
+        } else {
+            // Generate the battery summary at the top of the form on confirm click.
+            updateBatteryFormSummary();
+            scrollToForm();
+        }
     });
     // Removed any additional click handler for the enquire-button to avoid multiple text clouds.
 }
 
-// Attach form submission handler to submit and show thank you message
+// ===================== ATTACH FORM SUBMISSION HANDLER =====================
 function attachFormSubmitHandler() {
     const packageForm = document.querySelector('.package-form');
     if (packageForm) {
         packageForm.addEventListener('submit', function(e) {
+            // Prevent submission if battery is not selected
+            if (!selectedBattery) {
+                e.preventDefault();
+                showTextCloud("Please select a battery before submitting the form.", 3000);
+                // Wait for the text cloud duration before scrolling to the battery selection section
+                setTimeout(() => {
+                    scrollToSection('battery-grid');
+                }, 3000);
+                return;
+            }
+            
             e.preventDefault();
 
-            // Update the solar package input field with battery info if it exists
+            // Update the solar package input field with battery info if it exists.
+            // Now includes both battery name and specs.
             const solarPackageInput = document.getElementById('solar-package-input');
             if (selectedBattery && solarPackageInput) {
-                solarPackageInput.value = `Battery: ${selectedBattery.name}`;
+                solarPackageInput.value = `Battery: ${selectedBattery.name} - ${selectedBattery.specs}`;
             }
 
             const formData = new FormData(packageForm);
-            // Append battery selection info if a battery has been selected
-            if (selectedBattery) {
-                formData.append('batterySelection', selectedBattery.name);
-                formData.append('description', `Battery: ${selectedBattery.name}`);
-            }
             fetch(packageForm.action, {
                 method: 'POST',
                 body: formData,
@@ -218,3 +267,24 @@ function showTextCloud(message, duration = 2000) {
         setTimeout(() => cloud.remove(), 500);
     }, duration);
 }
+
+// ===================== RESET BATTERY SUMMARY AND TEXT CLOUD ON SCROLL =====================
+// When the user scrolls back up to the battery package section, remove the package summary
+// and re-display the text cloud message.
+window.addEventListener('scroll', function() {
+    const batteryPackageSection = document.getElementById('battery-package');
+    if (batteryPackageSection) {
+        const rect = batteryPackageSection.getBoundingClientRect();
+        // If the section's top is near the top of the viewport (within 150px), remove the summary...
+        if (rect.top >= 0 && rect.top < 150) {
+            const packageSummary = document.getElementById('package-summary');
+            if (packageSummary) {
+                packageSummary.remove();
+            }
+            // ...and re-display the text cloud message if not already active.
+            if (!document.querySelector('.text-cloud')) {
+                showTextCloud("Here’s a glimpse of your future battery package.", 2000);
+            }
+        }
+    }
+});
