@@ -36,7 +36,7 @@ const textCloudConfig = [
   { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
-  { selector: '#solar-package', message: "Here’s a glimpse of your future solar package", key: 'solarPackage' },
+  { selector: '#solar-package', message: "Here’s a glimpse of your future solar package.", key: 'solarPackage' },
   { selector: '.package-form', message: "Fill in your details", key: 'packageForm' }
 ];
 let textCloudFlags = {
@@ -52,13 +52,21 @@ let textCloudFlags = {
 let activeTextCloud = null;
 let isAutoScrolling = false;
 
+// --------------------
+// Helper: Scroll with Custom Offset
+// --------------------
+function scrollToSectionWithOffset(sectionId, offset) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    const topPosition = section.offsetTop - offset;
+    window.scrollTo({ top: topPosition, behavior: 'smooth' });
+  }
+}
+
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  if (path.includes('/packages/')) {
-    return "../";
-  }
-  return "./";
+  return path.includes('/packages/') ? "../" : "./";
 }
 
 function initializeBrandImages() {
@@ -155,13 +163,19 @@ function showTextCloud(message, duration = 2000) {
 function checkTextClouds() {
   const tolerance = 100;
   const viewportCenter = window.innerHeight / 2;
+  // Adjust this value to change when the inverters text cloud triggers
+  const inverterExtraOffset = 300;  // Increase this value to trigger lower
+  
   textCloudConfig.forEach(config => {
     const el = document.querySelector(config.selector);
     if (el) {
       const rect = el.getBoundingClientRect();
-      let triggerPoint = (config.selector === '#inverters-section')
-        ? rect.top
-        : rect.top + rect.height / 2;
+      let triggerPoint;
+      if (config.selector === '#inverters-section') {
+        triggerPoint = rect.top + inverterExtraOffset;
+      } else {
+        triggerPoint = rect.top + rect.height / 2;
+      }
       if (Math.abs(triggerPoint - viewportCenter) < tolerance) {
         if (!textCloudFlags[config.key]) {
           showTextCloud(config.message, 2000);
@@ -176,6 +190,7 @@ function checkTextClouds() {
 window.addEventListener('scroll', checkTextClouds);
 checkTextClouds();
 
+
 // ===================== PACKAGE DATA HELPER FUNCTIONS =====================
 function collectPackageData() {
   const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
@@ -189,12 +204,18 @@ function collectPackageData() {
        : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase power supply (3 phase)" 
        : selectedPowerSupply)
     : "Not selected";
-    
+  
+  // Battery line: name and specs on one line
+  let batteryLine = "Not selected";
+  if (selectedBattery) {
+    batteryLine = `<strong>${selectedBattery.name}</strong> <strong>${selectedBattery.specs}</strong>`;
+  }
+  
   return `
     <ul class="package-summary-list">
       <li>Panel: <strong>${selectedPanel ? selectedPanel.name : "Not selected"}</strong></li>
       <li>Inverter: <strong>${selectedInverter ? selectedInverter.name : "Not selected"}</strong></li>
-      <li>Battery: <strong>${selectedBattery ? selectedBattery.name : "Not selected"}</strong></li>
+      <li>Battery: ${batteryLine}</li>
       <li>System Size: <strong>${systemSizeText}</strong></li>
       <li>Home Type: <strong>${homeTypeText}</strong></li>
       <li>Power Supply: <strong>${powerSupplyText}</strong></li>
@@ -218,9 +239,8 @@ function updateFormSummary() {
 }
 
 // ---------------------
-// REAL‑TIME DEFAULT CHECKING
+// REAL‑TIME DEFAULT CHECKING (for select elements)
 // ---------------------
-// We now check the actual select elements by their IDs.
 function checkDefaultInputs() {
   const systemSizeSelect = document.getElementById('system-size-select');
   const homeTypeSelect = document.getElementById('home-type-select');
@@ -256,9 +276,8 @@ function checkDefaultInputs() {
 }
 
 // ---------------------
-// FOCUS / BLUR HANDLERS FOR DEFAULT TEXT
+// FOCUS / BLUR HANDLERS FOR DEFAULT TEXT (if needed)
 // ---------------------
-// (For select elements, this is generally not needed, but left here if required.)
 function attachFocusHandlers(inputEl, defaultText) {
   if (!inputEl) return;
   inputEl.addEventListener('focus', () => {
@@ -280,22 +299,28 @@ function handleSystemSizeSelection(value) {
   selectedSystemSize = value;
   updatePanelPrice();
   document.getElementById('home-type-input').style.display = 'block';
-  scrollToSection('home-type-input');
+  // Scroll to Home Type container with offset 320
+  scrollToSectionWithOffset('home-type-input', 320);
   updatePackageDisplay();
 }
 
 function handleHomeTypeSelection(value) {
   if (value === "") return;
   selectedHomeType = value;
+  updatePackageDisplay();
   document.getElementById('power-supply-input').style.display = 'block';
-  scrollToSection('power-supply-input');
+  // Scroll to Power Supply container with offset 300
+  scrollToSectionWithOffset('power-supply-input', 300);
 }
 
 function handlePowerSupplySelection(value) {
   if (value === "") return;
   selectedPowerSupply = value;
-  scrollToSection('inverters-section');
   updatePackageDisplay();
+  // Once Power Supply is selected, delay a bit then scroll to the Inverters section with an offset of 400
+  setTimeout(() => {
+    scrollToSectionWithOffset('inverters-section', 0);
+  }, 300);
 }
 
 // ===================== BRAND CAROUSEL & PROGRESSIVE LOADING =====================
@@ -408,19 +433,6 @@ const solarProducts = {
       price: 8000,
       popularity: 5,
       description: "Battery storage system description..."
-    },
-    {
-      id: 2,
-      name: "Tesla Gøwnowall",
-      brand: "Tesla",
-      specs: "18.5 kWh",
-      country: "USA",
-      warranty: "10 years",
-      datasheet: "tesla-powerwall.pdf",
-      image: "https://switchtecsolutions.com.au/wp-content/uploads/2024/08/powerwall-2.png.webp",
-      price: 9000,
-      popularity: 8,
-      description: "Battery storage system description..."
     }
   ]
 };
@@ -444,7 +456,8 @@ function createProductCard(product, type) {
       card.classList.add('selected');
       selectedPanel = product;
       document.getElementById('system-size-input').style.display = 'block';
-      scrollToSection('system-size-input');
+      // Scroll to System Size container with offset 340
+      scrollToSectionWithOffset('system-size-input', 340);
     } else if (type === 'inverter') {
       document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
@@ -587,8 +600,8 @@ function updatePackageDisplay() {
     }
     packageDescription.innerHTML = description;
     document.getElementById('solar-package-input').value =
-      `Panels: ${selectedPanel.name}, Inverter: ${selectedInverter.name}` +
-      (selectedBattery ? `, Battery: ${selectedBattery.name}` : '');
+      `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
+      (selectedBattery ? `\nBattery: ${selectedBattery.name}` : '');
     
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
@@ -630,6 +643,43 @@ function handleNotInterested() {
   showSolarPackageSection();
 }
 
+// ---------------------
+// Function to scroll to the confirm-selection button with offset 300
+function scrollToConfirmButton() {
+  const confirmBtn = document.getElementById('confirm-selection');
+  if (confirmBtn) {
+    window.scrollTo({ top: confirmBtn.offsetTop - 300, behavior: 'smooth' });
+  }
+}
+
+// ---------------------
+// Function to update the hidden input with consolidated details
+function updateSolarPackageInput() {
+  let details = "";
+  if (selectedPanel) {
+    details += `Panels: ${selectedPanel.name}\n`;
+  }
+  if (selectedInverter) {
+    details += `Inverter: ${selectedInverter.name}\n`;
+  }
+  if (selectedBattery) {
+    details += `Battery: ${selectedBattery.name}\n`;
+  }
+  if (selectedSystemSize) {
+    details += `System Size: ${selectedSystemSize}\n`;
+  }
+  if (selectedHomeType) {
+    details += `Home Type: ${selectedHomeType}\n`;
+  }
+  if (selectedPowerSupply) {
+    details += `Power Supply: ${selectedPowerSupply}\n`;
+  }
+  const solarPackageInput = document.getElementById('solar-package-input');
+  if (solarPackageInput) {
+    solarPackageInput.value = details;
+  }
+}
+
 // ===================== FINAL INITIALIZATION =====================
 document.addEventListener('DOMContentLoaded', function() {
   initializeBrandImages();
@@ -659,29 +709,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('solar-package').style.display = 'none';
   
-  // Attach real-time listeners and focus/blur handlers to the select elements.
+  // Attach listeners to select elements (using their actual IDs)
   const systemSizeSelect = document.getElementById('system-size-select');
   const homeTypeSelect = document.getElementById('home-type-select');
   const powerSupplySelect = document.getElementById('power-supply-select');
   
   if (systemSizeSelect) {
-    attachFocusHandlers(systemSizeSelect, "Choose size"); // using the actual default text in your HTML option
-    systemSizeSelect.addEventListener('input', checkDefaultInputs);
-    systemSizeSelect.addEventListener('change', checkDefaultInputs);
+    attachFocusHandlers(systemSizeSelect, "Choose size");
+    systemSizeSelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
+    systemSizeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
   }
   if (homeTypeSelect) {
     attachFocusHandlers(homeTypeSelect, "Choose your home type");
-    homeTypeSelect.addEventListener('input', checkDefaultInputs);
-    homeTypeSelect.addEventListener('change', checkDefaultInputs);
+    homeTypeSelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
+    homeTypeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
   }
   if (powerSupplySelect) {
     attachFocusHandlers(powerSupplySelect, "Choose power supply");
-    powerSupplySelect.addEventListener('input', checkDefaultInputs);
-    powerSupplySelect.addEventListener('change', checkDefaultInputs);
+    powerSupplySelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
+    powerSupplySelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
   }
   
   // Confirm Selection button handler:
-  // First update the globals, then check each field and scroll to the first missing one.
   document.getElementById('confirm-selection').addEventListener('click', function() {
     checkDefaultInputs();
     let missingField = null;
@@ -693,18 +742,23 @@ document.addEventListener('DOMContentLoaded', function() {
       missingField = { element: document.getElementById('power-supply-input'), label: 'Power Supply' };
     }
     if (missingField) {
-      showTextCloud("Please complete all selections before confirming. Missing: " + missingField.label, 3000);
+      let offset = 50;
+      if (missingField.label === "System Size") offset = 340;
+      else if (missingField.label === "Home Type") offset = 320;
+      else if (missingField.label === "Power Supply") offset = 300;
+      showTextCloud("Please complete all selections before confirming. Missing: " + missingField.label, 2000);
       if (missingField.element) {
         setTimeout(() => {
           window.scrollTo({
-            top: missingField.element.offsetTop - 50,
+            top: missingField.element.offsetTop - offset,
             behavior: 'smooth'
           });
         }, 3500);
       }
     } else {
       updateFormSummary();
-      scrollToForm();
+      // Once all inputs are complete, scroll to the confirm button so it sits near the center.
+      scrollToConfirmButton();
     }
   });
   
@@ -757,6 +811,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       e.preventDefault();
+      updateSolarPackageInput();
       
       const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
       const homeTypeText = selectedHomeType 
@@ -771,9 +826,7 @@ document.addEventListener('DOMContentLoaded', function() {
         : "Not selected";
       const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, Home Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
       document.getElementById('solar-package-input').value = descriptionText;
-      
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-      
       const formData = new FormData(packageForm);
       fetch(packageForm.action, {
         method: packageForm.method,
