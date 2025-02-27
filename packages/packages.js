@@ -55,11 +55,9 @@ let isAutoScrolling = false;
 // ===================== HELPER FUNCTIONS =====================
 function getPathPrefix() {
   const path = window.location.pathname;
-  // If the current file is inside the packages folder, return one level up
   if (path.includes('/packages/')) {
     return "../";
   }
-  // Otherwise, assume it's in the root folder and use the current directory prefix
   return "./";
 }
 
@@ -114,9 +112,7 @@ function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     let topPosition = section.offsetTop;
-    if (sectionId === 'system-size-input' ||
-        sectionId === 'home-type-input' ||
-        sectionId === 'power-supply-input') {
+    if (["system-size-input", "home-type-input", "power-supply-input"].includes(sectionId)) {
       topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
     }
     isAutoScrolling = true;
@@ -163,13 +159,9 @@ function checkTextClouds() {
     const el = document.querySelector(config.selector);
     if (el) {
       const rect = el.getBoundingClientRect();
-      let triggerPoint;
-      // For inverters-section, trigger using the top of the element (or header) to fire the text cloud higher
-      if (config.selector === '#inverters-section') {
-        triggerPoint = rect.top;
-      } else {
-        triggerPoint = rect.top + rect.height / 2;
-      }
+      let triggerPoint = (config.selector === '#inverters-section')
+        ? rect.top
+        : rect.top + rect.height / 2;
       if (Math.abs(triggerPoint - viewportCenter) < tolerance) {
         if (!textCloudFlags[config.key]) {
           showTextCloud(config.message, 2000);
@@ -185,8 +177,6 @@ window.addEventListener('scroll', checkTextClouds);
 checkTextClouds();
 
 // ===================== PACKAGE DATA HELPER FUNCTIONS =====================
-// This function collects all the package data into a nicely formatted list,
-// applying the improved text for system size, home type, and power supply.
 function collectPackageData() {
   const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
   const homeTypeText = selectedHomeType 
@@ -213,7 +203,6 @@ function collectPackageData() {
   `;
 }
 
-// This function inserts (or updates) the package summary at the very top of the form
 function updateFormSummary() {
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
@@ -221,12 +210,68 @@ function updateFormSummary() {
     if (!packageSummary) {
       packageSummary = document.createElement('div');
       packageSummary.id = 'package-summary';
-      // Insert the summary before the first visible form group
       const firstFormGroup = packageForm.querySelector('.form-group');
       packageForm.insertBefore(packageSummary, firstFormGroup);
     }
     packageSummary.innerHTML = collectPackageData();
   }
+}
+
+// ---------------------
+// REAL‑TIME DEFAULT CHECKING
+// ---------------------
+// We now check the actual select elements by their IDs.
+function checkDefaultInputs() {
+  const systemSizeSelect = document.getElementById('system-size-select');
+  const homeTypeSelect = document.getElementById('home-type-select');
+  const powerSupplySelect = document.getElementById('power-supply-select');
+
+  if (systemSizeSelect) {
+    if (systemSizeSelect.value.trim() === "") {
+      selectedSystemSize = "";
+      systemSizeSelect.classList.add('missing');
+    } else {
+      selectedSystemSize = systemSizeSelect.value;
+      systemSizeSelect.classList.remove('missing');
+    }
+  }
+  if (homeTypeSelect) {
+    if (homeTypeSelect.value.trim() === "") {
+      selectedHomeType = "";
+      homeTypeSelect.classList.add('missing');
+    } else {
+      selectedHomeType = homeTypeSelect.value;
+      homeTypeSelect.classList.remove('missing');
+    }
+  }
+  if (powerSupplySelect) {
+    if (powerSupplySelect.value.trim() === "") {
+      selectedPowerSupply = "";
+      powerSupplySelect.classList.add('missing');
+    } else {
+      selectedPowerSupply = powerSupplySelect.value;
+      powerSupplySelect.classList.remove('missing');
+    }
+  }
+}
+
+// ---------------------
+// FOCUS / BLUR HANDLERS FOR DEFAULT TEXT
+// ---------------------
+// (For select elements, this is generally not needed, but left here if required.)
+function attachFocusHandlers(inputEl, defaultText) {
+  if (!inputEl) return;
+  inputEl.addEventListener('focus', () => {
+    if (inputEl.value === defaultText) {
+      inputEl.value = "";
+    }
+  });
+  inputEl.addEventListener('blur', () => {
+    if (inputEl.value.trim() === "") {
+      inputEl.value = defaultText;
+    }
+    checkDefaultInputs();
+  });
 }
 
 // ===================== INPUT HANDLERS =====================
@@ -566,7 +611,6 @@ function updatePackageDisplay() {
     confirmButton.style.visibility = 'hidden';
   }
   
-  // If the package summary has already been added to the form, update it dynamically.
   if (document.getElementById('package-summary')) {
     updateFormSummary();
   }
@@ -615,88 +659,96 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('solar-package').style.display = 'none';
   
-
-  //Cannot submit form unless selection is made//
-
-  document.getElementById('confirm-selection').addEventListener('click', () => {
-    if (!selectedPowerSupply) {
-      showTextCloud("Please complete all selections before confirming. Missing: Power Supply", 3000);
+  // Attach real-time listeners and focus/blur handlers to the select elements.
+  const systemSizeSelect = document.getElementById('system-size-select');
+  const homeTypeSelect = document.getElementById('home-type-select');
+  const powerSupplySelect = document.getElementById('power-supply-select');
   
-      const powerSupplyElement = document.getElementById('power-supply-input');
-      
-      if (powerSupplyElement) {
+  if (systemSizeSelect) {
+    attachFocusHandlers(systemSizeSelect, "Choose size"); // using the actual default text in your HTML option
+    systemSizeSelect.addEventListener('input', checkDefaultInputs);
+    systemSizeSelect.addEventListener('change', checkDefaultInputs);
+  }
+  if (homeTypeSelect) {
+    attachFocusHandlers(homeTypeSelect, "Choose your home type");
+    homeTypeSelect.addEventListener('input', checkDefaultInputs);
+    homeTypeSelect.addEventListener('change', checkDefaultInputs);
+  }
+  if (powerSupplySelect) {
+    attachFocusHandlers(powerSupplySelect, "Choose power supply");
+    powerSupplySelect.addEventListener('input', checkDefaultInputs);
+    powerSupplySelect.addEventListener('change', checkDefaultInputs);
+  }
+  
+  // Confirm Selection button handler:
+  // First update the globals, then check each field and scroll to the first missing one.
+  document.getElementById('confirm-selection').addEventListener('click', function() {
+    checkDefaultInputs();
+    let missingField = null;
+    if (!selectedSystemSize) {
+      missingField = { element: document.getElementById('system-size-input'), label: 'System Size' };
+    } else if (!selectedHomeType) {
+      missingField = { element: document.getElementById('home-type-input'), label: 'Home Type' };
+    } else if (!selectedPowerSupply) {
+      missingField = { element: document.getElementById('power-supply-input'), label: 'Power Supply' };
+    }
+    if (missingField) {
+      showTextCloud("Please complete all selections before confirming. Missing: " + missingField.label, 3000);
+      if (missingField.element) {
         setTimeout(() => {
-          // Check if the element is in view, and scroll to it if needed
-          const rect = powerSupplyElement.getBoundingClientRect();
-          if (rect.top < 0 || rect.bottom > window.innerHeight) {
-            // Force scroll to the power supply section
-            window.scrollTo({
-              top: powerSupplyElement.offsetTop - 50, // Adjust as needed
-              behavior: 'smooth'
-            });
-          }
-        }, 3500); // Allow text cloud to show for 3.5 seconds
+          window.scrollTo({
+            top: missingField.element.offsetTop - 50,
+            behavior: 'smooth'
+          });
+        }, 3500);
       }
     } else {
       updateFormSummary();
       scrollToForm();
     }
   });
-
   
   document.getElementById('not-interested-btn').addEventListener('click', () => {
     handleNotInterested();
   });
   
-  // Append Battery Only button next to Not Interested button in battery storage section
   (function addBatteryOnlyButton() {
     const batterySection = document.getElementById('battery-storage');
     const notInterestedBtn = document.getElementById('not-interested-btn');
     if (batterySection && notInterestedBtn) {
-      // Create a container div if not already present
       let buttonContainer = batterySection.querySelector('.button-container');
       if (!buttonContainer) {
         buttonContainer = document.createElement('div');
         buttonContainer.className = 'button-container';
-        // Insert the container before the Not Interested button
         batterySection.insertBefore(buttonContainer, notInterestedBtn);
       }
-      // Ensure the Not Interested button is inside the container
       if (!buttonContainer.contains(notInterestedBtn)) {
         buttonContainer.appendChild(notInterestedBtn);
       }
-      
-      // Create the Battery Only anchor styled as a button
       const batteryOnlyBtn = document.createElement('a');
       batteryOnlyBtn.id = 'battery-only-btn';
-      batteryOnlyBtn.href = "./battery-only.html"; // Update this path as needed
+      batteryOnlyBtn.href = "./battery-only.html";
       batteryOnlyBtn.textContent = 'Battery only';
-      
       buttonContainer.appendChild(batteryOnlyBtn);
     }
   })();
-
+  
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
-    if (!modal) return;
-    if (modal.style.display === 'block' && e.target === modal) {
+    if (modal && modal.style.display === 'block' && e.target === modal) {
       modal.style.display = 'none';
     }
   });
   document.addEventListener('click', (e) => {
     const modal = document.getElementById('product-modal');
-    if (!modal) return;
-    if (e.target.classList.contains('close') || e.target.classList.contains('modal-close')) {
+    if (modal && (e.target.classList.contains('close') || e.target.classList.contains('modal-close'))) {
       modal.style.display = 'none';
     }
   });
   
-  // Override form submission to use AJAX and show thank you message without scrolling or redirecting.
-  // Also, prevent submission if required selections are missing.
   const packageForm = document.querySelector('.package-form');
   if (packageForm) {
     packageForm.addEventListener('submit', function(e) {
-      // Check if all required selections are complete
       if (!selectedPanel || !selectedInverter || !selectedSystemSize || !selectedHomeType || !selectedPowerSupply) {
         e.preventDefault();
         showTextCloud("Please complete all selections before submitting the form.", 3000);
@@ -706,7 +758,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       e.preventDefault();
       
-      // Build a plain text version using the improved mapping for system size, home type, and power supply.
       const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
       const homeTypeText = selectedHomeType 
         ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey household" 
@@ -721,10 +772,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, Home Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
       document.getElementById('solar-package-input').value = descriptionText;
       
-      // Show confirmation message (text cloud) without scrolling
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
       
-      // Use fetch to submit the form data to Formspree without redirecting
       const formData = new FormData(packageForm);
       fetch(packageForm.action, {
         method: packageForm.method,
@@ -735,8 +784,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }).then(response => {
         if (response.ok) {
           console.log("Message sent successfully.");
-          // Optionally, reset the form here:
-          // packageForm.reset();
         } else {
           console.error("Error in sending message.");
         }
