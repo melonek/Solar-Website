@@ -357,9 +357,21 @@ function checkDefaultInputs() {
 // Package Data Helper Functions
 // --------------------
 function collectPackageData() {
+  // Mapping for house type
+  const homeTypeMapping = {
+    "single": "Single Storey",
+    "double": "Double Storey"
+  };
+  
+  // Mapping for power supply
+  const powerSupplyMapping = {
+    "single": "Single-Phase",
+    "three": "Three-Phase"
+  };
+  
   const sysText = selectedSystemSize ? selectedSystemSize : "Not selected";
-  const homeText = selectedHomeType ? selectedHomeType : "Not selected";
-  const powerText = selectedPowerSupply ? selectedPowerSupply : "Not selected";
+  const homeText = homeTypeMapping[selectedHomeType] || "Not selected";
+  const powerText = powerSupplyMapping[selectedPowerSupply] || "Not selected";
   let batteryLine = "Not selected";
   if (selectedBattery) {
     batteryLine = `<strong>${selectedBattery.name}</strong> ${selectedBattery.specs}`;
