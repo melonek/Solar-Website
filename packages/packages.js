@@ -32,7 +32,7 @@ const extraCharges = {
 const textCloudConfig = [
   { selector: '#panels-section', message: "Choose your panel", key: 'panels' },
   { selector: '#system-size-input', message: "Choose your system size", key: 'systemSize' },
-  { selector: '#home-type-input', message: "Is your home single or double-storey?", key: 'homeType' },
+  { selector: '#home-type-input', message: "Is your house single-storey or double-storey?", key: 'homeType' },
   { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
@@ -51,6 +51,9 @@ let textCloudFlags = {
 };
 let activeTextCloud = null;
 let isAutoScrolling = false;
+
+// Global flag to disable the "Fill in your details" text cloud when thank you message is active.
+let disablePackageFormCloud = false;
 
 // --------------------
 // Helper: Scroll with Custom Offset
@@ -169,6 +172,12 @@ function checkTextClouds() {
   const inverterExtraOffset = 400;  // Increase this value to trigger lower
   
   textCloudConfig.forEach(config => {
+    // Prevent triggering "Fill in your details" when the thank you cloud is active
+    if (config.key === 'packageForm' && disablePackageFormCloud) {
+      textCloudFlags[config.key] = true;
+      return; // skip this config
+    }
+    
     const el = document.querySelector(config.selector);
     if (el) {
       const rect = el.getBoundingClientRect();
@@ -195,15 +204,15 @@ checkTextClouds();
 
 // ===================== PACKAGE DATA HELPER FUNCTIONS =====================
 function collectPackageData() {
-  const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
+  const systemSizeText = selectedSystemSize ? `${selectedSystemSize}` : "Not selected";
   const homeTypeText = selectedHomeType 
-    ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey household" 
-       : selectedHomeType.toLowerCase() === 'double' ? "Double storey household" 
+    ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey" 
+       : selectedHomeType.toLowerCase() === 'double' ? "Double storey" 
        : selectedHomeType)
     : "Not selected";
   const powerSupplyText = selectedPowerSupply 
-    ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase power supply (1 phase)" 
-       : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase power supply (3 phase)" 
+    ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase" 
+       : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase" 
        : selectedPowerSupply)
     : "Not selected";
   
@@ -219,7 +228,7 @@ function collectPackageData() {
       <li>Inverter: <strong>${selectedInverter ? selectedInverter.name : "Not selected"}</strong></li>
       <li>Battery: ${batteryLine}</li>
       <li>System Size: <strong>${systemSizeText}</strong></li>
-      <li>Home Type: <strong>${homeTypeText}</strong></li>
+      <li>House Type: <strong>${homeTypeText}</strong></li>
       <li>Power Supply: <strong>${powerSupplyText}</strong></li>
       <br>
     </ul>
@@ -649,8 +658,6 @@ function scrollToSolarPackage(offset = 0) {
   }
 }
 
-
-
 function handleNotInterested() {
   selectedBattery = null;
   updatePackageDisplay();
@@ -683,7 +690,7 @@ function updateSolarPackageInput() {
     details += `System Size: ${selectedSystemSize}\n`;
   }
   if (selectedHomeType) {
-    details += `Home Type: ${selectedHomeType}\n`;
+    details += `House Type: ${selectedHomeType}\n`;
   }
   if (selectedPowerSupply) {
     details += `Power Supply: ${selectedPowerSupply}\n`;
@@ -734,7 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
     systemSizeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
   }
   if (homeTypeSelect) {
-    attachFocusHandlers(homeTypeSelect, "Choose your home type");
+    attachFocusHandlers(homeTypeSelect, "Choose your house type");
     homeTypeSelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
     homeTypeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
   }
@@ -758,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (missingField) {
       let offset = 50;
       if (missingField.label === "System Size") offset = 340;
-      else if (missingField.label === "Home Type") offset = 320;
+      else if (missingField.label === "Housee Type") offset = 320;
       else if (missingField.label === "Power Supply") offset = 300;
       showTextCloud("Please complete all selections before confirming. Missing: " + missingField.label, 2000);
       if (missingField.element) {
@@ -827,20 +834,29 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       updateSolarPackageInput();
       
+      // Set flag so that "Fill in your details" cloud is not triggered
+      disablePackageFormCloud = true;
+      
       const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
       const homeTypeText = selectedHomeType 
-        ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey household" 
-           : selectedHomeType.toLowerCase() === 'double' ? "Double storey household" 
+        ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey" 
+           : selectedHomeType.toLowerCase() === 'double' ? "Double storey" 
            : selectedHomeType)
         : "Not selected";
       const powerSupplyText = selectedPowerSupply 
-        ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase power supply (1 phase)" 
-           : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase power supply (3 phase)" 
+        ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase" 
+           : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase" 
            : selectedPowerSupply)
         : "Not selected";
-      const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, Home Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
+      const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, House Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
       document.getElementById('solar-package-input').value = descriptionText;
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
+      
+      // Reset the flag after the thank you message duration (adjust timeout as needed)
+      setTimeout(() => {
+        disablePackageFormCloud = false;
+      }, 4500);
+      
       const formData = new FormData(packageForm);
       fetch(packageForm.action, {
         method: packageForm.method,

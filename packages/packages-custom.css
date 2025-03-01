@@ -422,3 +422,7 @@
 .product-card.selected-battery {
   border: 2px solid #FFA500 !important;
 }
+
+.package-summary-list {
+  text-align: left;
+}
