@@ -1,30 +1,32 @@
 // ===================== GLOBAL VARIABLES =====================
+let disableAllScroll = false; // Global kill-switch flag (active only when exactly one missing input remains)
 let brandImages = []; // Array for brand images
+let missingInputs = []; // Track missing inputs in missing mode
 
 // Product selection globals (for package display and modal)
 let selectedPanel = null;
 let selectedInverter = null;
 let selectedBattery = null;
-let selectedSystemSize = "6.6kW"; // default system size
-let selectedHomeType = "";       // User's home type selection
-let selectedPowerSupply = "";    // User's power supply selection
+let selectedSystemSize = ""; // required field
+let selectedHomeType = "";   // required field
+let selectedPowerSupply = ""; // required field
 
-// Default panels count (price is defined for 15 panels)
+// Pricing / mapping
 const defaultPanels = 15;
-
-// Mapping for number of panels per system size
 const systemPanelsMapping = {
   "6.6kW": 15,
   "10kW": 24,
   "13kW": 30,
   "20kW": 46
 };
+const extraCharges = { doubleStorey: 250, threePhase: 100 };
 
-// Extra charges object for surcharges (editable later)
-const extraCharges = {
-  doubleStorey: 250,  // Additional cost for double storey home
-  threePhase: 100     // Additional cost for three-phase power supply
-};
+// Submission and missing mode flags
+let lastButtonClicked = null;       // stores the last clicked submit button
+let submissionAttempted = false;    // becomes true when a submit button is clicked
+
+// We'll use this to cancel any scheduled normal scroll.
+let defaultScrollTimeout = null;
 
 // -------------------
 // Text Cloud Configuration
@@ -32,8 +34,8 @@ const extraCharges = {
 const textCloudConfig = [
   { selector: '#panels-section', message: "Choose your panel", key: 'panels' },
   { selector: '#system-size-input', message: "Choose your system size", key: 'systemSize' },
-  { selector: '#home-type-input', message: "Is your house single-storey or double-storey?", key: 'homeType' },
-  { selector: '#power-supply-input', message: "Is your power single-phase or three-phase?", key: 'powerSupply' },
+  { selector: '#home-type-input', message: "Choose your home type", key: 'homeType' },
+  { selector: '#power-supply-input', message: "Choose your power supply", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
   { selector: '#solar-package', message: "Here’s a glimpse of your future solar package.", key: 'solarPackage' },
@@ -50,26 +52,54 @@ let textCloudFlags = {
   packageForm: false
 };
 let activeTextCloud = null;
-let isAutoScrolling = false;
-
-// Global flag to disable the "Fill in your details" text cloud when thank you message is active.
-let disablePackageFormCloud = false;
 
 // --------------------
-// Helper: Scroll with Custom Offset
+// Scroll Functions (Modified)
 // --------------------
-function scrollToSectionWithOffset(sectionId, offset) {
+function normalScrollToSection(sectionId, offset) {
+  const isMissing = missingInputs.some(m => m.id === sectionId);
+  if (!isMissing && disableAllScroll && sectionId !== lastButtonClicked?.id) return;
   const section = document.getElementById(sectionId);
   if (section) {
-    const topPosition = section.offsetTop - offset;
-    window.scrollTo({ top: topPosition, behavior: 'smooth' });
+    const topPos = section.offsetTop - offset;
+    window.scrollTo({ top: topPos, behavior: 'smooth' });
   }
 }
 
-// ===================== HELPER FUNCTIONS =====================
+function scrollToSection(sectionId) {
+  if (disableAllScroll && sectionId !== lastButtonClicked?.id) return;
+  const section = document.getElementById(sectionId);
+  if (section) {
+    let topPos = section.offsetTop;
+    if (["system-size-input", "home-type-input", "power-supply-input"].includes(sectionId)) {
+      topPos = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
+    }
+    window.scrollTo({ top: topPos, behavior: 'smooth' });
+  }
+}
+
+function scrollToForm() {
+  if (disableAllScroll && lastButtonClicked?.id !== "enquire-button") return;
+  const formEl = document.querySelector('.package-form');
+  if (formEl) {
+    const desiredOffset = 300;
+    const elementTop = formEl.getBoundingClientRect().top + window.pageYOffset;
+    const targetPos = elementTop + desiredOffset;
+    window.scrollTo({ top: targetPos, behavior: 'smooth' });
+  }
+}
+
+function scrollToConfirmButton() {
+  if (disableAllScroll && lastButtonClicked?.id !== "confirm-selection") return;
+  const btn = document.getElementById("confirm-selection");
+  if (btn) btn.scrollIntoView({ behavior: "smooth" });
+}
+
+// --------------------
+// Standard Helpers
+// --------------------
 function getPathPrefix() {
-  const path = window.location.pathname;
-  return path.includes('/packages/') ? "../" : "./";
+  return window.location.pathname.includes('/packages/') ? "../" : "./";
 }
 
 function initializeBrandImages() {
@@ -105,275 +135,344 @@ function preloadImages(images) {
         const img = new Image();
         img.src = image.url;
         img.onload = () => res(image.url);
-        img.onerror = () => {
-          console.error(`Failed to preload image: ${image.url}`);
-          rej(image.url);
-        };
+        img.onerror = () => rej(image.url);
       })
     );
-    Promise.allSettled(promises)
-      .then(results => {
-        const failed = results.filter(result => result.status === "rejected");
-        failed.length > 0 ? reject(failed.map(item => item.reason).join(', ')) : resolve();
-      });
+    Promise.allSettled(promises).then(results => {
+      const failed = results.filter(r => r.status === "rejected");
+      failed.length > 0 ? reject(failed.map(item => item.reason).join(", ")) : resolve();
+    });
   });
 }
 
-function scrollToSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    let topPosition = section.offsetTop;
-    if (["system-size-input", "home-type-input", "power-supply-input"].includes(sectionId)) {
-      topPosition = section.offsetTop - (window.innerHeight / 2) + (section.offsetHeight / 2);
-    }
-    isAutoScrolling = true;
-    window.scrollTo({ top: topPosition, behavior: 'smooth' });
-    setTimeout(() => { isAutoScrolling = false; }, 1000);
-  }
-}
-
-function scrollToForm() {
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    // Set desiredOffset to a positive number to scroll further down.
-    const desiredOffset = 300; // Increase this value to scroll lower.
-    const elementTop = packageForm.getBoundingClientRect().top + window.pageYOffset;
-    const targetPosition = elementTop + desiredOffset;
-    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-  }
-}
-
-function showTextCloud(message, duration = 2000) {
+// --------------------
+// Text Cloud Functions
+// --------------------
+function showTextCloud(message, duration = 2000, withIcon = false) {
   if (activeTextCloud) {
     clearTimeout(activeTextCloud.fadeTimeout);
     clearTimeout(activeTextCloud.removeTimeout);
     activeTextCloud.remove();
     activeTextCloud = null;
   }
-  const cloud = document.createElement('div');
-  cloud.className = 'text-cloud';
-  cloud.textContent = message;
-  cloud.style.opacity = '1';
+  let iconHTML = withIcon ? `<span class="warning-icon">⚠️</span> ` : "";
+  const cloud = document.createElement("div");
+  cloud.className = "text-cloud";
+  cloud.innerHTML = iconHTML + message;
+  cloud.style.opacity = "1";
   document.body.appendChild(cloud);
   activeTextCloud = cloud;
   cloud.fadeTimeout = setTimeout(() => {
-    cloud.style.opacity = '0';
+    cloud.style.opacity = "0";
     cloud.removeTimeout = setTimeout(() => {
       cloud.remove();
-      if (activeTextCloud === cloud) { activeTextCloud = null; }
+      if (activeTextCloud === cloud) activeTextCloud = null;
     }, 500);
   }, duration);
 }
 
-function checkTextClouds() {
-  const tolerance = 100;
-  const viewportCenter = window.innerHeight / 2;
-  // Adjust this value to change when the inverters text cloud triggers
-  const inverterExtraOffset = 400;  // Increase this value to trigger lower
+function showCombinedMissingMessage(missingArr) {
+  showTextCloud("Missing: " + missingArr.join(", "), 2500, true);
+}
+
+// --------------------
+// Missing Mode Validator for Select Fields
+// --------------------
+function getMissingSelectFields() {
+  missingInputs = [];
+  const sysSelect = document.getElementById("system-size-select");
+  const homeSelect = document.getElementById("home-type-select");
+  const powerSelect = document.getElementById("power-supply-select");
   
-  textCloudConfig.forEach(config => {
-    // Prevent triggering "Fill in your details" when the thank you cloud is active
-    if (config.key === 'packageForm' && disablePackageFormCloud) {
-      textCloudFlags[config.key] = true;
-      return; // skip this config
-    }
-    
-    const el = document.querySelector(config.selector);
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      let triggerPoint;
-      if (config.selector === '#inverters-section') {
-        triggerPoint = rect.top + inverterExtraOffset;
-      } else {
-        triggerPoint = rect.top + rect.height / 2;
-      }
-      if (Math.abs(triggerPoint - viewportCenter) < tolerance) {
-        if (!textCloudFlags[config.key]) {
-          showTextCloud(config.message, 2000);
-          textCloudFlags[config.key] = true;
-        }
-      } else {
-        textCloudFlags[config.key] = false;
-      }
+  if (sysSelect && (!sysSelect.value || sysSelect.value.trim() === "")) {
+    missingInputs.push({ id: "system-size-input", name: "System Size", element: sysSelect });
+  }
+  if (homeSelect && (!homeSelect.value || homeSelect.value.trim() === "")) {
+    missingInputs.push({ id: "home-type-input", name: "Home Type", element: homeSelect });
+  }
+  if (powerSelect && (!powerSelect.value || powerSelect.value.trim() === "")) {
+    missingInputs.push({ id: "power-supply-input", name: "Power Supply", element: powerSelect });
+  }
+  return missingInputs.map(input => input.name);
+}
+
+// Check missing inputs and handle scrolling
+function checkMissingAndMaybeReturn() {
+  const missingArr = getMissingSelectFields();
+  const currentMissingCount = missingArr.length;
+
+  // Update visual feedback only if submissionAttempted is true
+  missingInputs.forEach(input => {
+    if (submissionAttempted) {
+      input.element.classList.add("missing");
     }
   });
-}
-window.addEventListener('scroll', checkTextClouds);
-checkTextClouds();
-
-
-// ===================== PACKAGE DATA HELPER FUNCTIONS =====================
-function collectPackageData() {
-  const systemSizeText = selectedSystemSize ? `${selectedSystemSize}` : "Not selected";
-  const homeTypeText = selectedHomeType 
-    ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey" 
-       : selectedHomeType.toLowerCase() === 'double' ? "Double storey" 
-       : selectedHomeType)
-    : "Not selected";
-  const powerSupplyText = selectedPowerSupply 
-    ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase" 
-       : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase" 
-       : selectedPowerSupply)
-    : "Not selected";
-  
-  // Battery line: name and specs on one line
-  let batteryLine = "Not selected";
-  if (selectedBattery) {
-    batteryLine = `<strong>${selectedBattery.name}</strong> <strong>${selectedBattery.specs}</strong>`;
-  }
-  
-  return `
-    <ul class="package-summary-list">
-      <li>Panel: <strong>${selectedPanel ? selectedPanel.name : "Not selected"}</strong></li>
-      <li>Inverter: <strong>${selectedInverter ? selectedInverter.name : "Not selected"}</strong></li>
-      <li>Battery: ${batteryLine}</li>
-      <li>System Size: <strong>${systemSizeText}</strong></li>
-      <li>House Type: <strong>${homeTypeText}</strong></li>
-      <li>Power Supply: <strong>${powerSupplyText}</strong></li>
-      <br>
-    </ul>
-  `;
-}
-
-function updateFormSummary() {
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    let packageSummary = document.getElementById('package-summary');
-    if (!packageSummary) {
-      packageSummary = document.createElement('div');
-      packageSummary.id = 'package-summary';
-      const firstFormGroup = packageForm.querySelector('.form-group');
-      packageForm.insertBefore(packageSummary, firstFormGroup);
+  ["system-size-select", "home-type-select", "power-supply-select"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !missingInputs.some(m => m.element === el)) {
+      el.classList.remove("missing");
     }
-    packageSummary.innerHTML = collectPackageData();
-  }
-}
+  });
 
-// ---------------------
-// REAL‑TIME DEFAULT CHECKING (for select elements)
-// ---------------------
-function checkDefaultInputs() {
-  const systemSizeSelect = document.getElementById('system-size-select');
-  const homeTypeSelect = document.getElementById('home-type-select');
-  const powerSupplySelect = document.getElementById('power-supply-select');
-
-  if (systemSizeSelect) {
-    if (systemSizeSelect.value.trim() === "") {
-      selectedSystemSize = "";
-      systemSizeSelect.classList.add('missing');
-    } else {
-      selectedSystemSize = systemSizeSelect.value;
-      systemSizeSelect.classList.remove('missing');
-    }
-  }
-  if (homeTypeSelect) {
-    if (homeTypeSelect.value.trim() === "") {
-      selectedHomeType = "";
-      homeTypeSelect.classList.add('missing');
-    } else {
-      selectedHomeType = homeTypeSelect.value;
-      homeTypeSelect.classList.remove('missing');
-    }
-  }
-  if (powerSupplySelect) {
-    if (powerSupplySelect.value.trim() === "") {
-      selectedPowerSupply = "";
-      powerSupplySelect.classList.add('missing');
-    } else {
-      selectedPowerSupply = powerSupplySelect.value;
-      powerSupplySelect.classList.remove('missing');
+  if (submissionAttempted) {
+    if (currentMissingCount > 1) {
+      disableAllScroll = false;
+      const nextMissing = missingInputs[0];
+      if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
+      defaultScrollTimeout = setTimeout(() => {
+        normalScrollToSection(nextMissing.id, 350);
+      }, 1000);
+    } else if (currentMissingCount === 1) {
+      disableAllScroll = true;
+      const lastMissing = missingInputs[0];
+      if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
+      defaultScrollTimeout = setTimeout(() => {
+        normalScrollToSection(lastMissing.id, 350);
+      }, 1000);
+    } else if (currentMissingCount === 0) {
+      disableAllScroll = false;
+      if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
+      if (lastButtonClicked) {
+        defaultScrollTimeout = setTimeout(() => {
+          normalScrollToSection(lastButtonClicked.id, 0);
+        }, 500);
+      }
     }
   }
 }
 
-// ---------------------
-// FOCUS / BLUR HANDLERS FOR DEFAULT TEXT (if needed)
-// ---------------------
+// --------------------
+// Attach auto-return listeners for required selects
+// --------------------
+function attachAutoReturnListener(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (field) {
+    field.addEventListener("input", checkMissingAndMaybeReturn);
+    field.addEventListener("blur", checkMissingAndMaybeReturn);
+  }
+}
+
+// --------------------
+// Focus/Blur Handlers for Input Fields
+// --------------------
 function attachFocusHandlers(inputEl, defaultText) {
   if (!inputEl) return;
-  inputEl.addEventListener('focus', () => {
-    if (inputEl.value === defaultText) {
-      inputEl.value = "";
-    }
+  inputEl.addEventListener("focus", () => {
+    if (inputEl.value === defaultText) inputEl.value = "";
   });
-  inputEl.addEventListener('blur', () => {
-    if (inputEl.value.trim() === "") {
-      inputEl.value = defaultText;
-    }
+  inputEl.addEventListener("blur", () => {
+    if (inputEl.value.trim() === "") inputEl.value = defaultText;
     checkDefaultInputs();
   });
+  inputEl.addEventListener("input", checkDefaultInputs);
 }
 
-// ===================== INPUT HANDLERS =====================
+// --------------------
+// Input Handlers for Select Fields
+// --------------------
 function handleSystemSizeSelection(value) {
   if (value === "") return;
   selectedSystemSize = value;
   updatePanelPrice();
-  document.getElementById('home-type-input').style.display = 'block';
-  // Scroll to Home Type container with offset 350
-  scrollToSectionWithOffset('home-type-input', 350);
+  document.getElementById("home-type-input").style.display = "block";
   updatePackageDisplay();
+  checkMissingAndMaybeReturn();
+  if (!submissionAttempted) {
+    normalScrollToSection("home-type-input", 350);
+  } else if (missingInputs.length > 1) {
+    const nextMissing = missingInputs.find(m => m.id !== "system-size-input");
+    if (nextMissing) normalScrollToSection(nextMissing.id, 350);
+  } else if (missingInputs.length === 0 && lastButtonClicked) {
+    normalScrollToSection(lastButtonClicked.id, 0);
+  }
 }
 
 function handleHomeTypeSelection(value) {
   if (value === "") return;
   selectedHomeType = value;
   updatePackageDisplay();
-  document.getElementById('power-supply-input').style.display = 'block';
-  // Scroll to Power Supply container with offset 360
-  scrollToSectionWithOffset('power-supply-input', 360);
+  document.getElementById("power-supply-input").style.display = "block";
+  updatePackageDisplay();
+  checkMissingAndMaybeReturn();
+  if (!submissionAttempted) {
+    normalScrollToSection("power-supply-input", 360);
+  } else if (missingInputs.length > 1) {
+    const nextMissing = missingInputs.find(m => m.id !== "home-type-input");
+    if (nextMissing) normalScrollToSection(nextMissing.id, 350);
+  } else if (missingInputs.length === 0 && lastButtonClicked) {
+    normalScrollToSection(lastButtonClicked.id, 0);
+  }
 }
 
 function handlePowerSupplySelection(value) {
   if (value === "") return;
   selectedPowerSupply = value;
   updatePackageDisplay();
-  // Once Power Supply is selected, delay a bit then scroll to the Inverters section with an offset of 400
-  setTimeout(() => {
-    scrollToSectionWithOffset('inverters-section', 0);
-  }, 300);
+  checkMissingAndMaybeReturn();
+  if (!submissionAttempted) {
+    normalScrollToSection("inverters-section", 0);
+  } else if (missingInputs.length === 0 && lastButtonClicked) {
+    normalScrollToSection(lastButtonClicked.id, 0);
+  }
 }
 
-// ===================== BRAND CAROUSEL & PROGRESSIVE LOADING =====================
+// --------------------
+// Real-Time Default Checking for Selects
+// --------------------
+function checkDefaultInputs() {
+  const sysSelect = document.getElementById("system-size-select");
+  const homeSelect = document.getElementById("home-type-select");
+  const powerSelect = document.getElementById("power-supply-select");
+  if (sysSelect) {
+    if (sysSelect.value.trim() === "" && submissionAttempted) {
+      selectedSystemSize = "";
+      if (submissionAttempted) sysSelect.classList.add("missing");
+    } else {
+      selectedSystemSize = sysSelect.value;
+      sysSelect.classList.remove("missing");
+    }
+  }
+  if (homeSelect) {
+    if (homeSelect.value.trim() === "" && submissionAttempted) {
+      selectedHomeType = "";
+      if (submissionAttempted) homeSelect.classList.add("missing");
+    } else {
+      selectedHomeType = homeSelect.value;
+      homeSelect.classList.remove("missing");
+    }
+  }
+  if (powerSelect) {
+    if (powerSelect.value.trim() === "" && submissionAttempted) {
+      selectedPowerSupply = "";
+      if (submissionAttempted) powerSelect.classList.add("missing");
+    } else {
+      selectedPowerSupply = powerSelect.value;
+      powerSelect.classList.remove("missing");
+    }
+  }
+  checkMissingAndMaybeReturn();
+}
+
+// --------------------
+// Package Data Helper Functions
+// --------------------
+function collectPackageData() {
+  const sysText = selectedSystemSize ? selectedSystemSize : "Not selected";
+  const homeText = selectedHomeType ? selectedHomeType : "Not selected";
+  const powerText = selectedPowerSupply ? selectedPowerSupply : "Not selected";
+  let batteryLine = "Not selected";
+  if (selectedBattery) {
+    batteryLine = `<strong>${selectedBattery.name}</strong> ${selectedBattery.specs}`;
+  }
+  return `
+    <ul class="package-summary-list">
+      <li>Panel: <strong>${selectedPanel ? selectedPanel.name : "Not selected"}</strong></li>
+      <li>Inverter: <strong>${selectedInverter ? selectedInverter.name : "Not selected"}</strong></li>
+      <li>Battery: <strong>${batteryLine}</strong></li>
+      <li>System Size: <strong>${sysText}</strong></li>
+      <li>House Type: <strong>${homeText}</strong></li>
+      <li>Power Supply: <strong>${powerText}</strong></li>
+      <br>
+    </ul>
+  `;
+}
+
+function updateFormSummary() {
+  const formEl = document.querySelector(".package-form");
+  if (formEl) {
+    let summaryEl = document.getElementById("package-summary");
+    if (!summaryEl) {
+      summaryEl = document.createElement("div");
+      summaryEl.id = "package-summary";
+      const firstGroup = formEl.querySelector(".form-group");
+      formEl.insertBefore(summaryEl, firstGroup);
+    }
+    summaryEl.innerHTML = collectPackageData();
+  }
+}
+
+// --------------------
+// Validate Form Details
+// --------------------
+function validateFormDetails() {
+  const fullNameField = document.getElementById("fullName");
+  const mobileField = document.getElementById("mobilePhone");
+  const emailField = document.getElementById("email");
+  const addressField = document.getElementById("installationAddress");
+  const messageField = document.getElementById("message");
+  let missing = [];
+
+  if (!fullNameField || fullNameField.value.trim() === "") {
+    missing.push("Full Name");
+  }
+  if (!mobileField || mobileField.value.trim() === "") {
+    missing.push("Mobile Phone");
+  } else {
+    let mVal = mobileField.value.trim().replace(/\s/g, "");
+    if (!/^\d+$/.test(mVal)) {
+      missing.push("Valid Mobile Number");
+    }
+  }
+  if (!emailField || emailField.value.trim() === "") {
+    missing.push("Email");
+  } else if (!emailField.value.includes("@")) {
+    missing.push("Valid Email");
+  }
+  if (!addressField || addressField.value.trim() === "") {
+    missing.push("Installation Address");
+  }
+  if (!messageField || messageField.value.trim() === "") {
+    missing.push("Message");
+  }
+
+  if (missing.length > 0) {
+    showTextCloud("Please fill in: " + missing.join(", "), 3000, true);
+    return false;
+  }
+  return true;
+}
+
+// --------------------
+// Brand Carousel and Product Functions
+// --------------------
 function initializeBrandSlider(cardSelector, containerSelector) {
-  const brandCards = document.querySelectorAll(cardSelector);
-  if (!brandCards.length) return;
+  const cards = document.querySelectorAll(cardSelector);
+  if (!cards.length) return;
   let currentIndex = 0;
-  function updateBrandCards() {
-    brandCards.forEach((card, i) => {
+  function updateCards() {
+    cards.forEach((card, i) => {
       const imgIndex = (currentIndex + i) % brandImages.length;
-      const brandImage = brandImages[imgIndex];
-      const imgElement = card.querySelector('img');
-      if (imgElement) {
-        imgElement.src = brandImage.url;
-        imgElement.alt = brandImage.name;
+      const brand = brandImages[imgIndex];
+      const imgEl = card.querySelector("img");
+      if (imgEl) {
+        imgEl.src = brand.url;
+        imgEl.alt = brand.name;
       }
-      card.classList.remove('active');
-      setTimeout(() => card.classList.add('active'), 50);
+      card.classList.remove("active");
+      setTimeout(() => card.classList.add("active"), 50);
     });
   }
-  function cycleBrands() {
-    brandCards.forEach(card => card.classList.remove('active'));
+  function cycle() {
+    cards.forEach(card => card.classList.remove("active"));
     setTimeout(() => {
       currentIndex = (currentIndex + 4) % brandImages.length;
-      updateBrandCards();
+      updateCards();
     }, 500);
   }
-  let brandInterval = setInterval(cycleBrands, 5000);
+  let interval = setInterval(cycle, 5000);
   const container = document.querySelector(containerSelector);
   if (container) {
-    container.addEventListener('mouseenter', () => clearInterval(brandInterval));
-    container.addEventListener('mouseleave', () => {
-      brandInterval = setInterval(cycleBrands, 5000);
+    container.addEventListener("mouseenter", () => clearInterval(interval));
+    container.addEventListener("mouseleave", () => {
+      interval = setInterval(cycle, 5000);
     });
   }
-  updateBrandCards();
+  updateCards();
   setTimeout(() => {
-    brandCards.forEach(card => card.classList.add('active'));
+    cards.forEach(card => card.classList.add("active"));
   }, 500);
 }
 
-// ===================== PACKAGE & MODAL FUNCTIONS =====================
 const solarProducts = {
   panels: [
     {
@@ -449,8 +548,8 @@ const solarProducts = {
 };
 
 function createProductCard(product, type) {
-  const card = document.createElement('div');
-  card.className = 'product-card product';
+  const card = document.createElement("div");
+  card.className = "product-card product";
   card.innerHTML = `
     <img src="${product.image}" alt="${product.name} Solar Product">
     <h3>${product.name}</h3>
@@ -459,24 +558,23 @@ function createProductCard(product, type) {
     <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
     <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
-  card.querySelector('.read-more-btn').addEventListener('click', handleModalOpen);
-  card.addEventListener('click', (e) => {
-    if (e.target.classList.contains('read-more-btn')) return;
-    if (type === 'panel') {
-      document.querySelectorAll('#panels-grid .product-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
+  card.querySelector(".read-more-btn").addEventListener("click", handleModalOpen);
+  card.addEventListener("click", (e) => {
+    if (e.target.classList.contains("read-more-btn")) return;
+    if (type === "panel") {
+      document.querySelectorAll("#panels-grid .product-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
       selectedPanel = product;
-      document.getElementById('system-size-input').style.display = 'block';
-      // Scroll to System Size container with offset 350
-      scrollToSectionWithOffset('system-size-input', 350);
-    } else if (type === 'inverter') {
-      document.querySelectorAll('#inverters-grid .product-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
+      document.getElementById("system-size-input").style.display = "block";
+      normalScrollToSection("system-size-input", 350);
+    } else if (type === "inverter") {
+      document.querySelectorAll("#inverters-grid .product-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
       selectedInverter = product;
-      scrollToSection('battery-storage');
-    } else if (type === 'battery') {
-      document.querySelectorAll('#battery-grid .product-card').forEach(c => c.classList.remove('selected-battery'));
-      card.classList.add('selected-battery');
+      scrollToSection("battery-storage");
+    } else if (type === "battery") {
+      document.querySelectorAll("#battery-grid .product-card").forEach(c => c.classList.remove("selected-battery"));
+      card.classList.add("selected-battery");
       selectedBattery = product;
       showSolarPackageSection();
     }
@@ -490,27 +588,25 @@ function handleModalOpen(e) {
   const type = e.target.dataset.type;
   const id = parseInt(e.target.dataset.id);
   let product;
-  if (type === 'panel') {
+  if (type === "panel") {
     product = solarProducts.panels.find(p => p.id === id);
-  } else if (type === 'inverter') {
+  } else if (type === "inverter") {
     product = solarProducts.inverters.find(p => p.id === id);
-  } else if (type === 'battery') {
+  } else if (type === "battery") {
     product = solarProducts.batteries.find(p => p.id === id);
   }
   if (!product) return;
   const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
-  const brandLogoUrl = brand ? brand.url : '';
-  const logoClass = type === 'panel'
-    ? 'brand-logo-panel'
-    : (type === 'inverter' ? 'brand-logo-inverter' : 'brand-logo-battery');
-  const modal = document.getElementById('product-modal');
-  document.querySelector('.modal-product-image').innerHTML = `
+  const brandLogoUrl = brand ? brand.url : "";
+  const logoClass = type === "panel" ? "brand-logo-panel" : (type === "inverter" ? "brand-logo-inverter" : "brand-logo-battery");
+  const modal = document.getElementById("product-modal");
+  document.querySelector(".modal-product-image").innerHTML = `
     <div class="product-image-container">
       <img src="${product.image}" alt="${product.name}" class="main-product-image">
-      ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="${logoClass}">` : ''}
+      ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="${logoClass}">` : ""}
     </div>
   `;
-  document.querySelector('.modal-product-details').innerHTML = `
+  document.querySelector(".modal-product-details").innerHTML = `
     <h2>${product.name}</h2>
     <p><strong>Brand Name:</strong> ${product.brand}</p>
     <p><strong>Specifications:</strong> ${product.specs}</p>
@@ -519,7 +615,7 @@ function handleModalOpen(e) {
     <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
     <p><strong>Product Description:</strong> ${product.description}</p>
   `;
-  modal.style.display = 'block';
+  modal.style.display = "block";
 }
 
 function updatePanelPrice() {
@@ -527,7 +623,7 @@ function updatePanelPrice() {
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
     const updatedPrice = pricePerPanel * numPanels;
-    const panelPriceElem = document.getElementById('panel-price');
+    const panelPriceElem = document.getElementById("panel-price");
     if (panelPriceElem) {
       panelPriceElem.textContent = `Price: $${updatedPrice}`;
     }
@@ -535,84 +631,77 @@ function updatePanelPrice() {
 }
 
 function updatePackageDisplay() {
-  const panelImage = document.getElementById('selected-panel-image');
-  const inverterImage = document.getElementById('selected-inverter-image');
-  const batteryImage = document.getElementById('selected-battery-image');
-  const packageDescription = document.getElementById('package-description');
-  const confirmButton = document.getElementById('confirm-selection');
+  const panelImage = document.getElementById("selected-panel-image");
+  const inverterImage = document.getElementById("selected-inverter-image");
+  const batteryImage = document.getElementById("selected-battery-image");
+  const packageDesc = document.getElementById("package-description");
+  const confirmBtn = document.getElementById("confirm-selection");
 
-  let panelLogo = document.getElementById('panel-logo');
-  let inverterLogo = document.getElementById('inverter-logo');
-
+  let panelLogo = document.getElementById("panel-logo");
+  let inverterLogo = document.getElementById("inverter-logo");
   if (!panelLogo) {
-    panelLogo = document.createElement('img');
-    panelLogo.id = 'panel-logo';
-    panelLogo.classList.add('logo-overlay');
+    panelLogo = document.createElement("img");
+    panelLogo.id = "panel-logo";
+    panelLogo.classList.add("logo-overlay");
     panelImage.parentNode.appendChild(panelLogo);
   }
   if (!inverterLogo) {
-    inverterLogo = document.createElement('img');
-    inverterLogo.id = 'inverter-logo';
-    inverterLogo.classList.add('logo-overlay');
+    inverterLogo = document.createElement("img");
+    inverterLogo.id = "inverter-logo";
+    inverterLogo.classList.add("logo-overlay");
     inverterImage.parentNode.appendChild(inverterLogo);
   }
-
+  
   if (selectedPanel) {
     panelImage.src = selectedPanel.image;
-    panelImage.style.visibility = 'visible';
-    const panelBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedPanel.brand.toLowerCase());
-    if (panelBrand) {
-      panelLogo.src = panelBrand.url;
-      panelLogo.style.visibility = 'visible';
+    panelImage.style.visibility = "visible";
+    const pBrand = brandImages.find(b => b.name.toLowerCase() === selectedPanel.brand.toLowerCase());
+    if (pBrand) {
+      panelLogo.src = pBrand.url;
+      panelLogo.style.visibility = "visible";
     } else {
-      panelLogo.style.visibility = 'hidden';
+      panelLogo.style.visibility = "hidden";
     }
   }
-
   if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
-    inverterImage.style.visibility = 'visible';
-    const inverterBrand = brandImages.find(brand => brand.name.toLowerCase() === selectedInverter.brand.toLowerCase());
-    if (inverterBrand) {
-      inverterLogo.src = inverterBrand.url;
-      inverterLogo.style.visibility = 'visible';
+    inverterImage.style.visibility = "visible";
+    const iBrand = brandImages.find(b => b.name.toLowerCase() === selectedInverter.brand.toLowerCase());
+    if (iBrand) {
+      inverterLogo.src = iBrand.url;
+      inverterLogo.style.visibility = "visible";
     } else {
-      inverterLogo.style.visibility = 'hidden';
+      inverterLogo.style.visibility = "hidden";
     }
   }
-
   if (selectedBattery) {
     batteryImage.src = selectedBattery.image;
-    batteryImage.style.visibility = 'visible';
-    const panelInverterContainer = document.getElementById('panel-inverter-container');
-    let batteryLogo = document.getElementById('battery-logo');
+    batteryImage.style.visibility = "visible";
+    const container = document.getElementById("panel-inverter-container");
+    let batteryLogo = document.getElementById("battery-logo");
     if (!batteryLogo) {
-      batteryLogo = document.createElement('img');
-      batteryLogo.id = 'battery-logo';
-      batteryLogo.classList.add('logo-overlay', 'brand-logo-battery');
-      panelInverterContainer.appendChild(batteryLogo);
+      batteryLogo = document.createElement("img");
+      batteryLogo.id = "battery-logo";
+      batteryLogo.classList.add("logo-overlay", "brand-logo-battery");
+      container.appendChild(batteryLogo);
     }
     batteryLogo.src = getPathPrefix() + "images/BrandLogos/Tesla.webp";
-    batteryLogo.style.visibility = 'visible';
-    document.getElementById('image-combination').classList.add('with-battery');
+    batteryLogo.style.visibility = "visible";
+    document.getElementById("image-combination").classList.add("with-battery");
   } else {
-    batteryImage.style.visibility = 'hidden';
-    let batteryLogo = document.getElementById('battery-logo');
-    if (batteryLogo) {
-      batteryLogo.style.visibility = 'hidden';
-    }
-    document.getElementById('image-combination').classList.remove('with-battery');
+    batteryImage.style.visibility = "hidden";
+    let batteryLogo = document.getElementById("battery-logo");
+    if (batteryLogo) batteryLogo.style.visibility = "hidden";
+    document.getElementById("image-combination").classList.remove("with-battery");
   }
-
+  
   if (selectedPanel && selectedInverter) {
-    let description = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
-    if (selectedBattery) {
-      description += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
-    }
-    packageDescription.innerHTML = description;
-    document.getElementById('solar-package-input').value =
+    let desc = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
+    if (selectedBattery) desc += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
+    packageDesc.innerHTML = desc;
+    document.getElementById("solar-package-input").value =
       `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
-      (selectedBattery ? `\nBattery: ${selectedBattery.name}` : '');
+      (selectedBattery ? `\nBattery: ${selectedBattery.name}` : "");
     
     const pricePerPanel = selectedPanel.price / defaultPanels;
     const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
@@ -620,41 +709,36 @@ function updatePackageDisplay() {
     const inverterCost = selectedInverter.price;
     const batteryCost = selectedBattery ? selectedBattery.price : 0;
     let extraCost = 0;
-    if (selectedHomeType && selectedHomeType.toLowerCase().includes("double")) {
+    if (selectedHomeType && selectedHomeType.toLowerCase().includes("double"))
       extraCost += extraCharges.doubleStorey;
-    }
-    if (selectedPowerSupply && selectedPowerSupply.toLowerCase().includes("three")) {
+    if (selectedPowerSupply && selectedPowerSupply.toLowerCase().includes("three"))
       extraCost += extraCharges.threePhase;
-    }
     const total = panelCost + inverterCost + batteryCost + extraCost;
-    document.getElementById('total-cost').textContent = `Total = $${total} AUD`;
-    
-    confirmButton.style.visibility = 'visible';
+    document.getElementById("total-cost").textContent = `Total = $${total} AUD`;
+    confirmBtn.style.visibility = "visible";
   } else {
-    packageDescription.textContent = '';
-    confirmButton.style.visibility = 'hidden';
+    packageDesc.textContent = "";
+    confirmBtn.style.visibility = "hidden";
   }
   
-  if (document.getElementById('package-summary')) {
+  if (document.getElementById("package-summary"))
     updateFormSummary();
-  }
 }
 
 function showSolarPackageSection() {
-  const solarPackageSection = document.getElementById('solar-package');
+  const sec = document.getElementById("solar-package");
   if (selectedPanel && selectedInverter) {
-    solarPackageSection.style.display = 'block';
-    // Scroll to solar-package with a custom offset, e.g., 300 pixels
+    sec.style.display = "block";
     scrollToSolarPackage(-30);
   }
 }
 
 function scrollToSolarPackage(offset = 0) {
-  const solarPackageSection = document.getElementById('solar-package');
-  if (solarPackageSection) {
-    console.log('Scrolling to solar-package with offset', offset);
-    const topPosition = solarPackageSection.offsetTop - offset;
-    window.scrollTo({ top: topPosition, behavior: 'smooth' });
+  if (disableAllScroll) return;
+  const sec = document.getElementById("solar-package");
+  if (sec) {
+    const topPos = sec.offsetTop - offset;
+    window.scrollTo({ top: topPos, behavior: "smooth" });
   }
 }
 
@@ -664,222 +748,173 @@ function handleNotInterested() {
   showSolarPackageSection();
 }
 
-// ---------------------
-// Function to scroll to the confirm-selection button with offset 300
-function scrollToConfirmButton() {
-  const confirmBtn = document.getElementById('confirm-selection');
-  if (confirmBtn) {
-    window.scrollTo({ top: confirmBtn.offsetTop - -100, behavior: 'smooth' });
-  }
-}
-
-// ---------------------
-// Function to update the hidden input with consolidated details
 function updateSolarPackageInput() {
   let details = "";
-  if (selectedPanel) {
-    details += `Panels: ${selectedPanel.name}\n`;
-  }
-  if (selectedInverter) {
-    details += `Inverter: ${selectedInverter.name}\n`;
-  }
-  if (selectedBattery) {
-    details += `Battery: ${selectedBattery.name}\n`;
-  }
-  if (selectedSystemSize) {
-    details += `System Size: ${selectedSystemSize}\n`;
-  }
-  if (selectedHomeType) {
-    details += `House Type: ${selectedHomeType}\n`;
-  }
-  if (selectedPowerSupply) {
-    details += `Power Supply: ${selectedPowerSupply}\n`;
-  }
-  const solarPackageInput = document.getElementById('solar-package-input');
-  if (solarPackageInput) {
-    solarPackageInput.value = details;
-  }
+  if (selectedPanel) details += `Panels: ${selectedPanel.name}\n`;
+  if (selectedInverter) details += `Inverter: ${selectedInverter.name}\n`;
+  if (selectedBattery) details += `Battery: ${selectedBattery.name}\n`;
+  if (selectedSystemSize) details += `System Size: ${selectedSystemSize}\n`;
+  if (selectedHomeType) details += `House Type: ${selectedHomeType}\n`;
+  if (selectedPowerSupply) details += `Power Supply: ${selectedPowerSupply}\n`;
+  const input = document.getElementById("solar-package-input");
+  if (input) input.value = details;
 }
 
-// ===================== FINAL INITIALIZATION =====================
-document.addEventListener('DOMContentLoaded', function() {
+// --------------------
+// FINAL INITIALIZATION
+// --------------------
+document.addEventListener("DOMContentLoaded", function() {
   initializeBrandImages();
-  
-  if (document.getElementById('brands')) {
-    initializeBrandSlider('.brand-card', '#brands');
+  if (document.getElementById("brands")) {
+    initializeBrandSlider(".brand-card", "#brands");
   }
-  if (document.getElementById('solar-logo-cards-container')) {
-    initializeBrandSlider('.solar-brand-card', '#solar-logo-cards-container');
+  if (document.getElementById("solar-logo-cards-container")) {
+    initializeBrandSlider(".solar-brand-card", "#solar-logo-cards-container");
   }
-  
   preloadImages(brandImages)
-    .then(() => console.log('All brand images have been progressively loaded.'))
-    .catch((error) => console.error('Error preloading some brand images:', error));
+    .then(() => console.log("All brand images have been progressively loaded."))
+    .catch((error) => console.error("Error preloading images:", error));
   
   updatePackageDisplay();
   
-  const panelsGrid = document.getElementById('panels-grid');
-  const invertersGrid = document.getElementById('inverters-grid');
-  const batteryGrid = document.getElementById('battery-grid');
+  const panelsGrid = document.getElementById("panels-grid");
+  const invertersGrid = document.getElementById("inverters-grid");
+  const batteryGrid = document.getElementById("battery-grid");
   
-  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, 'panel')));
-  solarProducts.inverters.forEach(inverter => invertersGrid.appendChild(createProductCard(inverter, 'inverter')));
+  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, "panel")));
+  solarProducts.inverters.forEach(inv => invertersGrid.appendChild(createProductCard(inv, "inverter")));
   if (solarProducts.batteries) {
-    solarProducts.batteries.forEach(battery => batteryGrid.appendChild(createProductCard(battery, 'battery')));
+    solarProducts.batteries.forEach(bat => batteryGrid.appendChild(createProductCard(bat, "battery")));
+  }
+  document.getElementById("solar-package").style.display = "none";
+  
+  // Attach listeners to select elements
+  const sysSelect = document.getElementById("system-size-select");
+  const homeSelect = document.getElementById("home-type-select");
+  const powerSelect = document.getElementById("power-supply-select");
+  
+  if (sysSelect) {
+    attachFocusHandlers(sysSelect, "Choose size");
+    sysSelect.addEventListener("change", (e) => {
+      handleSystemSizeSelection(e.target.value);
+      checkDefaultInputs();
+      updatePackageDisplay();
+    });
+    attachAutoReturnListener("system-size-select");
+  }
+  if (homeSelect) {
+    attachFocusHandlers(homeSelect, "Choose your house type");
+    homeSelect.addEventListener("change", (e) => {
+      handleHomeTypeSelection(e.target.value);
+      checkDefaultInputs();
+      updatePackageDisplay();
+    });
+    attachAutoReturnListener("home-type-select");
+  }
+  if (powerSelect) {
+    attachFocusHandlers(powerSelect, "Choose power supply");
+    powerSelect.addEventListener("change", (e) => {
+      handlePowerSupplySelection(e.target.value);
+      checkDefaultInputs();
+      updatePackageDisplay();
+    });
+    attachAutoReturnListener("power-supply-select");
   }
   
-  document.getElementById('solar-package').style.display = 'none';
-  
-  // Attach listeners to select elements (using their actual IDs)
-  const systemSizeSelect = document.getElementById('system-size-select');
-  const homeTypeSelect = document.getElementById('home-type-select');
-  const powerSupplySelect = document.getElementById('power-supply-select');
-  
-  if (systemSizeSelect) {
-    attachFocusHandlers(systemSizeSelect, "Choose size");
-    systemSizeSelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
-    systemSizeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
-  }
-  if (homeTypeSelect) {
-    attachFocusHandlers(homeTypeSelect, "Choose your house type");
-    homeTypeSelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
-    homeTypeSelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
-  }
-  if (powerSupplySelect) {
-    attachFocusHandlers(powerSupplySelect, "Choose power supply");
-    powerSupplySelect.addEventListener('input', () => { checkDefaultInputs(); updatePackageDisplay(); });
-    powerSupplySelect.addEventListener('change', () => { checkDefaultInputs(); updatePackageDisplay(); });
+  // Mark submission attempt when a submit button is clicked.
+  function markSubmissionAttempt() {
+    submissionAttempted = true;
   }
   
-  // Confirm Selection button handler:
-  document.getElementById('confirm-selection').addEventListener('click', function() {
+  // Confirm Selection button handler
+  document.getElementById("confirm-selection").addEventListener("click", function() {
+    lastButtonClicked = this;
+    markSubmissionAttempt();
     checkDefaultInputs();
-    let missingField = null;
-    if (!selectedSystemSize) {
-      missingField = { element: document.getElementById('system-size-input'), label: 'System Size' };
-    } else if (!selectedHomeType) {
-      missingField = { element: document.getElementById('home-type-input'), label: 'Home Type' };
-    } else if (!selectedPowerSupply) {
-      missingField = { element: document.getElementById('power-supply-input'), label: 'Power Supply' };
-    }
-    if (missingField) {
-      let offset = 50;
-      if (missingField.label === "System Size") offset = 340;
-      else if (missingField.label === "Housee Type") offset = 320;
-      else if (missingField.label === "Power Supply") offset = 300;
-      showTextCloud("Please complete all selections before confirming. Missing: " + missingField.label, 2000);
-      if (missingField.element) {
-        setTimeout(() => {
-          window.scrollTo({
-            top: missingField.element.offsetTop - offset,
-            behavior: 'smooth'
-          });
-        }, 3500);
-      }
+    const missing = getMissingSelectFields();
+    if (missing.length > 0) {
+      showCombinedMissingMessage(missing);
+      checkMissingAndMaybeReturn();
     } else {
       updateFormSummary();
-      // Once all inputs are complete, scroll to the confirm button so it sits near the center.
-      scrollToConfirmButton();
+      scrollToForm();
     }
   });
   
-  document.getElementById('not-interested-btn').addEventListener('click', () => {
+  // Enquire button handler
+  document.getElementById("enquire-button").addEventListener("click", function(e) {
+    e.preventDefault();
+    lastButtonClicked = this;
+    markSubmissionAttempt();
+    checkDefaultInputs();
+    const missing = getMissingSelectFields();
+    if (missing.length > 0) {
+      showCombinedMissingMessage(missing);
+      checkMissingAndMaybeReturn();
+    } else {
+      updateFormSummary();
+      updateSolarPackageInput();
+      if (!validateFormDetails()) return;
+      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000, true);
+      setTimeout(() => { submissionAttempted = false; }, 4500);
+      scrollToConfirmButton();
+      const form = document.querySelector(".package-form");
+      if (form) {
+        const formData = new FormData(form);
+        fetch(form.action, {
+          method: form.method,
+          headers: { "Accept": "application/json" },
+          body: formData
+        }).then(response => {
+          if (response.ok) console.log("Message sent successfully via enquire-button.");
+          else console.error("Error sending message via enquire-button.");
+        }).catch(err => console.error("Error submitting form:", err));
+      }
+    }
+  });
+  
+  document.getElementById("not-interested-btn").addEventListener("click", () => {
     handleNotInterested();
   });
   
   (function addBatteryOnlyButton() {
-    const batterySection = document.getElementById('battery-storage');
-    const notInterestedBtn = document.getElementById('not-interested-btn');
-    if (batterySection && notInterestedBtn) {
-      let buttonContainer = batterySection.querySelector('.button-container');
-      if (!buttonContainer) {
-        buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
-        batterySection.insertBefore(buttonContainer, notInterestedBtn);
+    const batterySec = document.getElementById("battery-storage");
+    const notIntBtn = document.getElementById("not-interested-btn");
+    if (batterySec && notIntBtn) {
+      let btnContainer = batterySec.querySelector(".button-container");
+      if (!btnContainer) {
+        btnContainer = document.createElement("div");
+        btnContainer.className = "button-container";
+        batterySec.insertBefore(btnContainer, notIntBtn);
       }
-      if (!buttonContainer.contains(notInterestedBtn)) {
-        buttonContainer.appendChild(notInterestedBtn);
+      if (!btnContainer.contains(notIntBtn)) {
+        btnContainer.appendChild(notIntBtn);
       }
-      const batteryOnlyBtn = document.createElement('a');
-      batteryOnlyBtn.id = 'battery-only-btn';
-      batteryOnlyBtn.href = "./battery-only.html";
-      batteryOnlyBtn.textContent = 'Battery only';
-      buttonContainer.appendChild(batteryOnlyBtn);
+      const batteryOnly = document.createElement("a");
+      batteryOnly.id = "battery-only-btn";
+      batteryOnly.href = "./battery-only.html";
+      batteryOnly.textContent = "Battery only";
+      btnContainer.appendChild(batteryOnly);
     }
   })();
   
-  document.addEventListener('click', (e) => {
-    const modal = document.getElementById('product-modal');
-    if (modal && modal.style.display === 'block' && e.target === modal) {
-      modal.style.display = 'none';
+  document.addEventListener("click", (e) => {
+    const modal = document.getElementById("product-modal");
+    if (modal && modal.style.display === "block" && e.target === modal) {
+      modal.style.display = "none";
     }
   });
-  document.addEventListener('click', (e) => {
-    const modal = document.getElementById('product-modal');
-    if (modal && (e.target.classList.contains('close') || e.target.classList.contains('modal-close'))) {
-      modal.style.display = 'none';
+  document.addEventListener("click", (e) => {
+    const modal = document.getElementById("product-modal");
+    if (modal && (e.target.classList.contains("close") || e.target.classList.contains("modal-close"))) {
+      modal.style.display = "none";
     }
   });
-  
-  const packageForm = document.querySelector('.package-form');
-  if (packageForm) {
-    packageForm.addEventListener('submit', function(e) {
-      if (!selectedPanel || !selectedInverter || !selectedSystemSize || !selectedHomeType || !selectedPowerSupply) {
-        e.preventDefault();
-        showTextCloud("Please complete all selections before submitting the form.", 3000);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-      
-      e.preventDefault();
-      updateSolarPackageInput();
-      
-      // Set flag so that "Fill in your details" cloud is not triggered
-      disablePackageFormCloud = true;
-      
-      const systemSizeText = selectedSystemSize ? `${selectedSystemSize} system` : "Not selected";
-      const homeTypeText = selectedHomeType 
-        ? (selectedHomeType.toLowerCase() === 'single' ? "Single storey" 
-           : selectedHomeType.toLowerCase() === 'double' ? "Double storey" 
-           : selectedHomeType)
-        : "Not selected";
-      const powerSupplyText = selectedPowerSupply 
-        ? (selectedPowerSupply.toLowerCase() === 'single' ? "Single-phase" 
-           : selectedPowerSupply.toLowerCase() === 'three' ? "Three-phase" 
-           : selectedPowerSupply)
-        : "Not selected";
-      const descriptionText = `Panel: ${selectedPanel ? selectedPanel.name : "Not selected"}, Inverter: ${selectedInverter ? selectedInverter.name : "Not selected"}, Battery: ${selectedBattery ? selectedBattery.name : "Not selected"}, System Size: ${systemSizeText}, House Type: ${homeTypeText}, Power Supply: ${powerSupplyText}`;
-      document.getElementById('solar-package-input').value = descriptionText;
-      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000);
-      
-      // Reset the flag after the thank you message duration (adjust timeout as needed)
-      setTimeout(() => {
-        disablePackageFormCloud = false;
-      }, 4500);
-      
-      const formData = new FormData(packageForm);
-      fetch(packageForm.action, {
-        method: packageForm.method,
-        headers: {
-          'Accept': 'application/json'
-        },
-        body: formData
-      }).then(response => {
-        if (response.ok) {
-          console.log("Message sent successfully.");
-        } else {
-          console.error("Error in sending message.");
-        }
-      }).catch(error => {
-        console.error("Error submitting form:", error);
-      });
-    });
-  }
 });
 
-// -------------------------
+// --------------------
 // FILTER BAR SORTING FOR SOLAR PRODUCTS
-// -------------------------
+// --------------------
 function sortProducts(type, criteria) {
   const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
   let products = [...solarProducts[type + "s"]];

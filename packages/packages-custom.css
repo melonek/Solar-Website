@@ -426,3 +426,36 @@
 .package-summary-list {
   text-align: left;
 }
+
+/* Style for the warning icon when used in form validation messages */
+.warning-icon {
+  display: inline-block;
+  background-color: #ffd009; /* Yellow background */
+  color: black;
+  border-radius: 5px;
+  padding: 2px 6px;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+/* Universal style for text clouds */
+.text-cloud {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  color: #333;
+  transition: opacity 0.5s;
+}
+
+/* Style for missing input fields (red border) */
+.missing {
+  border: 2px solid red !important;
+}
