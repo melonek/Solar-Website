@@ -34,7 +34,7 @@ let defaultScrollTimeout = null;
 const textCloudConfig = [
   { selector: '#panels-section', message: "Choose your panel", key: 'panels' },
   { selector: '#system-size-input', message: "Choose your system size", key: 'systemSize' },
-  { selector: '#home-type-input', message: "Choose your home type", key: 'homeType' },
+  { selector: '#home-type-input', message: "Choose your house type", key: 'homeType' },
   { selector: '#power-supply-input', message: "Choose your power supply", key: 'powerSupply' },
   { selector: '#inverters-section', message: "Choose your inverter", key: 'inverter' },
   { selector: '#battery-storage', message: "Choose your battery storage", key: 'battery' },
@@ -54,7 +54,7 @@ let textCloudFlags = {
 let activeTextCloud = null;
 
 // --------------------
-// Scroll Functions (Modified)
+// Scroll Functions
 // --------------------
 function normalScrollToSection(sectionId, offset) {
   const isMissing = missingInputs.some(m => m.id === sectionId);
@@ -175,6 +175,51 @@ function showCombinedMissingMessage(missingArr) {
   showTextCloud("Missing: " + missingArr.join(", "), 2500, true);
 }
 
+function showTextCloudForSection(key) {
+  if (!textCloudFlags[key]) {
+    const config = textCloudConfig.find(c => c.key === key);
+    if (config) {
+      showTextCloud(config.message, 3000);
+      textCloudFlags[key] = true; // Mark as shown
+    }
+  }
+}
+
+// --------------------
+// Intersection Observer for Text Clouds
+// --------------------
+function setupTextCloudObserver() {
+  const observerOptions = {
+    root: null,
+    rootMargin: '-340px 0px 0px 0px', // Offset to trigger lower in the viewport (around 340px from top)
+    threshold: 0.1 // Trigger when 10% of the section is visible
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        console.log('Section in view:', entry.target); // Debug log
+        const config = textCloudConfig.find(c => entry.target.matches(c.selector));
+        if (config && !textCloudFlags[config.key]) {
+          showTextCloud(config.message, 3000);
+          textCloudFlags[config.key] = true;
+          console.log(`Text cloud displayed for ${config.key}: ${config.message}`);
+        }
+      }
+    });
+  }, observerOptions);
+
+  textCloudConfig.forEach(config => {
+    const element = document.querySelector(config.selector);
+    if (element) {
+      console.log('Observing element:', element);
+      observer.observe(element);
+    } else {
+      console.error('Element not found for selector:', config.selector);
+    }
+  });
+}
+
 // --------------------
 // Missing Mode Validator for Select Fields
 // --------------------
@@ -201,7 +246,6 @@ function checkMissingAndMaybeReturn() {
   const missingArr = getMissingSelectFields();
   const currentMissingCount = missingArr.length;
 
-  // Update visual feedback only if submissionAttempted is true
   missingInputs.forEach(input => {
     if (submissionAttempted) {
       input.element.classList.add("missing");
@@ -268,7 +312,7 @@ function attachFocusHandlers(inputEl, defaultText) {
 }
 
 // --------------------
-// Input Handlers for Select Fields
+// Input Handlers for Select Fields (Modified for Text Clouds)
 // --------------------
 function handleSystemSizeSelection(value) {
   if (value === "") return;
@@ -279,6 +323,7 @@ function handleSystemSizeSelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("home-type-input", 350);
+    showTextCloudForSection('homeType'); // Show text cloud for home type
   } else if (missingInputs.length > 1) {
     const nextMissing = missingInputs.find(m => m.id !== "system-size-input");
     if (nextMissing) normalScrollToSection(nextMissing.id, 350);
@@ -296,6 +341,7 @@ function handleHomeTypeSelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("power-supply-input", 360);
+    showTextCloudForSection('powerSupply'); // Show text cloud for power supply
   } else if (missingInputs.length > 1) {
     const nextMissing = missingInputs.find(m => m.id !== "home-type-input");
     if (nextMissing) normalScrollToSection(nextMissing.id, 350);
@@ -311,6 +357,7 @@ function handlePowerSupplySelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("inverters-section", 0);
+    showTextCloudForSection('inverter'); // Show text cloud for inverter
   } else if (missingInputs.length === 0 && lastButtonClicked) {
     normalScrollToSection(lastButtonClicked.id, 0);
   }
@@ -357,13 +404,10 @@ function checkDefaultInputs() {
 // Package Data Helper Functions
 // --------------------
 function collectPackageData() {
-  // Mapping for house type
   const homeTypeMapping = {
     "single": "Single Storey",
     "double": "Double Storey"
   };
-  
-  // Mapping for power supply
   const powerSupplyMapping = {
     "single": "Single-Phase",
     "three": "Three-Phase"
@@ -579,16 +623,19 @@ function createProductCard(product, type) {
       selectedPanel = product;
       document.getElementById("system-size-input").style.display = "block";
       normalScrollToSection("system-size-input", 350);
+      showTextCloudForSection('systemSize');
     } else if (type === "inverter") {
       document.querySelectorAll("#inverters-grid .product-card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");
       selectedInverter = product;
       scrollToSection("battery-storage");
+      showTextCloudForSection('battery');
     } else if (type === "battery") {
       document.querySelectorAll("#battery-grid .product-card").forEach(c => c.classList.remove("selected-battery"));
       card.classList.add("selected-battery");
       selectedBattery = product;
       showSolarPackageSection();
+      showTextCloudForSection('solarPackage');
     }
     updatePackageDisplay();
   });
@@ -773,7 +820,7 @@ function updateSolarPackageInput() {
 }
 
 // --------------------
-// FINAL INITIALIZATION
+// Final Initialization
 // --------------------
 document.addEventListener("DOMContentLoaded", function() {
   initializeBrandImages();
@@ -833,12 +880,12 @@ document.addEventListener("DOMContentLoaded", function() {
     attachAutoReturnListener("power-supply-select");
   }
   
-  // Mark submission attempt when a submit button is clicked.
+  setupTextCloudObserver();
+  
   function markSubmissionAttempt() {
     submissionAttempted = true;
   }
   
-  // Confirm Selection button handler
   document.getElementById("confirm-selection").addEventListener("click", function() {
     lastButtonClicked = this;
     markSubmissionAttempt();
@@ -853,7 +900,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   
-  // Enquire button handler
   document.getElementById("enquire-button").addEventListener("click", function(e) {
     e.preventDefault();
     lastButtonClicked = this;
@@ -925,7 +971,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // --------------------
-// FILTER BAR SORTING FOR SOLAR PRODUCTS
+// Filter Bar Sorting for Solar Products
 // --------------------
 function sortProducts(type, criteria) {
   const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
