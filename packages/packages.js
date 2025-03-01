@@ -119,7 +119,7 @@ function initializeBrandImages() {
     { name: 'Risen', url: `${prefix}images/BrandLogos/Risen-Solar.webp` },
     { name: 'Seraphim', url: `${prefix}images/BrandLogos/Seraphim.webp` },
     { name: 'Sofar', url: `${prefix}images/BrandLogos/Sofar.webp` },
-    { name: 'SolarEdge', url: `${prefix}images/BrandLogos/Solar-Edge.webp` },
+    { name: 'SolarEdge', url: `${prefix}images/BradLogos/Solar-Edge.webp` },
     { name: 'Solis', url: `${prefix}images/BrandLogos/Solis.webp` },
     { name: 'Sungrow', url: `${prefix}images/BrandLogos/Sungrow.webp` },
     { name: 'EgingPV', url: `${prefix}images/BrandLogos/EgingPV.webp` },
@@ -191,16 +191,18 @@ function showTextCloudForSection(key) {
 function setupTextCloudObserver() {
   const observerOptions = {
     root: null,
-    rootMargin: '-340px 0px 0px 0px', // Offset to trigger lower in the viewport (around 340px from top)
-    threshold: 0.1 // Trigger when 10% of the section is visible
+    rootMargin: '0px 0px -300px 0px', // Shrink the bottom margin by 300px, requiring the section to be 300px lower
+    threshold: 0.5 // Trigger when 50% of the section is visible within the adjusted viewport
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        console.log('Section in view:', entry.target); // Debug log
+        console.log('Section in view:', entry.target.id || entry.target.className);
+        console.log('Intersection ratio:', entry.intersectionRatio);
         const config = textCloudConfig.find(c => entry.target.matches(c.selector));
         if (config && !textCloudFlags[config.key]) {
+          console.log(`Triggering text cloud for ${config.key} with rootMargin -300px bottom`);
           showTextCloud(config.message, 3000);
           textCloudFlags[config.key] = true;
           console.log(`Text cloud displayed for ${config.key}: ${config.message}`);
@@ -212,7 +214,7 @@ function setupTextCloudObserver() {
   textCloudConfig.forEach(config => {
     const element = document.querySelector(config.selector);
     if (element) {
-      console.log('Observing element:', element);
+      console.log('Observing element:', element.id || element.className);
       observer.observe(element);
     } else {
       console.error('Element not found for selector:', config.selector);
