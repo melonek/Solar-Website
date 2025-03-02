@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
 window.addEventListener('resize', scaleFacebookTimelines);
 document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
 
-
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
 // -------------------------

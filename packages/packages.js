@@ -10,6 +10,16 @@ let selectedBattery = null;
 let selectedSystemSize = ""; // required field
 let selectedHomeType = "";   // required field
 let selectedPowerSupply = ""; // required field
+let hasShownBatteryCloud = false;
+let hasShownFormCloud = false;
+window.activeTextCloud = null;
+// Use window.activeTextCloud directly
+if (window.activeTextCloud) {
+  clearTimeout(window.activeTextCloud.fadeTimeout);
+  clearTimeout(window.activeTextCloud.removeTimeout);
+  window.activeTextCloud.remove();
+  window.activeTextCloud = null;
+}
 
 // Pricing / mapping
 const defaultPanels = 15;
@@ -116,7 +126,6 @@ let textCloudFlags = {
   solarPackage: false,
   packageForm: false
 };
-let activeTextCloud = null;
 
 // --------------------
 // Scroll Functions
@@ -980,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function() {
       updateFormSummary();
       updateSolarPackageInput();
       if (!validateFormDetails()) return;
-      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000, true);
+      showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000, false);
       setTimeout(() => { submissionAttempted = false; }, 4500);
       scrollToConfirmButton();
       const form = document.querySelector(".package-form");
