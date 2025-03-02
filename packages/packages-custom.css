@@ -492,7 +492,7 @@
   left: 60%;
   width: 120%;
   height: 120%;
-  background: url('../images/universalBanner/Solar-drone-photo-Perth.jpg') no-repeat center center;
+  background: url('../images/universalBanner/Solar-drone-photo-Perth.webp') no-repeat center center;
   background-size: cover;
   --offset-x: -30px; /* Default left/right offset */
   --offset-y: -50px; /* Default up/down offset */

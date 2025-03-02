@@ -28,6 +28,25 @@ let submissionAttempted = false;    // becomes true when a submit button is clic
 // We'll use this to cancel any scheduled normal scroll.
 let defaultScrollTimeout = null;
 
+function preloadBannerImage() {
+  const image = new Image();
+  image.src = '../images/universalBanner/Solar-drone-photo-Perth.webp';
+  image.onload = () => {
+    console.log('Banner image preloaded successfully!');
+    // Optionally apply the background image dynamically after preload
+    const bannerImage = document.querySelector('.universalBanner .banner-image');
+    if (bannerImage) {
+      bannerImage.style.backgroundImage = `url('${image.src}')`;
+    }
+  };
+  image.onerror = () => {
+    console.error('Failed to preload banner image.');
+  };
+}
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', preloadBannerImage);
+
 
 // ------------------------
 // Universal Banner Parallax and Zoom
@@ -165,7 +184,7 @@ function initializeBrandImages() {
     { name: 'Risen', url: `${prefix}images/BrandLogos/Risen-Solar.webp` },
     { name: 'Seraphim', url: `${prefix}images/BrandLogos/Seraphim.webp` },
     { name: 'Sofar', url: `${prefix}images/BrandLogos/Sofar.webp` },
-    { name: 'SolarEdge', url: `${prefix}images/BradLogos/Solar-Edge.webp` },
+    { name: 'SolarEdge', url: `${prefix}images/BrandLogos/Solar-Edge.webp` },
     { name: 'Solis', url: `${prefix}images/BrandLogos/Solis.webp` },
     { name: 'Sungrow', url: `${prefix}images/BrandLogos/Sungrow.webp` },
     { name: 'EgingPV', url: `${prefix}images/BrandLogos/EgingPV.webp` },
