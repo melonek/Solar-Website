@@ -163,19 +163,21 @@ function revealFacebookTimelines() {
   });
 }
 
-// Add scroll event listener to trigger reveal on scroll
-window.addEventListener('scroll', revealFacebookTimelines);
-// Also call it on page load to reveal visible timelines immediately
-revealFacebookTimelines();
-  function revealButtons() {
-    const buttons = document.querySelectorAll('.fancy-button'),
-          triggerBottom = window.innerHeight * 0.8;
-    buttons.forEach(button => {
-      const buttonTop = button.getBoundingClientRect().top;
-      button.classList.toggle('revealed', buttonTop < triggerBottom);
-    });
-  }
-  
+// Reveal buttons function (unchanged)
+function revealButtons() {
+  const buttons = document.querySelectorAll('.fancy-button'),
+        triggerBottom = window.innerHeight * 0.8;
+  buttons.forEach(button => {
+    const buttonTop = button.getBoundingClientRect().top;
+    button.classList.toggle('revealed', buttonTop < triggerBottom);
+  });
+}
+
+window.addEventListener('scroll', revealButtons);
+window.addEventListener('load', revealButtons);
+
+
+// Reveal cards function
   function revealCards() {
     const cards = document.querySelectorAll('.brand-card'),
           triggerBottom = window.innerHeight * 0.9;

@@ -28,6 +28,52 @@ let submissionAttempted = false;    // becomes true when a submit button is clic
 // We'll use this to cancel any scheduled normal scroll.
 let defaultScrollTimeout = null;
 
+
+// ------------------------
+// Universal Banner Parallax and Zoom
+// ------------------------
+function universalParallax() {
+  const bannerSection = document.querySelector('.universalBanner');
+  const bannerImage = document.querySelector('.universalBanner .banner-image');
+  let lastScroll = 0;
+
+  // Ensure bannerImage exists
+  if (!bannerSection || !bannerImage) return;
+
+  function updateParallaxAndZoom() {
+    const scrollY = window.scrollY;
+    const sectionTop = bannerSection.offsetTop;
+    const sectionHeight = bannerSection.clientHeight;
+
+    // Exit if the section is out of view
+    if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop - window.innerHeight) return;
+
+    // Calculate progress (0 to 1) as the section moves through the viewport
+    const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
+
+    // Parallax effect: Move the image vertically by 25% of the section height
+    const parallaxY = progress * sectionHeight * 0.25;
+    bannerImage.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px)) scale(${1 + progress * 0.2})`;
+
+    // Request next frame if still in view
+    requestAnimationFrame(updateParallaxAndZoom);
+  }
+
+  // Scroll event listener with throttling
+  window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - lastScroll) > 2) {
+      requestAnimationFrame(updateParallaxAndZoom);
+      lastScroll = window.scrollY;
+    }
+  });
+
+  // Trigger initial update on load
+  requestAnimationFrame(updateParallaxAndZoom);
+}
+
+// Initialize the parallax and zoom effect on DOM load
+document.addEventListener('DOMContentLoaded', universalParallax);
+
 // -------------------
 // Text Cloud Configuration
 // -------------------

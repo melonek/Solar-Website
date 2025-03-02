@@ -459,3 +459,145 @@
 .missing {
   border: 2px solid red !important;
 }
+
+
+/* Universal Banner Styling */
+.universalBanner {
+  position: relative;
+  height: 70vh; /* Height as requested */
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+}
+
+/* Background container for parallax */
+.universalBanner .banner-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Background image with parallax and zoom effect */
+/* Background image with parallax and zoom effect */
+.universalBanner .banner-image {
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  width: 120%;
+  height: 120%;
+  background: url('../images/universalBanner/Solar-drone-photo-Perth.jpg') no-repeat center center;
+  background-size: cover;
+  --offset-x: -30px; /* Default left/right offset */
+  --offset-y: -50px; /* Default up/down offset */
+  transform: translate(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y))) scale(1);
+  will-change: transform;
+  transition: transform 0.5s ease-out;
+}
+
+/* Overlay for readability */
+.universalBanner .banner-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content styling */
+.universalBanner .banner-content {
+  max-width: 800px;
+  padding: 20px;
+}
+
+.universalBanner h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.universalBanner h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.universalBanner p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* Fade-in animations for text */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.universalBanner [data-animate="fadeInDown"] {
+  animation: fadeInDown 1s ease-out forwards;
+}
+
+.universalBanner [data-animate="fadeInUp"] {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+.universalBanner [data-animate="fadeIn"] {
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .universalBanner h1 {
+    font-size: 2.5rem;
+  }
+
+  .universalBanner h2 {
+    font-size: 1.5rem;
+  }
+
+  .universalBanner p {
+    font-size: 1rem;
+  }
+}

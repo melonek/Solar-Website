@@ -878,7 +878,6 @@ nav {
 /* Solar Brands Section */
 #solar-logo-cards-container {
     padding: 0;
-    margin-top: -5px;
     justify-content: center;
     text-align: center;
 }
@@ -888,6 +887,7 @@ nav {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+    margin-top: 20px;
     padding: 10px 0;
     width: 100%;
     max-width: 1600px;
@@ -2524,7 +2524,7 @@ nav {
 /* Solar Brands Section */
 #solar-logo-cards-container {
     padding: 0;
-    margin-top: -5px;
+    margin-top: 20px;
     justify-content: center;
     text-align: center;
 }
@@ -2777,14 +2777,25 @@ nav {
     height: 100%;
     background: url('./images/savingsBannerImages/solar-savings-calculator-perth-best-solar-installation.webp') no-repeat center center;
     background-size: cover;
-    opacity: 0.5; /* Adjust the opacity here */
-    z-index: 0;   /* Ensure it sits behind the content */
-  }
+    z-index: 0; /* Ensure it sits behind the content */
+}
+
+/* Add a pseudo-element for the dark overlay, as in the previous CSS */
+#banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Dark overlay for better text readability, taken from the previous CSS */
+    z-index: 1; /* Ensure it sits above the background image but below the content */
+}
   
   /* Ensure content is positioned above the background */
   .banner-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     width: 100%;
     text-align: center;
     max-width:1000px;
@@ -2805,7 +2816,7 @@ nav {
   /* Headings styling */
   #banner h2,
   #banner h3 {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     padding: 0.5rem 1rem;
     border-radius: 5px;
     color: #fff;

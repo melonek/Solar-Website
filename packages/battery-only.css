@@ -29,12 +29,6 @@ html {
     border: 2px solid #FFA500 !important;
 }
 
-/* Intro Section */
-#battery-logo-cards-text-section {
-    text-align: center;
-    padding: 20px;
-  }
-  
   /* Battery Brand Cards */
   #battery-logo-cards-container {
     display: flex;
@@ -127,38 +121,6 @@ html {
     margin: 10px auto;
 }
 
-  /* === BATTERY STORAGE INTRO SECTION === */
-#battery-logo-cards-text-section {
-    background-color: #eff8f2; /* Light background for a soft, clean look */
-    padding: 60px 20px; /* Spacing around the section */
-    text-align: center; /* Center align text */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin: 20px 0; /* Margin above and below */
-}
-
-#battery-logo-cards-text-section h1 {
-    font-size: 36px; /* Larger size for the main title */
-    font-weight: 700; /* Bold title */
-    color: #2C3E50; /* Dark color for the main title */
-    margin-bottom: 15px; /* Space below the title */
-}
-
-#battery-logo-cards-text-section h2 {
-    font-size: 24px; /* Medium size for the subtitle */
-    font-weight: 500; /* Slightly lighter weight */
-    color: #16A085; /* Greenish accent color */
-    margin-bottom: 20px; /* Space below the subtitle */
-}
-
-#battery-logo-cards-text-section p {
-    font-size: 18px; /* Comfortable size for text */
-    font-weight: 400; /* Regular weight */
-    color: #7F8C8D; /* Lighter text color */
-    line-height: 1.6; /* Improved readability */
-    max-width: 800px; /* Maximum width for readability */
-    margin: 0 auto; /* Center the text */
-}
 
 /* === BATTERY BRANDS SECTION === */
 #battery-logo-cards-container {
