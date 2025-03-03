@@ -2412,15 +2412,18 @@ nav {
     }
 }
 
-/* Build Your Own Solar System Section */
+/* Updated Build Your Own Solar System Section */
 #build-solar {
     position: relative;
-    height: 100vh;
-    overflow: hidden;
-    overflow-y: hidden;
-  }
-  
-  .build-solar-video {
+    min-height: 100vh;
+    overflow: visible;
+    display: flex;               /* Enable Flexbox */
+    justify-content: center;     /* Center horizontally */
+    align-items: center;         /* Center vertically */
+    flex-direction: column;      /* Optional: Stack children vertically */
+}
+
+.build-solar-video {
     position: absolute;
     top: 0;
     left: 0;
@@ -2428,9 +2431,9 @@ nav {
     height: 100%;
     z-index: 1;
     overflow: hidden;
-  }
-  
-  .build-solar-video video {
+}
+
+.build-solar-video video {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -2440,25 +2443,19 @@ nav {
     height: auto;
     transform: translate(-50%, -50%);
     object-fit: cover;
-    will-change: transform;
-  }
-  
-  /* Center the content absolutely */
-  .build-solar-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  width: 100%;
-  max-width: 1000px;
-  text-align: center;
-  color: #fff;
-  padding: 20px;
-  /* Constrain height so content never overflows the section */
-  max-height: calc(100vh - 40px); /* 40px accounts for top & bottom padding */
-  overflow-y: auto; /* Add vertical scrolling if content is too tall */
-  }
+}
+
+/* Remove absolute centering so content flows naturally */
+.build-solar-content {
+    position: relative; /* Changed from absolute */
+    z-index: 2;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+}
   
   .build-solar-content h2 {
     font-size: 3rem;
@@ -2504,28 +2501,25 @@ nav {
   build-solar section becomes a regular (auto-height) section. This way, the entire 
   section (video plus content) will scroll normally with the page.
 */
-@media (max-width: 768px) {
-    /* Force the build-solar section to be full viewport height and hide any overflow */
+@media (max-width: 768px){
     #build-solar {
-      position: relative;
-      height: 100vh;
-      max-height: 100vh;
-      width: 100%;
-      overflow: hidden;
-      overflow-y:hidden;
+        position: relative;
+        min-height: 100vh;
+        overflow: visible;
+        display: flex;
+        justify-content: center;  /* Centers horizontally */
+        align-items: center;      /* Centers vertically */
     }
-    
     /* Background video remains absolutely positioned to cover the section */
     .build-solar-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      overflow: hidden;
-      overflow-y:hidden;
-    }
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        overflow: hidden;
+      }
     
     .build-solar-video video {
       position: absolute;
@@ -2542,21 +2536,13 @@ nav {
     
     /* Center the overlay content and force it to be confined within 100vh */
     .build-solar-content {
-      position: absolute;
-      top: 65%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      width: 90%;
-      max-width: 1000px;
-      padding: 20px;
-      box-sizing: border-box;
-      text-align: center;
-      color: #fff;
-      overflow: hidden;      /* Prevent internal scrolling */
-      height: 100%;          /* Force it to fill the parent height */
-      max-height: 100vh;     /* Ensure it never exceeds viewport height */
-      overflow-y:hidden;
+        position: relative; /* Ensure it’s not absolutely positioned */
+        margin: 0 auto;     /* Center horizontally if needed */
+        width: 100%;
+        max-width: 1000px;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
     }
   }
 
