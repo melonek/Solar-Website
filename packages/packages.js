@@ -36,7 +36,7 @@ let lastButtonClicked = null;       // stores the last clicked submit button
 let submissionAttempted = false;    // becomes true when a submit button is clicked
 
 // We'll use this to cancel any scheduled normal scroll.
-let defaultScrollTimeout = null
+let defaultScrollTimeout = null;
 
 // ------------------------
 // Universal Banner Parallax and Zoom
@@ -56,37 +56,32 @@ function universalParallax() {
   bannerImage.style.backfaceVisibility = 'hidden';
   bannerImage.style.transformStyle = 'preserve-3d';
 
-  // Preload the background image to avoid rendering delays
+  // Preload the background image
   const preloadImage = new Image();
   preloadImage.src = '../images/universalBanner/Solar-drone-photo-Perth.webp';
   preloadImage.onload = () => {
     console.log('Banner image preloaded');
-    // Initialize precomputation after image is loaded
     precomputeTransformValues();
-    // Trigger initial update
     requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
   };
 
-  // Precompute transform values for the entire scroll range
+  // Precompute transform values
   function precomputeTransformValues() {
     const sectionTop = bannerSection.offsetTop;
     const sectionHeight = bannerSection.clientHeight;
-    const maxScroll = sectionTop + sectionHeight; // Max scroll position where the section is in view
-    const step = 10; // Precompute every 10px of scroll
+    const maxScroll = sectionTop + sectionHeight;
+    const step = 10;
 
     precomputedValues = [];
 
-    // Loop through scroll positions in increments
     for (let scrollY = sectionTop - window.innerHeight; scrollY <= maxScroll; scrollY += step) {
-      // Calculate progress (0 to 1) as if the section moves through the viewport
       const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
 
       // Parallax effect: Move the image vertically by 25% of the section height
       const parallaxY = progress * sectionHeight * 0.25;
-      // Zoom effect: Scale up to 1.2x
-      const scale = 1 + progress * 0.2;
+      // Reduced zoom effect: Scale up to 1.15x (was 1.2x)
+      const scale = 1 + progress * 0.15; // Changed from 0.2 to 0.15
 
-      // Store the precomputed transform values
       precomputedValues.push({
         scrollY,
         transform: `translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y) + ${parallaxY}px), 0) scale(${scale})`
@@ -94,9 +89,7 @@ function universalParallax() {
     }
   }
 
-  // Find the closest precomputed transform value for the current scroll position
   function getPrecomputedTransform(scrollY) {
-    // Find the closest precomputed scroll position
     let closest = precomputedValues.reduce((prev, curr) =>
       Math.abs(curr.scrollY - scrollY) < Math.abs(prev.scrollY - scrollY) ? curr : prev
     );
@@ -108,16 +101,13 @@ function universalParallax() {
     const sectionHeight = bannerSection.clientHeight;
     const windowHeight = window.innerHeight;
 
-    // Exit early if section is far out of view
     if (scrollY > sectionTop + sectionHeight + windowHeight || scrollY < sectionTop - windowHeight) {
       ticking = false;
       return;
     }
 
-    // Use precomputed transform value
     const transform = getPrecomputedTransform(scrollY);
     bannerImage.style.transform = transform;
-
     ticking = false;
   }
 
@@ -130,18 +120,16 @@ function universalParallax() {
     }
   }
 
-  // Use passive scroll listener for better performance
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Recalculate precomputed values on window resize (optional, but useful if section dimensions change)
   window.addEventListener('resize', () => {
     precomputeTransformValues();
     requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
   });
 }
 
-// Ensure DOM is loaded before running
 document.addEventListener('DOMContentLoaded', universalParallax);
+
 
 // -------------------
 // Text Cloud Configuration

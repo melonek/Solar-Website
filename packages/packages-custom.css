@@ -478,17 +478,19 @@
 /* Background image with parallax and zoom effect */
 .universalBanner .banner-image {
   position: absolute;
-  top: 40%;
-  left: 60%;
-  width: 120%;
-  height: 120%;
+  top: 50%; /* Center vertically to start; adjust if needed */
+  left: 50%; /* Center horizontally */
+  width: 100%; /* Ensure it fills the section width initially */
+  height: 100%; /* Ensure it fills the section height initially */
+  min-width: 120%; /* Allow some oversizing for parallax/zoom */
+  min-height: 120%; /* Allow some oversizing for parallax/zoom */
   background: url('../images/universalBanner/Solar-drone-photo-Perth.webp') no-repeat center center;
-  background-size: cover;
-  --offset-x: -30px; /* Default left/right offset */
-  --offset-y: -50px; /* Default up/down offset */
-  transform: translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y)), 0) scale(1);
+  background-size: cover; /* Ensure the image covers the area without gaps */
+  --offset-x: 0px; /* Reset offsets for now; adjust if needed */
+  --offset-y: 0px; /* Reset offsets for now; adjust if needed */
+  transform: translate3d(-50%, -50%, 0) scale(1); /* Base transform centers the image */
   will-change: transform;
-  transition: transform 0.1s linear; /* Slight smoothing for mobile */
+  transition: transform 0.1s linear;
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
