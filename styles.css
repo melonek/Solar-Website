@@ -2602,6 +2602,7 @@ nav {
     opacity: 0; /* Start hidden */
     transform: translateX(50px); /* Initial right offset */
     transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+    margin-bottom: -40px;
 }
   
   #\$btn-savings:hover {
