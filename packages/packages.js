@@ -58,49 +58,65 @@ function preloadBannerImage() {
 document.addEventListener('DOMContentLoaded', preloadBannerImage);
 
 
+// ------------------------
+// Universal Banner Parallax and Zoom
+// ------------------------
 function universalParallax() {
   const bannerSection = document.querySelector('.universalBanner');
   const bannerImage = document.querySelector('.universalBanner .banner-image');
-  let lastScroll = 0;
+  let ticking = false;
+  let lastScrollY = 0;
 
+  // Ensure elements exist
   if (!bannerSection || !bannerImage) return;
 
-  // Hint for hardware acceleration
-  bannerImage.style.willChange = "transform";
-  bannerImage.style.backfaceVisibility = "hidden";
+  // Add CSS to force hardware acceleration and smooth rendering
+  bannerImage.style.willChange = 'transform';
+  bannerImage.style.backfaceVisibility = 'hidden';
+  bannerImage.style.transformStyle = 'preserve-3d';
 
-  function updateParallaxAndZoom() {
-    const scrollY = window.scrollY;
+  function updateParallaxAndZoom(scrollY) {
     const sectionTop = bannerSection.offsetTop;
     const sectionHeight = bannerSection.clientHeight;
+    const windowHeight = window.innerHeight;
 
-    // Exit if the section is out of view
-    if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop - window.innerHeight) return;
+    // Exit early if section is far out of view
+    if (scrollY > sectionTop + sectionHeight + windowHeight || scrollY < sectionTop - windowHeight) {
+      ticking = false;
+      return;
+    }
 
     // Calculate progress (0 to 1) as the section moves through the viewport
     const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
 
     // Parallax effect: Move the image vertically by 25% of the section height
     const parallaxY = progress * sectionHeight * 0.25;
-    
-    // Revert to the original translate3d with calc()
-    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${1 + progress * 0.2})`;
+    // Zoom effect: Scale up to 1.2x
+    const scale = 1 + progress * 0.2;
+
+    // Apply transform with translate3d for hardware acceleration
+    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${scale})`;
+    ticking = false;
   }
 
-  // Using a passive event listener and a small threshold for smoother updates
-  window.addEventListener('scroll', () => {
-    if (Math.abs(window.scrollY - lastScroll) > 2) {
-      requestAnimationFrame(updateParallaxAndZoom);
-      lastScroll = window.scrollY;
+  function onScroll() {
+    lastScrollY = window.scrollY;
+
+    if (!ticking) {
+      requestAnimationFrame(() => updateParallaxAndZoom(lastScrollY));
+      ticking = true;
     }
-  }, { passive: true });
+  }
+
+  // Use passive scroll listener for better performance
+  window.addEventListener('scroll', onScroll, { passive: true });
 
   // Trigger initial update on load
-  requestAnimationFrame(updateParallaxAndZoom);
+  requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
 }
 
+// Ensure DOM is loaded before running
 document.addEventListener('DOMContentLoaded', universalParallax);
-
 
 // -------------------
 // Text Cloud Configuration

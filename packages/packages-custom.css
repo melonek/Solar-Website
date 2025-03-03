@@ -461,6 +461,7 @@
   justify-content: center;
   color: #fff;
   text-align: center;
+  will-change: transform;
 }
 
 /* Background container for parallax */
@@ -485,9 +486,11 @@
   background-size: cover;
   --offset-x: -30px; /* Default left/right offset */
   --offset-y: -50px; /* Default up/down offset */
-  transform: translate(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y))) scale(1);
+  transform: translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y)), 0) scale(1);
   will-change: transform;
-  transition: transform 0.5s ease-out;
+  transition: transform 0.1s linear; /* Adjusted for smoother updates on mobile */
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 /* Overlay for readability */
