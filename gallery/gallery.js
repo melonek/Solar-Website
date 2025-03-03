@@ -224,6 +224,12 @@ function createCard(job) {
         modal.style.display = 'none';
       }
     });
+
+    window.addEventListener('touchstart', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
     
     // Lightbox functionality: display full-size image (approx 920px x 720px)
     function openLightbox(src) {
