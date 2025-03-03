@@ -45,47 +45,68 @@ let defaultScrollTimeout = null;
 // -------------------------
 // Preload the Banner Image
 // -------------------------
-function preloadImage(url, callback) {
-  const img = new Image();
-  img.src = url;
-  img.onload = callback;
-}
 
-const bannerImageUrl = '../images/universalBanner/Solar-drone-photo-Perth.webp';
-
-preloadImage(bannerImageUrl, function() {
-  const bannerImageDiv = document.querySelector('.banner-image');
-  if (bannerImageDiv) {
-    bannerImageDiv.style.backgroundImage = `url(${bannerImageUrl})`;
-    bannerImageDiv.style.backgroundSize = 'cover';
-    bannerImageDiv.style.backgroundPosition = 'center';
+document.addEventListener('DOMContentLoaded', function() {
+  function preloadImage(url, callback) {
+    const img = new Image();
+    img.src = url;
+    img.onload = callback;
   }
-});
-
-// -------------------------
-// Universal Banner Parallax & Zoom with GSAP
-// -------------------------
-gsap.registerPlugin(ScrollTrigger);
-
-// Set initial transform values for proper centering
-gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
-
-// Increase the vertical movement multiplier for a stronger parallax effect.
-gsap.to(".banner-image", {
-  scrollTrigger: {
-    trigger: ".universalBanner",
-    start: "top top",   // When banner's top reaches viewport top
-    end: "bottom top",  // When banner's bottom reaches viewport top
-    scrub: true,
-    // markers: true, // Uncomment for debugging
-  },
-  y: function() {
-    const sectionHeight = document.querySelector('.universalBanner').clientHeight;
-    return sectionHeight * 0.35; // Increased from 0.25 to 0.35 for a more pronounced vertical shift
-  },
-  scale: 1.2,  // Zoom from 1 to 1.2 (adjust if needed)
-  ease: "none",
-  force3D: true
+  
+  const bannerImageUrl = '../images/universalBanner/Solar-drone-photo-Perth.webp';
+  
+  preloadImage(bannerImageUrl, function() {
+    const bannerImageDiv = document.querySelector('.banner-image');
+    if (bannerImageDiv) {
+      bannerImageDiv.style.backgroundImage = `url(${bannerImageUrl})`;
+      bannerImageDiv.style.backgroundSize = 'cover';
+      bannerImageDiv.style.backgroundPosition = 'center';
+    }
+  });
+  
+  // -------------------------
+  // Universal Banner Parallax & Zoom with GSAP
+  // -------------------------
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Set initial transform values for proper centering
+  gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
+  
+  // Increase the vertical movement multiplier for a stronger parallax effect.
+  gsap.to(".banner-image", {
+    scrollTrigger: {
+      trigger: ".universalBanner",
+      start: "top top",   // When banner's top reaches viewport top
+      end: "bottom top",  // When banner's bottom reaches viewport top
+      scrub: true,
+      // markers: true, // Uncomment for debugging
+    },
+    y: function() {
+      const sectionHeight = document.querySelector('.universalBanner').clientHeight;
+      return sectionHeight * 0.35; // Increased from 0.25 to 0.35 for a more pronounced vertical shift
+    },
+    scale: 1.2,  // Zoom from 1 to 1.2 (adjust if needed)
+    ease: "none",
+    force3D: true
+  });
+  
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
+  gsap.to(".banner-image", {
+    scrollTrigger: {
+      trigger: ".universalBanner",
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+    },
+    y: function() {
+      const sectionHeight = document.querySelector('.universalBanner').clientHeight;
+      return sectionHeight * 0.35;
+    },
+    scale: 1.1,
+    ease: "none",
+    force3D: true
+  });
 });
 
 
