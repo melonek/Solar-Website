@@ -185,7 +185,7 @@ function createCard(job) {
       // Left column: header and first two additional images
       const leftColumn = document.createElement('div');
       leftColumn.className = 'modal-column';
-      leftColumn.innerHTML = `<h1>Rooftop solar installation</h1>`;
+      leftColumn.innerHTML = `<h1>Rooftop solar installation (Solar Panels)</h1>`;
       job.additionalImages.slice(0,2).forEach(src => {
         const img = document.createElement('img');
         img.src = src;
