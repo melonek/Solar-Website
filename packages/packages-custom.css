@@ -454,7 +454,7 @@
 /* Universal Banner Container */
 .universalBanner {
   position: relative;
-  height: 70vh; /* Height as requested */
+  height: 100vh; /* Height as requested */
   width: 100%;
   overflow: hidden;
   display: flex;
