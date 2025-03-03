@@ -67,9 +67,10 @@ preloadImage(bannerImageUrl, function() {
 // -------------------------
 gsap.registerPlugin(ScrollTrigger);
 
-// Set the initial state so that the element is centered via percentage transforms
+// Set initial transform values for proper centering
 gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
 
+// Increase the vertical movement multiplier for a stronger parallax effect.
 gsap.to(".banner-image", {
   scrollTrigger: {
     trigger: ".universalBanner",
@@ -78,16 +79,15 @@ gsap.to(".banner-image", {
     scrub: true,
     // markers: true, // Uncomment for debugging
   },
-  // Animate a vertical shift equal to 25% of the banner's height
   y: function() {
     const sectionHeight = document.querySelector('.universalBanner').clientHeight;
-    return sectionHeight * 0.25; // Matches original: progress * sectionHeight * 0.25
+    return sectionHeight * 0.35; // Increased from 0.25 to 0.35 for a more pronounced vertical shift
   },
-  // Animate scale from 1 to 1.1
-  scale: 1.1,
+  scale: 1.2,  // Zoom from 1 to 1.2 (adjust if needed)
   ease: "none",
   force3D: true
 });
+
 
 
 
