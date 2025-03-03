@@ -198,7 +198,7 @@ function createCard(job) {
       // Right column: header and remaining two additional images
       const rightColumn = document.createElement('div');
       rightColumn.className = 'modal-column';
-      rightColumn.innerHTML = `<h1>Wall-mounted inverter setup</h1>`;
+      rightColumn.innerHTML = `<h1>Wall-mounted inverter installation</h1>`;
       job.additionalImages.slice(2,4).forEach(src => {
         const img = document.createElement('img');
         img.src = src;
