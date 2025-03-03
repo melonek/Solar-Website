@@ -1454,208 +1454,6 @@ nav {
     transform: translateY(0);
 }
 
-
-/* Fancy button wrapper */
-.button-wrapper {
-    overflow: hidden;
-    position: relative; /* Helps establish a new positioning context */
-    width: 100%;
-  }
-
-  
-/* Button Mirror Layout */
-.button-split-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px; /* Space between buttons */
-    flex-wrap: wrap;
-    margin: 2rem auto;
-    max-width: 800px;
-    gap: 8px; /* Reduced from 15px */
-    margin: 1.5rem auto;
-    
-}
-
-.fancy-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1; /* Helps prevent extra spacing issues */
-    flex: 0 1 auto;
-    min-width: 200px;
-    padding: 1rem 1.5rem;
-    border-radius: 30px;
-    text-align: center;
-    font-size: 1.1rem;
-    pointer-events: auto; /* Ensures clicks are registered */
-    transition: all 0.3s ease;
-    position: relative;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 0; /* Center the button if needed */
-    opacity: 0;
-    transform: translateX(-50px); /* Initial hidden state */
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    overflow: hidden; /* Prevents child elements from overflowing */
-
-}
-.fancy-button[data-reveal="left"] {
-  transform: translateX(-50px);
-}
-
-.fancy-button[data-reveal="right"] {
-  transform: translateX(50px);
-}
-
-@keyframes buttonGlow {
-    0% {
-        box-shadow: 0 0 0 rgba(46, 204, 113, 0);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
-    }
-    100% {
-        box-shadow: 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-
-.fancy-button.revealed {
-    opacity: 1;
-    transform: translateX(0);
-    animation: buttonGlow 1.2s ease-out forwards;
-}
-
-/* Hover Effect for Buttons */
-.fancy-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
-
-/* For screens 780px and below */
-@media (max-width: 780px) {
-    .button-container {
-        gap: 15px; /* Decrease space between buttons */
-        margin-top: 20px; /* Reduce gap above buttons */
-        padding: 20px;
-    }
-
-.button-wrapper {
-    flex-direction: column; /* Stack items vertically on smaller screens */
-    align-items: center;
-    padding: 0 10px; /* Less padding for small screens */
-}
-
-    .fancy-button {
-        padding: 0.8rem 1.5rem; /* Adjust button padding */
-        font-size: 1rem; /* Reduce font size */
-    }
-}
-
-/* For screens 430px and below */
-@media (max-width: 430px) {
-    .button-container {
-        flex-direction: column; /* Stack buttons vertically */
-        gap: 10px; /* Decrease space between buttons further */
-    }
-
-    .fancy-button, .link-button {
-        padding: 0.8rem 1.2rem; /* Adjust button padding further */
-        font-size: 0.9rem; /* Adjust font size for smaller screens */
-    }
-}
-
-
- /* Send Button Styling */
- #send-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 auto; /* Center the button if needed */
- }
-
-#send-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
- /*The button "That's correct"*/
-/* Confirm Selection Button - Matching Fancy Button */
-#confirm-selection {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 20px auto; /* Center the button if needed */
-}
-
-#confirm-selection:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-}
-
-/* Enquire button */
-#enquire-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 auto; /* Center the button if needed */
-}
-
-#enquire-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
-#confirm-selection, #enquire-button {
-    font-weight: normal !important;
-}
-
-/* Import the font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
-
-
 /* Reset some default styles */
 * {
     margin: 0;
@@ -2676,23 +2474,29 @@ nav {
     border-radius: 5px; /* Rounded corners to match the button */
   }
   
-  /* Unique styles for the build-solar button */
-  #build-solar-btn.fancy-button {
+/* Unique styles for the build-solar button */
+#build-solar-btn {
     background: linear-gradient(135deg, #2196f3, #21cbf3);
     color: #fff;
     padding: 30px 60px;
+    text-decoration: none;
+    border-radius: 30px;
     font-size: 2rem;
+    display: inline-block;
+    opacity: 0;               /* Initially hidden */
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
 
-  }
-  
-  #build-solar-btn.fancy-button:hover {
+/* Hover state */
+#build-solar-btn:hover {
     background: linear-gradient(135deg, #1976d2, #1e88e5);
-  }
-  
-  /* When revealed, slide to natural position */
-  #build-solar-btn.fancy-button.revealed {
+}
+
+/* When revealed, slide to natural position */
+#build-solar-btn.revealed {
     transform: translateX(0);
-  }
+    opacity: 1;
+}
 
   /* 
   Mobile adjustments:
@@ -2802,16 +2606,26 @@ nav {
     margin: 0 auto;
   }
   
-  #\$btn-savings.fancy-button {
+  #\$btn-savings {
     background: linear-gradient(135deg, #2196f3, #21cbf3, #2196f3);
     color: #fff;
-    padding: 30px 60px;   /* Increased padding for a larger button */
-    font-size: 2rem;      /* Increased font size */
-  }
+    padding: 30px 60px;
+    font-size: 2rem;
+    text-decoration: none;
+    border-radius: 30px;
+    opacity: 0; /* Start hidden */
+    transform: translateX(50px); /* Initial right offset */
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+}
   
-  #\$btn-savings.fancy-button:hover {
+  #\$btn-savings:hover {
     background: linear-gradient(135deg, #1976d2, #1e88e5, #1976d2);
   }
+
+  #\$btn-savings.revealed {
+    transform: translateX(0);
+    opacity: 1;
+}
   
   /* Headings styling */
   #banner h2,
@@ -2830,6 +2644,154 @@ nav {
   #banner h3 {
     font-size: 1.5rem;
     margin-bottom: 40px;
+  }
+  
+/* Shiny button effect with diffused shine & heart-like pulsate */
+.shiny {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.shiny::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    /* Creates a diffused streak using a linear gradient */
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.7), transparent);
+    transform: skewX(-20deg);
+    filter: blur(1px);
+    pointer-events: none;
+    /* Shine animation – moves the streak from left to right */
+    animation: shine 7s infinite;
+}
+
+/* Keyframes for the shine effect
+   (0–~14% of the cycle: the streak moves across; then fades out) */
+@keyframes shine {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    14.3% {
+        left: 100%;
+        opacity: 1;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        left: 100%;
+        opacity: 0;
+    }
+}
+
+/* Keyframes for the pulsate effect
+   (around 14%-29% of the cycle the button scales up then back to normal,
+    mimicking a heartbeat; the rest of the cycle it stays at scale(1)) */
+/* Pulsate effect on the inner content only */
+.shiny .button-inner {
+    display: inline-block;
+    animation: pulsate 7s infinite;
+}
+
+@keyframes pulsate {
+    0%, 14.3%, 100% {
+        transform: scale(1);
+    }
+    21.5% {
+        transform: scale(1.05);
+    }
+    28.6% {
+        transform: scale(1);
+    }
+}
+
+/* Base styling for a modern, neutral, professional button */
+.fancy-button {
+    display: inline-block;
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease;
+    opacity: 0; /* Initially hidden */
+  }
+  
+  /* Hover effect for interactivity */
+  .fancy-button:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  
+  /* Set the initial horizontal offset based on the data-reveal attribute */
+  .fancy-button[data-reveal="left"] {
+    transform: translateX(-50px);
+  }
+  
+  .fancy-button[data-reveal="right"] {
+    transform: translateX(50px);
+  }
+  
+  /* When revealed, smoothly animate into its natural position */
+  .fancy-button.revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  #enquire-button {
+    display: inline-block;
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease;
+    opacity: 1;
+  }
+
+  #enquire-button:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  /* Send button styling */
+  
+#send-button{
+    display: inline-block;
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease;
+    opacity: 1;
+}
+
+  
+  /* Hover effect for interactivity */
+  #send-button:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   }
   
 
@@ -3315,203 +3277,6 @@ nav {
 }
 
 
-/* Fancy button wrapper */
-.button-wrapper {
-    overflow: hidden;
-    position: relative; /* Helps establish a new positioning context */
-    width: 100%;
-  }
-
-  
-/* Button Mirror Layout */
-.button-split-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px; /* Space between buttons */
-    flex-wrap: wrap;
-    margin: 2rem auto;
-    max-width: 800px;
-    gap: 8px; /* Reduced from 15px */
-    margin: 1.5rem auto;
-    
-}
-
-.fancy-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1; /* Helps prevent extra spacing issues */
-    flex: 0 1 auto;
-    min-width: 200px;
-    padding: 1rem 1.5rem;
-    border-radius: 30px;
-    text-align: center;
-    font-size: 1.1rem;
-    pointer-events: auto; /* Ensures clicks are registered */
-    transition: all 0.3s ease;
-    position: relative;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 0; /* Center the button if needed */
-    opacity: 0;
-    transform: translateX(-50px); /* Initial hidden state */
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    overflow: hidden; /* Prevents child elements from overflowing */
-
-}
-.fancy-button[data-reveal="left"] {
-  transform: translateX(-50px);
-}
-
-.fancy-button[data-reveal="right"] {
-  transform: translateX(50px);
-}
-
-@keyframes buttonGlow {
-    0% {
-        box-shadow: 0 0 0 rgba(46, 204, 113, 0);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
-    }
-    100% {
-        box-shadow: 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-
-.fancy-button.revealed {
-    opacity: 1;
-    transform: translateX(0);
-    animation: buttonGlow 1.2s ease-out forwards;
-}
-
-/* Hover Effect for Buttons */
-.fancy-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
-
-/* For screens 780px and below */
-@media (max-width: 780px) {
-    .button-container {
-        gap: 15px; /* Decrease space between buttons */
-        margin-top: 20px; /* Reduce gap above buttons */
-        padding: 20px;
-    }
-
-.button-wrapper {
-    flex-direction: column; /* Stack items vertically on smaller screens */
-    align-items: center;
-    padding: 0 10px; /* Less padding for small screens */
-}
-
-    .fancy-button {
-        padding: 0.8rem 1.5rem; /* Adjust button padding */
-        font-size: 1rem; /* Reduce font size */
-    }
-}
-
-/* For screens 430px and below */
-@media (max-width: 430px) {
-    .button-container {
-        flex-direction: column; /* Stack buttons vertically */
-        gap: 10px; /* Decrease space between buttons further */
-    }
-
-    .fancy-button, .link-button {
-        padding: 0.8rem 1.2rem; /* Adjust button padding further */
-        font-size: 0.9rem; /* Adjust font size for smaller screens */
-    }
-}
-
-
- /* Send Button Styling */
- #send-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 auto; /* Center the button if needed */
- }
-
-#send-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
- /*The button "That's correct"*/
-/* Confirm Selection Button - Matching Fancy Button */
-#confirm-selection {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 20px auto; /* Center the button if needed */
-}
-
-#confirm-selection:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-}
-
-/* Enquire button */
-#enquire-button {
-    background: linear-gradient(90deg, #163530, #90b9a7, #163530);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    font-family: "Roboto Slab", Arial, sans-serif; /* Added the font-family */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    width: auto; /* Prevents the button from stretching to max width */
-    margin: 0 auto; /* Center the button if needed */
-}
-
-#enquire-button:hover {
-    background: linear-gradient(90deg, #0E4023, #218838, #0E4023); /* Hover gradient */
-    transform: translateY(-2px); /* Slight upward movement */
-    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); /* Glow effect */
-}
-
-#confirm-selection, #enquire-button {
-    font-weight: normal !important;
-}
-
 /* Timeline Wrapper */
 .timeline-wrapper {
     display: flex;
@@ -3921,6 +3686,8 @@ footer {
         font-size: 1.2em;
     }
 }
+
+
 
 /* FAQ Styling */
 .faq-container {

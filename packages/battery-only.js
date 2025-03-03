@@ -15,7 +15,7 @@
             attachSorting();
             attachEnquiryScroll();
             attachFormSubmitHandler();
-            setupScrollObserversd();
+            setupScrollObservers();
             setupFallbackScrollListener();
             initializeShineEffect()
             
@@ -117,13 +117,26 @@
             }
         });
 
-        const bundleButton = document.createElement('a');
-        bundleButton.id = 'bundle-btn';
-        bundleButton.classList.add('fancy-button');
-        bundleButton.textContent = 'Bundle with solar system';
-        bundleButton.href = '../packages/packages.html';
-        batteryGrid.insertAdjacentElement('afterend', bundleButton);
+// Create the bundle button
+const bundleButton = document.createElement('a');
+bundleButton.id = 'bundle-btn';
+bundleButton.classList.add('fancy-button', 'shiny');
+// Set the data-reveal attribute (change to "left" or "right" as desired)
+bundleButton.setAttribute('data-reveal', 'left');
+
+// Create the inner span for pulsate effect
+const innerSpan = document.createElement('span');
+innerSpan.classList.add('button-inner');
+innerSpan.textContent = 'Bundle with solar system';
+
+// Append the span to the button
+bundleButton.appendChild(innerSpan);
+
+// Set the button href and insert it into the DOM
+bundleButton.href = '../packages/packages.html';
+batteryGrid.insertAdjacentElement('afterend', bundleButton);
     }
+
 
     function createProductCard(product, type) {
         const card = document.createElement("div");
@@ -456,31 +469,33 @@
     }
 
     // ===================== SETUP SCROLL OBSERVERS FOR TEXT CLOUDS =====================
-    function setupScrollObservers() {
-        const batteryGridSection = document.getElementById('battery-grid');
-        if (!batteryGridSection) {
-            console.warn("Battery grid section not found for observer!");
-            return;
-        }
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const batteryObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !hasShownBatteryCloud) {
-                    console.log("Battery grid section visible, showing cloud");
-                    showTextCloud("Choose your battery", 5000);
-                    hasShownBatteryCloud = true;
-                }
-            });
-        }, observerOptions);
-
-        batteryObserver.observe(batteryGridSection);
+function setupScrollObservers() {
+    const batteryGridSection = document.getElementById('battery-grid');
+    if (!batteryGridSection) {
+        console.warn("Battery grid section not found for observer!");
+        return;
     }
+
+    const observerOptions = {
+        root: null,
+        // A negative bottom margin makes the observer trigger 200px before the section is fully in view.
+        rootMargin: '0px 0px -200px 0px',
+        threshold: 0 // With rootMargin, even 0% visibility can trigger the callback.
+    };
+
+    const batteryObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasShownBatteryCloud) {
+                console.log("Battery grid section visible (adjusted), showing cloud");
+                showTextCloud("Choose your battery", 5000);
+                hasShownBatteryCloud = true;
+            }
+        });
+    }, observerOptions);
+
+    batteryObserver.observe(batteryGridSection);
+}
+
 
     // ===================== FALLBACK SCROLL LISTENER FOR "Choose your battery" =====================
     function setupFallbackScrollListener() {

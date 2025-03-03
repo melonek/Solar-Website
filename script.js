@@ -161,8 +161,6 @@ function revealFacebookTimelines() {
     }
   });
 }
-
-// Reveal buttons function (unchanged)
 function revealButtons() {
   const buttons = document.querySelectorAll('.fancy-button'),
         triggerBottom = window.innerHeight * 0.8;

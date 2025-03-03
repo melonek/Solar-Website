@@ -233,6 +233,7 @@
     padding: 1rem;
     border-radius: 8px;
     width: 100%;
+    margin-bottom: -20px;
   }
   .battery-category .filter-bar {
     display: flex;
@@ -292,18 +293,22 @@
   }
 
   .button-container button {
-    padding: 10px 20px;
+    display: inline-block;
+    padding: 0.75em 1.5em;
     font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #007BFF;
-    color: #fff;
-    transition: background-color 0.3s;
-    margin: 10px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease;
+    opacity: 1;
   }
   .button-container button:hover {
-    background-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   }
   
   /* ----------------- BUTTON CONTAINER ----------------- */
