@@ -17,7 +17,6 @@
             attachFormSubmitHandler();
             setupScrollObservers();
             setupFallbackScrollListener();
-            initializeShineEffect()
             
         } catch (error) {
             console.error("Error during initialization:", error);

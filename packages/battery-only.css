@@ -243,6 +243,7 @@ html {
   color: #333;
   opacity: 1;
   transition: opacity 0.5s ease;
+  top:10px;
 }
 
 .warning-icon {

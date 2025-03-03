@@ -82,7 +82,8 @@ function universalParallax() {
 
     // Parallax effect: Move the image vertically by 25% of the section height
     const parallaxY = progress * sectionHeight * 0.25;
-    bannerImage.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px)) scale(${1 + progress * 0.2})`;
+    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${1 + progress * 0.2})`;
+
 
     // Request next frame if still in view
     requestAnimationFrame(updateParallaxAndZoom);
