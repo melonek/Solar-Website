@@ -82,26 +82,22 @@ function universalParallax() {
 
     // Parallax effect: Move the image vertically by 25% of the section height
     const parallaxY = progress * sectionHeight * 0.25;
+    // Use translate3d for hardware acceleration on mobile devices
     bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${1 + progress * 0.2})`;
-
-
-    // Request next frame if still in view
-    requestAnimationFrame(updateParallaxAndZoom);
   }
 
-  // Scroll event listener with throttling
+  // Use a passive event listener and throttle updates when scrolling more than 10px
   window.addEventListener('scroll', () => {
-    if (Math.abs(window.scrollY - lastScroll) > 2) {
+    if (Math.abs(window.scrollY - lastScroll) > 10) {
       requestAnimationFrame(updateParallaxAndZoom);
       lastScroll = window.scrollY;
     }
-  });
+  }, { passive: true });
 
   // Trigger initial update on load
   requestAnimationFrame(updateParallaxAndZoom);
 }
 
-// Initialize the parallax and zoom effect on DOM load
 document.addEventListener('DOMContentLoaded', universalParallax);
 
 // -------------------
