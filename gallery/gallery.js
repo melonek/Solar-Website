@@ -244,19 +244,17 @@ function createCard(job) {
       document.getElementById('lightbox').style.display = 'none';
     });
     
-    window.addEventListener('click', (e) => {
-      const lightbox = document.getElementById('lightbox');
+    const lightbox = document.getElementById('lightbox');
+    lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         lightbox.style.display = 'none';
       }
     });
-
-    window.addEventListener('touchstart', (e) => {
-        const lightbox = document.getElementById('lightbox');
-        if (e.target === lightbox) {
-          lightbox.style.display = 'none';
-        }
-      });
+    lightbox.addEventListener('touchstart', (e) => {
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+      }
+    });
     
     // Auto-scroll using requestAnimationFrame for smooth continuous movement
     function autoScroll() {
