@@ -47,6 +47,9 @@ let defaultScrollTimeout = null;
 // -------------------------
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Now GSAP and ScrollTrigger should be defined
+  gsap.registerPlugin(ScrollTrigger);
+  
   function preloadImage(url, callback) {
     const img = new Image();
     img.src = url;
@@ -89,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ease: "none",
     force3D: true
   });
-  
+
   gsap.registerPlugin(ScrollTrigger);
   gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
   gsap.to(".banner-image", {
