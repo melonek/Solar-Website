@@ -42,7 +42,7 @@ let defaultScrollTimeout = null;
 // Universal Banner Parallax and Zoom
 // ------------------------
 // ------------------------
-// Universal Banner Parallax and Zoom
+// Universal Banner Parallax (No Zoom)
 // ------------------------
 function universalParallax() {
   const bannerSection = document.querySelector('.universalBanner');
@@ -65,7 +65,7 @@ function universalParallax() {
   preloadImage.onload = () => {
     console.log('Banner image preloaded');
     precomputeTransformValues();
-    requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
+    requestAnimationFrame(() => updateParallax(window.scrollY));
   };
 
   // Precompute transform values
@@ -80,14 +80,12 @@ function universalParallax() {
     for (let scrollY = sectionTop - window.innerHeight; scrollY <= maxScroll; scrollY += step) {
       const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
 
-      // Parallax effect: Move the image vertically by 25% of the section height
+      // Parallax effect: Move the image upward by 25% of the section height as you scroll down
       const parallaxY = progress * sectionHeight * 0.25;
-      // Reduced zoom effect: Scale from 1.05x to 1.1x
-      const scale = 1.05 + progress * 0.05; // Changed from 1.15 + progress * 0.15
 
       precomputedValues.push({
         scrollY,
-        transform: `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${scale})`
+        transform: `translate3d(-50%, calc(-50% + ${parallaxY}px), 0)`
       });
     }
   }
@@ -99,7 +97,7 @@ function universalParallax() {
     return closest.transform;
   }
 
-  function updateParallaxAndZoom(scrollY) {
+  function updateParallax(scrollY) {
     const sectionTop = bannerSection.offsetTop;
     const sectionHeight = bannerSection.clientHeight;
     const windowHeight = window.innerHeight;
@@ -118,7 +116,7 @@ function universalParallax() {
     lastScrollY = window.scrollY;
 
     if (!ticking) {
-      requestAnimationFrame(() => updateParallaxAndZoom(lastScrollY));
+      requestAnimationFrame(() => updateParallax(lastScrollY));
       ticking = true;
     }
   }
@@ -127,7 +125,7 @@ function universalParallax() {
 
   window.addEventListener('resize', () => {
     precomputeTransformValues();
-    requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
+    requestAnimationFrame(() => updateParallax(window.scrollY));
   });
 }
 

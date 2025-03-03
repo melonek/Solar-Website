@@ -1,0 +1,181 @@
+/* Reset and basic styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+  /* Installation Section */
+  .installation-section {
+    position: relative;
+    padding: 40px;
+    background: #fff;
+    overflow: hidden;
+  }
+  /* Gallery container with fade overlay edges */
+  .gallery-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .gallery {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  /* Card styling */
+  .card {
+    flex: 0 0 300px;
+    margin: 0 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .card img {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+  }
+  .job-details {
+    padding: 15px;
+  }
+  .job-details h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  .job-details p {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  .extra-images {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+  }
+  .extra-images img {
+    flex: 1;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+  }
+  .extra-images img:hover {
+    transform: scale(1.05);
+  }
+  .see-more-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  /* Navigation Controls */
+  .control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2em;
+    color: rgba(0, 0, 0, 0.5);
+    background: rgba(255,255,255,0.8);
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .control:hover {
+    background: rgba(255,255,255,1);
+  }
+  .control.left {
+    left: 10px;
+  }
+  .control.right {
+    right: 10px;
+  }
+  /* Fade overlay on edges */
+  .fade-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .fade-overlay.left {
+    left: 0;
+    background: linear-gradient(to right, #fff, transparent);
+  }
+  .fade-overlay.right {
+    right: 0;
+    background: linear-gradient(to left, #fff, transparent);
+  }
+  /* Modal styling */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  .modal.active {
+    display: flex;
+  }
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 10px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-content .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ff5c5c;
+    border: none;
+    color: #fff;
+    font-size: 1.2em;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+  .modal-content h2 {
+    margin-bottom: 10px;
+  }
+  .modal-content p {
+    margin-bottom: 5px;
+  }
+  .modal-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .modal-images img {
+    width: 100%;
+    max-width: calc(33.33% - 10px);
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  

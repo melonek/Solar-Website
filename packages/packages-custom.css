@@ -486,9 +486,7 @@
   min-height: 120%;
   background: url('../images/universalBanner/Solar-drone-photo-Perth.webp') no-repeat center center;
   background-size: cover;
-  --offset-x: 0px;
-  --offset-y: 0px;
-  transform: translate3d(-50%, -50%, 0) scale(1);
+  transform: translate3d(-50%, -50%, 0);
   will-change: transform;
   transition: transform 0.1s linear;
   backface-visibility: hidden;
