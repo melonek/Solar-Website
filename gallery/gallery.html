@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Installation Gallery</title>
   <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="../styles.css">
+
 </head>
 <body>
+    <section id="installation-gallery">
+        <header>
+          <h1>Installations</h1>
+          <p>Explore our past projects and installations.</p>
+        </header>
+        <div class="gallery-container">
+          <button class="control-btn left-btn">&lt;</button>
+          <div class="carousel">
+            <!-- Cards will be injected by JavaScript -->
+          </div>
+          <button class="control-btn right-btn">&gt;</button>
+        </div>
+      </section>
 
-  <section class="installation-section">
-    <div class="gallery-container">
-      <button class="control left" id="prevBtn">&#8249;</button>
-      <div class="gallery" id="gallery">
-        <!-- Cards will be injected here -->
-      </div>
-      <button class="control right" id="nextBtn">&#8250;</button>
-      <div class="fade-overlay left"></div>
-      <div class="fade-overlay right"></div>
-    </div>
-  </section>
-
-  <!-- Modal for installation details -->
-  <div class="modal" id="detailsModal">
+  <!-- Modal for job details -->
+  <div id="modal" class="modal">
     <div class="modal-content">
-      <button class="close-btn" id="modalClose">&times;</button>
-      <div id="modalBody">
-        <!-- Details content injected here -->
+      <span class="close-modal">&times;</span>
+      <div class="modal-body">
+        <!-- Modal content will be injected dynamically -->
       </div>
     </div>
   </div>
 
-  <!-- Modal for enlarged image -->
-  <div class="modal" id="imageModal">
-    <div class="modal-content">
-      <button class="close-btn" id="imageModalClose">&times;</button>
-      <img id="enlargedImage" src="" alt="Enlarged" style="width:100%; border-radius: 5px;">
-    </div>
+  <!-- Lightbox for full-size image display -->
+  <div id="lightbox" class="lightbox">
+    <span class="close-lightbox">&times;</span>
+    <img class="lightbox-content" src="" alt="Full Size">
   </div>
 
   <script src="gallery.js"></script>

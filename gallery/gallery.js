@@ -1,188 +1,272 @@
-// Data stored in an array – each object holds the job description and images.
-const installations = [
-    {
-      jobTitle: "Installation 1",
-      roofType: "Asphalt Shingle",
-      completionDate: "2023-08-15",
-      difficulty: "Medium",
-      timeToComplete: "3 days",
-      mainImage: "https://via.placeholder.com/300x200?text=Main+Image+1",
-      extraImages: [
-        "https://via.placeholder.com/150x100?text=Inverter",
-        "https://via.placeholder.com/150x100?text=Solar+Module+1",
-        "https://via.placeholder.com/150x100?text=Solar+Module+2"
-      ]
-    },
-    {
-      jobTitle: "Installation 2",
-      roofType: "Metal Roof",
-      completionDate: "2023-09-10",
-      difficulty: "High",
-      timeToComplete: "5 days",
-      mainImage: "https://via.placeholder.com/300x200?text=Main+Image+2",
-      extraImages: [
-        "https://via.placeholder.com/150x100?text=Inverter",
-        "https://via.placeholder.com/150x100?text=Solar+Module+1",
-        "https://via.placeholder.com/150x100?text=Solar+Module+2"
-      ]
-    },
-    {
-      jobTitle: "Installation 3",
-      roofType: "Tile Roof",
-      completionDate: "2023-07-22",
-      difficulty: "Low",
-      timeToComplete: "2 days",
-      mainImage: "https://via.placeholder.com/300x200?text=Main+Image+3",
-      extraImages: [
-        "https://via.placeholder.com/150x100?text=Inverter",
-        "https://via.placeholder.com/150x100?text=Solar+Module+1",
-        "https://via.placeholder.com/150x100?text=Solar+Module+2"
-      ]
-    }
-    // Add more installations as needed
-  ];
+/* gallery.js */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Use the new fallback image link for failed loads:
+    const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
+    
+    // Updated data array with the new 4th additional image link for each job
+    const jobs = [
+      {
+        title: "Solar Installation 1",
+        roofType: "Metal",
+        completionDate: "2023-09-01",
+        difficulty: "Medium",
+        timeToComplete: "2 days",
+        suburb: "Sydney",
+        mainImage: "https://live-production.wcms.abc-cdn.net.au/f2251d8ae3f73557147fada1afb2508b?impolicy=wcms_crop_resize&cropH=1008&cropW=1789&xPos=0&yPos=46&width=862&height=485",
+        additionalImages: [
+          "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
+          "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
+          "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
+          fallbackImage
+        ]
+      },
+      {
+        title: "Solar Installation 2",
+        roofType: "Tile",
+        completionDate: "2023-08-15",
+        difficulty: "High",
+        timeToComplete: "3 days",
+        suburb: "Melbourne",
+        mainImage: "https://live-production.wcms.abc-cdn.net.au/f2251d8ae3f73557147fada1afb2508b?impolicy=wcms_crop_resize&cropH=1008&cropW=1789&xPos=0&yPos=46&width=862&height=485",
+        additionalImages: [
+          "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
+          "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
+          "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
+          fallbackImage
+        ]
+      },
+      {
+        title: "Solar Installation 3",
+        roofType: "Asphalt Shingle",
+        completionDate: "2023-07-20",
+        difficulty: "Low",
+        timeToComplete: "1 day",
+        suburb: "Brisbane",
+        mainImage: "https://live-production.wcms.abc-cdn.net.au/f2251d8ae3f73557147fada1afb2508b?impolicy=wcms_crop_resize&cropH=1008&cropW=1789&xPos=0&yPos=46&width=862&height=485",
+        additionalImages: [
+          "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
+          "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
+          "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
+          fallbackImage
+        ]
+      }
+      // Add more job objects as needed.
+    ];
   
-  const gallery = document.getElementById('gallery');
+    const carousel = document.querySelector('.carousel');
+    const leftBtn = document.querySelector('.left-btn');
+    const rightBtn = document.querySelector('.right-btn');
+    const modal = document.getElementById('modal');
+    const modalBody = document.querySelector('.modal-body');
+    const closeModal = document.querySelector('.close-modal');
   
-  // Generate card elements from the installations array.
-  installations.forEach(item => {
+    let scrollSpeed = 0.5; // pixels per frame for auto-scroll
+    let currentTranslateX = 0;
+    
+// Create a card element from a job object
+function createCard(job) {
     const card = document.createElement('div');
     card.className = 'card';
-  
-    // Main image at the top.
+    
+    // Card main image (click to open lightbox)
     const mainImg = document.createElement('img');
-    mainImg.src = item.mainImage;
-    mainImg.alt = item.jobTitle;
-    // Click to enlarge main image.
-    mainImg.addEventListener('click', () => {
-      openImageModal(item.mainImage);
-    });
+    mainImg.src = job.mainImage;
+    mainImg.alt = job.title;
+    validateImage(mainImg);
+    mainImg.addEventListener('click', () => openLightbox(mainImg.src));
     card.appendChild(mainImg);
-  
-    // Job details styled similar to article content.
-    const detailsDiv = document.createElement('div');
-    detailsDiv.className = 'job-details';
-    detailsDiv.innerHTML = `
-      <h3>${item.jobTitle}</h3>
-      <p><strong>Roof Type:</strong> ${item.roofType}</p>
-      <p><strong>Completion Date:</strong> ${item.completionDate}</p>
-      <p><strong>Difficulty:</strong> ${item.difficulty}</p>
-      <p><strong>Time to Complete:</strong> ${item.timeToComplete}</p>
+    
+    // Create a row container for job details and button
+    const detailsRow = document.createElement('div');
+    detailsRow.className = 'details-row';
+    
+    // Left container for job details (50% width)
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'job-details';
+    detailsContainer.innerHTML = `
+      <h3>${job.title}</h3>
+      <p><strong>Roof Type:</strong> ${job.roofType}</p>
+      <p><strong>Completion:</strong> ${job.completionDate}</p>
+      <p><strong>Difficulty:</strong> ${job.difficulty}</p>
+      <p><strong>Time:</strong> ${job.timeToComplete}</p>
     `;
-    card.appendChild(detailsDiv);
+    
+    // Right container for the fancy Read More button (50% width)
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    
+    // Create the Read More button with an inner span
+    const readMoreBtn = document.createElement('button');
+    readMoreBtn.className = 'read-more shiny';
+    const innerSpan = document.createElement('span');
+    innerSpan.className = 'button-inner';
+    innerSpan.textContent = 'Read More';
+    readMoreBtn.appendChild(innerSpan);
+    
+    readMoreBtn.addEventListener('click', () => openModal(job));
+    buttonContainer.appendChild(readMoreBtn);
+    
+    // Append job details (left) then button container (right)
+    detailsRow.appendChild(detailsContainer);
+    detailsRow.appendChild(buttonContainer);
+    card.appendChild(detailsRow);
+    
+    // Additional images container with horizontal scrolling and gap
+    const imagesContainer = document.createElement('div');
+    imagesContainer.className = 'images';
+    job.additionalImages.forEach((imgSrc) => {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = job.title;
+      validateImage(img);
+      img.addEventListener('click', () => openLightbox(img.src));
+      imagesContainer.appendChild(img);
+    });
+    card.appendChild(imagesContainer);
+    
+    // Pause auto-scroll on hover over the card
+    card.addEventListener('mouseenter', () => scrollSpeed = 0);
+    card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
+    
+    return card;
+  }
   
-    // Extra images container (e.g. inverter and solar modules).
-    const extraContainer = document.createElement('div');
-    extraContainer.className = 'extra-images';
-    item.extraImages.forEach(imgSrc => {
-      const extraImg = document.createElement('img');
-      extraImg.src = imgSrc;
-      extraImg.alt = 'Extra Image';
-      extraImg.addEventListener('click', () => {
-        openImageModal(imgSrc);
+      
+    
+    // Validate image; if it fails to load, use the fallback image
+    function validateImage(img) {
+      img.addEventListener('error', function() {
+        img.src = fallbackImage;
       });
-      extraContainer.appendChild(extraImg);
+    }
+    
+    // Render cards into the carousel (and duplicate them for a continuous loop)
+    function renderCarousel() {
+      jobs.forEach(job => {
+        const card = createCard(job);
+        carousel.appendChild(card);
+      });
+      jobs.forEach(job => {
+        const cardClone = createCard(job);
+        carousel.appendChild(cardClone);
+      });
+    }
+    
+    // Open modal and populate it with job details
+    function openModal(job) {
+      modalBody.innerHTML = '';
+      
+      // Modal main image (clickable for lightbox); now slightly taller
+      const mainImg = document.createElement('img');
+      mainImg.className = 'modal-main-img';
+      mainImg.src = job.mainImage;
+      mainImg.alt = job.title;
+      validateImage(mainImg);
+      mainImg.addEventListener('click', () => openLightbox(mainImg.src));
+      modalBody.appendChild(mainImg);
+      
+      // Centered modal details container under the main image
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'modal-details';
+      detailsDiv.innerHTML = `
+        <p><strong>Roof Type:</strong> ${job.roofType}</p>
+        <p><strong>Completion:</strong> ${job.completionDate}</p>
+        <p><strong>Difficulty:</strong> ${job.difficulty}</p>
+        <p><strong>Time:</strong> ${job.timeToComplete}</p>
+        <p><strong>Suburb:</strong> ${job.suburb}</p>
+      `;
+      modalBody.appendChild(detailsDiv);
+      
+      // Container for two columns (each will show header + 2 additional images)
+      const columnsContainer = document.createElement('div');
+      columnsContainer.className = 'modal-columns';
+      
+      // Left column: header and first two additional images
+      const leftColumn = document.createElement('div');
+      leftColumn.className = 'modal-column';
+      leftColumn.innerHTML = `<h1>Rooftop solar installation</h1>`;
+      job.additionalImages.slice(0,2).forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = job.title;
+        validateImage(img);
+        img.addEventListener('click', () => openLightbox(img.src));
+        leftColumn.appendChild(img);
+      });
+      
+      // Right column: header and remaining two additional images
+      const rightColumn = document.createElement('div');
+      rightColumn.className = 'modal-column';
+      rightColumn.innerHTML = `<h1>Wall-mounted inverter setup</h1>`;
+      job.additionalImages.slice(2,4).forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = job.title;
+        validateImage(img);
+        img.addEventListener('click', () => openLightbox(img.src));
+        rightColumn.appendChild(img);
+      });
+      
+      columnsContainer.appendChild(leftColumn);
+      columnsContainer.appendChild(rightColumn);
+      modalBody.appendChild(columnsContainer);
+      
+      modal.style.display = 'block';
+    }
+    
+    closeModal.addEventListener('click', () => {
+      modal.style.display = 'none';
     });
-    card.appendChild(extraContainer);
-  
-    // "See More" button that opens a modal with additional details.
-    const seeMoreBtn = document.createElement('a');
-    seeMoreBtn.className = 'see-more-btn';
-    seeMoreBtn.textContent = 'See More';
-    seeMoreBtn.href = "#";
-    seeMoreBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openDetailsModal(item);
-    });
-    card.appendChild(seeMoreBtn);
-  
-    gallery.appendChild(card);
-  });
-  
-  // Auto-scroll the gallery slowly to the left.
-  let autoScrollInterval;
-  const scrollSpeed = 1; // pixels per interval
-  const intervalTime = 20; // milliseconds
-  
-  function startAutoScroll() {
-    autoScrollInterval = setInterval(() => {
-      // Scroll the parent container.
-      gallery.parentElement.scrollLeft += scrollSpeed;
-      // If reached the end, loop back to start.
-      if (gallery.parentElement.scrollLeft >= gallery.scrollWidth - gallery.parentElement.clientWidth) {
-        gallery.parentElement.scrollLeft = 0;
+    
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
       }
-    }, intervalTime);
-  }
-  function stopAutoScroll() {
-    clearInterval(autoScrollInterval);
-  }
-  startAutoScroll();
-  
-  // Pause auto-scroll when user hovers over the gallery.
-  gallery.parentElement.addEventListener('mouseenter', stopAutoScroll);
-  gallery.parentElement.addEventListener('mouseleave', startAutoScroll);
-  
-  // Control buttons to manually slide the gallery.
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  prevBtn.addEventListener('click', () => {
-    gallery.parentElement.scrollLeft -= 300; // approximate card width
-  });
-  nextBtn.addEventListener('click', () => {
-    gallery.parentElement.scrollLeft += 300;
-  });
-  
-  // Modal for "See More" details.
-  const detailsModal = document.getElementById('detailsModal');
-  const modalClose = document.getElementById('modalClose');
-  const modalBody = document.getElementById('modalBody');
-  
-  function openDetailsModal(item) {
-    modalBody.innerHTML = `
-      <h2>${item.jobTitle}</h2>
-      <p><strong>Roof Type:</strong> ${item.roofType}</p>
-      <p><strong>Completion Date:</strong> ${item.completionDate}</p>
-      <p><strong>Difficulty:</strong> ${item.difficulty}</p>
-      <p><strong>Time to Complete:</strong> ${item.timeToComplete}</p>
-      <img src="${item.mainImage}" alt="${item.jobTitle}" style="width:100%; border-radius: 5px; margin-top:10px; cursor:pointer;" id="modalMainImg">
-      <div class="modal-images">
-        ${item.extraImages.map(src => `<img src="${src}" alt="Extra" style="cursor:pointer;">`).join('')}
-      </div>
-    `;
-    detailsModal.classList.add('active');
-    // Enlarge images when clicked inside modal.
-    document.getElementById('modalMainImg').addEventListener('click', () => {
-      openImageModal(item.mainImage);
     });
-    document.querySelectorAll('.modal-images img').forEach(img => {
-      img.addEventListener('click', () => {
-        openImageModal(img.src);
-      });
+    
+    // Lightbox functionality: display full-size image (approx 920px x 720px)
+    function openLightbox(src) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxContent = document.querySelector('.lightbox-content');
+      lightboxContent.src = src;
+      lightbox.style.display = 'flex';
+    }
+    
+    const closeLightbox = document.querySelector('.close-lightbox');
+    closeLightbox.addEventListener('click', () => {
+      document.getElementById('lightbox').style.display = 'none';
     });
-  }
-  modalClose.addEventListener('click', () => {
-    detailsModal.classList.remove('active');
-  });
-  
-  // Modal for enlarged images.
-  const imageModal = document.getElementById('imageModal');
-  const imageModalClose = document.getElementById('imageModalClose');
-  const enlargedImage = document.getElementById('enlargedImage');
-  function openImageModal(src) {
-    enlargedImage.src = src;
-    imageModal.classList.add('active');
-  }
-  imageModalClose.addEventListener('click', () => {
-    imageModal.classList.remove('active');
-  });
-  // Close modals when clicking outside content.
-  window.addEventListener('click', (e) => {
-    if (e.target === detailsModal) {
-      detailsModal.classList.remove('active');
+    
+    window.addEventListener('click', (e) => {
+      const lightbox = document.getElementById('lightbox');
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+      }
+    });
+    
+    // Auto-scroll using requestAnimationFrame for smooth continuous movement
+    function autoScroll() {
+      currentTranslateX -= scrollSpeed;
+      if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
+        currentTranslateX = 0;
+      }
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
+      requestAnimationFrame(autoScroll);
     }
-    if (e.target === imageModal) {
-      imageModal.classList.remove('active');
-    }
+    
+    // Manual control buttons
+    leftBtn.addEventListener('click', () => {
+      currentTranslateX += 200;
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
+    });
+    
+    rightBtn.addEventListener('click', () => {
+      currentTranslateX -= 200;
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
+    });
+    
+    renderCarousel();
+    autoScroll();
   });
   

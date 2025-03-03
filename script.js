@@ -266,7 +266,7 @@ window.addEventListener('load', revealButtons);
     if (typeof preloadFBTimelines === 'function') preloadFBTimelines();
   }
   window.addEventListener('load', initAll);
-
+  
   // -------------------------
   // BUTTON CLICK HANDLERS
   // -------------------------

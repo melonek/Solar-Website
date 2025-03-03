@@ -968,8 +968,6 @@ nav {
     }
 }
 
-
-
 /* Sections */
 .section {
     width: 100%;
@@ -983,6 +981,8 @@ nav {
     border-radius: 8px;
     text-align: center;
 }
+
+
 
 /* Main Headings */
 .section h1 {
@@ -4255,3 +4255,7 @@ footer {
       max-width: none; /* Full width on mobile */
     }
   }
+  
+  #installations p{
+    font-family: 'Roboto Slab', serif;
+}
