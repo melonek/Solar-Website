@@ -1,22 +1,17 @@
 /* Battery-Only Page Styles */
 
-.battery-image-combination {
-    position: relative; /* Ensures brand logo is positioned relative to this container */
-    display: inline-block;
-  }
-
-  .brand-logo-overlay {
-    position: absolute;
-    top: 10px;
-    left: 150px;
-    width: 50px; /* Adjust size if needed */
-    height: auto;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.8); /* Optional: White background */
-    padding: 5px;
-    border-radius: 5px; /* Optional: Rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Soft shadow */
-  }
+.battery-brand-logo-overlay {
+  position: absolute;
+  bottom: 5%;    /* Use percentage so it scales with the container */
+  left: 20%;     /* Use percentage so it scales with the container */
+  width: 15%;    /* Adjust as needed; this makes the overlay scale with the container */
+  height: auto;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px;  /* You might use relative units (like 2%) if you want this to scale too */
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
   
 
 /* Ensure smooth scrolling */
@@ -81,20 +76,20 @@ html {
   }
   .battery-image-combination {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
+    width: 100%;
     max-width: 600px;
+    margin: 0 auto;
   }
+
   
   #selected-battery-alone-image {
     display: block;
-    margin: 0 auto;
-    width: 70% !important;
-    max-width: 70% !important;
-    height: auto !important;
+    width: 100%;
+    height: auto;
+    margin-left: 30px;
+    margin-top: 0px;
   }
+
   
   /* Button Container */
   .button-container {
@@ -243,7 +238,6 @@ html {
   color: #333;
   opacity: 1;
   transition: opacity 0.5s ease;
-  top:10px;
 }
 
 .warning-icon {

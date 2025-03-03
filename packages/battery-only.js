@@ -184,7 +184,7 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
             selectedBattery.name?.toLowerCase().includes(brand.name?.toLowerCase())
         );
 
-        const brandLogo = document.getElementById('brand-logo-overlay');
+        const brandLogo = document.getElementById('battery-brand-logo-overlay');
         if (brandLogo) {
             if (matchingBrand) {
                 brandLogo.src = matchingBrand.url || '';
@@ -221,7 +221,7 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
                 batteryPackage.appendChild(enquiryDescription);
             }
         }
-        enquiryDescription.innerHTML = `I would like to enquire about ${selectedBattery.specs || ''}, <strong>${selectedBattery.name || ''}</strong> battery storage system.`;
+        enquiryDescription.innerHTML = `I would like to enquire about <strong>${selectedBattery.specs || ''}</strong>, <strong>${selectedBattery.name || ''}</strong> battery storage system.`;
 
         batteryPackage.style.display = 'block';
 
@@ -437,10 +437,9 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
 
         const iconHTML = withIcon ? '<span class="warning-icon">⚠️</span>' : "";
         cloud.innerHTML = iconHTML + message;
-
         cloud.style.position = 'fixed';
         cloud.style.left = '50%';
-        cloud.style.top = '50%';
+        cloud.style.top = '160px';
         cloud.style.transform = 'translate(-50%, -50%)';
         cloud.style.background = '#fff';
         cloud.style.padding = '15px 25px';
