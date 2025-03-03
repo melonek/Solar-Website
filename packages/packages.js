@@ -41,6 +41,9 @@ let defaultScrollTimeout = null;
 // ------------------------
 // Universal Banner Parallax and Zoom
 // ------------------------
+// ------------------------
+// Universal Banner Parallax and Zoom
+// ------------------------
 function universalParallax() {
   const bannerSection = document.querySelector('.universalBanner');
   const bannerImage = document.querySelector('.universalBanner .banner-image');
@@ -79,12 +82,12 @@ function universalParallax() {
 
       // Parallax effect: Move the image vertically by 25% of the section height
       const parallaxY = progress * sectionHeight * 0.25;
-      // Reduced zoom effect: Scale up to 1.15x (was 1.2x)
-      const scale = 1 + progress * 0.15; // Changed from 0.2 to 0.15
+      // Reduced zoom effect: Scale from 1.05x to 1.1x
+      const scale = 1.05 + progress * 0.05; // Changed from 1.15 + progress * 0.15
 
       precomputedValues.push({
         scrollY,
-        transform: `translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y) + ${parallaxY}px), 0) scale(${scale})`
+        transform: `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${scale})`
       });
     }
   }
@@ -129,7 +132,6 @@ function universalParallax() {
 }
 
 document.addEventListener('DOMContentLoaded', universalParallax);
-
 
 // -------------------
 // Text Cloud Configuration
