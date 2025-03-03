@@ -244,17 +244,18 @@ function createCard(job) {
       document.getElementById('lightbox').style.display = 'none';
     });
     
-    const lightbox = document.getElementById('lightbox');
     lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-      }
-    });
-    lightbox.addEventListener('touchstart', (e) => {
-      if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-      }
-    });
+        // If the click was outside the lightbox content, close the lightbox.
+        if (!lightboxContent.contains(e.target)) {
+          lightbox.style.display = 'none';
+        }
+      });
+      
+      lightbox.addEventListener('touchstart', (e) => {
+        if (!lightboxContent.contains(e.target)) {
+          lightbox.style.display = 'none';
+        }
+      });
     
     // Auto-scroll using requestAnimationFrame for smooth continuous movement
     function autoScroll() {
