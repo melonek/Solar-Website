@@ -250,6 +250,13 @@ function createCard(job) {
         lightbox.style.display = 'none';
       }
     });
+
+    window.addEventListener('touchstart', (e) => {
+        const lightbox = document.getElementById('lightbox');
+        if (e.target === lightbox) {
+          lightbox.style.display = 'none';
+        }
+      });
     
     // Auto-scroll using requestAnimationFrame for smooth continuous movement
     function autoScroll() {
