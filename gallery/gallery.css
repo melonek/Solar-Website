@@ -195,13 +195,15 @@ body {
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh; /* Use full viewport height */
+    padding-top: 50vh;  /* Extra space at the top */
+    padding-bottom: 50vh;  /* Extra space at the bottom */
     overflow: auto;
     background-color: rgba(0,0,0,0.5);
   }
   .modal-content {
     background: #fff;
-    margin: 5% auto;
+    margin: -50vh auto 0; /* Adjust to re-center the content */
     padding: 20px;
     width: 80%;
     border-radius: 8px;
