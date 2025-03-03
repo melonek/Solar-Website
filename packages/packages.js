@@ -42,14 +42,11 @@ let defaultScrollTimeout = null;
 // ------------------------
 // Universal Banner Parallax (Zoom)
 // ------------------------
-// -------------------------
-// Preload the Banner Image
-// -------------------------
-
 document.addEventListener('DOMContentLoaded', function() {
-  // Now GSAP and ScrollTrigger should be defined
+  // Register GSAP's ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger);
 
+  // Preload the Banner Image
   function preloadImage(url, callback) {
     const img = new Image();
     img.src = url;
@@ -67,64 +64,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // -------------------------
-  // Universal Banner Parallax & Zoom with GSAP
-  // -------------------------
-  gsap.registerPlugin(ScrollTrigger);
-  
-  // Set initial transform values for proper centering
+  // Set initial transform values to ensure the image is centered
   gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
   
-  // Increase the vertical movement multiplier for a stronger parallax effect.
+  // Define the parallax & zoom animation with GSAP and ScrollTrigger
   gsap.to(".banner-image", {
     scrollTrigger: {
       trigger: ".universalBanner",
-      start: "top top",   // When banner's top reaches viewport top
-      end: "bottom top",  // When banner's bottom reaches viewport top
+      start: "top top",    // When the banner's top reaches the top of the viewport
+      end: "bottom top",   // When the banner's bottom reaches the top of the viewport
       scrub: true,
-      // markers: true, // Uncomment for debugging
+      // markers: true,    // Uncomment for debugging
     },
     y: function() {
       const sectionHeight = document.querySelector('.universalBanner').clientHeight;
-      return sectionHeight * 0.35; // Increased from 0.25 to 0.35 for a more pronounced vertical shift
+      return sectionHeight * 0.35; // Adjust the multiplier as needed
     },
-    scale: 1.2,  // Zoom from 1 to 1.2 (adjust if needed)
-    ease: "none",
-    force3D: true
-  });
-
-  gsap.registerPlugin(ScrollTrigger);
-  gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
-  gsap.to(".banner-image", {
-    scrollTrigger: {
-      trigger: ".universalBanner",
-      start: "top top",
-      end: "bottom top",
-      scrub: true,
-    },
-    y: function() {
-      const sectionHeight = document.querySelector('.universalBanner').clientHeight;
-      return sectionHeight * 0.35;
-    },
-    scale: 1.1,
+    scale: 1.1,  // Zoom effect
     ease: "none",
     force3D: true
   });
 });
 
+// Refresh ScrollTrigger on orientation or window resize
 window.addEventListener('orientationchange', function() {
   ScrollTrigger.refresh();
 });
-
 window.addEventListener('resize', function() {
   ScrollTrigger.refresh();
 });
 
+// Optional: Fix for mobile viewport height issues
 function setVh() {
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
-
 setVh();
 window.addEventListener('resize', setVh);
 

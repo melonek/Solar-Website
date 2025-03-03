@@ -462,7 +462,6 @@
   justify-content: center;
   color: #fff;
   text-align: center;
-  will-change: transform;
 }
 
 /* Background container for parallax */
@@ -485,7 +484,6 @@
   min-width: 120%;
   min-height: 120%;
   background-size: cover;
-  transform: translate3d(-50%, -50%, 0); /* Initial positioning */
   will-change: transform;
   /* Removed transition so GSAP has full control */
   backface-visibility: hidden;
