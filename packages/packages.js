@@ -40,7 +40,7 @@ let defaultScrollTimeout = null;
 
 
 // ------------------------
-// Universal Banner Parallax (No Zoom)
+// Universal Banner Parallax (Zoom)
 // ------------------------
 // -------------------------
 // Preload the Banner Image
@@ -51,60 +51,37 @@ function preloadImage(url, callback) {
   img.onload = callback;
 }
 
-// Path to the image
 const bannerImageUrl = '../images/universalBanner/Solar-drone-photo-Perth.webp';
 
-// Preload the image and set it as background for the banner image div
 preloadImage(bannerImageUrl, function() {
   const bannerImageDiv = document.querySelector('.banner-image');
   if (bannerImageDiv) {
     bannerImageDiv.style.backgroundImage = `url(${bannerImageUrl})`;
     bannerImageDiv.style.backgroundSize = 'cover';
     bannerImageDiv.style.backgroundPosition = 'center';
-    // Optionally, set initial transform for proper centering
-    bannerImageDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+    // Set initial transform
+    bannerImageDiv.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
   }
 });
 
 // -------------------------
-// Universal Banner Parallax & Zoom
+// Universal Banner Parallax & Zoom with GSAP
 // -------------------------
-const bannerSection = document.querySelector('.universalBanner');
-const bannerImage = document.querySelector('.banner-image');
-let lastScrollBanner = 0;
+gsap.registerPlugin(ScrollTrigger);
 
-function updateBannerParallax() {
-  if (!bannerSection || !bannerImage) return;
-  
-  const scrollY = window.scrollY;
-  const sectionTop = bannerSection.offsetTop;
-  const sectionHeight = bannerSection.clientHeight;
-  
-  // Only update if the scroll is within the banner section
-  if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-  
-  // Calculate progress (0 at the top of the section, 1 at the bottom)
-  const progress = (scrollY - sectionTop) / sectionHeight;
-  
-  // Parallax: shift up to 25% of the section height
-  const parallaxY = progress * sectionHeight * 0.25;
-  
-  // Zoom: scale from 1 to about 1.1 (adjust factor as needed)
-  const zoomScale = 1 + (progress * 0.1);
-  
-  // Apply both vertical translation and scale; adjust the translateX/Y values if necessary
-  bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${zoomScale})`;
-  
-  requestAnimationFrame(updateBannerParallax);
-}
-
-// Listen for scroll events to update the parallax & zoom effect
-window.addEventListener('scroll', () => {
-  if (Math.abs(window.scrollY - lastScrollBanner) > 2) {
-    requestAnimationFrame(updateBannerParallax);
-    lastScrollBanner = window.scrollY;
-  }
+gsap.to(".banner-image", {
+  scrollTrigger: {
+    trigger: ".universalBanner",
+    start: "top top",        // When the banner top reaches the top of the viewport
+    end: "bottom top",       // When the banner bottom reaches the top of the viewport
+    scrub: true,             // Smoothly scrubs the animation based on scroll position
+    // markers: true,        // Uncomment for debugging
+  },
+  y: "25%",    // Parallax: move vertically by 25% of its height
+  scale: 1.1,  // Zoom: scale up to 1.1
+  ease: "none"
 });
+
 
 // -------------------
 // Text Cloud Configuration

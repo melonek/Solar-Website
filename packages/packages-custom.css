@@ -485,9 +485,9 @@
   min-width: 120%;
   min-height: 120%;
   background-size: cover;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0); /* Initial positioning */
   will-change: transform;
-  transition: transform 0.1s linear;
+  /* Removed transition so GSAP has full control */
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
