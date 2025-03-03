@@ -65,6 +65,10 @@ function universalParallax() {
 
   if (!bannerSection || !bannerImage) return;
 
+  // Hint for hardware acceleration
+  bannerImage.style.willChange = "transform";
+  bannerImage.style.backfaceVisibility = "hidden";
+
   function updateParallaxAndZoom() {
     const scrollY = window.scrollY;
     const sectionTop = bannerSection.offsetTop;
@@ -76,21 +80,14 @@ function universalParallax() {
     // Calculate progress (0 to 1) as the section moves through the viewport
     const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
 
-    // Calculate parallax offset (in pixels)
+    // Parallax effect: Move the image vertically by 25% of the section height
     const parallaxY = progress * sectionHeight * 0.25;
-
-    // Compute baseline vertical offset in pixels.
-    // This assumes the image is centered via CSS with translate(-50%, -50%) initially.
-    const baselineY = -bannerImage.offsetHeight / 2;
-
-    // Update transform:
-    // For horizontal centering we keep -50% for X,
-    // For vertical, we use our computed baseline plus the parallax offset (in px),
-    // and add the scaling.
-    bannerImage.style.transform = `translate3d(-50%, ${baselineY + parallaxY}px, 0) scale(${1 + progress * 0.2})`;
+    
+    // Revert to the original translate3d with calc()
+    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${1 + progress * 0.2})`;
   }
 
-  // Use a passive event listener with a small threshold (2px) to update as needed
+  // Using a passive event listener and a small threshold for smoother updates
   window.addEventListener('scroll', () => {
     if (Math.abs(window.scrollY - lastScroll) > 2) {
       requestAnimationFrame(updateParallaxAndZoom);
