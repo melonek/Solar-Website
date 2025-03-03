@@ -381,10 +381,10 @@
   }
   #selected-inverter-image {
     position: absolute;
-    max-width: 250px;
-    max-height: 200px;
-    bottom: 10px;
-    right: 10px;
+    max-width: 300px;
+    max-height: 250px;
+    bottom: -20px;
+    right: -10px;
     object-fit: contain;
     visibility: hidden;
   }
