@@ -58,15 +58,11 @@ function preloadBannerImage() {
 document.addEventListener('DOMContentLoaded', preloadBannerImage);
 
 
-// ------------------------
-// Universal Banner Parallax and Zoom
-// ------------------------
 function universalParallax() {
   const bannerSection = document.querySelector('.universalBanner');
   const bannerImage = document.querySelector('.universalBanner .banner-image');
   let lastScroll = 0;
 
-  // Ensure bannerImage exists
   if (!bannerSection || !bannerImage) return;
 
   function updateParallaxAndZoom() {
@@ -80,15 +76,23 @@ function universalParallax() {
     // Calculate progress (0 to 1) as the section moves through the viewport
     const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
 
-    // Parallax effect: Move the image vertically by 25% of the section height
+    // Calculate parallax offset (in pixels)
     const parallaxY = progress * sectionHeight * 0.25;
-    // Use translate3d for hardware acceleration on mobile devices
-    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${1 + progress * 0.2})`;
+
+    // Compute baseline vertical offset in pixels.
+    // This assumes the image is centered via CSS with translate(-50%, -50%) initially.
+    const baselineY = -bannerImage.offsetHeight / 2;
+
+    // Update transform:
+    // For horizontal centering we keep -50% for X,
+    // For vertical, we use our computed baseline plus the parallax offset (in px),
+    // and add the scaling.
+    bannerImage.style.transform = `translate3d(-50%, ${baselineY + parallaxY}px, 0) scale(${1 + progress * 0.2})`;
   }
 
-  // Use a passive event listener and throttle updates when scrolling more than 10px
+  // Use a passive event listener with a small threshold (2px) to update as needed
   window.addEventListener('scroll', () => {
-    if (Math.abs(window.scrollY - lastScroll) > 10) {
+    if (Math.abs(window.scrollY - lastScroll) > 2) {
       requestAnimationFrame(updateParallaxAndZoom);
       lastScroll = window.scrollY;
     }
@@ -99,6 +103,7 @@ function universalParallax() {
 }
 
 document.addEventListener('DOMContentLoaded', universalParallax);
+
 
 // -------------------
 // Text Cloud Configuration
@@ -640,7 +645,7 @@ const solarProducts = {
       country: "Austria",
       warranty: "10 years",
       datasheet: "fronius-primo.pdf",
-      image: "../images/Inverters/FroniusSymo.png",
+      image: "../images/Inverters/FroniusSymo.webp",
       price: 1200,
       popularity: 4,
       description: "Inverter description goes here..."
@@ -653,7 +658,7 @@ const solarProducts = {
       country: "Germany",
       warranty: "10 years",
       datasheet: "sma-sunny-boy.pdf",
-      image: "../images/Inverters/SMA.png",
+      image: "../images/Inverters/SMA.webp",
       price: 1150,
       popularity: 2,
       description: "Inverter description goes here..."
