@@ -42,96 +42,69 @@ let defaultScrollTimeout = null;
 // ------------------------
 // Universal Banner Parallax (No Zoom)
 // ------------------------
-function universalParallaxZoom() {
-  const bannerSection = document.querySelector('.universalBanner');
-  const bannerImage = document.querySelector('.universalBanner .banner-image');
-  let precomputedValues = [];
-  let ticking = false;
-  let lastScrollY = 0;
-
-  // Ensure elements exist
-  if (!bannerSection || !bannerImage) return;
-
-  // Enable GPU acceleration via CSS
-  bannerImage.style.willChange = 'transform';
-  bannerImage.style.backfaceVisibility = 'hidden';
-  bannerImage.style.transformStyle = 'preserve-3d';
-
-  // Preload the background image
-  const preloadImage = new Image();
-  preloadImage.src = '../images/universalBanner/Solar-drone-photo-Perth.webp';
-  preloadImage.onload = () => {
-    console.log('Banner image preloaded');
-    precomputeTransformValues();
-    requestAnimationFrame(() => updateParallax(window.scrollY));
-  };
-
-  // Precompute transform values with zoom
-  function precomputeTransformValues() {
-    const sectionTop = bannerSection.offsetTop;
-    const sectionHeight = bannerSection.clientHeight;
-    const maxScroll = sectionTop + sectionHeight;
-    const step = 10;
-    const zoomFactor = 0.2; // 20% additional zoom over full scroll progress
-
-    precomputedValues = [];
-
-    for (let scrollY = sectionTop - window.innerHeight; scrollY <= maxScroll; scrollY += step) {
-      // Calculate progress between 0 and 1 based on section scroll
-      const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
-      
-      // Parallax: move image upward by 25% of section height at full progress
-      const parallaxY = progress * sectionHeight * 0.25;
-      
-      // Zoom: scale increases from 1 to 1+zoomFactor over the scroll range
-      const scale = 1 + progress * zoomFactor;
-      
-      const transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${scale})`;
-      precomputedValues.push({ scrollY, transform });
-    }
-  }
-
-  function getPrecomputedTransform(scrollY) {
-    // Find the precomputed transform value closest to the current scroll position
-    let closest = precomputedValues.reduce((prev, curr) =>
-      Math.abs(curr.scrollY - scrollY) < Math.abs(prev.scrollY - scrollY) ? curr : prev
-    );
-    return closest.transform;
-  }
-
-  function updateParallax(scrollY) {
-    const sectionTop = bannerSection.offsetTop;
-    const sectionHeight = bannerSection.clientHeight;
-    const windowHeight = window.innerHeight;
-
-    // Only update if the banner section is in (or near) view
-    if (scrollY > sectionTop + sectionHeight + windowHeight || scrollY < sectionTop - windowHeight) {
-      ticking = false;
-      return;
-    }
-
-    const transform = getPrecomputedTransform(scrollY);
-    bannerImage.style.transform = transform;
-    ticking = false;
-  }
-
-  function onScroll() {
-    lastScrollY = window.scrollY;
-    if (!ticking) {
-      requestAnimationFrame(() => updateParallax(lastScrollY));
-      ticking = true;
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => {
-    precomputeTransformValues();
-    requestAnimationFrame(() => updateParallax(window.scrollY));
-  });
+// -------------------------
+// Preload the Banner Image
+// -------------------------
+function preloadImage(url, callback) {
+  const img = new Image();
+  img.src = url;
+  img.onload = callback;
 }
 
-document.addEventListener('DOMContentLoaded', universalParallaxZoom);
+// Path to the image
+const bannerImageUrl = '../images/universalBanner/Solar-drone-photo-Perth.webp';
 
+// Preload the image and set it as background for the banner image div
+preloadImage(bannerImageUrl, function() {
+  const bannerImageDiv = document.querySelector('.banner-image');
+  if (bannerImageDiv) {
+    bannerImageDiv.style.backgroundImage = `url(${bannerImageUrl})`;
+    bannerImageDiv.style.backgroundSize = 'cover';
+    bannerImageDiv.style.backgroundPosition = 'center';
+    // Optionally, set initial transform for proper centering
+    bannerImageDiv.style.transform = 'translate(-50%, -50%) scale(1)';
+  }
+});
+
+// -------------------------
+// Universal Banner Parallax & Zoom
+// -------------------------
+const bannerSection = document.querySelector('.universalBanner');
+const bannerImage = document.querySelector('.banner-image');
+let lastScrollBanner = 0;
+
+function updateBannerParallax() {
+  if (!bannerSection || !bannerImage) return;
+  
+  const scrollY = window.scrollY;
+  const sectionTop = bannerSection.offsetTop;
+  const sectionHeight = bannerSection.clientHeight;
+  
+  // Only update if the scroll is within the banner section
+  if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
+  
+  // Calculate progress (0 at the top of the section, 1 at the bottom)
+  const progress = (scrollY - sectionTop) / sectionHeight;
+  
+  // Parallax: shift up to 25% of the section height
+  const parallaxY = progress * sectionHeight * 0.25;
+  
+  // Zoom: scale from 1 to about 1.1 (adjust factor as needed)
+  const zoomScale = 1 + (progress * 0.1);
+  
+  // Apply both vertical translation and scale; adjust the translateX/Y values if necessary
+  bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${zoomScale})`;
+  
+  requestAnimationFrame(updateBannerParallax);
+}
+
+// Listen for scroll events to update the parallax & zoom effect
+window.addEventListener('scroll', () => {
+  if (Math.abs(window.scrollY - lastScrollBanner) > 2) {
+    requestAnimationFrame(updateBannerParallax);
+    lastScrollBanner = window.scrollY;
+  }
+});
 
 // -------------------
 // Text Cloud Configuration

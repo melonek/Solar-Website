@@ -451,6 +451,7 @@
 
 
 /* Universal Banner Styling */
+/* Universal Banner Container */
 .universalBanner {
   position: relative;
   height: 70vh; /* Height as requested */
@@ -475,7 +476,6 @@
 }
 
 /* Background image with parallax and zoom effect */
-/* Background image with parallax and zoom effect */
 .universalBanner .banner-image {
   position: absolute;
   top: 50%;
@@ -484,7 +484,6 @@
   height: 100%;
   min-width: 120%;
   min-height: 120%;
-  background: url('../images/universalBanner/Solar-drone-photo-Perth.webp') no-repeat center center;
   background-size: cover;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
@@ -505,35 +504,15 @@
   justify-content: center;
 }
 
-/* Content styling */
+/* Content styling: ensure it sits on top of the overlay */
 .universalBanner .banner-content {
+  position: relative;
+  z-index: 3;
   max-width: 800px;
   padding: 20px;
 }
 
-.universalBanner h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.universalBanner h2 {
-  font-size: 2rem;
-  font-weight: 400;
-  margin-bottom: 1.5rem;
-  opacity: 0.9;
-}
-
-.universalBanner p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  opacity: 0.8;
-}
-
-/* Fade-in animations for text */
+/* Text Animations */
 @keyframes fadeInDown {
   from {
     opacity: 0;
@@ -571,28 +550,27 @@
 
 .universalBanner [data-animate="fadeInUp"] {
   animation: fadeInUp 1s ease-out forwards;
-  animation-delay: 0.3s;
 }
 
 .universalBanner [data-animate="fadeIn"] {
   animation: fadeIn 1s ease-out forwards;
-  animation-delay: 0.6s;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .universalBanner h1 {
-    font-size: 2.5rem;
-  }
-
-  .universalBanner h2 {
-    font-size: 1.5rem;
-  }
-
-  .universalBanner p {
-    font-size: 1rem;
-  }
+/* Headings Styling */
+.universalBanner h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+.universalBanner h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
 
 iframe {
   margin: 0;
