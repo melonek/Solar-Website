@@ -59,8 +59,6 @@ preloadImage(bannerImageUrl, function() {
     bannerImageDiv.style.backgroundImage = `url(${bannerImageUrl})`;
     bannerImageDiv.style.backgroundSize = 'cover';
     bannerImageDiv.style.backgroundPosition = 'center';
-    // Set initial transform
-    bannerImageDiv.style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
   }
 });
 
@@ -69,18 +67,28 @@ preloadImage(bannerImageUrl, function() {
 // -------------------------
 gsap.registerPlugin(ScrollTrigger);
 
+// Set the initial state so that the element is centered via percentage transforms
+gsap.set(".banner-image", { xPercent: -50, yPercent: -50, scale: 1 });
+
 gsap.to(".banner-image", {
   scrollTrigger: {
     trigger: ".universalBanner",
-    start: "top top",        // When the banner top reaches the top of the viewport
-    end: "bottom top",       // When the banner bottom reaches the top of the viewport
-    scrub: true,             // Smoothly scrubs the animation based on scroll position
-    // markers: true,        // Uncomment for debugging
+    start: "top top",   // When banner's top reaches viewport top
+    end: "bottom top",  // When banner's bottom reaches viewport top
+    scrub: true,
+    // markers: true, // Uncomment for debugging
   },
-  y: "25%",    // Parallax: move vertically by 25% of its height
-  scale: 1.1,  // Zoom: scale up to 1.1
-  ease: "none"
+  // Animate a vertical shift equal to 25% of the banner's height
+  y: function() {
+    const sectionHeight = document.querySelector('.universalBanner').clientHeight;
+    return sectionHeight * 0.25; // Matches original: progress * sectionHeight * 0.25
+  },
+  // Animate scale from 1 to 1.1
+  scale: 1.1,
+  ease: "none",
+  force3D: true
 });
+
 
 
 // -------------------
