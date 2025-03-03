@@ -488,7 +488,7 @@
   --offset-y: -50px; /* Default up/down offset */
   transform: translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y)), 0) scale(1);
   will-change: transform;
-  transition: transform 0.1s linear; /* Adjusted for smoother updates on mobile */
+  transition: transform 0.1s linear; /* Slight smoothing for mobile */
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }

@@ -36,27 +36,7 @@ let lastButtonClicked = null;       // stores the last clicked submit button
 let submissionAttempted = false;    // becomes true when a submit button is clicked
 
 // We'll use this to cancel any scheduled normal scroll.
-let defaultScrollTimeout = null;
-
-function preloadBannerImage() {
-  const image = new Image();
-  image.src = '../images/universalBanner/Solar-drone-photo-Perth.webp';
-  image.onload = () => {
-    console.log('Banner image preloaded successfully!');
-    // Optionally apply the background image dynamically after preload
-    const bannerImage = document.querySelector('.universalBanner .banner-image');
-    if (bannerImage) {
-      bannerImage.style.backgroundImage = `url('${image.src}')`;
-    }
-  };
-  image.onerror = () => {
-    console.error('Failed to preload banner image.');
-  };
-}
-
-// Call the function when the page loads
-document.addEventListener('DOMContentLoaded', preloadBannerImage);
-
+let defaultScrollTimeout = null
 
 // ------------------------
 // Universal Banner Parallax and Zoom
@@ -64,16 +44,64 @@ document.addEventListener('DOMContentLoaded', preloadBannerImage);
 function universalParallax() {
   const bannerSection = document.querySelector('.universalBanner');
   const bannerImage = document.querySelector('.universalBanner .banner-image');
+  let precomputedValues = [];
   let ticking = false;
   let lastScrollY = 0;
 
   // Ensure elements exist
   if (!bannerSection || !bannerImage) return;
 
-  // Add CSS to force hardware acceleration and smooth rendering
+  // Add CSS to force hardware acceleration
   bannerImage.style.willChange = 'transform';
   bannerImage.style.backfaceVisibility = 'hidden';
   bannerImage.style.transformStyle = 'preserve-3d';
+
+  // Preload the background image to avoid rendering delays
+  const preloadImage = new Image();
+  preloadImage.src = '../images/universalBanner/Solar-drone-photo-Perth.webp';
+  preloadImage.onload = () => {
+    console.log('Banner image preloaded');
+    // Initialize precomputation after image is loaded
+    precomputeTransformValues();
+    // Trigger initial update
+    requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
+  };
+
+  // Precompute transform values for the entire scroll range
+  function precomputeTransformValues() {
+    const sectionTop = bannerSection.offsetTop;
+    const sectionHeight = bannerSection.clientHeight;
+    const maxScroll = sectionTop + sectionHeight; // Max scroll position where the section is in view
+    const step = 10; // Precompute every 10px of scroll
+
+    precomputedValues = [];
+
+    // Loop through scroll positions in increments
+    for (let scrollY = sectionTop - window.innerHeight; scrollY <= maxScroll; scrollY += step) {
+      // Calculate progress (0 to 1) as if the section moves through the viewport
+      const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
+
+      // Parallax effect: Move the image vertically by 25% of the section height
+      const parallaxY = progress * sectionHeight * 0.25;
+      // Zoom effect: Scale up to 1.2x
+      const scale = 1 + progress * 0.2;
+
+      // Store the precomputed transform values
+      precomputedValues.push({
+        scrollY,
+        transform: `translate3d(calc(-50% + var(--offset-x)), calc(-50% + var(--offset-y) + ${parallaxY}px), 0) scale(${scale})`
+      });
+    }
+  }
+
+  // Find the closest precomputed transform value for the current scroll position
+  function getPrecomputedTransform(scrollY) {
+    // Find the closest precomputed scroll position
+    let closest = precomputedValues.reduce((prev, curr) =>
+      Math.abs(curr.scrollY - scrollY) < Math.abs(prev.scrollY - scrollY) ? curr : prev
+    );
+    return closest.transform;
+  }
 
   function updateParallaxAndZoom(scrollY) {
     const sectionTop = bannerSection.offsetTop;
@@ -86,16 +114,10 @@ function universalParallax() {
       return;
     }
 
-    // Calculate progress (0 to 1) as the section moves through the viewport
-    const progress = Math.min(Math.max((scrollY - sectionTop) / sectionHeight, 0), 1);
+    // Use precomputed transform value
+    const transform = getPrecomputedTransform(scrollY);
+    bannerImage.style.transform = transform;
 
-    // Parallax effect: Move the image vertically by 25% of the section height
-    const parallaxY = progress * sectionHeight * 0.25;
-    // Zoom effect: Scale up to 1.2x
-    const scale = 1 + progress * 0.2;
-
-    // Apply transform with translate3d for hardware acceleration
-    bannerImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) scale(${scale})`;
     ticking = false;
   }
 
@@ -111,8 +133,11 @@ function universalParallax() {
   // Use passive scroll listener for better performance
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Trigger initial update on load
-  requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
+  // Recalculate precomputed values on window resize (optional, but useful if section dimensions change)
+  window.addEventListener('resize', () => {
+    precomputeTransformValues();
+    requestAnimationFrame(() => updateParallaxAndZoom(window.scrollY));
+  });
 }
 
 // Ensure DOM is loaded before running
