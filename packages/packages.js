@@ -49,7 +49,7 @@ let defaultScrollTimeout = null;
 document.addEventListener('DOMContentLoaded', function() {
   // Now GSAP and ScrollTrigger should be defined
   gsap.registerPlugin(ScrollTrigger);
-  
+
   function preloadImage(url, callback) {
     const img = new Image();
     img.src = url;
@@ -112,7 +112,21 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+window.addEventListener('orientationchange', function() {
+  ScrollTrigger.refresh();
+});
 
+window.addEventListener('resize', function() {
+  ScrollTrigger.refresh();
+});
+
+function setVh() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setVh();
+window.addEventListener('resize', setVh);
 
 
 // -------------------
