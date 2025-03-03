@@ -571,6 +571,15 @@
   font-weight: 400;
 }
 
+@media (max-width: 767px) {
+  .universalBanner {
+    height: 100vh;
+  }
+  .universalBanner .banner-image {
+    min-width: 100%;
+    min-height: 100%;
+  }
+}
 
 iframe {
   margin: 0;
