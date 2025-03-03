@@ -571,7 +571,19 @@
   font-weight: 400;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1080px) {
+  .universalBanner {
+    height: 130vh;
+    width:100%;
+  }
+  .universalBanner .banner-image {
+    min-width: 100%;
+    min-height: 100%;
+  }
+}
+
+
+@media (max-width: 430px) {
   .universalBanner {
     height: 100vh;
     width:100%;
