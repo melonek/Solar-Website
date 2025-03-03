@@ -197,7 +197,7 @@ body {
     width: 100%;
     height: 100vh; /* Use full viewport height */
     padding-top: 5vh;  /* Extra space at the top */
-    padding-bottom: 5vh;  /* Extra space at the bottom */
+    padding-bottom: 15vh;  /* Extra space at the bottom */
     overflow: auto;
     background-color: rgba(0,0,0,0.5);
   }
