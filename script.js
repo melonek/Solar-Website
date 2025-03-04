@@ -435,22 +435,23 @@ const BASE_URL = "https://melonek.github.io"; // Replace with your GitHub Pages 
 
 // Helper function to determine the base path for the current page
 function getBasePathForArticles() {
-    const path = window.location.pathname;
-    if (path.includes('articles/')) {
-        return ''; // Inside articles/ folder (learn.html)
-    }
-    return 'articles/'; // At root (index.html)
+  const path = window.location.pathname;
+  if (path.includes('articles/')) {
+      return ''; // Inside articles/ folder (learn.html)
+  }
+  return 'articles/'; // At root (index.html)
 }
 
 // Function to generate a navigation URL for an article using fullArticlePath
 function getArticleNavigationUrl(article) {
-    if (!article || !article.fullArticlePath) {
-        console.error("fullArticlePath is undefined for article:", article);
-        return "#";
-    }
-    const basePath = getBasePathForArticles();
-    // Prepend the correct base path to the article file name
-    return `${basePath}${article.fullArticlePath}`;
+  if (!article || !article.fullArticlePath) {
+      console.error("fullArticlePath is undefined for article:", article);
+      return "#";
+  }
+  const basePath = getBasePathForArticles();
+  const resolvedUrl = `${basePath}${article.fullArticlePath}`;
+  console.log("Attempting navigation to URL:", resolvedUrl);
+  return resolvedUrl;
 }
 
 // Function to generate a shareable URL for an article
