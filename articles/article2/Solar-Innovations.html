@@ -94,6 +94,16 @@
         <a id="full-share-facebook" href="#">Share on Facebook</a>
         <a id="full-share-linkedin" href="#">Share on LinkedIn</a>
     </div>
+
+    <script>
+      // Redirect only if coming from an external source (e.g., Google search)
+      const articleId = "2"; // Article ID for article2
+      const referrer = document.referrer;
+      const isExternalReferrer = referrer && !referrer.includes(location.hostname);
+      if (isExternalReferrer) {
+          window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if needed
+      }
+  </script>
   
   <!-- Footer -->
   <footer>

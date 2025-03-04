@@ -429,8 +429,29 @@ function closeAllDropdowns() {
 })
 
 
+
 // Define base URL for shareable links
 const BASE_URL = "https://melonek.github.io"; // Replace with your GitHub Pages URL
+
+// Helper function to determine the base path for the current page
+function getBasePathForArticles() {
+    const path = window.location.pathname;
+    if (path.includes('articles/')) {
+        return ''; // Inside articles/ folder (learn.html)
+    }
+    return 'articles/'; // At root (index.html)
+}
+
+// Function to generate a navigation URL for an article using fullArticlePath
+function getArticleNavigationUrl(article) {
+    if (!article || !article.fullArticlePath) {
+        console.error("fullArticlePath is undefined for article:", article);
+        return "#";
+    }
+    const basePath = getBasePathForArticles();
+    // Prepend the correct base path to the article file name
+    return `${basePath}${article.fullArticlePath}`;
+}
 
 // Function to generate a shareable URL for an article
 function getShareableUrl(article) {
@@ -438,9 +459,8 @@ function getShareableUrl(article) {
         console.error("fullArticlePath is undefined for article:", article);
         return "#";
     }
-    const resolvedPath = article.fullArticlePath.startsWith("../")
-        ? article.fullArticlePath.replace("../", "/")
-        : article.fullArticlePath;
+    // For sharing, we want the absolute path from root
+    const resolvedPath = `/articles/${article.fullArticlePath}`;
     console.log("Generated shareable URL:", `${BASE_URL}${resolvedPath}`);
     return `${BASE_URL}${resolvedPath}`;
 }
@@ -470,7 +490,7 @@ function displayArticles(page) {
     console.log("Articles to show:", articlesToShow);
     articlesGrid.innerHTML = '';
     articlesToShow.forEach(article => {
-        const articlePath = article.fullArticlePath || '#';
+        const articlePath = getArticleNavigationUrl(article);
         console.log("Card Full Article Path:", articlePath);
         articlesGrid.innerHTML += `
             <div class="article-card" data-article-id="${article.id}">
@@ -505,7 +525,7 @@ function displayLearnArticles(page) {
     console.log("Articles to show:", articlesToShow);
     learnGrid.innerHTML = '';
     articlesToShow.forEach(article => {
-        const articlePath = article.fullArticlePath || '#';
+        const articlePath = getArticleNavigationUrl(article);
         console.log("Card Learn More Path:", articlePath);
         learnGrid.innerHTML += `
             <div class="learn-card" data-article-id="${article.id}">
@@ -669,8 +689,7 @@ function displayModal(article) {
         return;
     }
     console.log("Displaying modal for article:", article.title);
-    console.log("Using fullArticlePath:", article.fullArticlePath);
-    const articleUrl = article.fullArticlePath || '#';
+    const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
     console.log("Setting Full Article URL:", articleUrl);
     console.log("Setting Share URL:", shareUrl);
@@ -698,15 +717,7 @@ function displayModal(article) {
     document.querySelector('.close').onclick = closeModal;
     window.onclick = (event) => { if (event.target == modal) closeModal(); };
 
-    // Attach event listener to modal share button
     document.querySelector('.share-button').addEventListener('click', handleShareButtonClick);
-}
-
-const fullArticleBtn = document.querySelector('.full-article-btn');
-if (fullArticleBtn) {
-    fullArticleBtn.addEventListener('click', (event) => {
-        console.log("Full Article button clicked, navigating to:", fullArticleBtn.getAttribute('href'));
-    });
 }
 
 // Function to handle copying shareable URLs for both modal and static share buttons
@@ -715,7 +726,6 @@ function handleShareButtonClick(event) {
     const button = event.target.closest('.share-button, #full-top-share-button');
     let url = button.getAttribute('data-url');
 
-    // If no data-url is provided, try to generate it dynamically
     if (!url) {
         const articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
         if (articleId) {
@@ -724,7 +734,6 @@ function handleShareButtonClick(event) {
                 url = getShareableUrl(article);
             }
         }
-        // Fallback: Use current page URL if no article data
         if (!url) {
             url = window.location.href;
         }
@@ -761,7 +770,6 @@ function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
 
-    // Attach event listeners to all share buttons (modal and static)
     const allShareButtons = document.querySelectorAll('.share-button, #full-top-share-button');
     allShareButtons.forEach(button => {
         button.removeEventListener('click', handleShareButtonClick);
@@ -779,7 +787,6 @@ function shareArticle() {
 
     let url = button.getAttribute('data-url');
 
-    // If no data-url is provided, try to generate it dynamically
     if (!url) {
         const articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
         if (articleId) {
@@ -788,7 +795,6 @@ function shareArticle() {
                 url = getShareableUrl(article);
             }
         }
-        // Fallback: Use current page URL if no article data
         if (!url) {
             url = window.location.href;
         }
@@ -805,11 +811,11 @@ function shareArticle() {
     }
 }
 
-// Handle redirects from Google search and initial rendering
+// Handle initial rendering
 document.addEventListener("DOMContentLoaded", () => {
     console.log("allArticles:", allArticles);
     if (typeof allArticles === "undefined") {
-        console.error("allArticles is not defined. Ensure js/allArticles.js is loaded.");
+        console.error("allArticles is not defined. Ensure articleArray.js is loaded.");
         return;
     }
     const urlParams = new URLSearchParams(window.location.search);

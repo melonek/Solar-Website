@@ -194,7 +194,7 @@ body.modal-open {
     display: flex;
 }
 
-#article-modal .modal-content {
+#article-modal .modal-contents {
     position: relative;
     background: linear-gradient(145deg, #ffffffea, #f0f0f0ea);
     backdrop-filter: blur(10px);

@@ -21,7 +21,7 @@
       "comment": "Solar incentives and rebates",
       "displayOnMain": true,
       "displayOnLearn": true,
-      "fullArticlePath": "../articles/article1/Solar-Rebates-and-Financial-Incentives.html"
+      "fullArticlePath": "article1-Solar-Rebates-and-Financial-Incentives.html"
     },    
     {
       "id": 2,
@@ -120,7 +120,7 @@
       "comment": "Western Australia solar rebates and financial incentives guide",
       "displayOnMain": true,
       "displayOnLearn": false,
-      "fullArticlePath": "../articles/article2/Solar-Innovations.html"
+      "fullArticlePath": "article2-Solar-Innovations.html"
     }
     
     
