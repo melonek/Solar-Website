@@ -4,19 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0"></script>
 <link rel="stylesheet" href="../styles.css">
-<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="full-article-cards.css">
+<link rel="stylesheet" href="learn-card-styles.css">
+<link rel="stylesheet" href="../packages/packages-custom.css">
+
+
 <title>Articles and Explore Solar Page</title>
-<!--One font-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
-        <!-- Ends here-->
 </head>
 
 <body>
 
+  
   <!-- Reuse your existing navigation -->
     <!-- Your existing nav code -->
     <nav>
@@ -47,6 +46,20 @@
         <div class="bar half end"></div>
       </div>
     </nav>
+
+    <!-- Universal Banner Section -->
+<section id="learn-section" class="universalBanner">
+  <div class="learn-background">
+    <div class="learn-image"></div> <!-- This will hold the parallax/zoom background -->
+  </div>
+  <div class="learn-overlay">
+    <div class="learn-content">
+      <h1 data-animate="fadeInDown">Our Solar Packages</h1>
+      <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
+      <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
+    </div>
+  </div>
+</section>
   
   
   
@@ -74,13 +87,12 @@
       <div id="page-numbers"></div>
     </div>
     <!-- Modal for Main Articles -->
-    <div id="article-modal" class="modal">
+    <div id="article-modal" class="modal" style="display: none;">
       <div class="modal-content">
-        <span class="close">×</span>
-        <div id="modal-article-content"></div>
+          <span class="close">×</span>
+          <div id="modal-article-content"></div>
       </div>
-    </div>
-  </section>
+  </div>
 
     <!-- Footer -->
     <footer>
@@ -89,5 +101,6 @@
 
   <script src="../script.js"></script>
   <script src="./articleArray.js"></script>
+  <script src="../packages/packages.js"></script>
 </body>
 </html>

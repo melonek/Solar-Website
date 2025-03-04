@@ -3,14 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href=".././styles.css"> <!-- Correct path for article-specific styles -->
+    <link rel="stylesheet" href=".././learn-styles.css"> <!-- Correct path for article-specific styles -->
     <link rel="stylesheet" href="../../styles.css"> <!-- Correct path for main styles -->
     <title>Solar Rebates and Financial Incentives in Western Australia</title>
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
-</head>
+    
 <body>
 
   <nav>
@@ -107,6 +103,16 @@
       <p><a href="" target="_blank"></a></p>
     </article>
   </div>
+
+  <script>
+    // Redirect only if coming from an external source (e.g., Google search)
+    const articleId = "1"; // Replace with the article's ID
+    const referrer = document.referrer;
+    const isExternalReferrer = referrer && !referrer.includes(location.hostname);
+    if (isExternalReferrer) {
+        window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if main.html
+    }
+</script>
 
   <!-- Footer -->
   <footer>

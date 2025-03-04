@@ -3,9 +3,9 @@
 // -------------------------
 window.fbAsyncInit = function() {
   FB.init({
-      appId     : '1426450195430892',  // Your Facebook App ID
-      xfbml     : true,
-      version   : 'v22.0'
+    appId: '1426450195430892',  // Your Facebook App ID
+    xfbml: true,
+    version: 'v22.0'
   });
   preloadFBTimelines();
 };
@@ -13,7 +13,8 @@ window.fbAsyncInit = function() {
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
+  js = d.createElement(s);
+  js.id = id;
   js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
@@ -39,43 +40,37 @@ function updateFBTimeline(container) {
 
 function scaleFacebookTimelines() {
   const containers = document.querySelectorAll('.timeline-container');
-
   containers.forEach(container => {
-    // Target the new .scaler element instead of .fb-page-wrapper
+    // Target the scaler element and fb-page inside the container
     const scaler = container.querySelector('.scaler');
     const fbPage = container.querySelector('.fb-page');
-
     if (scaler && fbPage) {
-      const containerWidth = container.clientWidth - 40; // Subtract 20px left/right margin
+      const containerWidth = container.clientWidth - 40; // Adjust for margins
       const defaultWidth = 500;
       const defaultHeight = 600;
-
-      // Calculate scale factor based on width
-      const scale = containerWidth / defaultWidth; // Maintain aspect ratio
-
+      // Calculate scale factor based on the container width
+      const scale = containerWidth / defaultWidth;
+      
       // Apply scaling to the scaler wrapper
       scaler.style.transform = `scale(${scale})`;
       scaler.style.transformOrigin = 'top left';
       scaler.style.width = `${defaultWidth}px`;
       scaler.style.height = `${defaultHeight}px`;
-
-      // Set dimensions on the fb-page if needed
+      
+      // Set dimensions on the fb-page
       fbPage.style.width = `${defaultWidth}px`;
       fbPage.style.height = `${defaultHeight}px`;
-
-      // Adjust the container height dynamically
-      container.style.height = `${defaultHeight * scale + 40}px`; // Add 20px margin top/bottom
+      
+      // Adjust container height to accommodate scaling plus margins
+      container.style.height = `${defaultHeight * scale + 40}px`;
     }
   });
 }
 
+// Attach event listeners only once for scaling timelines
 window.addEventListener('resize', scaleFacebookTimelines);
 document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
 
-
-// Run on page load and resize
-window.addEventListener('resize', scaleFacebookTimelines);
-document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
 
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
@@ -431,183 +426,431 @@ function closeAllDropdowns() {
     element.classList.remove('active');
   });
 }
+})
 
-  
-  // -------------------------
-  // MAIN PAGE ARTICLES (MODAL & PAGINATION)
-  // -------------------------
-  const articlesPerPage = 6;
-  let currentArticlePage = 1;
-  
-  function displayArticles(page) {
+
+// Define base URL for shareable links
+const BASE_URL = "https://melonek.github.io"; // Replace with your GitHub Pages URL
+
+// Function to generate a shareable URL for an article
+function getShareableUrl(article) {
+    if (!article || !article.fullArticlePath) {
+        console.error("fullArticlePath is undefined for article:", article);
+        return "#";
+    }
+    const resolvedPath = article.fullArticlePath.startsWith("../")
+        ? article.fullArticlePath.replace("../", "/")
+        : article.fullArticlePath;
+    console.log("Generated shareable URL:", `${BASE_URL}${resolvedPath}`);
+    return `${BASE_URL}${resolvedPath}`;
+}
+
+// Main Page Articles (Pagination)
+const articlesPerPage = 6;
+let currentArticlePage = 1;
+
+// Learn Page Articles (Pagination)
+const learnArticlesPerPage = 3;
+let currentLearnPage = 1;
+
+// Function to display Full Article cards on the main page
+function displayArticles(page) {
     const articlesGrid = document.getElementById('articles-grid');
-    if (!articlesGrid) return;
+    if (!articlesGrid) {
+        console.error("articles-grid element not found");
+        return;
+    }
+    console.log("allArticles:", allArticles);
     const mainArticles = allArticles.filter(article => article.displayOnMain)
-      .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+        .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+    console.log("Filtered mainArticles:", mainArticles);
     const startIndex = (page - 1) * articlesPerPage,
           endIndex = startIndex + articlesPerPage,
           articlesToShow = mainArticles.slice(startIndex, endIndex);
+    console.log("Articles to show:", articlesToShow);
     articlesGrid.innerHTML = '';
     articlesToShow.forEach(article => {
-      articlesGrid.innerHTML += `
-        <div class="article-card" data-article-id="${article.id}">
-          <img src="${article.image}" alt="${article.title}">
-          <h3>${article.title}</h3>
-          <p>${article.snippet}</p>
-          <a href="#" class="read-more-btn">Read More</a>
-        </div>
-      `;
+        const articlePath = article.fullArticlePath || '#';
+        console.log("Card Full Article Path:", articlePath);
+        articlesGrid.innerHTML += `
+            <div class="article-card" data-article-id="${article.id}">
+                <img src="${article.image}" alt="${article.title}">
+                <h3>${article.title}</h3>
+                <p>${article.snippet}</p>
+                <div class="action-buttons">
+                    <a href="${articlePath}" class="article-read-more-btn" target="_blank">Full Article</a>
+                    <button class="summary-btn">Summary</button>
+                </div>
+            </div>
+        `;
     });
     updateArticlesPagination(mainArticles.length);
     setupArticleClickEvents();
-  }
-  
-  function updateArticlesPagination(totalArticles) {
+}
+
+// Function to display Learn cards on the learn page
+function displayLearnArticles(page) {
+    const learnGrid = document.getElementById('learn-grid');
+    if (!learnGrid) {
+        console.error("learn-grid element not found");
+        return;
+    }
+    console.log("allArticles:", allArticles);
+    const learnArticles = allArticles.filter(article => article.displayOnLearn)
+        .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+    console.log("Filtered learnArticles:", learnArticles);
+    const startIndex = (page - 1) * learnArticlesPerPage,
+          endIndex = startIndex + learnArticlesPerPage,
+          articlesToShow = learnArticles.slice(startIndex, endIndex);
+    console.log("Articles to show:", articlesToShow);
+    learnGrid.innerHTML = '';
+    articlesToShow.forEach(article => {
+        const articlePath = article.fullArticlePath || '#';
+        console.log("Card Learn More Path:", articlePath);
+        learnGrid.innerHTML += `
+            <div class="learn-card" data-article-id="${article.id}">
+                <img src="${article.image}" alt="${article.title}">
+                <div class="overlay">
+                    <h3>${article.title}</h3>
+                    <p>${article.snippet}</p>
+                    <div class="buttons-container">
+                        <a href="${articlePath}" class="learn-read-more-btn" target="_blank">Learn More</a>
+                        <button class="summary-btn">Summary</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    updateLearnPagination(learnArticles.length);
+    setupArticleClickEvents();
+}
+
+// Function to update pagination for main articles
+function updateArticlesPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / articlesPerPage),
           pageNumbers = document.getElementById('page-numbers');
+    if (!pageNumbers) {
+        console.error("page-numbers element not found");
+        return;
+    }
     let html = `<button class="page-nav" id="prev-page" ${currentArticlePage === 1 ? 'disabled' : ''}><</button>`;
     let startPage = Math.max(1, currentArticlePage - 2),
         endPage = Math.min(totalPages, currentArticlePage + 2);
     if (currentArticlePage <= 3) { endPage = Math.min(5, totalPages); }
     if (currentArticlePage >= totalPages - 2) { startPage = Math.max(totalPages - 4, 1); }
     for (let i = startPage; i <= endPage; i++) {
-      html += `<button class="page-number ${i === currentArticlePage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
+        html += `<button class="page-number ${i === currentArticlePage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
     }
     html += `<button class="page-nav" id="next-page" ${currentArticlePage === totalPages ? 'disabled' : ''}>></button>`;
     pageNumbers.innerHTML = html;
     document.querySelectorAll('.page-number').forEach(button => {
-      button.addEventListener('click', function() {
-        handleArticlePageChange(parseInt(this.getAttribute('data-page')));
-      });
+        button.removeEventListener('click', handleArticlePageClick);
+        button.addEventListener('click', handleArticlePageClick);
     });
-    document.getElementById('prev-page').addEventListener('click', () => navigateArticlesPages('prev', totalPages));
-    document.getElementById('next-page').addEventListener('click', () => navigateArticlesPages('next', totalPages));
-  }
-  
-  function handleArticlePageChange(newPage) {
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    prevButton.removeEventListener('click', navigateArticlesPrev);
+    nextButton.removeEventListener('click', navigateArticlesNext);
+    prevButton.addEventListener('click', navigateArticlesPrev);
+    nextButton.addEventListener('click', navigateArticlesNext);
+
+    function handleArticlePageClick() {
+        handleArticlePageChange(parseInt(this.getAttribute('data-page')));
+    }
+
+    function navigateArticlesPrev() {
+        navigateArticlesPages('prev', totalPages);
+    }
+
+    function navigateArticlesNext() {
+        navigateArticlesPages('next', totalPages);
+    }
+}
+
+function handleArticlePageChange(newPage) {
     if (newPage === currentArticlePage) return;
     currentArticlePage = newPage;
     displayArticles(currentArticlePage);
     scrollToSection('articles');
-  }
-  
-  function navigateArticlesPages(direction, totalPages) {
+}
+
+function navigateArticlesPages(direction, totalPages) {
     const newPage = direction === 'prev' ? currentArticlePage - 1 : currentArticlePage + 1;
     if (newPage >= 1 && newPage <= totalPages) {
-      handleArticlePageChange(newPage);
+        handleArticlePageChange(newPage);
     }
-  }
-  
-  function scrollToSection(sectionId) {
-    const targetElement = sectionId === 'articles' ?
-      document.getElementById('articles-grid') :
-      document.getElementById('learn-grid');
-    if (!targetElement) return;
-    const offset = window.innerWidth <= 768 ? -20 : -100;
-    window.scrollTo({ top: targetElement.offsetTop + offset, behavior: 'smooth' });
-  }
-  
-  function setupArticleClickEvents() {
-    document.querySelectorAll('.article-card').forEach(card => {
-      card.addEventListener('click', function(e) {
-        e.preventDefault();
-        const articleId = this.getAttribute('data-article-id'),
-              article = allArticles.find(a => a.id == articleId);
-        if (article) displayModal(article);
-      });
-    });
-  }
-  
-  function displayModal(article) {
-    const modal = document.getElementById('article-modal');
-    document.getElementById('modal-article-content').innerHTML = `
-      <div class="modal-header">
-        <h1 class="modal-title">${article.title}</h1>
-        <p class="modal-snippet">${article.snippet}</p>
-      </div>
-      <p class="modal-published">${article.publishedDate}</p>
-      <img src="${article.image}" alt="${article.title}" class="modal-banner">
-      <p class="modal-comment">${article.comment}</p>
-      <div class="modal-fulltext">
-        ${article.fullText}
-      </div>
-    `;
-    modal.style.display = "block";
-    document.querySelector('.close').onclick = () => { modal.style.display = "none"; };
-    window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-  }
-  
-  if (document.getElementById('articles-grid')) {
-    displayArticles(currentArticlePage);
-  }
-  
-  // -------------------------
-  // LEARN PAGE ARTICLES (PAGINATION)
-  // -------------------------
-  const learnArticlesPerPage = 3;
-  let currentLearnPage = 1;
-  
-  function displayLearnArticles(page) {
-    const learnGrid = document.getElementById('learn-grid');
-    if (!learnGrid) return;
-    const learnArticles = allArticles.filter(article => article.displayOnLearn)
-      .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-    const startIndex = (page - 1) * learnArticlesPerPage,
-          endIndex = startIndex + learnArticlesPerPage,
-          articlesToShow = learnArticles.slice(startIndex, endIndex);
-    learnGrid.innerHTML = '';
-    articlesToShow.forEach(article => {
-      learnGrid.innerHTML += `
-        <div class="learn-card" data-article-id="${article.id}">
-          <img src="${article.image}" alt="${article.title}">
-          <div class="overlay">
-            <h3>${article.title}</h3>
-            <p>${article.snippet}</p>
-            <a href="${article.fullArticlePath}" class="learn-read-more-btn" target="_blank">Read More</a>
-          </div>
-        </div>
-      `;
-    });
-    updateLearnPagination(learnArticles.length);
-  }
-  
-  function updateLearnPagination(totalArticles) {
+}
+
+// Function to update pagination for learn articles
+function updateLearnPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / learnArticlesPerPage),
           pageNumbers = document.getElementById('learn-page-numbers');
+    if (!pageNumbers) {
+        console.error("learn-page-numbers element not found");
+        return;
+    }
     let html = `<button class="page-nav" id="learn-prev-page" ${currentLearnPage === 1 ? 'disabled' : ''}><</button>`;
     let startPage = Math.max(1, currentLearnPage - 1),
         endPage = Math.min(totalPages, currentLearnPage + 1);
     if (currentLearnPage <= 2) { endPage = Math.min(3, totalPages); }
     if (currentLearnPage >= totalPages - 1) { startPage = Math.max(totalPages - 2, 1); }
     for (let i = startPage; i <= endPage; i++) {
-      html += `<button class="page-number ${i === currentLearnPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
+        html += `<button class="page-number ${i === currentLearnPage ? 'active-page' : ''}" data-page="${i}">${i}</button>`;
     }
     html += `<button class="page-nav" id="learn-next-page" ${currentLearnPage === totalPages ? 'disabled' : ''}>></button>`;
     pageNumbers.innerHTML = html;
     document.querySelectorAll('#learn-page-numbers .page-number').forEach(button => {
-      button.addEventListener('click', function() {
-        handleLearnPageChange(parseInt(this.getAttribute('data-page')));
-      });
+        button.removeEventListener('click', handleLearnPageClick);
+        button.addEventListener('click', handleLearnPageClick);
     });
-    document.getElementById('learn-prev-page').addEventListener('click', () => navigateLearnPages('prev', totalPages));
-    document.getElementById('learn-next-page').addEventListener('click', () => navigateLearnPages('next', totalPages));
-  }
-  
-  function handleLearnPageChange(newPage) {
+    const prevButton = document.getElementById('learn-prev-page');
+    const nextButton = document.getElementById('learn-next-page');
+    prevButton.removeEventListener('click', navigateLearnPrev);
+    nextButton.removeEventListener('click', navigateLearnNext);
+    prevButton.addEventListener('click', navigateLearnPrev);
+    nextButton.addEventListener('click', navigateLearnNext);
+
+    function handleLearnPageClick() {
+        handleLearnPageChange(parseInt(this.getAttribute('data-page')));
+    }
+
+    function navigateLearnPrev() {
+        navigateLearnPages('prev', totalPages);
+    }
+
+    function navigateLearnNext() {
+        navigateLearnPages('next', totalPages);
+    }
+}
+
+function handleLearnPageChange(newPage) {
     if (newPage === currentLearnPage) return;
     currentLearnPage = newPage;
     displayLearnArticles(currentLearnPage);
     scrollToSection('learn');
-  }
-  
-  function navigateLearnPages(direction, totalPages) {
+}
+
+function navigateLearnPages(direction, totalPages) {
     const newPage = direction === 'prev' ? currentLearnPage - 1 : currentLearnPage + 1;
     if (newPage >= 1 && newPage <= totalPages) {
-      handleLearnPageChange(newPage);
+        handleLearnPageChange(newPage);
     }
-  }
-  
-  if (document.getElementById('learn-grid')) {
-    displayLearnArticles(currentLearnPage);
-  }
+}
+
+// Function to scroll to a section
+function scrollToSection(sectionId) {
+    const targetElement = sectionId === 'articles'
+        ? document.getElementById('articles-grid')
+        : document.getElementById('learn-grid');
+    if (!targetElement) return;
+    const offset = window.innerWidth <= 768 ? -20 : -100;
+    window.scrollTo({ top: targetElement.offsetTop + offset, behavior: 'smooth' });
+}
+
+// Function to scroll to a specific article
+function scrollToArticle(articleId) {
+    const card = document.querySelector(`[data-article-id="${articleId}"]`);
+    if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.border = '2px solid #007bff'; // Optional: Highlight the card
+    }
+}
+
+// Function to display the modal
+function displayModal(article) {
+    const modal = document.getElementById('article-modal');
+    if (!modal) {
+        console.error("article-modal element not found");
+        return;
+    }
+    const modalContent = document.getElementById('modal-article-content');
+    if (!modalContent) {
+        console.error("modal-article-content element not found");
+        return;
+    }
+    console.log("Displaying modal for article:", article.title);
+    console.log("Using fullArticlePath:", article.fullArticlePath);
+    const articleUrl = article.fullArticlePath || '#';
+    const shareUrl = getShareableUrl(article);
+    console.log("Setting Full Article URL:", articleUrl);
+    console.log("Setting Share URL:", shareUrl);
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h1 class="modal-title">${article.title}</h1>
+            <p class="modal-snippet">${article.snippet}</p>
+        </div>
+        <div class="modal-summary">
+            ${article.summary}
+            <div class="action-buttons">
+                <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
+                <a href="#" class="share-button" data-url="${shareUrl}">🔗 Share this article</a>
+            </div>
+        </div>
+    `;
+    modal.style.display = "block";
+    document.body.classList.add('modal-open');
+
+    const closeModal = () => {
+        modal.style.display = "none";
+        document.body.classList.remove('modal-open');
+    };
+
+    document.querySelector('.close').onclick = closeModal;
+    window.onclick = (event) => { if (event.target == modal) closeModal(); };
+
+    // Attach event listener to modal share button
+    document.querySelector('.share-button').addEventListener('click', handleShareButtonClick);
+}
+
+const fullArticleBtn = document.querySelector('.full-article-btn');
+if (fullArticleBtn) {
+    fullArticleBtn.addEventListener('click', (event) => {
+        console.log("Full Article button clicked, navigating to:", fullArticleBtn.getAttribute('href'));
+    });
+}
+
+// Function to handle copying shareable URLs for both modal and static share buttons
+function handleShareButtonClick(event) {
+    event.preventDefault();
+    const button = event.target.closest('.share-button, #full-top-share-button');
+    let url = button.getAttribute('data-url');
+
+    // If no data-url is provided, try to generate it dynamically
+    if (!url) {
+        const articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
+        if (articleId) {
+            const article = allArticles.find(a => a.id == articleId);
+            if (article) {
+                url = getShareableUrl(article);
+            }
+        }
+        // Fallback: Use current page URL if no article data
+        if (!url) {
+            url = window.location.href;
+        }
+    }
+
+    if (url) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Shareable link copied to clipboard!");
+        }).catch(error => {
+            console.error("Error copying URL:", error);
+        });
+    } else {
+        console.error("Unable to determine shareable URL for button");
+    }
+}
+
+// Function to handle summary button clicks
+function handleSummaryClick(event) {
+    if (event.target.classList.contains('summary-btn')) {
+        event.preventDefault();
+        const articleId = event.target.closest('.article-card, .learn-card').getAttribute('data-article-id');
+        console.log("Summary button clicked, articleId:", articleId);
+        const article = allArticles.find(a => a.id == articleId);
+        if (article) {
+            displayModal(article);
+        } else {
+            console.error("Article not found for ID:", articleId);
+        }
+    }
+}
+
+// Function to set up click events for articles and share buttons
+function setupArticleClickEvents() {
+    document.removeEventListener('click', handleSummaryClick);
+    document.addEventListener('click', handleSummaryClick);
+
+    // Attach event listeners to all share buttons (modal and static)
+    const allShareButtons = document.querySelectorAll('.share-button, #full-top-share-button');
+    allShareButtons.forEach(button => {
+        button.removeEventListener('click', handleShareButtonClick);
+        button.addEventListener('click', handleShareButtonClick);
+    });
+}
+
+// Function for static share button (called via onclick)
+function shareArticle() {
+    const button = document.getElementById('full-top-share-button');
+    if (!button) {
+        console.error("full-top-share-button not found");
+        return;
+    }
+
+    let url = button.getAttribute('data-url');
+
+    // If no data-url is provided, try to generate it dynamically
+    if (!url) {
+        const articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
+        if (articleId) {
+            const article = allArticles.find(a => a.id == articleId);
+            if (article) {
+                url = getShareableUrl(article);
+            }
+        }
+        // Fallback: Use current page URL if no article data
+        if (!url) {
+            url = window.location.href;
+        }
+    }
+
+    if (url) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Shareable link copied to clipboard!");
+        }).catch(error => {
+            console.error("Error copying URL:", error);
+        });
+    } else {
+        console.error("Unable to determine shareable URL for full-top-share-button");
+    }
+}
+
+// Handle redirects from Google search and initial rendering
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("allArticles:", allArticles);
+    if (typeof allArticles === "undefined") {
+        console.error("allArticles is not defined. Ensure js/allArticles.js is loaded.");
+        return;
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('articleId');
+    if (articleId) {
+        const article = allArticles.find(a => a.id == articleId);
+        if (article) {
+            if (article.displayOnMain) {
+                const mainArticles = allArticles.filter(a => a.displayOnMain)
+                    .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+                const index = mainArticles.findIndex(a => a.id == articleId);
+                const page = Math.floor(index / articlesPerPage) + 1;
+                currentArticlePage = page;
+                displayArticles(page);
+                scrollToArticle(articleId);
+            } else if (article.displayOnLearn) {
+                const learnArticles = allArticles.filter(a => a.displayOnLearn)
+                    .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+                const index = learnArticles.findIndex(a => a.id == articleId);
+                const page = Math.floor(index / learnArticlesPerPage) + 1;
+                currentLearnPage = page;
+                displayLearnArticles(page);
+                scrollToArticle(articleId);
+            }
+        }
+    } else {
+        if (document.getElementById('articles-grid')) {
+            displayArticles(currentArticlePage);
+        }
+        if (document.getElementById('learn-grid')) {
+            displayLearnArticles(currentLearnPage);
+        }
+    }
 });
+
+// Fallback rendering
+setTimeout(() => {
+    if (document.getElementById('articles-grid')) {
+        displayArticles(currentArticlePage);
+    }
+    if (document.getElementById('learn-grid')) {
+        displayLearnArticles(currentLearnPage);
+    }
+}, 100);

@@ -1,7 +1,7 @@
 /* Global Styles */
 
 html, body {
-    overflow: hidden;
+    overflow: auto;
   }
 body {
     font-family: Arial, sans-serif;
@@ -203,7 +203,7 @@ body {
   }
   .modal-content {
     background: #fff;
-    margin: -50vh auto 0; /* Adjust to re-center the content */
+    margin: auto;
     padding: 20px;
     width: 80%;
     border-radius: 8px;

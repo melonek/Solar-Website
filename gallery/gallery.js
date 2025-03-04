@@ -7,18 +7,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Updated data array with the new 4th additional image link for each job
     const jobs = [
       {
-        title: "Solar Installation 1",
-        roofType: "Metal",
-        completionDate: "2023-09-01",
-        difficulty: "Medium",
-        timeToComplete: "2 days",
-        suburb: "Sydney",
-        mainImage: "https://live-production.wcms.abc-cdn.net.au/f2251d8ae3f73557147fada1afb2508b?impolicy=wcms_crop_resize&cropH=1008&cropW=1789&xPos=0&yPos=46&width=862&height=485",
+        title: "Harrisdale Installation",
+        roofType: "Concrete Tile",
+        completionDate: "2025-03-05",
+        difficulty: "Easy",
+        timeToComplete: "(9:00am - 12:30pm)",
+        suburb: "Harrisdale, WA, 6112",
+        mainImage: "../images/Jobs/Job1/house.webp",
         additionalImages: [
-          "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
-          "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
-          "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
-          fallbackImage
+          "../images/Jobs/Job1/panels1.webp",
+          "../images/Jobs/Job1/panels2.webp",
+          "../images/Jobs/Job1/inverter1.webp",
+          "../images/Jobs/Job1/inverter2.webp",
         ]
       },
       {
@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
           "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
           "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
           "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
-          fallbackImage
         ]
       },
       {
@@ -48,11 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
           "https://images.waunakeeremodeling.com/wp-content/uploads/2020/08/26190626/solar-on-roof6.jpg",
           "https://www.solarpowerworldonline.com/wp-content/uploads/2017/01/Mouli-2.jpg",
           "https://www.greenbuildingafrica.co.za/wp-content/uploads/2019/05/Rooftop-solar-GBA-Stock.jpg",
-          fallbackImage
         ]
       }
       // Add more job objects as needed.
     ];
+
+    
   
     const carousel = document.querySelector('.carousel');
     const leftBtn = document.querySelector('.left-btn');
