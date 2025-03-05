@@ -565,9 +565,10 @@ nav {
 
 /* Text Styling - Responsive & Visible */
 .main-title {
-    font-size: clamp(3rem, 8vw, 5rem);
+    font-size: clamp(5rem, 8vw, 5rem)!important;
     margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    color: #00ffea; /* Neon cyan to match .learn-card aesthetic */
+    text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
 }
 
 .subtitle {
@@ -597,7 +598,7 @@ nav {
     }
     
     .main-title {
-        font-size: clamp(2rem, 7vw, 3.5rem);
+        font-size: clamp(4rem, 7vw, 3.5rem)!important;
         letter-spacing: 1px;
     }
     
@@ -1983,7 +1984,7 @@ nav {
 
 /* Text Styling - Responsive & Visible */
 .main-title {
-    font-size: clamp(3rem, 8vw, 5rem);
+    font-size: clamp(8rem, 8vw, 5rem);
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
@@ -2015,7 +2016,7 @@ nav {
     }
     
     .main-title {
-        font-size: clamp(2rem, 7vw, 3.5rem);
+        font-size: clamp(5rem, 7vw, 3.5rem)!important;
         letter-spacing: 1px;
     }
     
@@ -2027,7 +2028,10 @@ nav {
     }
 }
 
+#leaf-image{
+opacity: 1;
 
+}
 
 /* About Content */
 .about-container {

@@ -563,7 +563,8 @@
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #00ffea; /* Neon cyan to match .learn-card aesthetic */
+  text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
 }
 
 .universalBanner h2 {
