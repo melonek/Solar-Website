@@ -19,27 +19,20 @@ document.addEventListener("DOMContentLoaded", function() {
     if (whatsappBtn) whatsappBtn.href = whatsappUrl;
 });
 
-// Define base URL for shareable links
-const BASE_URL = "https://melonek.github.io"; // Update to "https://meloneksolar.com" if using a custom domain
+const BASE_URL = "https://melonek.github.io";
 
-// Dynamically determine the repository base path (e.g., "/Solar-Website" or "" for local/custom domain)
 function getRepoBasePath() {
     const path = window.location.pathname;
     const pathParts = path.split('/').filter(part => part.length > 0);
     return (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" || pathParts.length === 0) 
         ? "" 
-        : `/${pathParts[0]}`; // e.g., "/Solar-Website"
+        : `/${pathParts[0]}`;
 }
 
-// Helper function to determine the base path for articles
 function getBasePathForArticles() {
-    const path = window.location.pathname;
-    console.log("Current path in getBasePathForArticles:", path);
-    // Always return 'articles/' since fullArticlePath doesn’t include it
     return 'articles/';
 }
 
-// Function to generate a navigation URL for an article using fullArticlePath
 function getArticleNavigationUrl(article) {
     if (!article || !article.fullArticlePath) {
         console.error("fullArticlePath is undefined for article:", article);
@@ -52,7 +45,6 @@ function getArticleNavigationUrl(article) {
     return resolvedUrl;
 }
 
-// Function to generate a shareable URL for an article
 function getShareableUrl(article) {
     if (!article || !article.fullArticlePath) {
         console.error("fullArticlePath is undefined for article:", article);
@@ -64,15 +56,12 @@ function getShareableUrl(article) {
     return `${BASE_URL}${resolvedPath}`;
 }
 
-// Main Page Articles (Pagination)
 const articlesPerPage = 6;
 let currentArticlePage = 1;
 
-// Learn Page Articles (Pagination)
 const learnArticlesPerPage = 3;
 let currentLearnPage = 1;
 
-// Function to display Full Article cards on the main page
 function displayArticles(page) {
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) {
@@ -107,7 +96,6 @@ function displayArticles(page) {
     setupArticleClickEvents();
 }
 
-// Function to display Learn cards on the learn page
 function displayLearnArticles(page) {
     const learnGrid = document.getElementById('learn-grid');
     if (!learnGrid) {
@@ -144,7 +132,6 @@ function displayLearnArticles(page) {
     setupArticleClickEvents();
 }
 
-// Function to update pagination for main articles
 function updateArticlesPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / articlesPerPage),
           pageNumbers = document.getElementById('page-numbers');
@@ -200,7 +187,6 @@ function navigateArticlesPages(direction, totalPages) {
     }
 }
 
-// Function to update pagination for learn articles
 function updateLearnPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / learnArticlesPerPage),
           pageNumbers = document.getElementById('learn-page-numbers');
@@ -256,26 +242,24 @@ function navigateLearnPages(direction, totalPages) {
     }
 }
 
-// Function to scroll to a section
 function scrollToSection(sectionId) {
     const targetElement = sectionId === 'articles'
         ? document.getElementById('articles-grid')
         : document.getElementById('learn-grid');
     if (!targetElement) return;
-    const offset = window.innerWidth <= 768 ? -20 : -100;
+    // Adjusted offset to scroll lower, ensuring the grid is fully in view
+    const offset = window.innerWidth <= 768 ? 50 : 100; // Positive offset to scroll below the top
     window.scrollTo({ top: targetElement.offsetTop + offset, behavior: 'smooth' });
 }
 
-// Function to scroll to a specific article
 function scrollToArticle(articleId) {
     const card = document.querySelector(`[data-article-id="${articleId}"]`);
     if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        card.style.border = '2px solid #007bff'; // Optional: Highlight the card
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.style.border = '2px solid #007bff'; // Highlight the card
     }
 }
 
-// Function to display the modal
 function displayModal(article) {
     const modal = document.getElementById('article-modal');
     if (!modal) {
@@ -319,7 +303,6 @@ function displayModal(article) {
     document.querySelector('.share-button').addEventListener('click', shareArticle);
 }
 
-// Consolidated share function for both .share-button and #full-top-share-button
 function shareArticle(event) {
     if (event) event.preventDefault();
 
@@ -359,7 +342,6 @@ function shareArticle(event) {
     }
 }
 
-// Custom share popup function
 function showSharePopup(shareData) {
     const existingPopup = document.getElementById('share-popup');
     if (existingPopup) existingPopup.remove();
@@ -399,7 +381,6 @@ function showSharePopup(shareData) {
     document.getElementById('close-popup-btn').addEventListener('click', () => popup.remove());
 }
 
-// Function to handle summary button clicks
 function handleSummaryClick(event) {
     if (event.target.classList.contains('summary-btn')) {
         event.preventDefault();
@@ -414,7 +395,6 @@ function handleSummaryClick(event) {
     }
 }
 
-// Function to set up click events for articles and share buttons
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
@@ -426,7 +406,6 @@ function setupArticleClickEvents() {
     });
 }
 
-// Handle initial rendering
 document.addEventListener("DOMContentLoaded", () => {
     console.log("allArticles:", allArticles);
     if (typeof allArticles === "undefined") {
@@ -453,13 +432,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 const page = Math.floor(index / learnArticlesPerPage) + 1;
                 currentLearnPage = page;
                 displayLearnArticles(page);
-                scrollToArticle(articleId);
+                // Scroll to the learn-grid section first, then to the specific article
+                scrollToSection('learn');
+                setTimeout(() => {
+                    scrollToArticle(articleId);
+                    // Open modal with summary after scrolling
+                    setTimeout(() => {
+                        displayModal(article);
+                    }, 500); // Delay for modal after scrolling
+                }, 500); // Delay to ensure section scroll completes
             }
         }
     } else {
         if (document.getElementById('articles-grid')) {
             console.log("Initial rendering: displaying articles on index.html");
-            displayArticles(currentArticlePage);
+            displayArticles(currentPage);
         }
         if (document.getElementById('learn-grid')) {
             console.log("Initial rendering: displaying articles on learn.html");
@@ -468,7 +455,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Fallback rendering
 setTimeout(() => {
     if (document.getElementById('articles-grid')) {
         console.log("Fallback rendering: displaying articles on index.html");
