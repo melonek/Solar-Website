@@ -178,6 +178,7 @@ window.addEventListener('load', revealButtons);
       card.classList.toggle('active', cardTop < triggerBottom);
     });
   }
+
   function revealArticles() {
     const articles = document.querySelectorAll('.article-card'),
           triggerBottom = window.innerHeight * 0.8;
@@ -190,6 +191,7 @@ window.addEventListener('load', revealButtons);
       }
     });
   }
+  
   function revealUniqueServices() {
     const products = document.querySelectorAll('#unique-services .unique-service-product'),
           triggerBottom = window.innerHeight * 0.8;

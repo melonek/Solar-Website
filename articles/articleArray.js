@@ -30,6 +30,6 @@ const allArticles = [
       "comment": "Western Australia solar rebates and financial incentives guide",
       "displayOnMain": true,
       "displayOnLearn": false,
-      "fullArticlePath": "article2/Solar-Innovations.html" // Match exact file name
+      "fullArticlePath": "article2/Solar-Rebates-WA.html" // Match exact file name
   }
 ];
