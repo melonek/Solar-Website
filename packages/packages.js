@@ -1090,312 +1090,143 @@ document.getElementById("inverter-filter").addEventListener("change", function()
 });
 
   // -------------------------
-  // HERO SECTION PARALLAX WITH THREE.JS AND GSAP (USED IN PANELS-GRID)
+  // CONSOLIDATED PARALLAX FUNCTION FOR ALL GRIDS
   // -------------------------
-  const heroSection = document.querySelector('.panels-section'); // Still used for scroll context
-  const heroCanvas = document.querySelector('#hero-canvas');
+  function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondImagePath, firstWidth, firstHeight, secondWidth, secondHeight) {
+    const section = document.querySelector(sectionSelector);
+    const canvas = document.querySelector(`#${canvasId}`);
 
-  // Check for DOM elements and libraries with specific diagnostics
-  if (!heroSection) console.error("Panels section (.panels-section) not found in DOM.");
-  if (!heroCanvas) console.error("Canvas (#hero-canvas) not found in DOM.");
-  if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
-  if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
-  if (typeof ScrollSmoother === 'undefined') console.warn("ScrollSmoother not loaded. Proceeding without smooth scrolling. Check CDN or network.");
+    // Diagnostics
+    if (!section) console.error(`Section (${sectionSelector}) not found in DOM.`);
+    if (!canvas) console.error(`Canvas (#${canvasId}) not found in DOM.`);
+    if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
+    if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
 
-  if (heroSection && heroCanvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
-    // Register ScrollSmoother if available
-    if (typeof ScrollSmoother !== 'undefined') {
-      gsap.registerPlugin(ScrollSmoother);
-      ScrollSmoother.create({
-        smooth: 1,
-        effects: true,
+    if (section && canvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
+      // Scene setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0); // Transparent background
+      camera.position.z = 5;
+
+      // Load textures
+      const textureLoader = new THREE.TextureLoader();
+      const firstTexture = textureLoader.load(
+        firstImagePath,
+        () => console.log(`First image for ${canvasId} loaded successfully`),
+        undefined,
+        (err) => console.error(`Error loading first image for ${canvasId}:`, err)
+      );
+      const secondTexture = textureLoader.load(
+        secondImagePath,
+        () => console.log(`Second image for ${canvasId} loaded successfully`),
+        undefined,
+        (err) => console.error(`Error loading second image for ${canvasId}:`, err)
+      );
+
+      // Create planes
+      const planeWidth = 20;
+      const planeHeight = 20 * (firstHeight / firstWidth);
+      const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+      const firstMaterial = new THREE.MeshBasicMaterial({ 
+        map: firstTexture,
+        transparent: true,
+        side: THREE.DoubleSide,
+        color: firstTexture ? null : 0xff0000 // Red fallback
+      });
+      const secondMaterial = new THREE.MeshBasicMaterial({ 
+        map: secondTexture,
+        transparent: true,
+        side: THREE.DoubleSide,
+        color: secondTexture ? null : 0x00ff00 // Green fallback
+      });
+      const firstPlane = new THREE.Mesh(geometry, firstMaterial);
+      const secondPlane = new THREE.Mesh(geometry, secondMaterial);
+
+      // Scale planes
+      firstPlane.scale.set(firstWidth / 4000, firstHeight / 4000, 1);
+      secondPlane.scale.set(secondWidth / 4000, secondHeight / 4000, 1);
+
+      // Position planes (second in front)
+      firstPlane.position.set(0, 0, -1);
+      secondPlane.position.set(0, 0, 0);
+      scene.add(firstPlane, secondPlane);
+
+      // Parallax and rotation intensities
+      const parallaxIntensityFirst = 0.25;
+      const parallaxIntensitySecond = 0.15;
+      const rotationIntensity = 0.3;
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        const scrollY = window.scrollY;
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+
+        if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+          const progress = (scrollY - sectionTop) / sectionHeight;
+          const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
+          const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
+          const rotation = -progress * rotationIntensity; // Counterclockwise
+
+          firstPlane.position.y = -parallaxYFirst / 100;
+          secondPlane.position.y = -parallaxYSecond / 100;
+          secondPlane.rotation.z = rotation;
+        }
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Resize handler
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
       });
     } else {
-      console.log("Running parallax without ScrollSmoother.");
+      console.error(`Initialization failed for ${canvasId} banner. Check console for specific errors and ensure CDN scripts are loaded correctly.`);
     }
-
-    // Scene setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.z = 5;
-
-    // Load textures with error handling
-    const textureLoader = new THREE.TextureLoader();
-    const firstImageTexture = textureLoader.load(
-      '../images/Green,Blue,Orange-sectionsInPpackages/green.png',
-      () => console.log('First image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading first image:', err)
-    );
-    const secondImageTexture = textureLoader.load(
-      '.i/images/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp',
-      () => console.log('Second image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading second image:', err)
-    );
-
-    // Image size controls (in pixels, fixed large size for overflow)
-    const firstImageWidth = 4000;
-    const firstImageHeight = 3000;
-    const secondImageWidth = 8000;
-    const secondImageHeight = 4000;
-
-    // Create planes with fixed size to overflow viewport
-    const planeWidth = 20;
-    const planeHeight = 20 * (firstImageHeight / firstImageWidth);
-    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-    const firstMaterial = new THREE.MeshBasicMaterial({ 
-      map: firstImageTexture,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-    const secondMaterial = new THREE.MeshBasicMaterial({ 
-      map: secondImageTexture,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-    const firstPlane = new THREE.Mesh(geometry, firstMaterial);
-    const secondPlane = new THREE.Mesh(geometry, secondMaterial);
-
-    // Scale planes to match pixel dimensions without downscaling
-    firstPlane.scale.set(firstImageWidth / 4000, firstImageHeight / 4000, 1);
-    secondPlane.scale.set(secondImageWidth / 4000, secondImageHeight / 4000, 1);
-
-    // Position planes (second in front)
-    firstPlane.position.set(0, 0, -1);
-    secondPlane.position.set(0, 0, 0);
-    scene.add(firstPlane, secondPlane);
-
-    // Parallax and rotation intensities
-    const parallaxIntensityFirst = 0.25;
-    const parallaxIntensitySecond = 0.15;
-    const rotationIntensity = 0.3;
-
-    // Animation loop
-    function animateParallax() {
-      requestAnimationFrame(animateParallax);
-      const scrollY = window.scrollY;
-      const sectionTop = heroSection.offsetTop;
-      const sectionHeight = heroSection.clientHeight;
-
-      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-        const progress = (scrollY - sectionTop) / sectionHeight;
-        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
-        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
-        const rotation = -progress * rotationIntensity; // Counterclockwise
-
-        firstPlane.position.y = -parallaxYFirst / 100;
-        secondPlane.position.y = -parallaxYSecond / 100;
-        secondPlane.rotation.z = rotation;
-      }
-
-      renderer.render(scene, camera);
-    }
-    animateParallax();
-
-    // Resize handler (only update canvas and camera, no plane scaling)
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  } else {
-    console.error("Initialization failed. Check console for specific errors and ensure CDN scripts are loaded correctly.");
   }
 
-  // -------------------------
-  // INVERTER SECTION PARALLAX WITH THREE.JS AND GSAP (USED IN INVERTERS-GRID)
-  // -------------------------
-  const invertersSection = document.querySelector('.inverters-section');
-  const inverterCanvas = document.querySelector('#inverter-canvas');
-
-  if (!invertersSection) console.error("Inverters section (.inverters-section) not found in DOM.");
-  if (!inverterCanvas) console.error("Canvas (#inverter-canvas) not found in DOM.");
-  if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
-  if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
-
-  if (invertersSection && inverterCanvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
-    const scene2 = new THREE.Scene();
-    const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer2 = new THREE.WebGLRenderer({ canvas: inverterCanvas, antialias: true });
-    renderer2.setSize(window.innerWidth, window.innerHeight);
-    renderer2.setClearColor(0x000000, 0);
-    camera2.position.z = 5;
-
-    const textureLoader2 = new THREE.TextureLoader();
-    const firstInverterTexture = textureLoader2.load(
-      '../images/Green,Blue,Orange-sectionsInPpackages/blue.png', // New image for inverters
-      () => console.log('First inverter image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading first inverter image:', err)
-    );
-    const secondInverterTexture = textureLoader2.load(
-      '../dimages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png', // New image for inverters
-      () => console.log('Second inverter image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading second inverter image:', err)
-    );
-
-    const firstInverterWidth = 4000;
-    const firstInverterHeight =  3000;
-    const secondInverterWidth = 4000;
-    const secondInverterHeight = 1000;
-
-    const planeWidth2 = 20;
-    const planeHeight2 = 20 * (firstInverterHeight / firstInverterWidth);
-    const geometry2 = new THREE.PlaneGeometry(planeWidth2, planeHeight2);
-    const firstInverterMaterial = new THREE.MeshBasicMaterial({ 
-      map: firstInverterTexture,
-      transparent: true,
-      side: THREE.DoubleSide,
-      color: firstInverterTexture ? null : 0xff0000
-    });
-    const secondInverterMaterial = new THREE.MeshBasicMaterial({ 
-      map: secondInverterTexture,
-      transparent: true,
-      side: THREE.DoubleSide,
-      color: secondInverterTexture ? null : 0x00ff00
-    });
-    const firstInverterPlane = new THREE.Mesh(geometry2, firstInverterMaterial);
-    const secondInverterPlane = new THREE.Mesh(geometry2, secondInverterMaterial);
-
-    firstInverterPlane.scale.set(firstInverterWidth / 4000, firstInverterHeight / 4000, 1);
-    secondInverterPlane.scale.set(secondInverterWidth / 4000, secondInverterHeight / 4000, 1);
-
-    firstInverterPlane.position.set(0, 0, -1);
-    secondInverterPlane.position.set(0, 0, 0);
-    scene2.add(firstInverterPlane, secondInverterPlane);
-
-    const parallaxIntensityFirst2 = 0.25;
-    const parallaxIntensitySecond2 = 0.15;
-    const rotationIntensity2 = 0.3;
-
-    function animateInverterParallax() {
-      requestAnimationFrame(animateInverterParallax);
-      const scrollY = window.scrollY;
-      const sectionTop = invertersSection.offsetTop;
-      const sectionHeight = invertersSection.clientHeight;
-
-      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-        const progress = (scrollY - sectionTop) / sectionHeight;
-        const parallaxYFirst = progress * parallaxIntensityFirst2 * sectionHeight;
-        const parallaxYSecond = progress * parallaxIntensitySecond2 * sectionHeight;
-        const rotation = -progress * rotationIntensity2;
-
-        firstInverterPlane.position.y = -parallaxYFirst / 100;
-        secondInverterPlane.position.y = -parallaxYSecond / 100;
-        secondInverterPlane.rotation.z = rotation;
-      }
-
-      renderer2.render(scene2, camera2);
-    }
-    animateInverterParallax();
-
-    window.addEventListener('resize', () => {
-      camera2.aspect = window.innerWidth / window.innerHeight;
-      camera2.updateProjectionMatrix();
-      renderer2.setSize(window.innerWidth, window.innerHeight);
+  // Initialize ScrollSmoother once globally
+  if (typeof ScrollSmoother !== 'undefined') {
+    gsap.registerPlugin(ScrollSmoother);
+    ScrollSmoother.create({
+      smooth: 1,
+      effects: true,
     });
   } else {
-    console.error("Initialization failed for inverters banner. Check console for specific errors and ensure CDN scripts are loaded correctly.");
+    console.log("Running all parallax banners without ScrollSmoother.");
   }
 
+  // Initialize banners for each grid
+  initParallaxBanner(
+    '.panels-section', 
+    'hero-canvas', 
+    '../images/Green,Blue,Orange-sectionsInPpackages/green.png', 
+    '../sdimages/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', 
+    4000, 3000, // Panels first image
+    8000, 4000  // Panels second image
+  );
 
-  // -------------------------
-  // BATTERY SECTION PARALLAX WITH THREE.JS AND GSAP (USED IN BATTERY-GRID)
-  // -------------------------
-  const batterySection = document.querySelector('.battery-storage');
-  const batteryCanvas = document.querySelector('#battery-canvas');
+  initParallaxBanner(
+    '.inverters-section', 
+    'inverter-canvas', 
+    '../images/Green,Blue,Orange-sectionsInPpackages/blue.png', 
+    '../sdimages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png', 
+    4000, 3000, // Inverters first image
+    4000, 1000  // Inverters second image
+  );
 
-  if (!batterySection) console.error("Battery section (.battery-storage) not found in DOM.");
-  if (!batteryCanvas) console.error("Canvas (#battery-canvas) not found in DOM.");
-  if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
-  if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
-
-  if (batterySection && batteryCanvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
-    const scene3 = new THREE.Scene();
-    const camera3 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer3 = new THREE.WebGLRenderer({ canvas: batteryCanvas, antialias: true });
-    renderer3.setSize(window.innerWidth, window.innerHeight);
-    renderer3.setClearColor(0x000000, 0);
-    camera3.position.z = 5;
-
-    const textureLoader3 = new THREE.TextureLoader();
-    const firstBatteryTexture = textureLoader3.load(
-      '../images/Green,Blue,Orange-sectionsInPpackages/orange.png', // New image for battery
-      () => console.log('First battery image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading first battery image:', err)
-    );
-    const secondBatteryTexture = textureLoader3.load(
-      '../images/Green,Blue,Orange-sectisonsInPpackages/orange-leaf.png', // New image for battery
-      () => console.log('Second battery image loaded successfully'),
-      undefined,
-      (err) => console.error('Error loading second battery image:', err)
-    );
-
-    const firstBatteryWidth = 6000;
-    const firstBatteryHeight = 3500;
-    const secondBatteryWidth = 2000;
-    const secondBatteryHeight = 2000;
-
-    const planeWidth3 = 20;
-    const planeHeight3 = 20 * (firstBatteryHeight / firstBatteryWidth);
-    const geometry3 = new THREE.PlaneGeometry(planeWidth3, planeHeight3);
-    const firstBatteryMaterial = new THREE.MeshBasicMaterial({ 
-      map: firstBatteryTexture,
-      transparent: true,
-      side: THREE.DoubleSide,
-      color: firstBatteryTexture ? null : 0xff0000
-    });
-    const secondBatteryMaterial = new THREE.MeshBasicMaterial({ 
-      map: secondBatteryTexture,
-      transparent: true,
-      side: THREE.DoubleSide,
-      color: secondBatteryTexture ? null : 0x00ff00
-    });
-    const firstBatteryPlane = new THREE.Mesh(geometry3, firstBatteryMaterial);
-    const secondBatteryPlane = new THREE.Mesh(geometry3, secondBatteryMaterial);
-
-    firstBatteryPlane.scale.set(firstBatteryWidth / 4000, firstBatteryHeight / 4000, 1);
-    secondBatteryPlane.scale.set(secondBatteryWidth / 4000, secondBatteryHeight / 4000, 1);
-
-    firstBatteryPlane.position.set(0, 0, -1);
-    secondBatteryPlane.position.set(0, 0, 0);
-    scene3.add(firstBatteryPlane, secondBatteryPlane);
-
-    const parallaxIntensityFirst3 = 0.25;
-    const parallaxIntensitySecond3 = 0.15;
-    const rotationIntensity3 = 0.3;
-
-    function animateBatteryParallax() {
-      requestAnimationFrame(animateBatteryParallax);
-      const scrollY = window.scrollY;
-      const sectionTop = batterySection.offsetTop;
-      const sectionHeight = batterySection.clientHeight;
-
-      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-        const progress = (scrollY - sectionTop) / sectionHeight;
-        const parallaxYFirst = progress * parallaxIntensityFirst3 * sectionHeight;
-        const parallaxYSecond = progress * parallaxIntensitySecond3 * sectionHeight;
-        const rotation = -progress * rotationIntensity3;
-
-        firstBatteryPlane.position.y = -parallaxYFirst / 100;
-        secondBatteryPlane.position.y = -parallaxYSecond / 100;
-        secondBatteryPlane.rotation.z = rotation;
-      }
-
-      renderer3.render(scene3, camera3);
-    }
-    animateBatteryParallax();
-
-    window.addEventListener('resize', () => {
-      camera3.aspect = window.innerWidth / window.innerHeight;
-      camera3.updateProjectionMatrix();
-      renderer3.setSize(window.innerWidth, window.innerHeight);
-    });
-  } else {
-    console.error("Initialization failed for battery banner. Check console for specific errors and ensure CDN scripts are loaded correctly.");
-  }
+  initParallaxBanner(
+    '.battery-storage', 
+    'battery-canvas', 
+    '../images/Green,Blue,Orange-sectionsInPpackages/orange.png', 
+    '../sdimages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', 
+    6000, 3500, // Battery first image
+    2000, 2000  // Battery second image
+  );
