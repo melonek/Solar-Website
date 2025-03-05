@@ -704,8 +704,16 @@ function createProductCard(product, type) {
       document.querySelectorAll("#inverters-grid .product-card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");
       selectedInverter = product;
-      scrollToSection("battery-storage");
-      showTextCloudForSection('battery');
+      
+      // Update the package display first so that the layout reflects the new selection.
+      updatePackageDisplay();
+      
+      // Delay the scroll to allow the DOM to update.
+      setTimeout(() => {
+        // Use normalScrollToSection with an offset if needed.
+        normalScrollToSection("battery-storage", 0);
+        showTextCloudForSection('battery');
+      }, 300);
     } else if (type === "battery") {
       document.querySelectorAll("#battery-grid .product-card").forEach(c => c.classList.remove("selected-battery"));
       card.classList.add("selected-battery");
@@ -731,10 +739,16 @@ function handleModalOpen(e) {
     product = solarProducts.batteries.find(p => p.id === id);
   }
   if (!product) return;
+  
   const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
   const brandLogoUrl = brand ? brand.url : "";
-  const logoClass = type === "panel" ? "brand-logo-panel" : (type === "inverter" ? "brand-logo-inverter" : "brand-logo-battery");
+  const logoClass = type === "panel" 
+    ? "brand-logo-panel" 
+    : (type === "inverter" ? "brand-logo-inverter" : "brand-logo-battery");
+  
   const modal = document.getElementById("product-modal");
+  
+  // Set modal content
   document.querySelector(".modal-product-image").innerHTML = `
     <div class="product-image-container">
       <img src="${product.image}" alt="${product.name}" class="main-product-image">
@@ -750,8 +764,11 @@ function handleModalOpen(e) {
     <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
     <p><strong>Product Description:</strong> ${product.description}</p>
   `;
-  modal.style.display = "block";
+  
+  // Instead of setting display = "block", add the active class to show the modal centered
+  modal.classList.add("active");
 }
+
 
 function updatePanelPrice() {
   if (selectedPanel) {
@@ -1034,17 +1051,20 @@ document.addEventListener("DOMContentLoaded", function() {
   
   document.addEventListener("click", (e) => {
     const modal = document.getElementById("product-modal");
-    if (modal && modal.style.display === "block" && e.target === modal) {
-      modal.style.display = "none";
+    // Close when clicking outside the modal content
+    if (modal && modal.classList.contains("active") && e.target === modal) {
+      modal.classList.remove("active");
     }
   });
+  
   document.addEventListener("click", (e) => {
     const modal = document.getElementById("product-modal");
+    // Close when clicking on elements with close classes
     if (modal && (e.target.classList.contains("close") || e.target.classList.contains("modal-close"))) {
-      modal.style.display = "none";
+      modal.classList.remove("active");
     }
   });
-});
+})
 
 // --------------------
 // Filter Bar Sorting for Solar Products

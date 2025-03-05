@@ -352,6 +352,8 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
         const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
         const brandLogoUrl = brand ? brand.url : "";
         const modal = document.getElementById("product-modal");
+        
+        // Set the modal content for battery
         document.querySelector(".modal-product-image").innerHTML = `
             <div class="product-image-container">
                 <img src="${product.image}" alt="${product.name}" class="main-product-image">
@@ -367,17 +369,17 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
             <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
             <p><strong>Product Description:</strong> ${product.description}</p>
         `;
-        modal.style.display = "block";
+        
+        // Instead of setting style.display = "block", add the active class
+        modal.classList.add("active");
     }
 
     function attachModalHandlers() {
         const modal = document.getElementById('product-modal');
-        const closeModalButton = document.querySelector('.close');
-
         if (modal) {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal || e.target.classList.contains('close')) {
-                    modal.style.display = 'none';
+                    modal.classList.remove("active");
                 }
             });
         } else {
