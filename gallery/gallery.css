@@ -198,7 +198,7 @@ body {
     height: 100vh; /* Use full viewport height */
     padding-top: 1vh;  /* Extra space at the top */
     padding-bottom: 15vh;  /* Extra space at the bottom */
-    overflow: auto;
+    overflow: hidden;
     background-color: rgba(0,0,0,0.5);
   }
   .modal-content {

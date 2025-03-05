@@ -1365,6 +1365,44 @@ nav {
     height: auto;
   }
   
+
+  /* Responsive Design */
+  
+  /* Tablet and Mobile (up to 780px) */
+  @media (max-width: 780px) {
+    #product-modal .modal-content {
+      flex-direction: column; /* Stack the image and text vertically on small screens */
+      max-width: 95%; /* Use most of the screen width */
+      padding: 15px; /* Reduced padding */
+    }
+  
+    #product-modal .modal-product-image {
+      width: 100%; /* Image takes full width */
+      margin-right: 0;
+      margin-bottom: 20px; /* Space between image and text */
+    }
+  
+    #product-modal .modal-product-details {
+      padding-left: 0; /* Remove left padding */
+    }
+  }
+  
+  /* Mobile (up to 480px) */
+  @media (max-width: 480px) {
+    #product-modal .modal-content {
+      padding: 10px; /* Further reduce padding for smaller screens */
+    }
+  
+    #product-modal .modal-product-image {
+      width: 100%; /* Image takes full width */
+    }
+  
+    #product-modal .modal-product-details {
+      padding-left: 0;
+    }
+  }
+
+
 /* ===== Service Categories ===== */
 
 .services-wrapper {
@@ -2969,35 +3007,32 @@ nav {
 }
 
 /* ======= MODAL STYLES FOR PRODUCTS ======= */
-/* Modal Container */
+/* Modal Structure */
 #product-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed relative to viewport */
+    display: none; /* Initially hidden */
+    position: fixed; /* Fixed to the screen */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent backdrop */
-    display: flex;               /* Enable flex layout */
-    justify-content: center;     /* Center horizontally */
-    align-items: center;         /* Center vertically */
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
-/* Modal Content */
 #product-modal .modal-content {
-    display: flex !important;
-    flex-direction: row !important;         /* Side-by-side layout by default */
-    max-width: 800px !important;
-    width: 100% !important;
-    background: white !important;
-    padding: 20px !important;
-    border-radius: 8px !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+    display: flex;
+    flex-direction: row; /* Arrange image and text side by side by default */
+    max-width: 800px;
+    width: 100%;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent overflow */
 }
 
-/* Product Image Section */
 #product-modal .modal-product-image {
     display: flex;
     align-items: center;
@@ -3015,18 +3050,16 @@ nav {
     border-radius: 8px;
 }
 
-/* Product Details Section */
 #product-modal .modal-product-details {
-    flex-grow: 1;               /* Allow to fill available space */
-    padding-left: 50px;         /* Spacing from the image */
-    display: flex;
-    flex-direction: column;     /* Stack text vertically */
-    justify-content: center;    /* Center content vertically */
-    overflow-y: auto;
-    max-height: 3000px;
+    flex-grow: 1; /* Allow text section to grow and fill available space */
+    padding-left: 50px; /* Padding for the text */
+    display: inline-block;
+    flex-direction: row; /* Stack text vertically */
+    justify-content: space-between; /* Align text at the top */
+    overflow-y: auto; /* Enable vertical scroll if text overflows */
+    max-height: 3000px; /* Max height for text content */
 }
 
-/* Close Button */
 #product-modal .close {
     position: absolute;
     top: 10px;
@@ -3038,31 +3071,6 @@ nav {
 
 #product-modal .close:hover {
     color: #f00;
-}
-
-/* Responsive Design */
-
-/* Tablet and Mobile (up to 780px) */
-@media (max-width: 780px) {
-    #product-modal .modal-content {
-        flex-direction: column; /* Stack image and details vertically */
-        max-width: 95%;         /* Use most of the screen width */
-        padding: 15px;
-    }
-    #product-modal .modal-product-image {
-        width: 100%;            /* Image takes full width */
-        margin-bottom: 20px;    /* Space between image and details */
-    }
-    #product-modal .modal-product-details {
-        padding-left: 0;        /* Remove extra left padding */
-    }
-}
-
-/* Mobile (up to 480px) */
-@media (max-width: 480px) {
-    #product-modal .modal-content {
-        padding: 10px;          /* Reduce padding for smaller screens */
-    }
 }
 
 
@@ -3166,6 +3174,43 @@ nav {
     padding: 5px;
     font-size: 14px;
 }
+
+  /* Responsive Design */
+  
+  /* Tablet and Mobile (up to 780px) */
+  @media (max-width: 780px) {
+    #product-modal .modal-content {
+      flex-direction: column; /* Stack the image and text vertically on small screens */
+      max-width: 95%; /* Use most of the screen width */
+      padding: 15px; /* Reduced padding */
+    }
+  
+    #product-modal .modal-product-image {
+      width: 100%; /* Image takes full width */
+      margin-right: 0;
+      margin-bottom: 20px; /* Space between image and text */
+    }
+  
+    #product-modal .modal-product-details {
+      padding-left: 0; /* Remove left padding */
+    }
+  }
+  
+  /* Mobile (up to 480px) */
+  @media (max-width: 480px) {
+    #product-modal .modal-content {
+      padding: 10px; /* Further reduce padding for smaller screens */
+    }
+  
+    #product-modal .modal-product-image {
+      width: 100%; /* Image takes full width */
+    }
+  
+    #product-modal .modal-product-details {
+      padding-left: 0;
+    }
+  }
+
 
 /* ===== Service Categories ===== */
 
@@ -3513,27 +3558,6 @@ footer {
     text-decoration: none;
 }
 
-/* Pagination Styling */
-.page-numbers, #learn-page-numbers {
-    text-align: center;
-    margin: 10px 0;
-}
-.page-nav, .page-number {
-    padding: 5px 10px;
-    margin: 0 2px;
-    border: 1px solid #ddd;
-    background: #f5f5f5;
-    cursor: pointer;
-}
-.page-nav:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-.active-page {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
-}
 
 /* Responsive design for form */
 @media screen and (max-width: 768px) {
@@ -3557,8 +3581,6 @@ footer {
         font-size: 1.2em;
     }
 }
-
-
 
 /* FAQ Styling */
 .faq-container {
@@ -3746,6 +3768,7 @@ footer {
     }
   }
 
+
 /* Pagination */
 .pagination {
     display: flex;
@@ -3776,6 +3799,12 @@ footer {
     text-decoration: none;;
 }
 
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
 /* Unique Service Product Styling */
 #unique-services .unique-service-product {
