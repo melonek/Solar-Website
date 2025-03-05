@@ -84,35 +84,77 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { isScrolling = false; }, 200);
   });
 
-  // -------------------------
-  // HERO SECTION PARALLAX
-  // -------------------------
-  const heroSection = document.querySelector('.hero-section');
-  const heroImage = document.querySelector('.hero-image img');
-  let lastScroll = 0;
-  const imageWidth = 4000,
-        imageHeight = 1000;
-  if (heroImage) {
-    heroImage.style.width = `${imageWidth}px`;
-    heroImage.style.height = `${imageHeight}px`;
-  }
-  function updateParallax() {
+  // ------------------------
+// HERO SECTION PARALLAX
+// ------------------------
+const heroSection = document.querySelector('.hero-section');
+const heroImages = document.querySelectorAll('.hero-image img');
+let lastScroll = 0;
+
+// Image dimensions
+const imageWidth = 4000;
+const imageHeight = 1000;
+
+// Parallax intensity control (default)
+const parallaxIntensity = 0.25;
+// Rotation intensity for second image (degrees per scroll progress, adjustable)
+const rotationIntensity = 20; // e.g., 30 degrees max rotation
+
+// Apply initial styles to all images
+heroImages.forEach((img) => {
+    img.style.width = `${imageWidth}px`;
+    img.style.height = `${imageHeight}px`;
+    img.style.position = 'absolute';
+    img.style.left = '50%';
+    img.style.top = '50%';
+    img.style.transform = 'translate3d(-50%, -50%, 0)';
+});
+
+// Cache the second image for rotation
+const leafImage = document.querySelector('#leaf-image');
+
+function updateParallax() {
     const scrollY = window.scrollY;
     if (!heroSection) return;
-    const sectionTop = heroSection.offsetTop,
-          sectionHeight = heroSection.clientHeight;
+
+    const sectionTop = heroSection.offsetTop;
+    const sectionHeight = heroSection.clientHeight;
+
+    // Exit if section is out of view
     if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-    const progress = (scrollY - sectionTop) / sectionHeight,
-          parallaxY = progress * sectionHeight * 0.25;
-    heroImage.style.transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0)`;
-    requestAnimationFrame(updateParallax);
-  }
-  window.addEventListener('scroll', () => {
+
+    const progress = (scrollY - sectionTop) / sectionHeight;
+
+    // Apply parallax to all images
+    heroImages.forEach((img, index) => {
+        const intensity = img.dataset.parallaxIntensity
+            ? parseFloat(img.dataset.parallaxIntensity)
+            : parallaxIntensity;
+        const parallaxY = progress * sectionHeight * intensity;
+
+        // Default transform (vertical parallax only)
+        let transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0)`;
+
+        // Add rotation for the second image (#leaf-image)
+        if (img === leafImage) {
+            const rotation = progress * rotationIntensity; // Rotation in degrees
+            transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) rotate(${rotation}deg)`;
+        }
+
+        img.style.transform = transform;
+    });
+}
+
+// Throttled scroll event
+window.addEventListener('scroll', () => {
     if (Math.abs(window.scrollY - lastScroll) > 2) {
-      requestAnimationFrame(updateParallax);
-      lastScroll = window.scrollY;
+        requestAnimationFrame(updateParallax);
+        lastScroll = window.scrollY;
     }
-  });
+});
+
+// Initial call
+updateParallax();
   
   // -------------------------
   // BUILD SOLAR SECTION PARALLAX
