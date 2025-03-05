@@ -41,42 +41,32 @@ function updateFBTimeline(container) {
 function scaleFacebookTimelines() {
   const containers = document.querySelectorAll('.timeline-container');
   containers.forEach(container => {
-    // Target the scaler element and fb-page inside the container
     const scaler = container.querySelector('.scaler');
     const fbPage = container.querySelector('.fb-page');
     if (scaler && fbPage) {
-      const containerWidth = container.clientWidth - 40; // Adjust for margins
+      const containerWidth = container.clientWidth - 40;
       const defaultWidth = 500;
       const defaultHeight = 600;
-      // Calculate scale factor based on the container width
       const scale = containerWidth / defaultWidth;
-      
-      // Apply scaling to the scaler wrapper
       scaler.style.transform = `scale(${scale})`;
       scaler.style.transformOrigin = 'top left';
       scaler.style.width = `${defaultWidth}px`;
       scaler.style.height = `${defaultHeight}px`;
-      
-      // Set dimensions on the fb-page
       fbPage.style.width = `${defaultWidth}px`;
       fbPage.style.height = `${defaultHeight}px`;
-      
-      // Adjust container height to accommodate scaling plus margins
       container.style.height = `${defaultHeight * scale + 40}px`;
     }
   });
 }
 
-// Attach event listeners only once for scaling timelines
+// Attach event listeners for scaling timelines
 window.addEventListener('resize', scaleFacebookTimelines);
 document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
-
 
 // -------------------------
 // CONSOLIDATED INIT & EVENT HANDLERS
 // -------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Track scrolling and touch for preventing accidental clicks ---
   let isScrolling = false;
   let isTouching = false;
   window.addEventListener('scroll', () => {
@@ -84,78 +74,123 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { isScrolling = false; }, 200);
   });
 
-  // ------------------------
-// HERO SECTION PARALLAX
-// ------------------------
-const heroSection = document.querySelector('.hero-section');
-const heroImages = document.querySelectorAll('.hero-image img');
-let lastScroll = 0;
+  // -------------------------
+  // HERO SECTION PARALLAX WITH THREE.JS AND GSAP
+  // -------------------------
+  const heroSection = document.querySelector('.hero-section');
+  const heroCanvas = document.querySelector('#hero-canvas');
 
-// Image dimensions
-const imageWidth = 4000;
-const imageHeight = 1000;
+  // Check for DOM elements and libraries with specific diagnostics
+  if (!heroSection) console.error("Hero section (.hero-section) not found in DOM.");
+  if (!heroCanvas) console.error("Canvas (#hero-canvas) not found in DOM.");
+  if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
+  if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
+  if (typeof ScrollSmoother === 'undefined') console.warn("ScrollSmoother not loaded. Proceeding without smooth scrolling. Check CDN or network.");
 
-// Parallax intensity control (default)
-const parallaxIntensity = 0.25;
-// Rotation intensity for second image (degrees per scroll progress, adjustable)
-const rotationIntensity = 20; // e.g., 30 degrees max rotation
-
-// Apply initial styles to all images
-heroImages.forEach((img) => {
-    img.style.width = `${imageWidth}px`;
-    img.style.height = `${imageHeight}px`;
-    img.style.position = 'absolute';
-    img.style.left = '50%';
-    img.style.top = '50%';
-    img.style.transform = 'translate3d(-50%, -50%, 0)';
-});
-
-// Cache the second image for rotation
-const leafImage = document.querySelector('#leaf-image');
-
-function updateParallax() {
-    const scrollY = window.scrollY;
-    if (!heroSection) return;
-
-    const sectionTop = heroSection.offsetTop;
-    const sectionHeight = heroSection.clientHeight;
-
-    // Exit if section is out of view
-    if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-
-    const progress = (scrollY - sectionTop) / sectionHeight;
-
-    // Apply parallax to all images
-    heroImages.forEach((img, index) => {
-        const intensity = img.dataset.parallaxIntensity
-            ? parseFloat(img.dataset.parallaxIntensity)
-            : parallaxIntensity;
-        const parallaxY = progress * sectionHeight * intensity;
-
-        // Default transform (vertical parallax only)
-        let transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0)`;
-
-        // Add rotation for the second image (#leaf-image)
-        if (img === leafImage) {
-            const rotation = progress * rotationIntensity; // Rotation in degrees
-            transform = `translate3d(-50%, calc(-50% + ${parallaxY}px), 0) rotate(${rotation}deg)`;
-        }
-
-        img.style.transform = transform;
-    });
-}
-
-// Throttled scroll event
-window.addEventListener('scroll', () => {
-    if (Math.abs(window.scrollY - lastScroll) > 2) {
-        requestAnimationFrame(updateParallax);
-        lastScroll = window.scrollY;
+  if (heroSection && heroCanvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
+    // Register ScrollSmoother if available
+    if (typeof ScrollSmoother !== 'undefined') {
+      gsap.registerPlugin(ScrollSmoother);
+      ScrollSmoother.create({
+        smooth: 1,
+        effects: true,
+      });
+    } else {
+      console.log("Running parallax without ScrollSmoother.");
     }
-});
 
-// Initial call
-updateParallax();
-  
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.z = 5;
+
+    // Load textures with error handling
+    const textureLoader = new THREE.TextureLoader();
+    const firstImageTexture = textureLoader.load(
+      './images/AboutUs/solarek.webp',
+      () => console.log('First image loaded successfully'),
+      undefined,
+      (err) => console.error('Error loading first image:', err)
+    );
+    const secondImageTexture = textureLoader.load(
+      './images/leafBanner/—Pngtree—falling green leaves_5629857.webp',
+      () => console.log('Second image loaded successfully'),
+      undefined,
+      (err) => console.error('Error loading second image:', err)
+    );
+
+    // Image size controls (in pixels, adjust these to zoom in/out)
+    const firstImageWidth = 9000;
+    const firstImageHeight = 6000;
+    const secondImageWidth = 8500;
+    const secondImageHeight = 6000;
+
+
+    // Create planes with fixed size to overflow viewport
+    const planeWidth = 20;
+    const planeHeight = 20 * (firstImageHeight / firstImageWidth);
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    const firstMaterial = new THREE.MeshBasicMaterial({ 
+      map: firstImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const secondMaterial = new THREE.MeshBasicMaterial({ 
+      map: secondImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const firstPlane = new THREE.Mesh(geometry, firstMaterial);
+    const secondPlane = new THREE.Mesh(geometry, secondMaterial);
+
+    // Scale planes to match pixel dimensions without downscaling
+    firstPlane.scale.set(firstImageWidth / 4000, firstImageHeight / 4000, 1);
+    secondPlane.scale.set(secondImageWidth / 4000, secondImageHeight / 4000, 1);
+
+    // Position planes (second in front)
+    firstPlane.position.set(0, 0, -1);
+    secondPlane.position.set(0, 0, 0);
+    scene.add(firstPlane, secondPlane);
+
+    // Parallax and rotation intensities
+    const parallaxIntensityFirst = 0.25;
+    const parallaxIntensitySecond = 0.15;
+    const rotationIntensity = 0.3;
+
+    // Animation loop
+    function animateParallax() {
+      requestAnimationFrame(animateParallax);
+      const scrollY = window.scrollY;
+      const sectionTop = heroSection.offsetTop;
+      const sectionHeight = heroSection.clientHeight;
+
+      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+        const progress = (scrollY - sectionTop) / sectionHeight;
+        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
+        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
+        const rotation = -progress * rotationIntensity; // Counterclockwise
+
+        firstPlane.position.y = -parallaxYFirst / 100;
+        secondPlane.position.y = -parallaxYSecond / 100;
+        secondPlane.rotation.z = rotation;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animateParallax();
+
+    // Resize handler (only update canvas and camera, no plane scaling)
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  } else {
+    console.error("Initialization failed. Check console for specific errors and ensure CDN scripts are loaded correctly.");
+  }
+
   // -------------------------
   // BUILD SOLAR SECTION PARALLAX
   // -------------------------
@@ -185,33 +220,30 @@ updateParallax();
   // -------------------------
   // REVEAL FUNCTIONS
   // -------------------------
-// REVEAL FACEBOOK TIMELINES
-function revealFacebookTimelines() {
-  const timelines = document.querySelectorAll('.fb-page-wrapper');
-  const triggerBottom = window.innerHeight * 0.8;
-  timelines.forEach(timeline => {
-    const timelineTop = timeline.getBoundingClientRect().top;
-    if (timelineTop < triggerBottom) {
-      timeline.classList.add('revealed'); // Trigger the flip effect
-    } else {
-      timeline.classList.remove('revealed'); // Reset if out of view
-    }
-  });
-}
-function revealButtons() {
-  const buttons = document.querySelectorAll('.fancy-button'),
-        triggerBottom = window.innerHeight * 0.8;
-  buttons.forEach(button => {
-    const buttonTop = button.getBoundingClientRect().top;
-    button.classList.toggle('revealed', buttonTop < triggerBottom);
-  });
-}
+  function revealFacebookTimelines() {
+    const timelines = document.querySelectorAll('.fb-page-wrapper');
+    const triggerBottom = window.innerHeight * 0.8;
+    timelines.forEach(timeline => {
+      const timelineTop = timeline.getBoundingClientRect().top;
+      if (timelineTop < triggerBottom) {
+        timeline.classList.add('revealed');
+      } else {
+        timeline.classList.remove('revealed');
+      }
+    });
+  }
+  function revealButtons() {
+    const buttons = document.querySelectorAll('.fancy-button'),
+          triggerBottom = window.innerHeight * 0.8;
+    buttons.forEach(button => {
+      const buttonTop = button.getBoundingClientRect().top;
+      button.classList.toggle('revealed', buttonTop < triggerBottom);
+    });
+  }
 
-window.addEventListener('scroll', revealButtons);
-window.addEventListener('load', revealButtons);
+  window.addEventListener('scroll', revealButtons);
+  window.addEventListener('load', revealButtons);
 
-
-// Reveal cards function
   function revealCards() {
     const cards = document.querySelectorAll('.brand-card'),
           triggerBottom = window.innerHeight * 0.9;
@@ -246,8 +278,6 @@ window.addEventListener('load', revealButtons);
       }
     });
   }
-  
-  
 
   function revealUniqueServices() {
     const products = document.querySelectorAll('#unique-services .unique-service-product'),
@@ -279,8 +309,7 @@ window.addEventListener('load', revealButtons);
   window.addEventListener('scroll', revealProductSections);
   revealFacebookTimelines();
   revealProductSections();
-  
-  // Combined Scroll Handler (throttled) to trigger reveal functions
+
   let lastCall = 0, scrollTimeout;
   function handleScroll() {
     const now = Date.now();
@@ -299,7 +328,6 @@ window.addEventListener('load', revealButtons);
   }
   window.addEventListener('scroll', handleScroll, { passive: true });
 
-  // Initial reveal on window load
   function initAll() {
     revealButtons();
     revealCards();
@@ -309,13 +337,12 @@ window.addEventListener('load', revealButtons);
     if (typeof preloadFBTimelines === 'function') preloadFBTimelines();
   }
   window.addEventListener('load', initAll);
-  
+
   // -------------------------
   // BUTTON CLICK HANDLERS
   // -------------------------
-  // Handler for fancy buttons (includes prevention of accidental clicks during scroll/touch)
   document.querySelectorAll('.fancy-button').forEach(button => {
-    button.addEventListener('click', function (event) {
+    button.addEventListener('click', function(event) {
       if (isScrolling || isTouching) {
         event.preventDefault();
         return false;
@@ -331,21 +358,19 @@ window.addEventListener('load', revealButtons);
       }
     });
     button.addEventListener('touchstart', () => { isTouching = true; });
-    button.addEventListener('touchend', function (event) {
+    button.addEventListener('touchend', function(event) {
       isTouching = false;
       event.preventDefault();
       this.click();
     }, { passive: false });
   });
-  
-  // Handler for savings and build buttons with original click logic implemented
+
   document.querySelectorAll('.savings-btn, .build-button').forEach(button => {
-    button.addEventListener('click', function (event) {
+    button.addEventListener('click', function(event) {
       if (isScrolling || isTouching) {
         event.preventDefault();
         return false;
       }
-      // Original click action: navigate using the element’s href attribute.
       const url = this.getAttribute('href');
       if (url) {
         if (this.classList.contains('mirror-left')) {
@@ -359,119 +384,105 @@ window.addEventListener('load', revealButtons);
       }
     });
   });
-  
-// -------------------------
-// NAVIGATION DROPDOWN & TOGGLER
-// -------------------------
-const mobileMenu = document.getElementById('mobile-menu');
-const navLinks = document.querySelector('.nav-links');
-const mediaQuery = window.matchMedia('(max-width: 768px)');
 
-// Update dropdown links:
-// If a link’s href ends with "#unique-services" (even with a prefix), we leave it alone.
-// Otherwise, on mobile we override its href.
-function toggleHrefs() {
+  // -------------------------
+  // NAVIGATION DROPDOWN & TOGGLER
+  // -------------------------
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navLinks = document.querySelector('.nav-links');
+  const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+  function toggleHrefs() {
+    document.querySelectorAll('.dropdown > a').forEach(toggle => {
+      const href = toggle.getAttribute('href');
+      if (href && href.endsWith("#unique-services")) {
+        return;
+      }
+      if (mediaQuery.matches) {
+        toggle.dataset.originalHref = href;
+        toggle.href = 'javascript:void(0);';
+      } else if (toggle.dataset.originalHref) {
+        toggle.href = toggle.dataset.originalHref;
+      }
+    });
+  }
+  toggleHrefs();
+
+  if (mobileMenu && navLinks) {
+    mobileMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinks.classList.toggle('active');
+      mobileMenu.classList.toggle('open');
+    });
+  }
+
   document.querySelectorAll('.dropdown > a').forEach(toggle => {
-    const href = toggle.getAttribute('href');
-    // Use endsWith to catch variants like "./#unique-services" or "../#unique-services"
-    if (href && href.endsWith("#unique-services")) {
-      return; // Do not override Services link
-    }
-    if (mediaQuery.matches) {
-      toggle.dataset.originalHref = href;
-      toggle.href = 'javascript:void(0);';
-    } else if (toggle.dataset.originalHref) {
-      toggle.href = toggle.dataset.originalHref;
-    }
-  });
-}
-toggleHrefs();
-
-if (mobileMenu && navLinks) {
-  mobileMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-    navLinks.classList.toggle('active');
-    mobileMenu.classList.toggle('open'); // Activates the toggler animation
-  });
-}
-
-// Handle clicks for each dropdown link on mobile.
-document.querySelectorAll('.dropdown > a').forEach(toggle => {
-  toggle.addEventListener('click', function(e) {
-    if (!mediaQuery.matches) return; // On desktop, do nothing special.
-    const href = this.getAttribute('href');
-    // Check if this is the "Services" link by testing if the href ends with "#unique-services"
-    if (href && href.endsWith("#unique-services")) {
-      // For "Services" link: implement double-click behavior.
-      if (!this.dataset.toggledOnce) {
-        // First click: open submenu and prevent navigation.
+    toggle.addEventListener('click', function(e) {
+      if (!mediaQuery.matches) return;
+      const href = this.getAttribute('href');
+      if (href && href.endsWith("#unique-services")) {
+        if (!this.dataset.toggledOnce) {
+          e.preventDefault();
+          e.stopPropagation();
+          const dropdown = this.parentElement;
+          const dropdownContent = dropdown.querySelector('.dropdown-content');
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+          dropdownContent.classList.add('active');
+          dropdown.classList.add('active');
+          this.dataset.toggledOnce = "true";
+          setTimeout(() => {
+            delete this.dataset.toggledOnce;
+          }, 2000);
+        } else {
+          delete this.dataset.toggledOnce;
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+          window.location.href = this.getAttribute('href');
+        }
+      } else {
         e.preventDefault();
         e.stopPropagation();
         const dropdown = this.parentElement;
         const dropdownContent = dropdown.querySelector('.dropdown-content');
+        const isActive = dropdownContent.classList.contains('active');
         closeAllDropdowns();
         navLinks.classList.remove('active');
-        dropdownContent.classList.add('active');
-        dropdown.classList.add('active');
-        this.dataset.toggledOnce = "true";
-        setTimeout(() => {
-          delete this.dataset.toggledOnce;
-        }, 2000);
-      } else {
-        // Second click (flag is present): allow navigation.
-        delete this.dataset.toggledOnce;
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-        // Manually navigate using the actual href (which might be relative).
-        window.location.href = this.getAttribute('href');
+        if (!isActive) {
+          dropdownContent.classList.add('active');
+          dropdown.classList.add('active');
+        }
       }
-    } else {
-      // For other dropdown links: simply toggle the submenu.
-      e.preventDefault();
-      e.stopPropagation();
-      const dropdown = this.parentElement;
-      const dropdownContent = dropdown.querySelector('.dropdown-content');
-      const isActive = dropdownContent.classList.contains('active');
-      closeAllDropdowns();
-      navLinks.classList.remove('active');
-      if (!isActive) {
-        dropdownContent.classList.add('active');
-        dropdown.classList.add('active');
-      }
-    }
+    });
   });
-});
 
-// When a link inside a dropdown is clicked on mobile, close all dropdowns and the nav.
-document.querySelectorAll('.dropdown-content a').forEach(link => {
-  link.addEventListener('click', () => {
-    if (mediaQuery.matches) {
+  document.querySelectorAll('.dropdown-content a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (mediaQuery.matches) {
+        closeAllDropdowns();
+        navLinks.classList.remove('active');
+      }
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-links')) {
       closeAllDropdowns();
       navLinks.classList.remove('active');
     }
   });
-});
 
-// Close dropdowns if clicking outside the nav.
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-links')) {
-    closeAllDropdowns();
-    navLinks.classList.remove('active');
-  }
-});
-
-// Update href overrides on window resize and reset dropdowns when switching to desktop.
-window.addEventListener('resize', () => {
-  toggleHrefs();
-  if (!mediaQuery.matches) {
-    closeAllDropdowns();
-    navLinks.classList.remove('active');
-  }
-});
-
-function closeAllDropdowns() {
-  document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
-    element.classList.remove('active');
+  window.addEventListener('resize', () => {
+    toggleHrefs();
+    if (!mediaQuery.matches) {
+      closeAllDropdowns();
+      navLinks.classList.remove('active');
+    }
   });
-}
-})
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
+      element.classList.remove('active');
+    });
+  }
+});
