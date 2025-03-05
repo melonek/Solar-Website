@@ -191,7 +191,22 @@ window.addEventListener('load', revealButtons);
       }
     });
   }
+
+  function revealLearnCards() {
+    const learnCards = document.querySelectorAll('.learn-card'),
+          triggerBottom = window.innerHeight * 0.8;
+    learnCards.forEach((card, index) => {
+      const cardTop = card.getBoundingClientRect().top;
+      if (cardTop < triggerBottom) {
+        setTimeout(() => { card.classList.add('revealed'); }, index * 300);
+      } else {
+        card.classList.remove('revealed');
+      }
+    });
+  }
   
+  
+
   function revealUniqueServices() {
     const products = document.querySelectorAll('#unique-services .unique-service-product'),
           triggerBottom = window.innerHeight * 0.8;
@@ -210,18 +225,7 @@ window.addEventListener('load', revealButtons);
       }
     });
   }
-  function revealLearnCards() {
-    const learnCards = document.querySelectorAll('.learn-card'),
-          triggerBottom = window.innerHeight * 0.8;
-    learnCards.forEach((card, index) => {
-      const cardTop = card.getBoundingClientRect().top;
-      if (cardTop < triggerBottom) {
-        setTimeout(() => { card.classList.add('revealed'); }, index * 300);
-      } else {
-        card.classList.remove('revealed');
-      }
-    });
-  }
+
   function revealProductSections() {
     const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product'),
           triggerBottom = window.innerHeight * 0.8;

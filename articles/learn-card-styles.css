@@ -147,6 +147,11 @@
     min-width: 120px;
 }
 
+.learn-card .summary-btn{
+    padding: 11px 16px;
+}
+
+
 /* Button styles remain unchanged */
 @keyframes pulseGlow {
     0% { box-shadow: 0 0 5px rgba(0, 255, 234, 0.5); }
