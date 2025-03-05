@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Solar Packages - Nature's Spark Solar</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js"></script>
+
   <link rel="stylesheet" href="../styles.css">
   <!-- Include custom CSS for package page -->
   <link rel="stylesheet" href="packages-custom.css">
@@ -71,7 +79,6 @@
     </div>
   </section>
 
-  <!-- Panels Section -->
   <section class="panel-category section panels-section" id="panels-section">
     <h1 class="panels-title">Solar Panels</h1>
     <div class="filter-bar">
@@ -83,18 +90,27 @@
         <option value="popular">Most Popular</option>
       </select>
     </div>
-    <div class="product-grid panels-grid" id="panels-grid"></div>
-<!-- System Size Input Dropdown (initially hidden) -->
-<div id="system-size-input" style="display:none; text-align:center; margin-top:20px;">
-  <label for="system-size-select">Choose your system size:</label>
-  <select id="system-size-select" onchange="handleSystemSizeSelection(this.value)">
-    <option value="">Choose size</option>
-    <option value="6.6kW">6.6kW (15 Panels)</option>
-    <option value="10kW">10kW (24 Panels)</option>
-    <option value="13kW">13kW (30 Panels)</option>
-    <option value="20kW">20kW (46 Panels)</option>
-  </select>
-</div>
+    <div class="product-grid panels-grid" id="panels-grid">
+      <!-- Hero banner as background for the grid -->
+      <div class="hero-image">
+        <canvas id="hero-canvas"></canvas>
+      </div>
+      <!-- Grid content will overlay the banner -->
+    </div>
+    <!-- System Size Input Dropdown (initially hidden) -->
+    <div id="system-size-input" style="display:none; text-align:center; margin-top:20px;">
+      <label for="system-size-select">Choose your system size:</label>
+      <select id="system-size-select" onchange="handleSystemSizeSelection(this.value)">
+        <option value="">Choose size</option>
+        <option value="6.6kW">6.6kW (15 Panels)</option>
+        <option value="10kW">10kW (24 Panels)</option>
+        <option value="13kW">13kW (30 Panels)</option>
+        <option value="20kW">20kW (46 Panels)</option>
+      </select>
+    </div>
+  </section>
+    </div>
+  </section>
 
 <!-- New: Home Type Input (initially hidden) -->
 <div id="home-type-input" style="display:none; text-align:center; margin-top:20px;">
@@ -117,7 +133,6 @@
 </select>
 </div>
 
-  </section>
 
   <!-- Inverters Section -->
   <section class="inverter-category section inverters-section" id="inverters-section">
@@ -131,24 +146,36 @@
         <option value="popular">Most Popular</option>
       </select>
     </div>
-    <div class="product-grid inverters-grid" id="inverters-grid"></div>
+    <div class="product-grid inverters-grid" id="inverters-grid">
+      <!-- New banner as background for the grid -->
+      <div class="hero-image">
+        <canvas id="inverter-canvas"></canvas> <!-- New canvas for inverters -->
+      </div>
+      <!-- Grid content will overlay the banner -->
+    </div>
   </section>
 
-  <!-- Battery Storage Section -->
-  <section class="battery-category section battery-storage" id="battery-storage">
-    <h1 class="battery-title">Battery Storage</h1>
-    <div class="filter-bar">
-      <label for="battery-filter">Sort by:</label>
-      <select id="battery-filter">
-        <option value="default">Default</option>
-        <option value="expensive">Most Expensive</option>
-        <option value="cheap">Cheapest</option>
-        <option value="popular">Most Popular</option>
-      </select>
+<!-- Battery Storage Section -->
+<section class="battery-category section battery-storage" id="battery-storage">
+  <h1 class="battery-title">Battery Storage</h1>
+  <div class="filter-bar">
+    <label for="battery-filter">Sort by:</label>
+    <select id="battery-filter">
+      <option value="default">Default</option>
+      <option value="expensive">Most Expensive</option>
+      <option value="cheap">Cheapest</option>
+      <option value="popular">Most Popular</option>
+    </select>
+  </div>
+  <div class="product-grid battery-grid" id="battery-grid">
+    <!-- New banner as background for the grid -->
+    <div class="hero-image">
+      <canvas id="battery-canvas"></canvas> <!-- New canvas for battery -->
     </div>
-    <div class="product-grid battery-grid" id="battery-grid"></div>
-    <button id="not-interested-btn" onclick="handleNotInterested()">Not Interested</button>
-  </section>
+    <!-- Grid content will overlay the banner -->
+  </div>
+  <button id="not-interested-btn" onclick="handleNotInterested()">Not Interested</button>
+</section>
 
   <!-- My Solar Package Section -->
   <div id="solar-package" class="section" style="display:none;">
@@ -218,8 +245,6 @@
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   <script src="./packages.js"></script>
   <script src="../script.js"></script>
   <script src="../articles/articleArray.js"></script>
