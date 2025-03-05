@@ -4,66 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <div id="fb-root"></div>
-<link rel="stylesheet" href="../styles.css">
-<link rel="stylesheet" href="full-article-cards.css">
-<link rel="stylesheet" href="learn-card-styles.css">
-<link rel="stylesheet" href="../packages/packages-custom.css">
-
-
-<title>Articles and Explore Solar Page</title>
+  <!-- Global CSS (styles.css) is in the root folder -->
+  <link rel="stylesheet" href="../styles.css">
+  <!-- Article-specific styles are in the /articles/ folder -->
+  <link rel="stylesheet" href="full-article-cards.css">
+  <link rel="stylesheet" href="learn-card-styles.css">
+  <!-- Packages custom styles: packages folder is in the root -->
+  <link rel="stylesheet" href="../packages/packages-custom.css">
+  <title>Articles and Explore Solar Page</title>
 </head>
-
 <body>
-
   
-  <!-- Reuse your existing navigation -->
-    <!-- Your existing nav code -->
-    <nav>
-      <!-- Moved logo outside of nav for fixed positioning -->
-      <div class="floating-logo">
-        <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
-      </div>
-      <ul class="nav-links">
-        <li><a href="../index.html#about">About Us</a></li>
-        <li class="dropdown">
-          <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
-          <div class="dropdown-content">
-            <a href="../packages/packages.html">Solar Systems</a>
-            <a href="../packages/battery-only.html">Battery Storage</a>
-            <a href="../index.html#unique-ev-chargers">EV Chargers</a>
-          </div>
-        </li>
-        <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
-        <li><a href="../index.html#articles">Articles/News</a></li>
-        <li><a href="learn.html">Explore Solar</a></li>
-        <li><a href="../index.html#installations">Installations</a></li>
-        <li><a href="../index.html#faq">FAQ</a></li>
-        <li><a href="../index.html#contact">Contact</a></li>
-      </ul>
-      <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
-        <div class="bar half start"></div>
-        <div class="bar"></div>
-        <div class="bar half end"></div>
-      </div>
-    </nav>
-
-    <!-- Universal Banner Section -->
-<section id="learn-section" class="universalBanner">
-  <div class="learn-background">
-    <div class="learn-image"></div> <!-- This will hold the parallax/zoom background -->
-  </div>
-  <div class="learn-overlay">
-    <div class="learn-content">
-      <h1 data-animate="fadeInDown">Our Solar Packages</h1>
-      <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
-      <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
+  <!-- Navigation -->
+  <nav>
+    <!-- Floating logo: from /articles/learn.html, up one level to root -->
+    <div class="floating-logo">
+      <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
-  </div>
-</section>
-  
-  
-  
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About Us</a></li>
+      <li class="dropdown">
+        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <div class="dropdown-content">
+          <a href="../packages/packages.html">Solar Systems</a>
+          <a href="../packages/battery-only.html">Battery Storage</a>
+          <a href="../index.html#unique-ev-chargers">EV Chargers</a>
+        </div>
+      </li>
+      <!-- Note the corrected path for Solar Savings Calculator -->
+      <li><a href="../images/solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+      <li><a href="../index.html#articles">Articles/News</a></li>
+      <!-- "Explore Solar" is in the same folder (/articles/) -->
+      <li><a href="learn.html">Explore Solar</a></li>
+      <li><a href="../index.html#installations">Installations</a></li>
+      <li><a href="../index.html#faq">FAQ</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+      <div class="bar half start"></div>
+      <div class="bar"></div>
+      <div class="bar half end"></div>
+    </div>
+  </nav>
 
+  <!-- Universal Banner Section -->
+  <section id="learn-section" class="universalBanner">
+    <div class="learn-background">
+      <div class="learn-image"></div> <!-- Holds the parallax/zoom background -->
+    </div>
+    <div class="learn-overlay">
+      <div class="learn-content">
+        <h1 data-animate="fadeInDown">Our Solar Packages</h1>
+        <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
+        <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
+      </div>
+    </div>
+  </section>
+  
   <!-- Learn Page Section -->
   <section id="learn" class="section">
     <h1>Learn</h1>
@@ -89,18 +86,21 @@
     <!-- Modal for Main Articles -->
     <div id="article-modal" class="modal" style="display: none;">
       <div class="modal-content">
-          <span class="close">×</span>
-          <div id="modal-article-content"></div>
+        <span class="close">×</span>
+        <div id="modal-article-content"></div>
       </div>
-  </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
-      </footer>
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+  </footer>
 
+  <!-- Global script.js is in the root folder (using absolute path) -->
   <script src="/script.js"></script>
-  <script src= "articleArray.js"></script>
+  <!-- Article data and full article script from the /articles/ folder -->
+  <script src="articleArray.js"></script>
   <script src="full-article.js"></script>
 </body>
 </html>

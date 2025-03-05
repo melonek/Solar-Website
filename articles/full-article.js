@@ -5,19 +5,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Twitter: Uses intent/tweet with URL and text
     const twitterUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${shareText}`;
-    document.getElementById("full-share-twitter").href = twitterUrl;
+    const twitterBtn = document.getElementById("full-share-twitter");
+    if (twitterBtn) twitterBtn.href = twitterUrl;
 
     // Facebook: Uses sharer.php with URL
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
-    document.getElementById("full-share-facebook").href = facebookUrl;
+    const facebookBtn = document.getElementById("full-share-facebook");
+    if (facebookBtn) facebookBtn.href = facebookUrl;
 
     // LinkedIn: Uses share-offsite with URL
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
-    document.getElementById("full-share-linkedin").href = linkedInUrl;
+    const linkedInBtn = document.getElementById("full-share-linkedin");
+    if (linkedInBtn) linkedInBtn.href = linkedInUrl;
 
     // WhatsApp: Uses api.whatsapp.com for mobile devices
     const whatsappUrl = `https://api.whatsapp.com/send?text=${shareText}%20${currentUrl}`;
-    document.getElementById("full-share-whatsapp").href = whatsappUrl;
+    const whatsappBtn = document.getElementById("full-share-whatsapp");
+    if (whatsappBtn) whatsappBtn.href = whatsappUrl;
 });
 
 // Define base URL for shareable links
@@ -29,12 +33,13 @@ function getRepoBasePath() {
     const pathParts = path.split('/').filter(part => part.length > 0);
     return (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" || pathParts.length === 0) 
         ? "" 
-        : `/${pathParts[0]}`; // e.g., "/Solar-Website" on GitHub Pages
+        : `/${pathParts[0]}`; // e.g., "/Solar-Website"
 }
 
 // Helper function to determine the base path for articles relative to the root
 function getBasePathForArticles() {
     const path = window.location.pathname;
+    console.log("Current path:", path); // Debug log
     if (path.includes('articles/')) {
         return ''; // Inside articles/ folder (learn.html)
     }
@@ -50,7 +55,7 @@ function getArticleNavigationUrl(article) {
     const basePath = getBasePathForArticles();
     const repoBasePath = getRepoBasePath();
     const resolvedUrl = `${repoBasePath}/${basePath}${article.fullArticlePath}`;
-    console.log("Attempting navigation to URL:", resolvedUrl);
+    console.log("Navigating to full article URL:", resolvedUrl);
     return resolvedUrl;
 }
 
@@ -423,8 +428,8 @@ function setupArticleClickEvents() {
 
     const allShareButtons = document.querySelectorAll('.share-button, #full-top-share-button');
     allShareButtons.forEach(button => {
-        button.removeEventListener('click', shareArticle); // Remove old listener
-        button.addEventListener('click', shareArticle);   // Add consolidated listener
+        button.removeEventListener('click', shareArticle);
+        button.addEventListener('click', shareArticle);
     });
 }
 
@@ -460,9 +465,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     } else {
         if (document.getElementById('articles-grid')) {
+            console.log("Initial rendering: displaying articles on index.html");
             displayArticles(currentArticlePage);
         }
         if (document.getElementById('learn-grid')) {
+            console.log("Initial rendering: displaying articles on learn.html");
             displayLearnArticles(currentLearnPage);
         }
     }
@@ -471,9 +478,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // Fallback rendering
 setTimeout(() => {
     if (document.getElementById('articles-grid')) {
+        console.log("Fallback rendering: displaying articles on index.html");
         displayArticles(currentArticlePage);
     }
     if (document.getElementById('learn-grid')) {
+        console.log("Fallback rendering: displaying articles on learn.html");
         displayLearnArticles(currentLearnPage);
     }
 }, 100);
