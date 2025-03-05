@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href=".././full-article-styles.css">
-    <link rel="stylesheet" href="../../styles.css">
-    <!-- Font Awesome for share icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <title>Article Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Article-specific styles are located in the parent (articles) folder -->
+  <link rel="stylesheet" href="../learn-styles.css">
+  <!-- Global styles.css is in the root -->
+  <link rel="stylesheet" href="../../styles.css">
+  <title>Solar Rebates and Financial Incentives in Western Australia</title>
+</head>
 <body>
+
   <nav>
     <div class="floating-logo">
+      <!-- From articles/article2 up two levels to root -->
       <img src="../../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
     <ul class="nav-links">
@@ -20,13 +22,14 @@
         <a href="../../index.html#unique-services" class="dropbtn">Services</a>
         <div class="dropdown-content">
           <a href="../../packages/packages.html">Solar Systems</a>
-          <a href=".././packages/battery-only.html">Battery Storage</a>
+          <a href="../../packages/battery-only.html">Battery Storage</a>
           <a href="../../index.html#unique-ev-chargers">EV Chargers</a>
         </div>
       </li>
       <li><a href="../../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
       <li><a href="../../index.html#articles">Articles/News</a></li>
-      <li><a href="./learn.html">Explore Solar</a></li>
+      <!-- "Explore Solar" is in the articles folder -->
+      <li><a href="../learn.html">Explore Solar</a></li>
       <li><a href="../../index.html#installations">Installations</a></li>
       <li><a href="../../index.html#faq">FAQ</a></li>
       <li><a href="../../index.html#contact">Contact</a></li>
@@ -37,80 +40,90 @@
       <div class="bar half end"></div>
     </div>
   </nav>
-  
 
-  <div id="full-container">
-    <!-- Header -->
-    <header id="full-header">
-        <h1>The Future of Technology: A Glimpse into Tomorrow</h1>
-        <p>Exploring groundbreaking innovations shaping our world in 2025 and beyond</p>
-        <div id="full-meta">
-            <span>By John Doe</span>
-            <span>March 04, 2025</span>
-            <span>10 min read</span>
-        </div>
-    </header>
+  <!-- Header with banner image and overlay -->
+  <header>
+    <div class="overlay"></div>
+    <div class="header-content">
+      <h1>Solar Rebates and Financial Incentives in Western Australia</h1>
+      <p>How government rebates and feed-in tariffs can help you save on solar energy investments</p>
+    </div>
+  </header>
 
-    <!-- Top Share Button -->
-    <div id="full-top-share">
-        <button id="full-top-share-button" onclick="shareArticle()">
-            <i class="fas fa-share-alt"></i> Share This Article
-        </button>
+  <!-- Main content container -->
+  <div class="container">
+    <!-- Metadata: publication date, author, etc. -->
+    <div class="meta">
+      <span>Published on: February 20, 2025</span>
+      <span>By: John Doe</span>
     </div>
 
-    <!-- Featured Image -->
-    <img id="full-featured-image" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3" alt="Futuristic technology abstract">
+    <!-- Main article image -->
+    <img src="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg" alt="Solar installation in Western Australia" class="main-image" />
 
-    <!-- Content -->
-    <section id="full-content">
-        <p>In an era where technology evolves faster than we can adapt, the landscape of innovation in 2025 offers both breathtaking opportunities and profound challenges. From artificial intelligence reshaping industries to quantum computing promising to solve problems once deemed unsolvable, we stand on the cusp of a new technological revolution. This article delves into the key trends driving this transformation and what they mean for individuals, businesses, and society as a whole.</p>
+    <!-- Article content -->
+    <article class="solar-article">
+      <p>In Western Australia, solar power has become a widely adopted solution for homeowners aiming to reduce their electricity bills and carbon footprint. With government incentives, the initial investment in solar systems has become more affordable. This article explores the available rebates, how they work, and the financial incentives for switching to solar power in Western Australia. Solar energy is not just an environmental choice, but also a financially savvy decision that can pay off in the long run.</p>
 
-        <h2>The Rise of Artificial Intelligence</h2>
-        <p>Artificial Intelligence (AI) has long ceased to be a futuristic concept—it’s here, and it’s pervasive. In 2025, AI is no longer just about automation; it’s about augmentation. Businesses are leveraging AI to enhance decision-making, with machine learning models predicting market trends with unprecedented accuracy. For instance, industries like healthcare are witnessing AI-driven diagnostics that rival the expertise of seasoned doctors, often catching conditions earlier than human practitioners.</p>
-        <p>Yet, this rise isn’t without its hurdles. Ethical concerns around AI bias and data privacy remain at the forefront of public discourse. How do we ensure that algorithms don’t perpetuate societal inequities? Governments and organizations are racing to establish frameworks that balance innovation with responsibility, a tightrope walk that will define the next decade of AI development.</p>
+      <!-- Table of Contents -->
+      <ul id="article-toc" class="table-of-contents">
+        <li><a href="#stcs">Small-Scale Technology Certificates (STCs)</a></li>
+        <li><a href="#rebates">State Rebates in WA</a></li>
+        <li><a href="#feedintariffs">Feed-in Tariffs</a></li>
+        <li><a href="#pricing">Rebate Pricing in 2025</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
 
-        <blockquote>"Technology is not just a tool; it’s a mindset that shapes our future. Embracing it responsibly is our greatest challenge." — Dr. Elena Carter, Tech Ethicist</blockquote>
+      <h2 id="stcs">Small-Scale Technology Certificates (STCs)</h2>
+      <p>STCs are a crucial part of the federal government’s approach to encourage solar energy adoption. Homeowners can earn STCs based on the size of their solar system. This translates into a direct discount on the upfront cost of the system installation. The more efficient your system is, the more STCs you can earn. This can significantly reduce the cost of installing a solar power system.</p>
+      <div class="photo-text">
+        <img src="https://proaccionaau.blob.core.windows.net/media/1kvbc4ud/rooftop-solar.jpg" alt="Solar Panels in Perth, Western Australia">
+        <p>Homeowners can earn STCs based on the size and location of their solar power system, which helps reduce the cost of installation. Additionally, the federal government reviews and updates the STC value annually, so it’s essential to act sooner rather than later to take full advantage of the rebates.</p>
+      </div>
 
-        <h2>Quantum Computing: The Next Frontier</h2>
-        <p>While AI dominates headlines, quantum computing quietly brews a revolution of its own. Unlike classical computers that process bits as 0s or 1s, quantum computers use qubits that can exist in multiple states simultaneously, thanks to superposition and entanglement. In 2025, companies like IBM and Google are making strides toward practical quantum applications, solving complex problems in cryptography, material science, and drug discovery at speeds unimaginable just a decade ago.</p>
-        <p>However, the technology is still in its infancy. Quantum computers require extreme conditions—like near-absolute zero temperatures—to function, making them inaccessible for widespread use. Researchers predict that by 2030, we might see quantum computing integrated into mainstream industries, but for now, it remains a tantalizing promise, one that could redefine computation as we know it.</p>
+      <h2 id="rebates">State Rebates in WA</h2>
+      <p>Along with federal STCs, the Western Australian government offers additional rebates. For example, the <strong>Solar Homes Program</strong> provides up to $3,000 for eligible households to install solar systems. This program helps reduce the initial financial burden for those looking to go solar. The Solar Homes Program is one of the most beneficial state rebates available to homeowners in WA, making solar power more accessible and affordable.</p>
+      <div class="photo-text">
+        <p>The Solar Homes Program is one of the most beneficial state rebates available to homeowners in WA. This initiative is part of the WA Government’s efforts to increase the number of solar installations in the state and reduce energy costs for residents.</p>
+        <img src="https://www.solaranswered.com.au/wp-content/uploads/2023/03/six-solar-panels-residential-roof-2048x1365-copy-1024x683.jpg" alt="Solar Homes Program WA">
+      </div>
 
-        <h2>The Internet of Things and Smart Cities</h2>
-        <p>The Internet of Things (IoT) continues to weave an intricate web of connectivity across the globe. In 2025, IoT devices number in the billions, from smart thermostats in homes to sensors optimizing traffic flow in urban centers. Cities like Singapore and Copenhagen are leading the charge in becoming "smart cities," where data-driven infrastructure reduces energy consumption, minimizes traffic congestion, and enhances public safety.</p>
-        <p>Yet, with great connectivity comes great vulnerability. Cybersecurity threats loom large as hackers exploit weaknesses in IoT networks. The infamous 2023 cyberattack on a major European city’s traffic system serves as a stark reminder of the stakes involved. As we integrate more devices into our lives, robust security protocols will be non-negotiable.</p>
+      <h2 id="feedintariffs">Feed-in Tariffs</h2>
+      <p>In addition to rebates, Western Australia offers feed-in tariffs, allowing households to receive payments for excess solar power they feed back into the grid. These rates vary between 6c and 11c per kWh, depending on the retailer. Feed-in tariffs can significantly reduce electricity bills, and for households with excess solar production, they can even generate a small income.</p>
+      <div class="photo-text">
+        <img src="https://www.geraldtonsolarforce.com.au/wp-content/uploads/2022/11/k..jpg" alt="Solar Energy Feed-in Tariff">
+        <p>Feed-in tariffs are an excellent way to make solar energy more economically viable, particularly when combined with other incentives. Homeowners can not only offset their energy bills but potentially even earn money by selling surplus energy.</p>
+      </div>
 
-        <h2>Sustainability Through Technology</h2>
-        <p>Perhaps one of the most pressing applications of technology in 2025 is its role in combating climate change. Innovations in renewable energy, driven by advancements in solar and wind tech, are making clean energy more affordable than ever. Companies are also adopting circular economy principles, using AI to optimize resource use and reduce waste. For example, startups are developing biodegradable materials that mimic plastic but decompose naturally within months.</p>
-        <p>Governments are stepping up too. The European Union’s Green Tech Initiative, launched in early 2024, allocates billions to fund sustainable tech projects, from carbon capture systems to electric vehicle infrastructure. While progress is promising, the scale of the climate crisis demands faster action—a race against time that technology alone may not win without global cooperation.</p>
+      <h2 id="pricing">Rebate Pricing in 2025</h2>
+      <p>The average cost for a 6.6kW solar system in WA is between $4,000 and $6,000 after applying all available rebates. This price varies by location and installer, but these financial incentives make solar energy an affordable option for most homeowners. It's important to compare quotes from different installers to ensure you're getting the best deal, as costs can vary based on system size, panel efficiency, and installation complexity.</p>
+      <div class="photo-text">
+        <p>Prices for solar systems in 2025 have become more affordable thanks to rebates and other incentives. With financial support, solar power is becoming accessible to more households than ever before.</p>
+        <img src="https://perthsolarwarehouse.com.au/wp-content/uploads/2019/04/Solar-Panels-Perth-WA-Rebate-SolarWatt-1024x599.jpg.webp" alt="Cost of Solar in 2025">
+      </div>
 
-        <h2>What Lies Ahead</h2>
-        <p>As we peer into the future, the trajectory of technology feels both exhilarating and daunting. The convergence of AI, quantum computing, IoT, and sustainable innovations paints a picture of a world more connected and efficient than ever before. Yet, it also raises questions—about privacy, equity, and the very nature of human agency in an increasingly automated world.</p>
-        <p>The next decade will likely see technology not just as a tool, but as a partner in shaping societal evolution. Whether that partnership yields utopia or dystopia depends on the choices we make today. Will we prioritize ethics alongside innovation? Can we harness these tools to bridge divides rather than deepen them? Only time will tell, but one thing is certain: the future is arriving faster than we think.</p>
-    </section>
+      <h2 id="conclusion">Conclusion</h2>
+      <p>Solar power is a great investment for homeowners in Western Australia, especially with the combination of federal STCs and state rebates. The financial incentives make the initial cost of solar installation much more manageable, and with feed-in tariffs, homeowners can generate income by selling excess energy back to the grid. Investing in solar now can provide long-term savings on electricity bills and a smaller environmental footprint.</p>
+    </article>
+  </div>
 
-   <!-- Share Buttons (Sticky) -->
-<div id="full-share-buttons">
-  <a id="full-share-twitter" href="#" target="_blank">Share on Twitter</a>
-  <a id="full-share-facebook" href="#" target="_blank">Share on Facebook</a>
-  <a id="full-share-linkedin" href="#" target="_blank">Share on LinkedIn</a>
-  <a id="full-share-whatsapp" href="#" target="_blank">Share on WhatsApp</a>
-</div>
-
-    <script>
-      // Redirect only if coming from an external source (e.g., Google search)
-      const articleId = "2"; // Article ID for article2
-      const referrer = document.referrer;
-      const isExternalReferrer = referrer && !referrer.includes(location.hostname);
-      if (isExternalReferrer) {
-          window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if needed
-      }
+  <script>
+    // Redirect only if coming from an external source (e.g., Google search)
+    const articleId = "1"; // Replace with the article's ID if necessary
+    const referrer = document.referrer;
+    const isExternalReferrer = referrer && !referrer.includes(location.hostname);
+    if (isExternalReferrer) {
+      window.location.href = `/learn.html?articleId=${articleId}`;
+    }
   </script>
-  
+
   <!-- Footer -->
   <footer>
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
-  <script src="./full-article.js"></script>
+  <!-- Global script.js is in the root -->
+  <script src="../../script.js"></script>
+
 </body>
 </html>
