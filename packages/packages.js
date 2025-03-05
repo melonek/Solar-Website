@@ -1209,7 +1209,7 @@ document.getElementById("inverter-filter").addEventListener("change", function()
     'hero-canvas', 
     '../images/Green,Blue,Orange-sectionsInPpackages/green.png', 
     '../sdimages/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', 
-    4000, 3000, // Panels first image
+    4500, 3500, // Panels first image
     8000, 4000  // Panels second image
   );
 
@@ -1218,7 +1218,7 @@ document.getElementById("inverter-filter").addEventListener("change", function()
     'inverter-canvas', 
     '../images/Green,Blue,Orange-sectionsInPpackages/blue.png', 
     '../sdimages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png', 
-    4000, 3000, // Inverters first image
+    4500, 3500, // Inverters first image
     4000, 1000  // Inverters second image
   );
 
@@ -1227,6 +1227,6 @@ document.getElementById("inverter-filter").addEventListener("change", function()
     'battery-canvas', 
     '../images/Green,Blue,Orange-sectionsInPpackages/orange.png', 
     '../sdimages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', 
-    6000, 3500, // Battery first image
+    6500, 4000, // Battery first image
     2000, 2000  // Battery second image
   );
