@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // -------------------------
-  // HERO SECTION PARALLAX WITH THREE.JS AND GSAP (WITH PRELOADING)
+  // HERO SECTION PARALLAX WITH THREE.JS AND GSAP (WITH PRELOADING AND 130VH HEIGHT)
   // -------------------------
   const heroSection = document.querySelector('.hero-section');
   const heroCanvas = document.querySelector('#hero-canvas');
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           img.onerror = () => {
             console.error(`Failed to preload image: ${url}`);
-            resolve(); // Resolve anyway to avoid blocking, but log error
+            resolve(); // Resolve anyway to avoid blocking
           };
         });
       })
@@ -131,7 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Set canvas size to 130vh
+      const canvasHeight = window.innerHeight * 1.3; // 130vh
+      renderer.setSize(window.innerWidth, canvasHeight);
+      camera.aspect = window.innerWidth / canvasHeight;
+      camera.updateProjectionMatrix();
       camera.position.z = 5;
 
       // Load textures (preloaded, so these should be instant)
@@ -208,11 +213,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       animateParallax();
 
-      // Resize handler (only update canvas and camera, no plane scaling)
+      // Resize handler (update canvas to 130vh)
       window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        const newCanvasHeight = window.innerHeight * 1.4; // 140vh
+        renderer.setSize(window.innerWidth, newCanvasHeight);
+        camera.aspect = window.innerWidth / newCanvasHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
       });
     }).catch(() => {
       console.error("Preloading failed for one or more images, but proceeding with initialization.");
