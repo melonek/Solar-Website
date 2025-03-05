@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const sectionHeight = document.querySelector('.universalBanner').clientHeight;
       return sectionHeight * 0.35; // Adjust the multiplier as needed
     },
-    scale: 1.1,  // Zoom effect
+    scale: 1.2,  // Zoom effect
     ease: "none",
     force3D: true
   });

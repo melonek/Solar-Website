@@ -47,19 +47,19 @@
     </div>
   </nav>
 
-  <!-- Universal Banner Section -->
-  <section id="learn-section" class="universalBanner">
-    <div class="learn-background">
-      <div class="learn-image"></div> <!-- Holds the parallax/zoom background -->
+<!-- Universal Banner Section -->
+<section id="battery-logo-cards-text-section" class="universalBanner">
+  <div class="banner-background">
+    <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
+  </div>
+  <div class="banner-overlay">
+    <div class="banner-content">
+      <h1 data-animate="fadeInDown">Solar Nerd Hub</h1>
+      <h2 data-animate="fadeInUp">Dive Deep into Solar Energy</h2>
+      <p data-animate="fadeIn">Unravel the science, tech, and trends behind solar power—your gateway to mastering the sun’s potential.</p>
     </div>
-    <div class="learn-overlay">
-      <div class="learn-content">
-        <h1 data-animate="fadeInDown">Our Solar Packages</h1>
-        <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
-        <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
   
   <!-- Learn Page Section -->
   <section id="learn" class="section">
@@ -98,10 +98,13 @@
   </footer>
 
   <!-- Global script.js is in the root folder (using absolute path) -->
-  <script src="/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" defer></script>
+  <script src="../script.js"></script>
   <!-- Article data and full article script from the /articles/ folder -->
   <script src="articleArray.js"></script>
   <script src="full-article.js"></script>
+  <script src="../packages/packages.js"></script>
   
 </body>
 </html>
