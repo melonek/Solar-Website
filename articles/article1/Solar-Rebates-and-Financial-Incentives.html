@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href=".././learn-styles.css"> <!-- Correct path for article-specific styles -->
-    <link rel="stylesheet" href="../../styles.css"> <!-- Correct path for main styles -->
-    <title>Solar Rebates and Financial Incentives in Western Australia</title>
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Article-specific styles are located in the parent (articles) folder -->
+  <link rel="stylesheet" href="../learn-styles.css">
+  <!-- Global styles.css is in the root -->
+  <link rel="stylesheet" href="../../styles.css">
+  <title>Solar Rebates and Financial Incentives in Western Australia</title>
+</head>
 <body>
 
   <nav>
     <div class="floating-logo">
+      <!-- From articles/article1 up two levels to root -->
       <img src="../../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
     <ul class="nav-links">
@@ -25,6 +28,7 @@
       </li>
       <li><a href="../../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
       <li><a href="../../index.html#articles">Articles/News</a></li>
+      <!-- From article1, one level up to articles folder -->
       <li><a href="../learn.html">Explore Solar</a></li>
       <li><a href="../../index.html#installations">Installations</a></li>
       <li><a href="../../index.html#faq">FAQ</a></li>
@@ -58,7 +62,7 @@
     <img src="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg" alt="Solar installation in Western Australia" class="main-image" />
 
     <!-- Article content -->
-    <div class="solar-article">
+    <article class="solar-article">
       <p>In Western Australia, solar power has become a widely adopted solution for homeowners aiming to reduce their electricity bills and carbon footprint. With government incentives, the initial investment in solar systems has become more affordable. This article explores the available rebates, how they work, and the financial incentives for switching to solar power in Western Australia. Solar energy is not just an environmental choice, but also a financially savvy decision that can pay off in the long run.</p>
 
       <!-- Table of Contents -->
@@ -100,7 +104,6 @@
 
       <h2 id="conclusion">Conclusion</h2>
       <p>Solar power is a great investment for homeowners in Western Australia, especially with the combination of federal STCs and state rebates. The financial incentives make the initial cost of solar installation much more manageable, and with feed-in tariffs, homeowners can generate income by selling excess energy back to the grid. Investing in solar now can provide long-term savings on electricity bills and a smaller environmental footprint.</p>
-      <p><a href="" target="_blank"></a></p>
     </article>
   </div>
 
@@ -110,15 +113,16 @@
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     if (isExternalReferrer) {
-        window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if main.html
+        window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if needed
     }
-</script>
+  </script>
 
   <!-- Footer -->
   <footer>
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
+  <!-- Global script.js is in the root -->
   <script src="../../script.js"></script>
 
 </body>
