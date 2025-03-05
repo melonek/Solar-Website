@@ -1,24 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Get the current URL and encode it for use in URLs
     const currentUrl = encodeURIComponent(window.location.href);
     const shareText = encodeURIComponent("Check out this article!");
 
-    // Twitter: Uses intent/tweet with URL and text
     const twitterUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${shareText}`;
     const twitterBtn = document.getElementById("full-share-twitter");
     if (twitterBtn) twitterBtn.href = twitterUrl;
 
-    // Facebook: Uses sharer.php with URL
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
     const facebookBtn = document.getElementById("full-share-facebook");
     if (facebookBtn) facebookBtn.href = facebookUrl;
 
-    // LinkedIn: Uses share-offsite with URL
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
     const linkedInBtn = document.getElementById("full-share-linkedin");
     if (linkedInBtn) linkedInBtn.href = linkedInUrl;
 
-    // WhatsApp: Uses api.whatsapp.com for mobile devices
     const whatsappUrl = `https://api.whatsapp.com/send?text=${shareText}%20${currentUrl}`;
     const whatsappBtn = document.getElementById("full-share-whatsapp");
     if (whatsappBtn) whatsappBtn.href = whatsappUrl;
@@ -36,14 +31,12 @@ function getRepoBasePath() {
         : `/${pathParts[0]}`; // e.g., "/Solar-Website"
 }
 
-// Helper function to determine the base path for articles relative to the root
+// Helper function to determine the base path for articles
 function getBasePathForArticles() {
     const path = window.location.pathname;
-    console.log("Current path:", path); // Debug log
-    if (path.includes('articles/')) {
-        return ''; // Inside articles/ folder (learn.html)
-    }
-    return 'articles/'; // Relative to root (index.html)
+    console.log("Current path in getBasePathForArticles:", path);
+    // Always return 'articles/' since fullArticlePath doesn’t include it
+    return 'articles/';
 }
 
 // Function to generate a navigation URL for an article using fullArticlePath
@@ -86,7 +79,7 @@ function displayArticles(page) {
         console.error("articles-grid element not found");
         return;
     }
-    console.log("allArticles:", allArticles);
+    console.log("allArticles in displayArticles:", allArticles);
     const mainArticles = allArticles.filter(article => article.displayOnMain)
         .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
     console.log("Filtered mainArticles:", mainArticles);
@@ -121,7 +114,7 @@ function displayLearnArticles(page) {
         console.error("learn-grid element not found");
         return;
     }
-    console.log("allArticles:", allArticles);
+    console.log("allArticles in displayLearnArticles:", allArticles);
     const learnArticles = allArticles.filter(article => article.displayOnLearn)
         .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
     console.log("Filtered learnArticles:", learnArticles);
