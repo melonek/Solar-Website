@@ -1,19 +1,40 @@
 /* learn-cards.css */
 
+/* Parent Container for Learn Cards */
+#learn-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-width: none;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    left: 0;
+}
+
 /* Learn Card Container */
 .learn-card {
     position: relative;
     width: 340px;
-    height: 420px;
-    margin: 20px;
-    border-radius: 15px;
+    height: 450px;
+    border-radius: 20px;
     overflow: hidden;
-    background: linear-gradient(145deg, #1a1a2e, #16213e);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s ease, box-shadow 0.3s ease;
-    perspective: 1000px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(200, 200, 200, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease; /* Added opacity transition */
     display: flex;
     flex-direction: column;
+    margin: 0;
+    opacity: 0; /* Start hidden */
+}
+
+/* Revealed State */
+.learn-card.revealed {
+    opacity: 1;
 }
 
 /* 3D Flip Effect on Hover */
@@ -55,7 +76,6 @@
     transform: scale(1.05);
 }
 
-
 /* Overlay for Content */
 .learn-card .overlay {
     flex: 1;
@@ -67,7 +87,6 @@
     padding: 15px;
     transition: background 0.3s ease;
 }
-
 
 .learn-card:hover .overlay {
     background: rgba(0, 0, 0, 0.9);
@@ -101,12 +120,12 @@
 /* Buttons Container */
 .learn-card .overlay .buttons-container {
     display: flex;
-    flex-direction: row; /* Ensure horizontal layout */
+    flex-direction: row;
     gap: 10px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    margin-top: 10px; /* Space between content and buttons */
+    margin-top: 10px;
 }
 
 /* Buttons */
@@ -128,14 +147,13 @@
     min-width: 120px;
 }
 
-/* Pulsing Glow Effect for Buttons (Neon Look) */
+/* Button styles remain unchanged */
 @keyframes pulseGlow {
     0% { box-shadow: 0 0 5px rgba(0, 255, 234, 0.5); }
     50% { box-shadow: 0 0 20px rgba(0, 255, 234, 0.8); }
     100% { box-shadow: 0 0 5px rgba(0, 255, 234, 0.5); }
 }
 
-/* Glare/Shine Effect for Buttons on Hover (Matching Full Article Cards) */
 .learn-card .learn-read-more-btn::before,
 .learn-card .summary-btn::before {
     content: '';
@@ -144,7 +162,7 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255, 255, 255, 0.3); /* Same glare effect as article cards */
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     transition: width 0.6s ease, height 0.6s ease;
@@ -156,7 +174,6 @@
     height: 300px;
 }
 
-/* Learn More Button */
 .learn-card .learn-read-more-btn {
     background: linear-gradient(45deg, #00ffea, #00c4b4);
     color: #1a1a2e;
@@ -169,7 +186,6 @@
     box-shadow: 0 6px 20px rgba(0, 255, 234, 0.6);
 }
 
-/* Summary Button */
 .learn-card .summary-btn {
     background: linear-gradient(45deg, #ff00ff, #c51162);
     color: #fff;
@@ -181,6 +197,8 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 0, 255, 0.6);
 }
+
+/* Modal styles remain unchanged */
 
 /* Modal Styling */
 #article-modal {
