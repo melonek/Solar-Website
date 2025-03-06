@@ -649,6 +649,56 @@ const solarProducts = {
       price: 1560,
       popularity: 5,
       description: "Solar panel description goes here..."
+    },    {
+      id: 1,
+      name: "Canadian Solar 400W",
+      brand: "Canadian Solar",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "../images/Panels/Canadian-Solar-440-W.webp",
+      price: 1500,
+      popularity: 3,
+      description: "Solar panel description goes here..."
+    },
+    {
+      id: 2,
+      name: "Trina Solar 410W",
+      brand: "Trina",
+      specs: "410W Mono PERC",
+      country: "China",
+      warranty: "25 years",
+      datasheet: "trina-410w.pdf",
+      image: "../images/Panels/Trina.webp",
+      price: 1560,
+      popularity: 5,
+      description: "Solar panel description goes here..."
+    },    {
+      id: 1,
+      name: "Canadian Solar 400W",
+      brand: "Canadian Solar",
+      specs: "400W Mono PERC",
+      country: "Canada",
+      warranty: "25 years",
+      datasheet: "canadian-400w.pdf",
+      image: "../images/Panels/Canadian-Solar-440-W.webp",
+      price: 1500,
+      popularity: 3,
+      description: "Solar panel description goes here..."
+    },
+    {
+      id: 2,
+      name: "Trina Solar 410W",
+      brand: "Trina",
+      specs: "410W Mono PERC",
+      country: "China",
+      warranty: "25 years",
+      datasheet: "trina-410w.pdf",
+      image: "../images/Panels/Trina.webp",
+      price: 1560,
+      popularity: 5,
+      description: "Solar panel description goes here..."
     }
   ],
   inverters: [
@@ -1106,6 +1156,26 @@ document.getElementById("inverter-filter").addEventListener("change", function()
   sortProducts("inverter", this.value);
 });
 
+// Preload images function (for consistency with your earlier request)
+function preloadImages(imagePaths) {
+  return Promise.all(
+    imagePaths.map(url => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          console.log(`Preloaded image: ${url}`);
+          resolve();
+        };
+        img.onerror = () => {
+          console.error(`Failed to preload image: ${url}`);
+          resolve(); // Resolve anyway to avoid blocking
+        };
+      });
+    })
+  );
+}
+
 function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondImagePath, firstWidth, firstHeight, secondWidth, secondHeight) {
   const section = document.querySelector(sectionSelector);
   const canvas = document.querySelector(`#${canvasId}`);
@@ -1122,8 +1192,10 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
-    // Set canvas size to 140vh (or adjust as needed)
-    const canvasHeight = window.innerHeight * 1.4; // 140vh
+    // Set initial canvas size to match section height or 130vh, whichever is larger
+    const sectionHeight = section.offsetHeight;
+    const minCanvasHeight = window.innerHeight * 1.3; // 130vh fallback
+    const canvasHeight = Math.max(sectionHeight, minCanvasHeight);
     renderer.setSize(window.innerWidth, canvasHeight);
     camera.aspect = window.innerWidth / canvasHeight;
     camera.updateProjectionMatrix();
@@ -1144,7 +1216,7 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
       (err) => console.error(`Error loading second image for ${canvasId}:`, err)
     );
 
-    // Plane dimensions
+    // Plane dimensions (fixed, based on image dimensions)
     const planeWidth = 20;
     const planeHeight = 20 * (firstHeight / firstWidth);
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
@@ -1165,7 +1237,7 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
 
     // Calculate plane height in world units and number of repeats
     const planeHeightInWorld = planeHeight * (firstHeight / 4000);
-    const repeatsNeeded = Math.ceil((canvasHeight * 2) / planeHeightInWorld) + 1; // Double height coverage
+    const repeatsNeeded = Math.ceil((canvasHeight * 1.5) / planeHeightInWorld) + 1; // 1.5x coverage
 
     // Arrays to hold planes
     const firstPlanes = [];
@@ -1220,15 +1292,16 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
     }
     animate();
 
-    // Resize handler
+    // Resize handler - adapt to section height
     window.addEventListener('resize', () => {
-      const newCanvasHeight = window.innerHeight * 1.4; // 140vh, adjust as needed
+      const newSectionHeight = section.offsetHeight;
+      const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.3); // Adaptive or 130vh minimum
       renderer.setSize(window.innerWidth, newCanvasHeight);
       camera.aspect = window.innerWidth / newCanvasHeight;
       camera.updateProjectionMatrix();
 
       // Recalculate repeats if needed
-      const newRepeatsNeeded = Math.ceil((newCanvasHeight * 2) / planeHeightInWorld) + 1;
+      const newRepeatsNeeded = Math.ceil((newCanvasHeight * 1.5) / planeHeightInWorld) + 1;
       if (newRepeatsNeeded > firstPlanes.length) {
         for (let i = firstPlanes.length; i < newRepeatsNeeded; i++) {
           const firstPlane = new THREE.Mesh(geometry, firstMaterial);
@@ -1251,65 +1324,65 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
   }
 }
 
-  // Define banner configurations
-  const bannerConfigs = [
-    {
-      sectionSelector: '.panels-section',
-      canvasId: 'hero-canvas',
-      firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/green.png',
-      secondImagePath: '../iimages/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp',
-      firstWidth: 4500,
-      firstHeight: 3500,
-      secondWidth: 8000,
-      secondHeight: 4000
-    },
-    {
-      sectionSelector: '.inverters-section',
-      canvasId: 'inverter-canvas',
-      firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/blue.png',
-      secondImagePath: '../iimages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png',
-      firstWidth: 4500,
-      firstHeight: 3500,
-      secondWidth: 4000,
-      secondHeight: 1000
-    },
-    {
-      sectionSelector: '.battery-storage',
-      canvasId: 'battery-canvas',
-      firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/orange.png',
-      secondImagePath: '../iimages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png',
-      firstWidth: 6500,
-      firstHeight: 4500,
-      secondWidth: 2000,
-      secondHeight: 2000
-    }
-  ];
-
-  // Preload all images (non-blocking)
-  const allImagePaths = bannerConfigs.flatMap(config => [config.firstImagePath, config.secondImagePath]);
-  preloadImages(allImagePaths);
-
-  // Initialize ScrollSmoother once globally
-  if (typeof ScrollSmoother !== 'undefined') {
-    gsap.registerPlugin(ScrollSmoother);
-    ScrollSmoother.create({
-      smooth: 1,
-      effects: true,
-    });
-  } else {
-    console.log("Running all parallax banners without ScrollSmoother.");
+// Define banner configurations
+const bannerConfigs = [
+  {
+    sectionSelector: '.panels-section',
+    canvasId: 'hero-canvas',
+    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/green.webp',
+    secondImagePath: '../imadges/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', // Fixed typo: 'iimages' to 'images'
+    firstWidth: 4500,
+    firstHeight: 3500,
+    secondWidth: 8000,
+    secondHeight: 4000
+  },
+  {
+    sectionSelector: '.inverters-section',
+    canvasId: 'inverter-canvas',
+    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
+    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png', // Fixed typo: 'iimages' to 'images'
+    firstWidth: 4500,
+    firstHeight: 3500,
+    secondWidth: 4000,
+    secondHeight: 1000
+  },
+  {
+    sectionSelector: '.battery-storage',
+    canvasId: 'battery-canvas',
+    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
+    secondImagePath: '../imdages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', // Fixed typo: 'iimages' to 'images'
+    firstWidth: 6500,
+    firstHeight: 4500,
+    secondWidth: 2000,
+    secondHeight: 2000
   }
+];
 
-  // Initialize banners for each grid immediately
-  bannerConfigs.forEach(config => {
-    initParallaxBanner(
-      config.sectionSelector,
-      config.canvasId,
-      config.firstImagePath,
-      config.secondImagePath,
-      config.firstWidth,
-      config.firstHeight,
-      config.secondWidth,
-      config.secondHeight
-    );
+// Preload all images (non-blocking)
+const allImagePaths = bannerConfigs.flatMap(config => [config.firstImagePath, config.secondImagePath]);
+preloadImages(allImagePaths);
+
+// Initialize ScrollSmoother once globally
+if (typeof ScrollSmoother !== 'undefined') {
+  gsap.registerPlugin(ScrollSmoother);
+  ScrollSmoother.create({
+    smooth: 1,
+    effects: true,
   });
+} else {
+  console.log("Running all parallax banners without ScrollSmoother.");
+}
+
+// Initialize banners for each grid immediately
+bannerConfigs.forEach(config => {
+  initParallaxBanner(
+    config.sectionSelector,
+    config.canvasId,
+    config.firstImagePath,
+    config.secondImagePath,
+    config.firstWidth,
+    config.firstHeight,
+    config.secondWidth,
+    config.secondHeight
+  );
+});

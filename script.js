@@ -213,9 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       animateParallax();
 
-      // Resize handler (update canvas to 130vh)
+      // Resize handler (update canvas to 150vh)
       window.addEventListener('resize', () => {
-        const newCanvasHeight = window.innerHeight * 1.4; // 140vh
+        const newCanvasHeight = window.innerHeight * 1.5; // 150vh
         renderer.setSize(window.innerWidth, newCanvasHeight);
         camera.aspect = window.innerWidth / newCanvasHeight;
         camera.updateProjectionMatrix();

@@ -632,9 +632,10 @@ iframe {
 .hero-image {
   position: absolute;
   top: -10vh; /* Extend slightly above */
+  bottom: 10vh;
   left: 0;
   width: 100%;
-  height: 140vh; /* Match 140vh in JS */
+  height: 150vh; /* Match 150vh in JS */
   z-index: 0; /* Behind cards */
 }
 
