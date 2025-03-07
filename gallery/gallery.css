@@ -245,13 +245,14 @@ body {
   display: none;
   position: fixed;
   z-index: 20;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  overflow-y: auto;
   background-color: rgba(0,0,0,0.5);
-  overflow-y: auto; /* Make modal scrollable */
-  padding-top: 5px; /* 5px from top as requested */
+  -webkit-overflow-scrolling: touch;
+  padding-top: 5px;
 }
 
 /* Modal Content */
@@ -269,8 +270,8 @@ body {
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .modal {
-      padding-top: 5px;
-      height: 100vh; /* Full viewport height */
+    position: absolute; /* instead of fixed */
+    min-height: auto;   /* let it expand based on content */
   }
   .modal-content {
       width: 90%;
