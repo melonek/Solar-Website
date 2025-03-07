@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
       roofType: "Metal Tin",
       completionDate: "05-03-2025",
       difficulty: "Easy",
-      timeToComplete: "(7:00am - 11:34pm)",
+      timeToComplete: "(7:00am - 11:34am)",
       suburb: "Westminister, WA, 6061",
       mainImage: "../images/Jobs/Job2/main.jpg",
       additionalImages: [
@@ -94,9 +94,72 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   ];
 
+  // Utility function to parse a time string (e.g. "7:00am")
+  function parseTimeString(timeStr) {
+    const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
+    if (match) {
+      let hour = parseInt(match[1], 10);
+      const minute = parseInt(match[2], 10);
+      const period = match[3].toLowerCase();
+      if (period === 'pm' && hour !== 12) {
+        hour += 12;
+      }
+      if (period === 'am' && hour === 12) {
+        hour = 0;
+      }
+      return { hours: hour, minutes: minute };
+    }
+    return { hours: 0, minutes: 0 };
+  }
+
+  // Parse the finish time (from timeToComplete) and return a Date object based on completionDate
+  function parseFinish(job) {
+    const timeRange = job.timeToComplete.replace(/[()]/g, '');
+    const parts = timeRange.split('-');
+    const finishTimeStr = parts[1].trim();
+    const [day, month, year] = job.completionDate.split('-').map(Number);
+    const { hours, minutes } = parseTimeString(finishTimeStr);
+    return new Date(year, month - 1, day, hours, minutes);
+  }
+
+  // Calculate the duration (in hours) from the timeToComplete string
+  function calculateDuration(timeStr) {
+    const cleaned = timeStr.replace(/[()]/g, '');
+    const parts = cleaned.split('-');
+    const startStr = parts[0].trim();
+    const finishStr = parts[1].trim();
+    const start = parseTimeString(startStr);
+    const finish = parseTimeString(finishStr);
+    const startMinutes = start.hours * 60 + start.minutes;
+    const finishMinutes = finish.hours * 60 + finish.minutes;
+    const diff = finishMinutes - startMinutes;
+    const duration = diff / 60;
+    return duration.toFixed(2);
+  }
+
+  // Format the date (dd-mm-yyyy)
   function formatDate(dateStr) {
-      const [day, month, year] = dateStr.split("-");
-      return `${day}-${month}-${year}`;
+    const [day, month, year] = dateStr.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const isEmbedded = urlParams.get('embedded') === '1';
+
+  // Hide non-carousel elements if embedded
+  if (isEmbedded) {
+    const header = document.querySelector('#installation-gallery header');
+    const archiveSection = document.querySelector('.archive-section');
+    if (header) header.style.display = 'visible';
+    if (archiveSection) archiveSection.style.display = 'none';
+    document.body.style.margin = '0';
+    const galleryContainer = document.querySelector('.gallery-container');
+    if (galleryContainer) galleryContainer.style.margin = '0';
+    // Also hide nav if it exists
+    const nav = document.querySelector('nav');
+    if(nav) nav.style.display = 'none';
+    const bannerImage = document.querySelector('.universalBanner');
+  if (bannerImage) bannerImage.style.display = 'none';
   }
 
   const carousel = document.querySelector('.carousel');
@@ -107,83 +170,109 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModal = document.querySelector('.close-modal');
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.querySelector('.lightbox-content');
+  const archiveGrid = document.querySelector('.archive-grid');
+  const loadMoreBtn = document.querySelector('.load-more');
+  const loadMoreWrapper = document.querySelector('.load-more-wrapper');
 
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
-  
-  // Updated createCard function
+  let loadedJobs = 0;
+  const batchSize = 20;
+
+  // Create a sorted copy of jobs for the archive grid (newest to oldest based on finish time)
+  const sortedJobs = jobs.slice().sort((a, b) => parseFinish(b) - parseFinish(a));
+
   function createCard(job) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      
-      const mainImg = document.createElement('img');
-      mainImg.src = job.mainImage;
-      mainImg.alt = job.title;
-      validateImage(mainImg);
-      mainImg.addEventListener('click', () => openLightbox(mainImg.src));
-      card.appendChild(mainImg);
-      
-      // Title as a separate centered element above details-row
-      const title = document.createElement('h3');
-      title.className = 'card-title';
-      title.innerHTML = job.title;
-      card.appendChild(title);
-      
-      const detailsRow = document.createElement('div');
-      detailsRow.className = 'details-row';
-      
-      // Left column: House Type, Installation Type
-      const detailsContainer = document.createElement('div');
-      detailsContainer.className = 'job-details';
-      detailsContainer.innerHTML = `
-        <p><strong>House Type:</strong> ${job["House Type"]}</p>
-        <p><strong>Installation Type:</strong> ${job["Installation Type"]}</p>
-      `;
-      
-      // Right column: System Size, Completion
-      const buttonContainer = document.createElement('div');
-      buttonContainer.className = 'button-container';
-      buttonContainer.innerHTML = `
-        <p><strong>System Size:</strong> ${job["System Size"]}</p>
-        <p><strong>Completion:</strong> ${formatDate(job.completionDate)}</p>
-      `;
-      
-      detailsRow.appendChild(detailsContainer);
-      detailsRow.appendChild(buttonContainer);
-      
-      // Button wrapper (centered below both columns)
-      const buttonWrapper = document.createElement('div');
-      buttonWrapper.className = 'button-wrapper';
-      
-      const readMoreBtn = document.createElement('button');
-      readMoreBtn.className = 'read-more shiny';
-      const innerSpan = document.createElement('span');
-      innerSpan.className = 'button-inner';
-      innerSpan.textContent = 'Read More';
-      readMoreBtn.appendChild(innerSpan);
-      
-      readMoreBtn.addEventListener('click', () => openModal(job));
-      buttonWrapper.appendChild(readMoreBtn);
-      
-      card.appendChild(detailsRow);
-      card.appendChild(buttonWrapper);
-      
-      const imagesContainer = document.createElement('div');
-      imagesContainer.className = 'images';
-      job.additionalImages.forEach((imgSrc) => {
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        img.alt = job.title;
-        validateImage(img);
-        img.addEventListener('click', () => openLightbox(img.src));
-        imagesContainer.appendChild(img);
-      });
-      card.appendChild(imagesContainer);
-      
-      card.addEventListener('mouseenter', () => scrollSpeed = 0);
-      card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
-      
-      return card;
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    const mainImg = document.createElement('img');
+    mainImg.src = job.mainImage;
+    mainImg.alt = job.title;
+    validateImage(mainImg);
+    mainImg.addEventListener('click', () => openLightbox(mainImg.src));
+    card.appendChild(mainImg);
+    
+    const title = document.createElement('h3');
+    title.className = 'card-title';
+    title.innerHTML = job.title;
+    card.appendChild(title);
+    
+    const detailsRow = document.createElement('div');
+    detailsRow.className = 'details-row';
+    
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'job-details';
+    detailsContainer.innerHTML = `
+      <p><strong>House Type:</strong> ${job["House Type"]}</p>
+      <p><strong>Installation Type:</strong> ${job["Installation Type"]}</p>
+      <p><strong>Roof Type:</strong> ${job.roofType}</p>
+      <p><strong>Difficulty:</strong> ${job.difficulty}</p>
+      <p><strong>Time:</strong> ${job.timeToComplete}</p>
+      <p><strong>Suburb:</strong> ${job.suburb}</p>
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    buttonContainer.innerHTML = `
+      <p><strong>System Size:</strong> ${job["System Size"]}</p>
+      <p><strong>Completion:</strong> ${formatDate(job.completionDate)} (Total: ${calculateDuration(job.timeToComplete)} hours)</p>
+    `;
+    
+    detailsRow.appendChild(detailsContainer);
+    detailsRow.appendChild(buttonContainer);
+    
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.className = 'button-wrapper';
+    
+    const readMoreBtn = document.createElement('button');
+    readMoreBtn.className = 'read-more shiny';
+    const innerSpan = document.createElement('span');
+    innerSpan.className = 'button-inner';
+    innerSpan.textContent = 'Read More';
+    readMoreBtn.appendChild(innerSpan);
+    
+    readMoreBtn.addEventListener('click', () => openModal(job));
+    buttonWrapper.appendChild(readMoreBtn);
+    
+    card.appendChild(detailsRow);
+    card.appendChild(buttonWrapper);
+    
+    const imagesContainer = document.createElement('div');
+    imagesContainer.className = 'images';
+    job.additionalImages.forEach((imgSrc) => {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = job.title;
+      validateImage(img);
+      img.addEventListener('click', () => openLightbox(img.src));
+      imagesContainer.appendChild(img);
+    });
+    card.appendChild(imagesContainer);
+    
+    card.addEventListener('mouseenter', () => scrollSpeed = 0);
+    card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
+    
+    return card;
+  }
+
+  function createArchiveSquare(job) {
+    const square = document.createElement('div');
+    square.className = 'archive-square';
+    
+    const img = document.createElement('img');
+    img.src = job.mainImage;
+    img.alt = job.suburb;
+    validateImage(img);
+    square.appendChild(img);
+    
+    const text = document.createElement('p');
+    text.textContent = job.suburb;
+    square.appendChild(text);
+    
+    square.addEventListener('click', () => openModal(job));
+    
+    return square;
   }
 
   function validateImage(img) {
@@ -201,6 +290,30 @@ document.addEventListener('DOMContentLoaded', function() {
       const cardClone = createCard(job);
       carousel.appendChild(cardClone);
     });
+  }
+  
+  function loadArchiveBatch() {
+    const remainingJobs = sortedJobs.length - loadedJobs;
+    const batchCount = Math.min(batchSize, remainingJobs);
+    
+    // Load the batch in order (newest to oldest)
+    for (let i = 0; i < batchCount; i++) {
+      const job = sortedJobs[loadedJobs + i];
+      const square = createArchiveSquare(job);
+      archiveGrid.appendChild(square);
+    }
+    
+    loadedJobs += batchCount;
+    
+    if (remainingJobs <= 0 && loadedJobs > 0) {
+      const existingNotification = loadMoreWrapper.querySelector('.load-notification');
+      if (!existingNotification) {
+        const notification = document.createElement('p');
+        notification.className = 'load-notification';
+        notification.textContent = "All images have been displayed.";
+        loadMoreWrapper.appendChild(notification);
+      }
+    }
   }
   
   function openModal(job) {
@@ -223,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Roof Type:</strong> ${job.roofType}</p>
       <p><strong>Completion:</strong> ${formatDate(job.completionDate)}</p>
       <p><strong>Difficulty:</strong> ${job.difficulty}</p>
-      <p><strong>Time:</strong> ${job.timeToComplete}</p>
+      <p><strong>Time:</strong> ${job.timeToComplete} // Total: ${calculateDuration(job.timeToComplete)} hours</p>
       <p><strong>Suburb:</strong> ${job.suburb}</p>
     `;
     modalBody.appendChild(detailsDiv);
@@ -273,9 +386,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   window.addEventListener('touchstart', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
   });
   
   function openLightbox(src) {
@@ -289,15 +402,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   lightbox.addEventListener('click', (e) => {
-      if (!lightboxContent.contains(e.target)) {
-        lightbox.style.display = 'none';
-      }
+    if (!lightboxContent.contains(e.target)) {
+      lightbox.style.display = 'none';
+    }
   });
     
   lightbox.addEventListener('touchstart', (e) => {
-      if (!lightboxContent.contains(e.target)) {
-        lightbox.style.display = 'none';
-      }
+    if (!lightboxContent.contains(e.target)) {
+      lightbox.style.display = 'none';
+    }
   });
   
   function autoScroll() {
@@ -321,4 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   renderCarousel();
   autoScroll();
+  
+  // Only load archive if not embedded
+  if (!isEmbedded) {
+    loadArchiveBatch(); // Load first batch
+    loadMoreBtn.addEventListener('click', loadArchiveBatch);
+  }
 });

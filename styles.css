@@ -519,7 +519,7 @@ nav {
     top: -10vh; /* Extend slightly above */
     left: 0;
     width: 100%;
-    height: 140vh; /* Match JS setting */
+    height: 150vh; /* Match JS setting */
   }
 
 .hero-image {

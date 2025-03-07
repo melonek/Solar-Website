@@ -6,27 +6,85 @@
   <title>Installation Gallery</title>
   <link rel="stylesheet" href="gallery.css">
   <link rel="stylesheet" href="../styles.css">
-
+  <link rel="stylesheet" href="../packages/packages-custom.css">
 </head>
 <body>
+
+    <!-- Navigation -->
+    <nav>
+      <div class="floating-logo">
+        <img src="../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+      </div>
+      <ul class="nav-links">
+        <li><a href="../index.html#about">About Us</a></li>
+        <li class="dropdown">
+          <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+          <div class="dropdown-content">
+            <a href="packages.html">Solar Systems</a>
+            <a href="./battery-only.html">Battery Storage</a>
+            <a href="../index.html#unique-ev-chargers">EV Chargers</a>
+          </div>
+        </li>
+        <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+        <li><a href="../index.html#articles">Articles/News</a></li>
+        <li><a href="../articles/learn.html">Explore Solar</a></li>
+        <li><a href="../gallery/gallery.html">Installations</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+        <div class="bar half start"></div>
+        <div class="bar"></div>
+        <div class="bar half end"></div>
+      </div>
+    </nav>
+  
+  <!-- Universal Banner Section -->
+  <section id="battery-logo-cards-text-section" class="universalBanner">
+    <div class="banner-background">
+      <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
+    </div>
+    <div class="banner-overlay">
+      <div class="banner-content">
+        <h1 data-animate="fadeInDown">Solar Projects</h1>
+        <h2 data-animate="fadeInUp">A Gallery of Our Completed Installations</h2>
+        <p data-animate="fadeIn">Explore our portfolio of past solar projects and discover the quality and reliability behind every installation.</p>
+        
+      </div>
+    </div>
+  </section>
+
+
     <section id="installation-gallery">
         <header>
           <h1>Installations</h1>
           <p>Explore our past projects and installations.</p>
         </header>
         <div class="gallery-container">
-          <button class="control-btn left-btn">&lt;</button>
+          <button class="control-btn left-btn"><</button>
           <div class="carousel">
             <!-- Cards will be injected by JavaScript -->
           </div>
-          <button class="control-btn right-btn">&gt;</button>
+          <button class="control-btn right-btn">></button>
         </div>
-      </section>
+
+        <!-- New Archive Section -->
+        <div class="archive-section">
+          <h1>Our Previous Solar Installations</h1>
+          <h2>Explore our archive of completed projects</h2>
+          <div class="archive-grid">
+            <!-- Archive squares will be injected by JavaScript -->
+          </div>
+          <div class="load-more-wrapper">
+            <button class="load-more shine">Load More</button>
+          </div>
+        </div>
+    </section>
 
   <!-- Modal for job details -->
   <div id="modal" class="modal">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
+      <span class="close-modal">×</span>
       <div class="modal-body">
         <!-- Modal content will be injected dynamically -->
       </div>
@@ -35,10 +93,15 @@
 
   <!-- Lightbox for full-size image display -->
   <div id="lightbox" class="lightbox">
-    <span class="close-lightbox">&times;</span>
+    <span class="close-lightbox">×</span>
     <img class="lightbox-content" src="" alt="Full Size">
   </div>
 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" defer></script>
   <script src="gallery.js"></script>
+  <script src="../packages/packages.js"></script>
+  <script src="../script.js"></script>
 </body>
 </html>
