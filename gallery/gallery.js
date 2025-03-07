@@ -143,25 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const isEmbedded = urlParams.get('embedded') === '1';
-
-  // Hide non-carousel elements if embedded
-  if (isEmbedded) {
-    const header = document.querySelector('#installation-gallery header');
-    const archiveSection = document.querySelector('.archive-section');
-    if (header) header.style.display = 'visible';
-    if (archiveSection) archiveSection.style.display = 'none';
-    document.body.style.margin = '0';
-    const galleryContainer = document.querySelector('.gallery-container');
-    if (galleryContainer) galleryContainer.style.margin = '0';
-    // Also hide nav if it exists
-    const nav = document.querySelector('nav');
-    if(nav) nav.style.display = 'none';
-    const bannerImage = document.querySelector('.universalBanner');
-  if (bannerImage) bannerImage.style.display = 'none';
-  }
-
   const carousel = document.querySelector('.carousel');
   const leftBtn = document.querySelector('.left-btn');
   const rightBtn = document.querySelector('.right-btn');
@@ -379,20 +360,18 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'none';
   });
   
-// Close modal when user clicks/taps directly on the modal overlay
-modal.addEventListener('click', function(e) {
-  // If the click target is the modal (the overlay), close the modal.
-  if (e.target === modal) {
-    modal.style.display = 'none';
-  }
-});
-
-// Also use touchend for mobile reliability.
-modal.addEventListener('touchend', function(e) {
-  if (e.target === modal) {
-    modal.style.display = 'none';
-  }
-});
+  // Close modal when user clicks/taps directly on the modal overlay
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+  
+  modal.addEventListener('touchend', function(e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
   
   function openLightbox(src) {
     lightboxContent.src = src;
@@ -438,9 +417,7 @@ modal.addEventListener('touchend', function(e) {
   renderCarousel();
   autoScroll();
   
-  // Only load archive if not embedded
-  if (!isEmbedded) {
-    loadArchiveBatch(); // Load first batch
-    loadMoreBtn.addEventListener('click', loadArchiveBatch);
-  }
+  // Load archive batch unconditionally
+  loadArchiveBatch();
+  loadMoreBtn.addEventListener('click', loadArchiveBatch);
 });

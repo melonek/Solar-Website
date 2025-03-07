@@ -242,18 +242,19 @@ body {
   
 /* Modal Styles */
 .modal {
+  display: none;
   position: fixed;
   z-index: 20;
   left: 0;
   top: 0;
   width: 100%;
-  min-height: 100vh; /* allow expansion if content overflows */
+  height: 100vh;
   background-color: rgba(0,0,0,0.5);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-top: 5px;
+  overflow-y: auto; /* Make modal scrollable */
+  padding-top: 5px; /* 5px from top as requested */
 }
 
+/* Modal Content */
 .modal-content {
   background: #fff;
   margin: 0 auto;
@@ -261,8 +262,8 @@ body {
   width: 80%;
   border-radius: 8px;
   position: relative;
-  /* Remove or reduce max-height on mobile so content isn’t cut off */
-  max-height: none;
+  max-height: 90vh; /* Fit within viewport */
+  overflow-y: auto; /* Scrollable content */
 }
 
 /* Mobile-specific adjustments */

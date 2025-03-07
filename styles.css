@@ -505,11 +505,11 @@ nav {
 }
 
 @media (max-width: 768px) {
-    iframe {
-      height: auto; /* Let the iframe content dictate height */
-      min-height: 500px; /* Or a value that works for your design */
-    }
+  iframe {
+    height: auto; /* Let the iframe content dictate height */
+    min-height: 500px; /* Or a value that works for your design */
   }
+}
 
 
 /* Hero Section */

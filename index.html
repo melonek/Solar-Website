@@ -10,7 +10,9 @@
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js"></script>
           <!-- Your other head content -->
         </head>
+
   <link rel="stylesheet" href="styles.css"> 
+  <link rel="stylesheet" href="./gallery/">
   <link rel="stylesheet" href="./articles/learn-article-styles.css">
   <link rel="stylesheet" href="./articles/full-article-cards.css">
   <link rel="stylesheet" href="./articles/learn-card-styles.css">
@@ -282,12 +284,22 @@
   
   <!-- Installations Section -->
   <section id="installations" class="section">
-    <iframe src="./gallery/gallery.html?embedded=1" 
-    frameborder="0" 
-    scrolling="yes" 
-    style="width: 100%; height: 850px; margin: 0; padding: 0; border: 0; display: block;">
-</iframe>
+    <!-- Directly include the gallery markup or load it via AJAX/server-side include -->
+    <div id="installation-gallery">
+      <header>
+        <h1>Installations</h1>
+        <p>Explore our past projects and installations.</p>
+      </header>
+      <div class="gallery-container">
+        <button class="control-btn left-btn"><</button>
+        <div class="carousel">
+          <!-- Cards will be injected by JavaScript -->
+        </div>
+        <button class="control-btn right-btn">></button>
+      </div>
+    </div>
   </section>
+  
   
   <!-- FAQ Section -->
   <section id="faq" class="section">
@@ -366,5 +378,6 @@
   <script src="script.js"></script>
   <script src="./articles/articleArray.js"></script>
   <script src="./articles/full-article.js"></script>
+  <script src="./gallery/gallery.js"></script>
 </body>
 </html>
