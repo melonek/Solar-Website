@@ -1,8 +1,10 @@
 /* Global Styles */
 
 html, body {
-    overflow: auto;
-  }
+  overflow: auto;
+  height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -10,16 +12,17 @@ body {
     background: #eaeaea;
   }
   
-  /* Installation Gallery Section */
-  #installation-gallery {
-    padding: 40px 0;
-    background: #f5f5f5;
-    
-  }
+/* Installation Gallery: Remove overflow restrictions */
+#installation-gallery {
+  padding: 40px 0;
+  background: #f5f5f5;
+  overflow: visible; /* Allow scrolling through the section */
+}
   
   /* Header inside the Installation Gallery */
   #installation-gallery header {
     padding: 20px;
+    margin-top: 20px;
     text-align: center;
     font-family: 'Roboto Slab', serif;
   }
@@ -33,7 +36,7 @@ body {
   
   #installation-gallery header p {
     font-family: 'Roboto Slab', serif;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     font-size: 1.2em;
     color: #555;
   }
@@ -67,36 +70,45 @@ body {
     background: linear-gradient(to left, #f5f5f5, rgba(245,245,245,0));
   }
   
-  /* Carousel */
-  .carousel {
-    display: flex;
-    transition: transform 0.5s ease;
-  }
+/* Ensure carousel doesn’t trap scrolling */
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease;
+  overflow: visible; /* Prevent trapping */
+}
   
-  /* Carousel Card Styles */
-  /* Removed max-height so card expands with its content */
-  .card {
-    flex: 0 0 calc(45% - 20px);
-    margin: 10px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .card img {
-    width: 100%;
-    display: block;
-    max-height: 200px;
-    object-fit: cover;
-  }
-  
-  /* Job Details inside Card */
-  .card .job-details {
-    padding: 15px;
-    flex-grow: 1;
-  }
+/* Card container */
+.card {
+  flex: 0 0 calc(35% - 15px);
+  margin: 7px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Center the title above details-row */
+.card-title {
+  text-align: center;
+  margin: 10px 0; /* Space above and below the title */
+  font-size: 1.5em; /* Adjust as needed */
+}
+
+.card img {
+  width: 100%;
+  display: block;
+  max-height: 150px; /* Reduced from 200px to make images smaller */
+  object-fit: cover;
+}
+
+/* Job Details inside Card */
+.card .job-details {
+  padding: 10px; /* Reduced from 15px for less internal space */
+  flex-grow: 1;
+}
+
   .card .job-details h3 {
     margin: 0 0 10px 0;
   }
@@ -105,20 +117,32 @@ body {
     color: #555;
   }
   
-  /* Additional Images Container in Card */
-  .card .images {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-    overflow-x: auto;
-  }
-  .card .images img {
-    flex: 0 0 auto;
-    width: 120px;
-    cursor: pointer;
-    transition: transform 0.3s;
-  }
+  /* New row container for job details */
+
+/* New row container for job details */
+.details-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+ /* Additional Images Container in Card */
+.card .images {
+  display: flex;
+  gap: 7px; /* Reduced from 10px */
+  padding: 7px; /* Reduced from 10px */
+  margin-bottom: 7px; /* Reduced from 10px */
+  overflow-x: auto;
+}
+
+.card .images img {
+  flex: 0 0 auto;
+  width: 90px; /* Reduced from 120px for smaller thumbnails */
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
   .card .images img:hover {
     transform: scale(1.05);
   }
@@ -130,35 +154,40 @@ body {
     align-items: center;
     padding: 10px;
   }
-  
-  /* Left container (50% width) for the button */
-  .button-container {
-    flex: 1 1 50%;
+
+/* Right container (two details) */
+.button-container {
+  flex: 1 1 50%;
+  padding: 10px;
+  text-align: left;
+}
+
+/* Button wrapper (centered below both columns) */
+.button-wrapper {
     display: flex;
-    justify-content: flex-start; /* aligns children to left */
-    align-items: center;
-    padding-left: 0;  /* remove any left padding */
-  }
+    justify-content: center;
+    padding: 10px 0;
+}
   
-  /* Right container (50% width) for job details */
-  .job-details {
-    flex: 1 1 50%;
-    text-align: left;
-    padding-left: 10px; /* Optional: add a little spacing from the dividing line */
-  }
+/* Left container (for title and two details) */
+.job-details {
+  flex: 1 1 50%;
+  padding: 10px;
+  text-align: left;
+}
   
   /* Fancy Read More Button */
-  .read-more {
-    font-size: 1.2em;
-    padding: 15px 25px;
-    background: linear-gradient(135deg, #007BFF, #00A1FF);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-left: 50px;   /* ensure the button itself has no left margin */
-  }
+/* Fancy Read More Button */
+.read-more {
+  font-size: 1.2em;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, #007BFF, #00A1FF);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
   
   .read-more:hover {
     transform: scale(1.05);
@@ -187,29 +216,58 @@ body {
     right: 10px;
   }
   
-  /* Modal Styles */
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  overflow-y: auto; /* Make modal scrollable */
+  padding-top: 5px; /* 5px from top as requested */
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  margin: 0 auto;
+  padding: 20px;
+  width: 80%;
+  border-radius: 8px;
+  position: relative;
+  max-height: 90vh; /* Fit within viewport */
+  overflow-y: auto; /* Scrollable content */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
   .modal {
-    display: none;
-    position: fixed;
-    z-index: 20;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100vh; /* Use full viewport height */
-    padding-top: 1vh;  /* Extra space at the top */
-    padding-bottom: 15vh;  /* Extra space at the bottom */
-    overflow: hidden;
-    background-color: rgba(0,0,0,0.5);
+      padding-top: 5px;
+      height: 100vh; /* Full viewport height */
   }
   .modal-content {
-    background: #fff;
-    margin: auto;
-    padding: 20px;
-    width: 80%;
-    border-radius: 8px;
-    position: relative;
+      width: 90%;
+      margin: 0 auto;
+      max-height: none; /* Allow natural height on mobile */
+      height: auto;
   }
-  
+}
+
+/* Desktop centering */
+@media (min-width: 769px) {
+  .modal {
+      display: none;
+      align-items: center; /* Center vertically */
+      justify-content: center; /* Center horizontally */
+  }
+  .modal-content {
+      margin: auto;
+  }
+}
+
   /* Modal Main Image: slightly taller */
   .modal-main-img {
     width: 100%;

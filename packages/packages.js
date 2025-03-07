@@ -497,18 +497,35 @@ function checkDefaultInputs() {
 // Package Data Helper Functions
 // --------------------
 function collectPackageData() {
-  const homeTypeMapping = {
-    "single": "Single Storey",
-    "double": "Double Storey"
-  };
-  const powerSupplyMapping = {
-    "single": "Single-Phase",
-    "three": "Three-Phase"
-  };
-  
+  // System size is taken as is
   const sysText = selectedSystemSize ? selectedSystemSize : "Not selected";
-  const homeText = homeTypeMapping[selectedHomeType] || "Not selected";
-  const powerText = powerSupplyMapping[selectedPowerSupply] || "Not selected";
+  
+  // Map the home type based on selected value (using toLowerCase for normalization)
+  let homeText = "Not selected";
+  if (selectedHomeType) {
+    const ht = selectedHomeType.toLowerCase();
+    if (ht === "single" || ht === "single storey") {
+      homeText = "Single Storey";
+    } else if (ht === "double" || ht === "double storey") {
+      homeText = "Double Storey";
+    } else {
+      homeText = selectedHomeType;
+    }
+  }
+  
+  // Map the power supply based on selected value (using toLowerCase for normalization)
+  let powerText = "Not selected";
+  if (selectedPowerSupply) {
+    const pt = selectedPowerSupply.toLowerCase();
+    if (pt === "single" || pt === "single phase") {
+      powerText = "Single-Phase";
+    } else if (pt === "three" || pt === "three phase") {
+      powerText = "Three-Phase";
+    } else {
+      powerText = selectedPowerSupply;
+    }
+  }
+  
   let batteryLine = "Not selected";
   if (selectedBattery) {
     batteryLine = `<strong>${selectedBattery.name}</strong> ${selectedBattery.specs}`;
@@ -649,7 +666,8 @@ const solarProducts = {
       price: 1560,
       popularity: 5,
       description: "Solar panel description goes here..."
-    },    {
+    },
+    {
       id: 1,
       name: "Canadian Solar 400W",
       brand: "Canadian Solar",
@@ -674,7 +692,8 @@ const solarProducts = {
       price: 1560,
       popularity: 5,
       description: "Solar panel description goes here..."
-    },    {
+    },
+    {
       id: 1,
       name: "Canadian Solar 400W",
       brand: "Canadian Solar",
@@ -1330,7 +1349,7 @@ const bannerConfigs = [
     sectionSelector: '.panels-section',
     canvasId: 'hero-canvas',
     firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/green.webp',
-    secondImagePath: '../imadges/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', // Fixed typo: 'iimages' to 'images'
+    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', // Fixed typo: 'iimages' to 'images'
     firstWidth: 4500,
     firstHeight: 3500,
     secondWidth: 8000,
@@ -1350,7 +1369,7 @@ const bannerConfigs = [
     sectionSelector: '.battery-storage',
     canvasId: 'battery-canvas',
     firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
-    secondImagePath: '../imdages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', // Fixed typo: 'iimages' to 'images'
+    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', // Fixed typo: 'iimages' to 'images'
     firstWidth: 6500,
     firstHeight: 4500,
     secondWidth: 2000,
