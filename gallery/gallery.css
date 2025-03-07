@@ -97,9 +97,16 @@ body {
 }
 
 .card img {
-  width: 100%;
+  width: 90px !important;
+  height: 90px; /* fixed height to ensure a uniform square shape */
   display: block;
-  max-height: 150px; /* Reduced from 200px to make images smaller */
+  object-fit: cover;
+}
+
+.card > img {
+  width: 100% !important;
+  height: 150px;
+  display: block;
   object-fit: cover;
 }
 
