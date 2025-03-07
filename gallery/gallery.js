@@ -379,17 +379,20 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'none';
   });
   
-  modal.addEventListener('click', (e) => {
-    if (!e.target.closest('.modal-content')) {
-      modal.style.display = 'none';
-    }
-  });
-  
-  modal.addEventListener('touchstart', (e) => {
-    if (!e.target.closest('.modal-content')) {
-      modal.style.display = 'none';
-    }
-  });
+// Close modal when user clicks/taps directly on the modal overlay
+modal.addEventListener('click', function(e) {
+  // If the click target is the modal (the overlay), close the modal.
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+// Also use touchend for mobile reliability.
+modal.addEventListener('touchend', function(e) {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+});
   
   function openLightbox(src) {
     lightboxContent.src = src;
