@@ -379,14 +379,14 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'none';
   });
   
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
+  modal.addEventListener('click', (e) => {
+    if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
-
-  window.addEventListener('touchstart', (e) => {
-    if (e.target === modal) {
+  
+  modal.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
