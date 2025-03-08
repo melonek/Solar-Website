@@ -415,10 +415,9 @@ document.addEventListener('DOMContentLoaded', function() {
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
   });
   
-renderCarousel();
-console.log("Rendered carousel, children count:", carousel.children.length);
-// Temporarily disable autoScroll for testing
-// autoScroll();
+  
+  renderCarousel();
+  autoScroll();
   
   // Always load the archive batch and set up the load more event
   loadArchiveBatch();
