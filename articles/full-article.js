@@ -6,7 +6,7 @@ const BASE_URL = window.location.hostname === "melonek.github.io"
 // Check allArticles without redeclaring
 if (typeof allArticles === "undefined") {
     console.error("allArticles is not defined. Ensure articleArray.js is loaded correctly.");
-    window.allArticles = []; // Assign to global scope without redeclaring
+    window.allArticles = [];
 }
 
 // Pagination settings
@@ -15,6 +15,9 @@ let currentArticlePage = 1;
 
 const learnArticlesPerPage = 3;
 let currentLearnPage = 1;
+
+// Global variable to store current share info (set when modal opens)
+let currentShareData = null;
 
 // Utility to get article navigation URL
 function getArticleNavigationUrl(article) {
@@ -201,6 +204,7 @@ function displayModal(article) {
     const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
     
+    // Set data attributes on the modal share button with title and snippet info
     modalContent.innerHTML = `
         <div class="modal-header">
             <h1 class="modal-title">${article.title}</h1>
@@ -208,12 +212,19 @@ function displayModal(article) {
         </div>
         <div class="action-buttons">
             <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
-            <a href="#" class="share-button" data-url="${shareUrl}">🔗 Share this article</a>
+            <a href="#" class="share-button" data-url="${shareUrl}" data-title="${article.title}" data-snippet="${article.snippet}">🔗 Share this article</a>
         </div>
         <div class="modal-summary">
             ${article.summary}
         </div>
     `;
+    
+    // Update global share data
+    currentShareData = {
+        url: shareUrl,
+        title: article.title,
+        text: article.snippet
+    };
     
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
@@ -223,6 +234,7 @@ function displayModal(article) {
     const closeModal = () => {
         modal.style.display = "none";
         document.body.classList.remove('modal-open');
+        currentShareData = null;
     };
     
     document.querySelector('.close').onclick = closeModal;
@@ -230,7 +242,7 @@ function displayModal(article) {
         if (event.target === modal) closeModal();
     };
     
-    // Attach share event on the share button inside the modal
+    // Bind the share button inside the modal
     const modalShareBtn = modalContent.querySelector('.share-button');
     if (modalShareBtn) {
         modalShareBtn.addEventListener('click', shareArticle);
@@ -253,110 +265,74 @@ function handleSummaryClick(event) {
     }
 }
 
-// Share article function with explicit prevention of default behavior
+// Unified shareArticle function – immediately redirecting based on button id
 function shareArticle(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    // Determine which share button was clicked
-    let button = event 
-      ? event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button')
-      : null;
-    
-    // Initialize shareData with fallback values
-    let shareData = {
+    // Use global share data if available; otherwise, fallback to document defaults
+    let shareData = currentShareData || {
         title: document.querySelector('title')?.textContent || 'Check this out!',
         text: document.querySelector('meta[name="description"]')?.content || 'Here is an interesting page for you.',
         url: window.location.href
     };
     
-    // If a share button was clicked, use its data-url or find article data
-    if (button) {
-        const buttonUrl = button.getAttribute('data-url');
-        if (buttonUrl) {
-            shareData.url = buttonUrl;
-        } else {
-            const articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
-            if (articleId) {
-                const article = allArticles.find(a => a.id == articleId);
-                if (article) {
-                    shareData.url = getShareableUrl(article);
-                    shareData.title = article.title;
-                    shareData.text = article.snippet;
-                }
+    // If a share button was clicked, override with its data attributes if present
+    if (event) {
+        let button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
+        if (button) {
+            const buttonUrl = button.getAttribute('data-url');
+            const buttonTitle = button.getAttribute('data-title');
+            const buttonSnippet = button.getAttribute('data-snippet');
+            if (buttonUrl) shareData.url = buttonUrl;
+            if (buttonTitle) shareData.title = buttonTitle;
+            if (buttonSnippet) shareData.text = buttonSnippet;
+        }
+    }
+    
+    // Determine if the clicked button is from full-share or learn-share
+    let buttonId = "";
+    if (event && event.target.closest('a')) {
+        buttonId = event.target.closest('a').id || "";
+    }
+    
+    // Construct the share URL based on platform from the button id
+    let platform = "";
+    if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
+    else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
+    else if (buttonId.toLowerCase().includes("linkedin")) platform = "linkedin";
+    else if (buttonId.toLowerCase().includes("whatsapp")) platform = "whatsapp";
+    
+    let shareUrl = "";
+    switch(platform) {
+        case "twitter":
+            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.title)}`;
+            break;
+        case "facebook":
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
+            break;
+        case "linkedin":
+            shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}`;
+            break;
+        case "whatsapp":
+            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.title + ' ' + shareData.url)}`;
+            break;
+        default:
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Article shared successfully'))
+                    .catch(err => console.error('Error sharing:', err));
+                return false;
+            } else {
+                showSharePopup(shareData);
+                return false;
             }
-        }
-    } else {
-        // Fallback: check if articleId is in URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleIdFromUrl = urlParams.get('articleId');
-        if (articleIdFromUrl) {
-            const article = allArticles.find(a => a.id == articleIdFromUrl);
-            if (article) {
-                shareData.url = getShareableUrl(article);
-                shareData.title = article.title;
-                shareData.text = article.snippet;
-            }
-        }
     }
     
-    // Update social media links in full-share-buttons container
-    const fullShareContainer = document.getElementById('full-share-buttons');
-    if (fullShareContainer) {
-        const twitterBtn = document.getElementById('full-share-twitter');
-        const facebookBtn = document.getElementById('full-share-facebook');
-        const linkedinBtn = document.getElementById('full-share-linkedin');
-        const whatsappBtn = document.getElementById('full-share-whatsapp');
-        
-        if (twitterBtn) {
-            twitterBtn.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.title)}`;
-        }
-        if (facebookBtn) {
-            facebookBtn.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
-        }
-        if (linkedinBtn) {
-            linkedinBtn.href = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}`;
-        }
-        // Use the official WhatsApp API URL
-        if (whatsappBtn) {
-            whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.title + ' ' + shareData.url)}`;
-        }
-    }
-    
-    // Update social media links in learn-share-buttons container
-    const learnShareContainer = document.getElementById('learn-share-buttons');
-    if (learnShareContainer) {
-        const twitterBtn = learnShareContainer.querySelector('#learn-share-twitter');
-        const facebookBtn = learnShareContainer.querySelector('#learn-share-facebook');
-        const linkedinBtn = learnShareContainer.querySelector('#learn-share-linkedin');
-        const whatsappBtn = learnShareContainer.querySelector('#learn-share-whatsapp');
-        
-        if (twitterBtn) {
-            twitterBtn.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.title)}`;
-        }
-        if (facebookBtn) {
-            facebookBtn.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
-        }
-        if (linkedinBtn) {
-            linkedinBtn.href = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}`;
-        }
-        // Update WhatsApp share link as well
-        if (whatsappBtn) {
-            whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.title + ' ' + shareData.url)}`;
-        }
-    }
-    
-    // Use Web Share API if available, else fall back to a custom share popup
-    if (navigator.share) {
-        navigator.share(shareData)
-            .then(() => console.log('Article shared successfully'))
-            .catch(err => console.error('Error sharing:', err));
-    } else {
-        showSharePopup(shareData);
-    }
-    
+    // For both full-share and learn-share buttons, directly open the share URL
+    window.open(shareUrl, '_blank');
     return false;
 }
 
@@ -432,37 +408,25 @@ function showSharePopup(shareData) {
     popup.querySelector('.close-popup').onclick = () => document.body.removeChild(popup);
 }
 
-// Setup event listeners for summary and share buttons
+// Explicitly bind click events to each share button in both containers
+function setupShareButtons() {
+    const fullButtons = document.querySelectorAll('#full-share-buttons a');
+    fullButtons.forEach(btn => {
+        btn.removeEventListener('click', shareArticle);
+        btn.addEventListener('click', shareArticle);
+    });
+    const learnButtons = document.querySelectorAll('#learn-share-buttons a');
+    learnButtons.forEach(btn => {
+        btn.removeEventListener('click', shareArticle);
+        btn.addEventListener('click', shareArticle);
+    });
+}
+
+// Setup event listeners for summary buttons and bind share buttons
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
-    
-    // Attach listeners to share buttons on article cards or modals
-    const allShareButtons = document.querySelectorAll('.share-button');
-    allShareButtons.forEach(button => {
-        button.removeEventListener('click', shareArticle);
-        button.addEventListener('click', shareArticle);
-    });
-    
-    // Also use event delegation on the share button containers
-    const fullShareContainer = document.getElementById('full-share-buttons');
-    if (fullShareContainer) {
-        fullShareContainer.addEventListener('click', function(e) {
-            const target = e.target;
-            if (target && target.tagName === "A") {
-                shareArticle(e);
-            }
-        });
-    }
-    const learnShareContainer = document.getElementById('learn-share-buttons');
-    if (learnShareContainer) {
-        learnShareContainer.addEventListener('click', function(e) {
-            const target = e.target;
-            if (target && target.tagName === "A") {
-                shareArticle(e);
-            }
-        });
-    }
+    setupShareButtons();
 }
 
 // Initial load: render articles and setup share buttons
@@ -511,15 +475,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
     
-    // If share buttons exist on the page, try to update them
-    if (document.getElementById('full-share-buttons') || document.getElementById('learn-share-buttons')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const articleIdFromUrl = urlParams.get('articleId');
-        if (articleIdFromUrl) {
-            const article = allArticles.find(a => a.id == articleIdFromUrl);
-            if (article) {
-                shareArticle();
-            }
-        }
-    }
+    // Bind share buttons on page load
+    setupShareButtons();
 });
