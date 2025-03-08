@@ -255,12 +255,21 @@ function scrollToSection(sectionId) {
 function scrollToArticle(articleId) {
     const card = document.querySelector(`[data-article-id="${articleId}"]`);
     if (card) {
-        // Scroll so the card is centered in the viewport
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Add a class that applies the hover-like highlight
-        card.classList.add('highlighted');
+        // Allow time for the card to be rendered if needed
+        setTimeout(() => {
+            const rect = card.getBoundingClientRect();
+            // Calculate the card's center position relative to the document
+            const cardCenter = rect.top + window.scrollY + (rect.height / 2);
+            // Calculate the scroll position so that the card is centered
+            const scrollPosition = cardCenter - (window.innerHeight / 2);
+            window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            
+            // Add a highlight class that applies your desired highlight styling
+            card.classList.add('highlighted');
+        }, 300); // Adjust the delay if needed
     }
 }
+
 
 function displayModal(article) {
     const modal = document.getElementById('article-modal');

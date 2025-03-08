@@ -44,6 +44,7 @@
 }
 
 .learn-card.highlighted {
+    border: 2px solid #007bff; /* adjust the color if needed */
     transform: rotateY(10deg) scale(1.03);
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
 }
