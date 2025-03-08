@@ -197,3 +197,31 @@ body {
     }
 }
 
+*/
+.articles-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+}
+
+.articles-table th,
+.articles-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.articles-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.articles-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.articles-table tr:hover {
+  background-color: #f1f1f1;
+}
