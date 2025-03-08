@@ -28,18 +28,16 @@
   <meta name="twitter:creator" content="@JaneSmithWA">
   <meta name="twitter:url" content="https://melonek.github.io/Solar-Website/articles/article2/Solar-Rebate-WA.html">
 
-  <!-- Article-specific styles (located in /articles/) -->
-  <link rel="stylesheet" href="../full-article-styles.css">
-  <!-- Global styles (in root) -->
+  <!-- Styles -->
+  <link rel="stylesheet" href="../learn-article-styles.css">
   <link rel="stylesheet" href="../../styles.css">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <title>List of Western Australia Solar Rebates and Incentives in 2025</title>
 </head>
 <body>
   <nav>
     <div class="floating-logo">
-      <!-- From /articles/article2/ to root: go up two levels -->
       <img src="../../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
     <ul class="nav-links">
@@ -52,10 +50,8 @@
           <a href="../../index.html#unique-ev-chargers">EV Chargers</a>
         </div>
       </li>
-      <!-- Solar Savings Calculator is in /images/solarCalculator/ -->
       <li><a href="../../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
       <li><a href="../../index.html#articles">Articles/News</a></li>
-      <!-- "Explore Solar" is in /articles/ -->
       <li><a href="../learn.html">Explore Solar</a></li>
       <li><a href="../../gallery/gallery.html">Installations</a></li>
       <li><a href="../../index.html#faq">FAQ</a></li>
@@ -68,12 +64,12 @@
     </div>
   </nav>
 
-  <div id="full-container">
+  <div id="learn-container">
     <!-- Header -->
-    <header id="full-header">
+    <header id="learn-header">
       <h1>List of Western Australia Solar Rebates and Incentives in 2025</h1>
       <p>Exploring how government rebates, STCs, and feed-in tariffs in Western Australia can reduce the cost of your solar installation and help you save on energy bills.</p>
-      <div id="full-meta">
+      <div id="learn-meta">
         <span>By Jane Smith</span>
         <span>February 24, 2025</span>
         <span>8 min read</span>
@@ -81,17 +77,17 @@
     </header>
 
     <!-- Top Share Button -->
-    <div id="full-top-share">
-      <button id="full-top-share-button" onclick="shareArticle()">
-        <i class="fas fa-share-alt"></i> Share This Article
+    <div id="learn-top-share">
+      <button id="learn-top-share-button" onclick="shareArticle()">
+        <i class="fas fa-share-alt"></i> Share This Page
       </button>
     </div>
 
     <!-- Featured Image -->
-    <img id="full-featured-image" src="https://assets.sustainability.vic.gov.au/susvic/Photo-Energy-Solar-Install.jpg" alt="Solar panel installation in Western Australia">
+    <img id="learn-featured-image" src="https://assets.sustainability.vic.gov.au/susvic/Photo-Energy-Solar-Install.jpg" alt="Solar panel installation in Western Australia">
 
     <!-- Content -->
-    <section id="full-content">
+    <section id="learn-content">
       <h2>Introduction</h2>
       <p>Are you considering installing solar panels for your home or business in Western Australia? With abundant sunshine and several financial incentives, WA offers a great environment for solar energy investment. While WA does not have state-specific solar rebates, residents can take advantage of federal incentives and other programs that significantly reduce costs and maximize savings.</p>
 
@@ -136,18 +132,18 @@
       <p>Western Australia in 2025 remains a prime spot for solar investment, thanks to federal STCs, competitive feed-in tariffs, and local financing options. While state rebates are absent, these incentives can slash installation costs by 30-40% and deliver ongoing savings. Whether you’re a homeowner or business owner, now’s the time to harness WA’s sunshine and turn it into savings.</p>
     </section>
 
-    <!-- Share Buttons (Sticky) -->
-    <div id="full-share-buttons">
-      <a id="full-share-twitter" href="#" target="_blank">Share on Twitter</a>
-      <a id="full-share-facebook" href="#" target="_blank">Share on Facebook</a>
-      <a id="full-share-linkedin" href="#" target="_blank">Share on LinkedIn</a>
-      <a id="full-share-whatsapp" href="#" target="_blank">Share on WhatsApp</a>
+    <!-- Share Buttons (Sticky, Row Layout) -->
+    <div id="learn-share-buttons">
+      <a id="learn-share-twitter" href="#" target="_blank">Share on Twitter</a>
+      <a id="learn-share-facebook" href="#" target="_blank">Share on Facebook</a>
+      <a id="learn-share-linkedin" href="#" target="_blank">Share on LinkedIn</a>
+      <a id="learn-share-whatsapp" href="#" target="_blank">Share on WhatsApp</a>
     </div>
   </div>
 
   <script>
-    // Redirect only for users (not crawlers) from external sources
-    const articleId = "3"; // Article ID for article2
+    // Redirect only for users, not crawlers, from external sources
+    const articleId = "2"; // Updated to match new article ID
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
@@ -155,9 +151,9 @@
       window.location.href = `/Solar-Website/articles/learn.html?articleId=${articleId}`;
     }
 
-    // Dynamic meta tag updates (example)
+    // Dynamic metatag updates
     document.addEventListener("DOMContentLoaded", () => {
-      const articleId = "3";
+      const articleId = "2";
       const article = allArticles.find(a => a.id == articleId);
       if (article) {
         document.querySelector('title').textContent = article.title;
@@ -179,11 +175,8 @@
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
-  <!-- Scripts -->
-  <!-- articleArray.js and full-article.js are in /articles/ -->
   <script src="../articleArray.js"></script>
   <script src="../full-article.js"></script>
-  <!-- Global script.js is in the root folder -->
   <script src="../../script.js"></script>
 </body>
 </html>

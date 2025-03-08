@@ -3,17 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- Article-specific styles are located in the parent (articles) folder -->
-  <link rel="stylesheet" href="../learn-styles.css">
-  <!-- Global styles.css is in the root -->
+
+  <!-- Standard Meta Tags -->
+  <meta name="description" content="How government rebates and feed-in tariffs can help you save on solar energy investments in Western Australia.">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="solar rebates, Western Australia, STCs, feed-in tariffs, solar installation, energy savings, 2025">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Solar Rebates and Financial Incentives in Western Australia">
+  <meta property="og:description" content="How government rebates and feed-in tariffs can help you save on solar energy investments in Western Australia.">
+  <meta property="og:image" content="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg">
+  <meta property="og:url" content="https://melonek.github.io/Solar-Website/articles/learn-template.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Nature's Spark Solar">
+  <meta property="article:published_time" content="2025-02-20T00:00:00Z">
+  <meta property="article:author" content="John Doe">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solar Rebates and Financial Incentives in Western Australia">
+  <meta name="twitter:description" content="How government rebates and feed-in tariffs can help you save on solar energy investments in Western Australia.">
+  <meta name="twitter:image" content="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg">
+  <meta name="twitter:site" content="@NaturesSpark">
+  <meta name="twitter:creator" content="@JohnDoeWA">
+  <meta name="twitter:url" content="https://melonek.github.io/Solar-Website/articles/learn-template.html">
+
+  <!-- Styles (unchanged paths) -->
+  <link rel="stylesheet" href="../learn-article-styles.css">
   <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <title>Solar Rebates and Financial Incentives in Western Australia</title>
 </head>
 <body>
-
   <nav>
     <div class="floating-logo">
-      <!-- From articles/article1 up two levels to root -->
       <img src="../../images/BusinessLogo/nse.png" alt="Nature's Spark Solar Logo" width="150" height="50">
     </div>
     <ul class="nav-links">
@@ -28,7 +52,6 @@
       </li>
       <li><a href="../../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
       <li><a href="../../index.html#articles">Articles/News</a></li>
-      <!-- From article1, one level up to articles folder -->
       <li><a href="../learn.html">Explore Solar</a></li>
       <li><a href="../../gallery/gallery.html">Installations</a></li>
       <li><a href="../../index.html#faq">FAQ</a></li>
@@ -41,31 +64,34 @@
     </div>
   </nav>
 
-  <!-- Header with banner image and overlay -->
-  <header>
-    <div class="overlay"></div>
-    <div class="header-content">
+  <div id="learn-container">
+    <!-- Header -->
+    <header id="learn-header">
       <h1>Solar Rebates and Financial Incentives in Western Australia</h1>
       <p>How government rebates and feed-in tariffs can help you save on solar energy investments</p>
+      <div id="learn-meta">
+        <span>By John Doe</span>
+        <span>February 20, 2025</span>
+        <span>8 min read</span> <!-- Estimated read time -->
+      </div>
+    </header>
+
+    <!-- Top Share Button -->
+    <div id="learn-top-share">
+      <button id="learn-top-share-button" onclick="shareArticle()">
+        <i class="fas fa-share-alt"></i> Share This Page
+      </button>
     </div>
-  </header>
 
-  <!-- Main content container -->
-  <div class="container">
-    <!-- Metadata: publication date, author, etc. -->
-    <div class="meta">
-      <span>Published on: February 20, 2025</span>
-      <span>By: John Doe</span>
-    </div>
+    <!-- Featured Image -->
+    <img id="learn-featured-image" src="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg" alt="Solar installation in Western Australia">
 
-    <!-- Main article image -->
-    <img src="https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg" alt="Solar installation in Western Australia" class="main-image" />
-
-    <!-- Article content -->
-    <article class="solar-article">
+    <!-- Content -->
+    <section id="learn-content">
       <p>In Western Australia, solar power has become a widely adopted solution for homeowners aiming to reduce their electricity bills and carbon footprint. With government incentives, the initial investment in solar systems has become more affordable. This article explores the available rebates, how they work, and the financial incentives for switching to solar power in Western Australia. Solar energy is not just an environmental choice, but also a financially savvy decision that can pay off in the long run.</p>
 
       <!-- Table of Contents -->
+      <h2>Table of Contents</h2>
       <ul id="article-toc" class="table-of-contents">
         <li><a href="#stcs">Small-Scale Technology Certificates (STCs)</a></li>
         <li><a href="#rebates">State Rebates in WA</a></li>
@@ -76,45 +102,74 @@
 
       <h2 id="stcs">Small-Scale Technology Certificates (STCs)</h2>
       <p>STCs are a crucial part of the federal government’s approach to encourage solar energy adoption. Homeowners can earn STCs based on the size of their solar system. This translates into a direct discount on the upfront cost of the system installation. The more efficient your system is, the more STCs you can earn. This can significantly reduce the cost of installing a solar power system.</p>
-      <div class="photo-text">
+      <figure class="learn-image">
         <img src="https://proaccionaau.blob.core.windows.net/media/1kvbc4ud/rooftop-solar.jpg" alt="Solar Panels in Perth, Western Australia">
-        <p>Homeowners can earn STCs based on the size and location of their solar power system, which helps reduce the cost of installation. Additionally, the federal government reviews and updates the STC value annually, so it’s essential to act sooner rather than later to take full advantage of the rebates.</p>
-      </div>
+        <figcaption>Homeowners can earn STCs based on the size and location of their solar power system, which helps reduce the cost of installation.</figcaption>
+      </figure>
+      <p>Additionally, the federal government reviews and updates the STC value annually, so it’s essential to act sooner rather than later to take full advantage of the rebates.</p>
 
       <h2 id="rebates">State Rebates in WA</h2>
       <p>Along with federal STCs, the Western Australian government offers additional rebates. For example, the <strong>Solar Homes Program</strong> provides up to $3,000 for eligible households to install solar systems. This program helps reduce the initial financial burden for those looking to go solar. The Solar Homes Program is one of the most beneficial state rebates available to homeowners in WA, making solar power more accessible and affordable.</p>
-      <div class="photo-text">
-        <p>The Solar Homes Program is one of the most beneficial state rebates available to homeowners in WA. This initiative is part of the WA Government’s efforts to increase the number of solar installations in the state and reduce energy costs for residents.</p>
+      <figure class="learn-image">
         <img src="https://www.solaranswered.com.au/wp-content/uploads/2023/03/six-solar-panels-residential-roof-2048x1365-copy-1024x683.jpg" alt="Solar Homes Program WA">
-      </div>
+        <figcaption>The Solar Homes Program is part of the WA Government’s efforts to increase solar installations and reduce energy costs.</figcaption>
+      </figure>
 
       <h2 id="feedintariffs">Feed-in Tariffs</h2>
       <p>In addition to rebates, Western Australia offers feed-in tariffs, allowing households to receive payments for excess solar power they feed back into the grid. These rates vary between 6c and 11c per kWh, depending on the retailer. Feed-in tariffs can significantly reduce electricity bills, and for households with excess solar production, they can even generate a small income.</p>
-      <div class="photo-text">
+      <figure class="learn-image">
         <img src="https://www.geraldtonsolarforce.com.au/wp-content/uploads/2022/11/k..jpg" alt="Solar Energy Feed-in Tariff">
-        <p>Feed-in tariffs are an excellent way to make solar energy more economically viable, particularly when combined with other incentives. Homeowners can not only offset their energy bills but potentially even earn money by selling surplus energy.</p>
-      </div>
+        <figcaption>Feed-in tariffs make solar energy economically viable by offsetting bills and potentially earning money.</figcaption>
+      </figure>
 
       <h2 id="pricing">Rebate Pricing in 2025</h2>
       <p>The average cost for a 6.6kW solar system in WA is between $4,000 and $6,000 after applying all available rebates. This price varies by location and installer, but these financial incentives make solar energy an affordable option for most homeowners. It's important to compare quotes from different installers to ensure you're getting the best deal, as costs can vary based on system size, panel efficiency, and installation complexity.</p>
-      <div class="photo-text">
-        <p>Prices for solar systems in 2025 have become more affordable thanks to rebates and other incentives. With financial support, solar power is becoming accessible to more households than ever before.</p>
+      <figure class="learn-image">
         <img src="https://perthsolarwarehouse.com.au/wp-content/uploads/2019/04/Solar-Panels-Perth-WA-Rebate-SolarWatt-1024x599.jpg.webp" alt="Cost of Solar in 2025">
-      </div>
+        <figcaption>Prices for solar systems in 2025 have become more affordable thanks to rebates and incentives.</figcaption>
+      </figure>
 
       <h2 id="conclusion">Conclusion</h2>
       <p>Solar power is a great investment for homeowners in Western Australia, especially with the combination of federal STCs and state rebates. The financial incentives make the initial cost of solar installation much more manageable, and with feed-in tariffs, homeowners can generate income by selling excess energy back to the grid. Investing in solar now can provide long-term savings on electricity bills and a smaller environmental footprint.</p>
-    </article>
+    </section>
+
+    <!-- Share Buttons (Sticky, Row Layout) -->
+    <div id="learn-share-buttons">
+      <a id="learn-share-twitter" href="#" target="_blank">Share on Twitter</a>
+      <a id="learn-share-facebook" href="#" target="_blank">Share on Facebook</a>
+      <a id="learn-share-linkedin" href="#" target="_blank">Share on LinkedIn</a>
+      <a id="learn-share-whatsapp" href="#" target="_blank">Share on WhatsApp</a>
+    </div>
   </div>
 
+  <!-- Scripts (unchanged paths) -->
   <script>
-    // Redirect only if coming from an external source (e.g., Google search)
-    const articleId = "1"; // Replace with the article's ID
+    // Redirect only for users, not crawlers, from external sources
+    const articleId = "1"; // Updated to match your original article ID
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
-    if (isExternalReferrer) {
-        window.location.href = `/learn.html?articleId=${articleId}`; // Adjust path if needed
+    const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
+    if (isExternalReferrer && !isCrawler) {
+      window.location.href = `/Solar-Website/articles/learn.html?articleId=${articleId}`;
     }
+
+    // Dynamic metatag updates
+    document.addEventListener("DOMContentLoaded", () => {
+      const articleId = "1";
+      const article = allArticles.find(a => a.id == articleId);
+      if (article) {
+        document.querySelector('title').textContent = article.title;
+        document.querySelector('meta[name="description"]').content = article.snippet;
+        document.querySelector('meta[property="og:title"]').content = article.title;
+        document.querySelector('meta[property="og:description"]').content = article.snippet;
+        document.querySelector('meta[property="og:image"]').content = article.image;
+        document.querySelector('meta[property="og:url"]').content = getShareableUrl(article);
+        document.querySelector('meta[name="twitter:title"]').content = article.title;
+        document.querySelector('meta[name="twitter:description"]').content = article.snippet;
+        document.querySelector('meta[name="twitter:image"]').content = article.image;
+        document.querySelector('meta[name="twitter:url"]').content = getShareableUrl(article);
+      }
+    });
   </script>
 
   <!-- Footer -->
@@ -122,8 +177,8 @@
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
-  <!-- Global script.js is in the root -->
+  <script src="../articleArray.js"></script>
+  <script src="../full-article.js"></script>
   <script src="../../script.js"></script>
-
 </body>
 </html>
