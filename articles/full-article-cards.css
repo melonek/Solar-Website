@@ -41,6 +41,9 @@
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
 }
+.article-card.highlighted::before {
+    opacity: 0.7; /* Shows the orange gradient overlay */
+}
 
 .article-card::before {
     content: '';
