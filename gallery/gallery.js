@@ -1,5 +1,3 @@
-/* gallery.js */
-
 document.addEventListener('DOMContentLoaded', function() {
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
   
@@ -143,9 +141,10 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-  const carousel = document.querySelector('.carousel');
-  const leftBtn = document.querySelector('.left-btn');
-  const rightBtn = document.querySelector('.right-btn');
+  // Scope selectors to target the gallery section on either page
+  const carousel = document.querySelector('#installation-gallery .carousel');
+  const leftBtn = document.querySelector('#installation-gallery .left-btn');
+  const rightBtn = document.querySelector('#installation-gallery .right-btn');
   const modal = document.getElementById('modal');
   const modalBody = document.querySelector('.modal-body');
   const closeModal = document.querySelector('.close-modal');
@@ -261,16 +260,19 @@ document.addEventListener('DOMContentLoaded', function() {
       img.src = fallbackImage;
     });
   }
-  
+
   function renderCarousel() {
+    console.log("Rendering carousel...");
     jobs.forEach(job => {
       const card = createCard(job);
       carousel.appendChild(card);
     });
+    console.log("Cards after first pass:", carousel.children.length);
     jobs.forEach(job => {
       const cardClone = createCard(job);
       carousel.appendChild(cardClone);
     });
+    console.log("Total cards count:", carousel.children.length);
   }
   
   function loadArchiveBatch() {
@@ -360,15 +362,14 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.style.display = 'none';
   });
   
-  // Close modal when user clicks/taps directly on the modal overlay
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
+  modal.addEventListener('click', (e) => {
+    if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
   
-  modal.addEventListener('touchend', function(e) {
-    if (e.target === modal) {
+  modal.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
@@ -414,10 +415,12 @@ document.addEventListener('DOMContentLoaded', function() {
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
   });
   
-  renderCarousel();
-  autoScroll();
+renderCarousel();
+console.log("Rendered carousel, children count:", carousel.children.length);
+// Temporarily disable autoScroll for testing
+// autoScroll();
   
-  // Load archive batch unconditionally
+  // Always load the archive batch and set up the load more event
   loadArchiveBatch();
   loadMoreBtn.addEventListener('click', loadArchiveBatch);
 });

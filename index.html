@@ -2,33 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" 
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <head>
-          <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
-          <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js"></script>
-          <!-- Your other head content -->
-        </head>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js"></script>
   <link rel="stylesheet" href="styles.css"> 
-  <link rel="stylesheet" href="./gallery/">
+  <link rel="stylesheet" href="./gallery/gallery.css">
   <link rel="stylesheet" href="./articles/learn-article-styles.css">
   <link rel="stylesheet" href="./articles/full-article-cards.css">
   <link rel="stylesheet" href="./articles/learn-card-styles.css">
-  
   <title>Nature's Spark Solar</title>
-  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
-<!-- Facebook SDK -->
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0&appId=956735296637387"></script>
-<!-- In your <head> -->
-  <head>
-    <!-- Your other head content -->
-  </head>
+  <!-- Facebook SDK -->
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0&appId=956735296637387"></script>
 </head>
 <body>
 
@@ -64,9 +53,8 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-image">
-        <canvas id="hero-canvas"></canvas> <!-- Three.js will render here -->
+      <canvas id="hero-canvas"></canvas> <!-- Three.js will render here -->
     </div>
-</section>
     <div class="hero-content">
       <h1 class="main-title">Clean Energy Solutions</h1>
       <h3 class="subtitle">Welcome to</h3>
@@ -281,25 +269,33 @@
 <!-- Facebook SDK Root Div -->
 <div id="fb-root"></div>
 
-  
-  <!-- Installations Section -->
-  <section id="installations" class="section">
-    <!-- Directly include the gallery markup or load it via AJAX/server-side include -->
-    <div id="installation-gallery">
-      <header>
-        <h1>Installations</h1>
-        <p>Explore our past projects and installations.</p>
-      </header>
-      <div class="gallery-container">
-        <button class="control-btn left-btn"><</button>
-        <div class="carousel">
-          <!-- Cards will be injected by JavaScript -->
-        </div>
-        <button class="control-btn right-btn">></button>
-      </div>
+<section id="installation-gallery">
+  <header>
+    <h1>Installations</h1>
+    <p>Explore our past projects and installations.</p>
+  </header>
+  <div class="gallery-container">
+    <button class="control-btn left-btn"><</button>
+    <div class="carousel">
+      <!-- Cards will be injected by JavaScript -->
     </div>
-  </section>
-  
+    <button class="control-btn right-btn">></button>
+  </div>
+</section>
+
+  <!-- Modal for job details -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">X</span>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox for full-size image display -->
+  <div id="lightbox" class="lightbox">
+    <span class="close-lightbox">×</span>
+    <img class="lightbox-content" src="" alt="Full Size">
+  </div>
   
   <!-- FAQ Section -->
   <section id="faq" class="section">
@@ -374,10 +370,10 @@
   </footer>
   
   <!-- Scripts -->
-  <script src="./packages/packages.js"></script>
   <script src="script.js"></script>
+  <script src="./gallery/gallery.js"></script>
+  <script src="./packages/packages.js"></script>
   <script src="./articles/articleArray.js"></script>
   <script src="./articles/full-article.js"></script>
-  <script src="./gallery/gallery.js"></script>
 </body>
 </html>
