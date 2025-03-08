@@ -282,37 +282,49 @@ function displayModal(article) {
         console.error("modal-article-content element not found");
         return;
     }
-    console.log("Displaying modal for article:", article.title);
     const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
-    console.log("Setting Full Article URL:", articleUrl);
-    console.log("Setting Share URL:", shareUrl);
+    
+    // Inject the header, then the action buttons, then the summary.
     modalContent.innerHTML = `
         <div class="modal-header">
             <h1 class="modal-title">${article.title}</h1>
             <p class="modal-snippet">${article.snippet}</p>
         </div>
+        <div class="action-buttons">
+            <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
+            <a href="#" class="share-button" data-url="${shareUrl}">🔗 Share this article</a>
+        </div>
         <div class="modal-summary">
             ${article.summary}
-            <div class="action-buttons">
-                <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
-                <a href="#" class="share-button" data-url="${shareUrl}">🔗 Share this article</a>
-            </div>
         </div>
     `;
-    modal.style.display = "block";
+    
+    // Make sure the modal content uses flexbox with column direction.
+    modalContent.style.display = 'flex';
+    modalContent.style.flexDirection = 'column';
+    
+    modal.style.display = "flex";
     document.body.classList.add('modal-open');
-
+  
     const closeModal = () => {
         modal.style.display = "none";
         document.body.classList.remove('modal-open');
     };
 
     document.querySelector('.close').onclick = closeModal;
-    window.onclick = (event) => { if (event.target == modal) closeModal(); };
+    window.onclick = (event) => { 
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
 
+    // Attach share button event
     document.querySelector('.share-button').addEventListener('click', shareArticle);
 }
+
+
+
 
 function shareArticle(event) {
     if (event) event.preventDefault();
