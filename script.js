@@ -155,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       // Image size controls (in pixels, adjust these to zoom in/out)
-      const firstImageWidth = 9000;
-      const firstImageHeight = 6000;
-      const secondImageWidth = 8500;
-      const secondImageHeight = 6000;
+      const firstImageWidth = 5000;
+      const firstImageHeight = 3500;
+      const secondImageWidth = 6500;
+      const secondImageHeight = 4500;
 
       // Create planes with fixed size to overflow viewport
       const planeWidth = 20;
