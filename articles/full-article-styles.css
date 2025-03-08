@@ -185,10 +185,11 @@ body {
 
 /* Featured Image */
 #full-featured-image {
-    flex: 1;                       /* Takes up remaining space */
-    max-width: 800px;              /* Optional: Limits maximum width */
-    height: 100%;                  /* Matches the height of the TOC */
-    object-fit: cover;
+    flex: 1;                      /* Takes up remaining horizontal space */
+    max-width: 800px;             /* Limits its maximum width */
+    width: 100%;                  /* Ensures it scales with its container */
+    height: auto;                 /* Maintains natural aspect ratio */
+    object-fit: contain;          /* Ensures the entire image is visible */
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     display: block;
