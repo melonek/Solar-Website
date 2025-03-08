@@ -147,7 +147,7 @@
 
   <script>
     // Redirect only for users (not crawlers) from external sources
-    const articleId = "2"; // Article ID for article2
+    const articleId = "3"; // Article ID for article2
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
@@ -157,7 +157,7 @@
 
     // Dynamic meta tag updates (example)
     document.addEventListener("DOMContentLoaded", () => {
-      const articleId = "2";
+      const articleId = "3";
       const article = allArticles.find(a => a.id == articleId);
       if (article) {
         document.querySelector('title').textContent = article.title;

@@ -255,8 +255,10 @@ function scrollToSection(sectionId) {
 function scrollToArticle(articleId) {
     const card = document.querySelector(`[data-article-id="${articleId}"]`);
     if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        card.style.border = '2px solid #007bff'; // Highlight the card
+        // Scroll so the card is centered in the viewport
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Add a class that applies the hover-like highlight
+        card.classList.add('highlighted');
     }
 }
 
@@ -424,7 +426,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const page = Math.floor(index / articlesPerPage) + 1;
                 currentArticlePage = page;
                 displayArticles(page);
+                // Scroll the target card into view (centered) and highlight it
                 scrollToArticle(articleId);
+                // Open the modal after scrolling
+                setTimeout(() => {
+                    displayModal(article);
+                }, 500);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
@@ -432,21 +439,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 const page = Math.floor(index / learnArticlesPerPage) + 1;
                 currentLearnPage = page;
                 displayLearnArticles(page);
-                // Scroll to the learn-grid section first, then to the specific article
+                // Scroll to the learn-grid section first, then the specific card
                 scrollToSection('learn');
                 setTimeout(() => {
                     scrollToArticle(articleId);
                     // Open modal with summary after scrolling
                     setTimeout(() => {
                         displayModal(article);
-                    }, 500); // Delay for modal after scrolling
-                }, 500); // Delay to ensure section scroll completes
+                    }, 500);
+                }, 500);
             }
         }
     } else {
         if (document.getElementById('articles-grid')) {
             console.log("Initial rendering: displaying articles on index.html");
-            displayArticles(currentPage);
+            displayArticles(currentArticlePage);
         }
         if (document.getElementById('learn-grid')) {
             console.log("Initial rendering: displaying articles on learn.html");
@@ -454,14 +461,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
-
-setTimeout(() => {
-    if (document.getElementById('articles-grid')) {
-        console.log("Fallback rendering: displaying articles on index.html");
-        displayArticles(currentArticlePage);
-    }
-    if (document.getElementById('learn-grid')) {
-        console.log("Fallback rendering: displaying articles on learn.html");
-        displayLearnArticles(currentLearnPage);
-    }
-}, 100);

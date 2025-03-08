@@ -119,6 +119,3 @@ const allArticles = [
 },
 
 ];
-
-
-articles/article3/gowno.html
