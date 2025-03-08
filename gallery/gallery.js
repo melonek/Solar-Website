@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
   
-
-  const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
-  const pathPrefix = isIndexPage ? '' : '..';
-
   const jobs = [
     {
       title: "Harrisdale Installation",
@@ -16,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
       difficulty: "Easy",
       timeToComplete: "(9:00am - 12:30pm)",
       suburb: "Harrisdale, WA, 6112",
-      mainImage: "../images/Jobs/Job1/house.webp",
+      mainImage: "/images/Jobs/Job1/house.webp",
       additionalImages: [
-        "../images/Jobs/Job1/panels1.webp",
-        "../images/Jobs/Job1/panels2.webp",
-        "../images/Jobs/Job1/inverter1.webp",
-        "../images/Jobs/Job1/inverter2.webp",
+        "/images/Jobs/Job1/panels1.webp",
+        "/images/Jobs/Job1/panels2.webp",
+        "/images/Jobs/Job1/inverter1.webp",
+        "/images/Jobs/Job1/inverter2.webp",
       ]
     },
     {
@@ -34,11 +30,11 @@ document.addEventListener('DOMContentLoaded', function() {
       difficulty: "Easy",
       timeToComplete: "(7:00am - 11:34am)",
       suburb: "Westminister, WA, 6061",
-      mainImage: "../images/Jobs/Job2/main.jpg",
+      mainImage: "/images/Jobs/Job2/main.jpg",
       additionalImages: [
-        "../images/Jobs/Job2/panels.jpg",
-        "../images/Jobs/Job2/panels1.jpg",
-        "../images/Jobs/Job2/inverter:battery.jpg",
+        "/images/Jobs/Job2/panels.jpg",
+        "/images/Jobs/Job2/panels1.jpg",
+        "/images/Jobs/Job2/inverter:battery.jpg",
       ]
     },
     {
@@ -51,11 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
       difficulty: "High",
       timeToComplete: "(7:30am-5:00pm)",
       suburb: "Mount Pleasant, WA, 6153",
-      mainImage: "../images/Jobs/Job3/a6dd0bb1-aed1-411b-aeca-90c20a6df7f8.jpg",
+      mainImage: "/images/Jobs/Job3/a6dd0bb1-aed1-411b-aeca-90c20a6df7f8.jpg",
       additionalImages: [
-        "../images/Jobs/Job3/48771b1d-ce9c-4f01-a632-e3141255724e.jpg",
-        "../images/Jobs/Job3/a71afa1a-b842-427c-abc2-eed41bc355b9.jpg",
-        "../images/Jobs/Job3/ed3d4d52-21e3-4755-9fe3-e1c8c2b8de40.jpg",
+        "/images/Jobs/Job3/48771b1d-ce9c-4f01-a632-e3141255724e.jpg",
+        "/images/Jobs/Job3/a71afa1a-b842-427c-abc2-eed41bc355b9.jpg",
+        "/images/Jobs/Job3/ed3d4d52-21e3-4755-9fe3-e1c8c2b8de40.jpg",
       ]
     },
     {
@@ -68,12 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
       difficulty: "Easy",
       timeToComplete: "(7:00am-11:20am)",
       suburb: "Alexander Heights, WA, 6064",
-      mainImage: "../images/Jobs/Job4/df5cb2b5-c55b-477f-a8a5-31e5eeb53ab4.jpg",
+      mainImage: "/images/Jobs/Job4/df5cb2b5-c55b-477f-a8a5-31e5eeb53ab4.jpg",
       additionalImages: [
-        "../images/Jobs/Job4/e2fded1a-6a90-446e-b64f-52567e2c61b8.jpg",
-        "../images/Jobs/Job4/ba923769-b190-4e74-b7d5-c5ee831ec7fb.jpg",
-        "../images/Jobs/Job4/296592db-fcc6-4bcb-85ee-710e841bf76c.jpg",
-        "../images/Jobs/Job4/5207bfe2-040f-45d2-98ef-f6bd97426d45.jpg",
+        "/images/Jobs/Job4/e2fded1a-6a90-446e-b64f-52567e2c61b8.jpg",
+        "/images/Jobs/Job4/ba923769-b190-4e74-b7d5-c5ee831ec7fb.jpg",
+        "/images/Jobs/Job4/296592db-fcc6-4bcb-85ee-710e841bf76c.jpg",
+        "/images/Jobs/Job4/5207bfe2-040f-45d2-98ef-f6bd97426d45.jpg",
       ]
     },
     {
@@ -86,12 +82,12 @@ document.addEventListener('DOMContentLoaded', function() {
       difficulty: "Easy",
       timeToComplete: "(12:30pm-4:00pm)",
       suburb: "Two Rocks, WA, 6037",
-      mainImage: "../images/Jobs/Job5/24841301-396b-41c8-a7af-6e6f505f29f8.jpg",
+      mainImage: "/images/Jobs/Job5/24841301-396b-41c8-a7af-6e6f505f29f8.jpg",
       additionalImages: [
-        "../images/Jobs/Job5/da54523a-2d7d-4253-abfc-33ca0cb63f62.jpg",
-        "../images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
-        "../images/Jobs/Job5/ee8b5e94-f9fd-4eeb-8339-2bf6eaadbcb2.jpg",
-        "../images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
+        "/images/Jobs/Job5/da54523a-2d7d-4253-abfc-33ca0cb63f62.jpg",
+        "/images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
+        "/images/Jobs/Job5/ee8b5e94-f9fd-4eeb-8339-2bf6eaadbcb2.jpg",
+        "/images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
       ]
     }
   ];
