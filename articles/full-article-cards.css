@@ -328,7 +328,7 @@ body.modal-open {
 #article-modal .share-button {
     background: linear-gradient(45deg, #ff6b6b, #feca57);
     color: white;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 4px 15px rgdba(255, 107, 107, 0.4);
 }
 
 #article-modal .share-button:hover {

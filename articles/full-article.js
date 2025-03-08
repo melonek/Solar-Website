@@ -3,25 +3,24 @@ const BASE_URL = window.location.hostname === "melonek.github.io"
     ? "/Solar-Website/articles/" 
     : "/articles/";
 
-// Check allArticles without redeclaring
+// Ensure allArticles is defined
 if (typeof allArticles === "undefined") {
     console.error("allArticles is not defined. Ensure articleArray.js is loaded correctly.");
-    window.allArticles = []; // Assign to global scope without redeclaring
+    window.allArticles = [];
 }
 
 // Pagination settings
 const articlesPerPage = 6;
 let currentArticlePage = 1;
-
 const learnArticlesPerPage = 3;
 let currentLearnPage = 1;
 
-// Utility to get article navigation URL
+// Utility: Get article navigation URL
 function getArticleNavigationUrl(article) {
     return `${BASE_URL}${article.fullArticlePath}`;
 }
 
-// Utility to get shareable URL
+// Utility: Get shareable URL
 function getShareableUrl(article) {
     return `https://melonek.github.io${getArticleNavigationUrl(article)}`;
 }
@@ -33,18 +32,13 @@ function displayArticles(page) {
         console.error("articles-grid element not found");
         return;
     }
-    console.log("allArticles in displayArticles:", allArticles);
     const mainArticles = allArticles.filter(article => article.displayOnMain)
         .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-    console.log("Filtered mainArticles:", mainArticles);
-    const startIndex = (page - 1) * articlesPerPage,
-          endIndex = startIndex + articlesPerPage,
-          articlesToShow = mainArticles.slice(startIndex, endIndex);
-    console.log("Articles to show:", articlesToShow);
+    const startIndex = (page - 1) * articlesPerPage;
+    const articlesToShow = mainArticles.slice(startIndex, startIndex + articlesPerPage);
     articlesGrid.innerHTML = '';
     articlesToShow.forEach(article => {
         const articlePath = getArticleNavigationUrl(article);
-        console.log("Card Full Article Path:", articlePath);
         articlesGrid.innerHTML += `
             <div class="article-card" data-article-id="${article.id}">
                 <img src="${article.image}" alt="${article.title}">
@@ -68,18 +62,13 @@ function displayLearnArticles(page) {
         console.error("learn-grid element not found");
         return;
     }
-    console.log("allArticles in displayLearnArticles:", allArticles);
     const learnArticles = allArticles.filter(article => article.displayOnLearn)
         .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-    console.log("Filtered learnArticles:", learnArticles);
-    const startIndex = (page - 1) * learnArticlesPerPage,
-          endIndex = startIndex + learnArticlesPerPage,
-          articlesToShow = learnArticles.slice(startIndex, endIndex);
-    console.log("Articles to show:", articlesToShow);
+    const startIndex = (page - 1) * learnArticlesPerPage;
+    const articlesToShow = learnArticles.slice(startIndex, startIndex + learnArticlesPerPage);
     learnGrid.innerHTML = '';
     articlesToShow.forEach(article => {
         const articlePath = getArticleNavigationUrl(article);
-        console.log("Card Learn More Path:", articlePath);
         learnGrid.innerHTML += `
             <div class="learn-card" data-article-id="${article.id}">
                 <img src="${article.image}" alt="${article.title}">
@@ -110,11 +99,9 @@ function updateArticlesPagination(totalArticles) {
     prevButton.textContent = 'Previous';
     prevButton.disabled = currentArticlePage === 1;
     prevButton.addEventListener('click', () => {
-        if (currentArticlePage > 1) {
-            currentArticlePage--;
-            displayArticles(currentArticlePage);
-            scrollToSection('articles');
-        }
+        currentArticlePage--;
+        displayArticles(currentArticlePage);
+        scrollToSection('articles');
     });
     pagination.appendChild(prevButton);
 
@@ -134,11 +121,9 @@ function updateArticlesPagination(totalArticles) {
     nextButton.textContent = 'Next';
     nextButton.disabled = currentArticlePage === totalPages;
     nextButton.addEventListener('click', () => {
-        if (currentArticlePage < totalPages) {
-            currentArticlePage++;
-            displayArticles(currentArticlePage);
-            scrollToSection('articles');
-        }
+        currentArticlePage++;
+        displayArticles(currentArticlePage);
+        scrollToSection('articles');
     });
     pagination.appendChild(nextButton);
 }
@@ -155,11 +140,9 @@ function updateLearnPagination(totalArticles) {
     prevButton.textContent = 'Previous';
     prevButton.disabled = currentLearnPage === 1;
     prevButton.addEventListener('click', () => {
-        if (currentLearnPage > 1) {
-            currentLearnPage--;
-            displayLearnArticles(currentLearnPage);
-            scrollToSection('learn');
-        }
+        currentLearnPage--;
+        displayLearnArticles(currentLearnPage);
+        scrollToSection('learn');
     });
     pagination.appendChild(prevButton);
 
@@ -179,11 +162,9 @@ function updateLearnPagination(totalArticles) {
     nextButton.textContent = 'Next';
     nextButton.disabled = currentLearnPage === totalPages;
     nextButton.addEventListener('click', () => {
-        if (currentLearnPage < totalPages) {
-            currentLearnPage++;
-            displayLearnArticles(currentLearnPage);
-            scrollToSection('learn');
-        }
+        currentLearnPage++;
+        displayLearnArticles(currentLearnPage);
+        scrollToSection('learn');
     });
     pagination.appendChild(nextButton);
 }
@@ -218,7 +199,6 @@ function displayModal(article) {
     }
     const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
-
     modalContent.innerHTML = `
         <div class="modal-header">
             <h1 class="modal-title">${article.title}</h1>
@@ -232,10 +212,8 @@ function displayModal(article) {
             ${article.summary}
         </div>
     `;
-
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
-
     modal.style.display = "flex";
     document.body.classList.add('modal-open');
 
@@ -252,28 +230,11 @@ function displayModal(article) {
     document.querySelector('.share-button').addEventListener('click', shareArticle);
 }
 
-// Handle summary button clicks
-function handleSummaryClick(event) {
-    if (event.target.classList.contains('summary-btn')) {
-        event.preventDefault();
-        const articleId = event.target.closest('.article-card, .learn-card').getAttribute('data-article-id');
-        console.log("Summary button clicked, articleId:", articleId);
-        const article = allArticles.find(a => a.id == articleId);
-        if (article) {
-            displayModal(article);
-        } else {
-            console.error("Article not found for ID:", articleId);
-        }
-    }
-}
-
 // Share article function
 function shareArticle(event) {
     if (event) event.preventDefault();
-
-    let button = event ? event.target.closest('.share-button, #full-top-share-button, #learn-top-share-button')
+    let button = event ? event.target.closest('.share-button, #full-top-share-button, #learn-top-share-button, #full-share-buttons a')
                        : (document.getElementById('learn-top-share-button') || document.getElementById('full-top-share-button'));
-
     if (!button) {
         console.error("Share button not found");
         const shareData = {
@@ -290,28 +251,14 @@ function shareArticle(event) {
         }
         return;
     }
-
     let url = button.getAttribute('data-url');
     let articleId = button.closest('[data-article-id]')?.getAttribute('data-article-id');
     const shareData = {
         title: 'Check this out!',
         text: 'Here is an interesting article for you.',
-        url: url
+        url: url || (articleId ? getShareableUrl(allArticles.find(a => a.id == articleId)) : window.location.href)
     };
-
-    if (!url && articleId) {
-        const article = allArticles.find(a => a.id == articleId);
-        if (article) {
-            shareData.url = getShareableUrl(article);
-        }
-    }
-
-    if (!shareData.url) {
-        shareData.url = window.location.href;
-    }
-
     console.log("Sharing URL:", shareData.url);
-
     if (navigator.share) {
         navigator.share(shareData)
             .then(() => console.log('Article shared successfully'))
@@ -338,77 +285,36 @@ function showSharePopup(shareData) {
         </div>
     `;
     document.body.appendChild(popup);
-
-    const style = document.createElement('style');
-    style.textContent = `
-        .share-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .share-popup-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        .share-popup-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .share-popup-content button, .share-popup-content a {
-            display: inline-block;
-            margin: 5px;
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-        .share-popup-content button:hover, .share-popup-content a:hover {
-            background: #0056b3;
-        }
-        .close-popup {
-            background: #dc3545;
-        }
-        .close-popup:hover {
-            background: #b02a37;
-        }
-    `;
-    document.head.appendChild(style);
-
     popup.querySelector('.close-popup').onclick = () => document.body.removeChild(popup);
 }
 
-// Setup click events
+// Setup click events for summary and share buttons
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
-
-    const allShareButtons = document.querySelectorAll('.share-button, #full-top-share-button, #learn-top-share-button');
+    const allShareButtons = document.querySelectorAll('.share-button, #full-share-buttons a, #full-top-share-button, #learn-top-share-button');
     allShareButtons.forEach(button => {
         button.removeEventListener('click', shareArticle);
         button.addEventListener('click', shareArticle);
     });
 }
 
+// Handle summary button clicks
+function handleSummaryClick(event) {
+    if (event.target.classList.contains('summary-btn')) {
+        event.preventDefault();
+        const articleId = event.target.closest('.article-card, .learn-card').getAttribute('data-article-id');
+        const article = allArticles.find(a => a.id == articleId);
+        if (article) {
+            displayModal(article);
+        } else {
+            console.error("Article not found for ID:", articleId);
+        }
+    }
+}
+
 // Initial load with error handling
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("allArticles on load:", allArticles);
     if (typeof allArticles === "undefined") {
         console.error("allArticles is not defined. Ensure articleArray.js is loaded.");
         return;
@@ -417,44 +323,61 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("allArticles is not an array:", allArticles);
         return;
     }
-
+    // Update meta tags dynamically
+    const articleId = "4";
+    const article = allArticles.find(a => a.id == articleId);
+    if (article) {
+        document.querySelector('title').textContent = article.title;
+        document.querySelector('meta[name="description"]').content = article.snippet;
+        document.querySelector('meta[property="og:title"]').content = article.title;
+        document.querySelector('meta[property="og:description"]').content = article.snippet;
+        document.querySelector('meta[property="og:image"]').content = article.image;
+        document.querySelector('meta[property="og:url"]').content = getShareableUrl(article);
+        document.querySelector('meta[name="twitter:title"]').content = article.title;
+        document.querySelector('meta[name="twitter:description"]').content = article.snippet;
+        document.querySelector('meta[name="twitter:image"]').content = article.image;
+        document.querySelector('meta[name="twitter:url"]').content = getShareableUrl(article);
+    }
+    // Attach event listener to sticky share buttons in #full-share-buttons
+    const stickyShareButtons = document.querySelectorAll("#full-share-buttons a");
+    stickyShareButtons.forEach(button => {
+        button.addEventListener("click", shareArticle);
+    });
+    
+    // Check URL parameters for articleId for modal display, etc.
     const urlParams = new URLSearchParams(window.location.search);
-    const articleId = urlParams.get('articleId');
-    if (articleId) {
-        const article = allArticles.find(a => a.id == articleId);
+    const paramArticleId = urlParams.get('articleId');
+    if (paramArticleId) {
+        const article = allArticles.find(a => a.id == paramArticleId);
         if (article) {
             if (article.displayOnMain) {
                 const mainArticles = allArticles.filter(a => a.displayOnMain)
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-                const index = mainArticles.findIndex(a => a.id == articleId);
-                const page = Math.floor(index / articlesPerPage) + 1;
-                currentArticlePage = page;
-                displayArticles(page);
-                scrollToArticle(articleId);
+                const index = mainArticles.findIndex(a => a.id == paramArticleId);
+                currentArticlePage = Math.floor(index / articlesPerPage) + 1;
+                displayArticles(currentArticlePage);
+                scrollToArticle(paramArticleId);
                 setTimeout(() => displayModal(article), 500);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-                const index = learnArticles.findIndex(a => a.id == articleId);
-                const page = Math.floor(index / learnArticlesPerPage) + 1;
-                currentLearnPage = page;
-                displayLearnArticles(page);
+                const index = learnArticles.findIndex(a => a.id == paramArticleId);
+                currentLearnPage = Math.floor(index / learnArticlesPerPage) + 1;
+                displayLearnArticles(currentLearnPage);
                 scrollToSection('learn');
                 setTimeout(() => {
-                    scrollToArticle(articleId);
+                    scrollToArticle(paramArticleId);
                     setTimeout(() => displayModal(article), 500);
                 }, 500);
             }
         } else {
-            console.error("Article not found for ID:", articleId);
+            console.error("Article not found for ID:", paramArticleId);
         }
     } else {
         if (document.getElementById('articles-grid')) {
-            console.log("Initial rendering: displaying articles on index.html");
             displayArticles(currentArticlePage);
         }
         if (document.getElementById('learn-grid')) {
-            console.log("Initial rendering: displaying articles on learn.html");
             displayLearnArticles(currentLearnPage);
         }
     }
