@@ -680,45 +680,6 @@ const solarProducts = {
       popularity: 3,
       description: "Solar panel description goes here..."
     },
-    {
-      id: 2,
-      name: "Trina Solar 410W",
-      brand: "Trina",
-      specs: "410W Mono PERC",
-      country: "China",
-      warranty: "25 years",
-      datasheet: "trina-410w.pdf",
-      image: "../images/Panels/Trina.webp",
-      price: 1560,
-      popularity: 5,
-      description: "Solar panel description goes here..."
-    },
-    {
-      id: 1,
-      name: "Canadian Solar 400W",
-      brand: "Canadian Solar",
-      specs: "400W Mono PERC",
-      country: "Canada",
-      warranty: "25 years",
-      datasheet: "canadian-400w.pdf",
-      image: "../images/Panels/Canadian-Solar-440-W.webp",
-      price: 1500,
-      popularity: 3,
-      description: "Solar panel description goes here..."
-    },
-    {
-      id: 2,
-      name: "Trina Solar 410W",
-      brand: "Trina",
-      specs: "410W Mono PERC",
-      country: "China",
-      warranty: "25 years",
-      datasheet: "trina-410w.pdf",
-      image: "../images/Panels/Trina.webp",
-      price: 1560,
-      popularity: 5,
-      description: "Solar panel description goes here..."
-    }
   ],
   inverters: [
     {
@@ -773,12 +734,13 @@ function createProductCard(product, type) {
     <h3>${product.name}</h3>
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
-    <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
-    <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
+    <p>Datasheet: <a class="download-link" href="${product.datasheet}" target="_blank">Download</a></p>
+
+    <button class="read-more-btn shiny" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
   card.querySelector(".read-more-btn").addEventListener("click", handleModalOpen);
   card.addEventListener("click", (e) => {
-    if (e.target.classList.contains("read-more-btn")) return;
+    if (e.target.classList.contains("read-more-btn shiny")) return;
     if (type === "panel") {
       document.querySelectorAll("#panels-grid .product-card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");

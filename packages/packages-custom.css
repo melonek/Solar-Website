@@ -654,3 +654,18 @@ padding: 20px;
 border-radius: 8px;
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.download-link {
+  color: #007BFF;           /* Adjust color as needed */
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.download-link::after {
+  content: "\2B07";         /* Unicode for a downward arrow (⬇) */
+  font-size: 0.8em;         /* Slightly smaller than the text */
+  margin-left: 4px;         /* Space between text and icon */
+  vertical-align: middle;
+}

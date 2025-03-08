@@ -45,8 +45,80 @@ const allArticles = [
     `,
     "publishedDate": "February 20, 2025",
     "comment": "Solar incentives and rebates",
-    "displayOnMain": false,
+    "displayOnMain": true,
     "displayOnLearn": true,
     "fullArticlePath": "article1/Solar-Rebates-and-Financial-Incentives.html" // Match exact file name
 },
+{
+    "id": 4,
+    "title": "Solar Rebates and Financial Incentives in Western Australia",
+    "image": "https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg",
+    "snippet": "Discover how government incentives, STCs, and feed-in tariffs can help you save on solar energy investments in Western Australia.",
+    "summary": `
+        <h2>Solar Rebates & Incentives in Western Australia</h2>
+        <p>
+            This article provides a concise overview of how homeowners in Western Australia can significantly reduce the cost of solar installations. It highlights the key federal and state incentives available, including Small-Scale Technology Certificates (STCs), state rebates like the Solar Homes Program, and competitive feed-in tariffs that reward excess energy production. These financial incentives make solar power a more accessible and sustainable option, ensuring quicker returns on investment. By leveraging these schemes, residents can not only lower their upfront installation costs but also benefit from long-term savings on energy bills.
+        </p>
+    `,
+    "publishedDate": "February 20, 2025",
+    "comment": "Solar incentives and rebates",
+    "displayOnMain": true,
+    "displayOnLearn": true,
+    "fullArticlePath": "/article3/gowno.html" // Match exact file name
+},
+{
+    "id": 5,
+    "title": "Solar Rebates and Financial Incentives in Western Australia",
+    "image": "https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg",
+    "snippet": "Discover how government incentives, STCs, and feed-in tariffs can help you save on solar energy investments in Western Australia.",
+    "summary": `
+        <h2>Solar Rebates & Incentives in Western Australia</h2>
+        <p>
+            This article provides a concise overview of how homeowners in Western Australia can significantly reduce the cost of solar installations. It highlights the key federal and state incentives available, including Small-Scale Technology Certificates (STCs), state rebates like the Solar Homes Program, and competitive feed-in tariffs that reward excess energy production. These financial incentives make solar power a more accessible and sustainable option, ensuring quicker returns on investment. By leveraging these schemes, residents can not only lower their upfront installation costs but also benefit from long-term savings on energy bills.
+        </p>
+    `,
+    "publishedDate": "February 20, 2025",
+    "comment": "Solar incentives and rebates",
+    "displayOnMain": true,
+    "displayOnLearn": true,
+    "fullArticlePath": "/article3/gowno1.html" // Match exact file name
+},
+{
+    "id": 6,
+    "title": "Solar Rebates and Financial Incentives in Western Australia",
+    "image": "https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg",
+    "snippet": "Discover how government incentives, STCs, and feed-in tariffs can help you save on solar energy investments in Western Australia.",
+    "summary": `
+        <h2>Solar Rebates & Incentives in Western Australia</h2>
+        <p>
+            This article provides a concise overview of how homeowners in Western Australia can significantly reduce the cost of solar installations. It highlights the key federal and state incentives available, including Small-Scale Technology Certificates (STCs), state rebates like the Solar Homes Program, and competitive feed-in tariffs that reward excess energy production. These financial incentives make solar power a more accessible and sustainable option, ensuring quicker returns on investment. By leveraging these schemes, residents can not only lower their upfront installation costs but also benefit from long-term savings on energy bills.
+        </p>
+    `,
+    "publishedDate": "February 20, 2025",
+    "comment": "Solar incentives and rebates",
+    "displayOnMain": true,
+    "displayOnLearn": true,
+    "fullArticlePath": "/article4/gowno2.html" // Match exact file name
+},
+{
+    "id": 7,
+    "title": "Solar Rebates and Financial Incentives in Western Australia",
+    "image": "https://gosolarquotes.com.au/wp-content/uploads/2021/01/solar-installation-perth-5kW.jpg",
+    "snippet": "Discover how government incentives, STCs, and feed-in tariffs can help you save on solar energy investments in Western Australia.",
+    "summary": `
+        <h2>Solar Rebates & Incentives in Western Australia</h2>
+        <p>
+            This article provides a concise overview of how homeowners in Western Australia can significantly reduce the cost of solar installations. It highlights the key federal and state incentives available, including Small-Scale Technology Certificates (STCs), state rebates like the Solar Homes Program, and competitive feed-in tariffs that reward excess energy production. These financial incentives make solar power a more accessible and sustainable option, ensuring quicker returns on investment. By leveraging these schemes, residents can not only lower their upfront installation costs but also benefit from long-term savings on energy bills.
+        </p>
+    `,
+    "publishedDate": "February 20, 2025",
+    "comment": "Solar incentives and rebates",
+    "displayOnMain": true,
+    "displayOnLearn": true,
+    "fullArticlePath": "/article4/gowno3.html" // Match exact file name
+},
+
 ];
+
+
+articles/article3/gowno.html

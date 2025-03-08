@@ -145,8 +145,9 @@ batteryGrid.insertAdjacentElement('afterend', bundleButton);
             <h3>${product.name}</h3>
             <p>Specs: ${product.specs}</p>
             <p>Country: ${product.country}</p>
-            <p>Datasheet: <a href="${product.datasheet}" target="_blank">Download</a></p>
-            <button class="read-more-btn" data-type="${type}" data-id="${product.id}">Read More</button>
+            <p>Datasheet: <a class="download-link" href="${product.datasheet}" target="_blank">Download</a></p>
+
+            <button class="read-more-btn shiny" data-type="${type}" data-id="${product.id}">Read More</button>
         `;
         card.querySelector(".read-more-btn").addEventListener("click", handleModalOpen);
         return card;
