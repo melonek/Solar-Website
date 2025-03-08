@@ -1,4 +1,3 @@
-
 #articles-grid {
     display: flex;
     flex-direction: row;
@@ -18,7 +17,7 @@
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(200, 200, 200, 0.2);
     box-shadow: 0 8px 30px rgba(78, 77, 77, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease; /* Added opacity transition */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -30,21 +29,25 @@
     opacity: 1; /* Fade in when revealed */
 }
 
-/* Existing Hover Effect */
+/* Normal Hover Effect */
 .article-card:hover {
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
 }
 
+/* Highlighted State: Blue border plus the hover effects */
 .article-card.highlighted {
-    border: 2px solid #007bff; /* or any color that suits your design */
+    border: 2px solid #007bff; /* Blue border */
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
 }
+
+/* Force the orange gradient overlay in highlighted state */
 .article-card.highlighted::before {
-    opacity: 0.7; /* Shows the orange gradient overlay */
+    opacity: 0.7;
 }
 
+/* Orange Gradient Overlay (default hidden) */
 .article-card::before {
     content: '';
     position: absolute;
@@ -60,11 +63,12 @@
     filter: blur(8px);
 }
 
+/* Reveal gradient overlay on hover */
 .article-card:hover::before {
     opacity: 0.7;
 }
 
-/* Rest of the styles (image, content, buttons, etc.) remain unchanged */
+/* Image Styling */
 .article-card img {
     width: 100%;
     height: 200px;
@@ -77,6 +81,7 @@
     transform: scale(1.1);
 }
 
+/* Title Styling */
 .article-card h3 {
     margin: 15px;
     font-size: 1.4em;
@@ -88,6 +93,7 @@
     white-space: nowrap;
 }
 
+/* Paragraph Styling */
 .article-card p {
     margin: 0 15px 15px;
     font-size: 0.95em;
@@ -104,7 +110,7 @@
 /* Buttons Container */
 .article-card .action-buttons {
     display: flex;
-    flex-direction: row; /* Ensure horizontal layout */
+    flex-direction: row; /* Horizontal layout */
     gap: 10px;
     margin: 15px;
     margin-top: auto;
@@ -113,7 +119,7 @@
     justify-content: center;
 }
 
-/* Buttons */
+/* Buttons Styling */
 .article-card .article-read-more-btn,
 .article-card .summary-btn {
     display: inline-block;
@@ -153,7 +159,7 @@
     height: 300px;
 }
 
-/* Read More Button */
+/* Read More Button Styling */
 .article-card .article-read-more-btn {
     background: linear-gradient(45deg, #ff6b6b, #feca57);
     color: white;
@@ -165,7 +171,7 @@
     box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
 }
 
-/* Summary Button */
+/* Summary Button Styling */
 .article-card .summary-btn {
     background: linear-gradient(45deg, #00c6ff, #0072ff);
     color: white;
@@ -187,13 +193,13 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    display: flex; /* Ensure flex layout */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    display: flex; /* Flex layout for centering */
+    justify-content: center;
+    align-items: center;
     overflow: auto;
 }
 
-/* Ensure background is fixed when modal is open */
+/* When modal is open, fix background scroll */
 body.modal-open {
     overflow: hidden;
     width: 100%;
@@ -220,7 +226,7 @@ body.modal-open {
     overflow-y: auto;
 }
 
-/* Scrollbar styling for modal content */
+/* Scrollbar Styling for Modal Content */
 #article-modal .modal-content::-webkit-scrollbar {
     width: 8px;
 }
@@ -238,7 +244,7 @@ body.modal-open {
     background: #555;
 }
 
-/* Slide-in animation for modal */
+/* Slide-in Animation for Modal */
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(50px); }
     to { opacity: 1; transform: translateY(0); }
