@@ -300,6 +300,16 @@ body.modal-open {
     text-align: center;
 }
 
+#article-modal h2 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#article-modal p {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
 /* Modal Title */
 #article-modal .modal-title {
     font-size: 2em;
@@ -328,7 +338,8 @@ body.modal-open {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 25px;
+    margin-top: -10px;
+    margin-bottom: 10px;
 }
 
 /* Modal Buttons */

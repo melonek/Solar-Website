@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const winterDaily = document.getElementById('winter-daily');
     const combinedYearlyTotal = document.getElementById('combined-yearly-total');
     const yearsSelect = document.getElementById('years-select');
-    const monthlyBillAmount = document.getElementById('monthly-bill-amount');
+    const monthlyBillAmount = document.getElementById('monthly-bill-amount'); // displays quarterly bill here
     const annualBill = document.getElementById('annual-bill');
     const co2Emissions = document.getElementById('co2-emissions');
 
@@ -39,19 +39,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // System Size Data
     const systemSizeData = [
-        { size: "6.6kW", panels: 15, co2Saved: 9526.5 }, // CO2 saved in kg/year for 6.6kW system
-        { size: "10kW", panels: 24, co2Saved: 14400 },   // Scaled CO2 saved for 10kW system
-        { size: "13kW", panels: 30, co2Saved: 18000 },   // Scaled CO2 saved for 13kW system
-        { size: "20kW", panels: 46, co2Saved: 27600 }    // Scaled CO2 saved for 20kW system
+        { size: "6.6kW", panels: 15, co2Saved: 9526.5 },
+        { size: "10kW", panels: 24, co2Saved: 14400 },
+        { size: "13kW", panels: 30, co2Saved: 18000 },
+        { size: "20kW", panels: 46, co2Saved: 27600 }
     ];
 
     // Base Case for Scaling Savings
     const baseCase = {
-        inverterEfficiency: 0.98, // Fronius Symo
-        panelEfficiency: 0.2323, // Jinko 440W
-        monthlyBill: 200,
+        inverterEfficiency: 0.98,
+        panelEfficiency: 0.2323,
+        // Note: baseCase.monthlyBill is no longer used; the slider value now represents a quarterly bill.
         yearlySavings: 1300,
-        baseDailyProduction: 29, // kWh for 6.6kW system
+        baseDailyProduction: 29,
         basePanels: 15
     };
 
@@ -89,10 +89,17 @@ document.addEventListener('DOMContentLoaded', function() {
     inverterSelect.addEventListener('change', updateSpecsAndCalculate);
     panelSelect.addEventListener('change', updateSpecsAndCalculate);
     systemSizeSelect.addEventListener('change', updateSpecsAndCalculate);
+    
+    // Set the slider display to the default quarterly bill value (600)
+    billAmount.textContent = `$${billSlider.value}`;
+
     billSlider.addEventListener('input', function() {
         billAmount.textContent = `$${this.value}`;
+        // Use the slider value as the quarterly bill in calculations
+        calculateEmissions(this.value);
         calculateSavings();
     });
+    
     yearsSelect.addEventListener('change', calculateSavings);
 
     // Update Specifications and Calculate Savings
@@ -101,12 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedPanel = panelData.find(panel => panel.name === panelSelect.value);
         const selectedSystemSize = systemSizeData.find(system => system.size === systemSizeSelect.value);
 
-        // Update Inverter Specs and Image
         document.getElementById('inverter-power').textContent = `${selectedInverter.powerOutput} kW`;
         document.getElementById('inverter-efficiency').textContent = `${selectedInverter.efficiency * 100}%`;
         document.getElementById('inverter-image').src = selectedInverter.image;
 
-        // Update Panel Specs and Image
         document.getElementById('panel-power').textContent = `${selectedPanel.powerOutput} W`;
         document.getElementById('panel-efficiency').textContent = `${selectedPanel.efficiency * 100}%`;
         document.getElementById('panel-image').src = selectedPanel.image;
@@ -119,61 +124,56 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedInverter = inverterData.find(inverter => inverter.name === inverterSelect.value);
         const selectedPanel = panelData.find(panel => panel.name === panelSelect.value);
         const selectedSystemSize = systemSizeData.find(system => system.size === systemSizeSelect.value);
-        const monthlyBill = parseFloat(billSlider.value);
+        // Here, billSlider.value is the quarterly bill (default 600)
+        const quarterlyBill = parseFloat(billSlider.value);
         const years = parseFloat(yearsSelect.value);
 
-        // Efficiency scaling
+        // Efficiency and system size scaling
         const efficiencyFactor = (selectedPanel.efficiency / baseCase.panelEfficiency) * 
-                               (selectedInverter.efficiency / baseCase.inverterEfficiency);
-
-        // System size scaling
+                                   (selectedInverter.efficiency / baseCase.inverterEfficiency);
         const systemSizeFactor = selectedSystemSize.panels / baseCase.basePanels;
 
-        // Production calculations
         const summerDailyProduction = baseCase.baseDailyProduction * efficiencyFactor * systemSizeFactor;
-        const winterDailyProduction = summerDailyProduction * 0.7; // 30% reduction
+        const winterDailyProduction = summerDailyProduction * 0.7;
         const combinedYearlyProduction = (summerDailyProduction * 147) + 
-                                       (summerDailyProduction * 0.8 * 139) + // Partly cloudy days
-                                       (winterDailyProduction * 60);
+                                         (summerDailyProduction * 0.8 * 139) + 
+                                         (winterDailyProduction * 60);
 
-        // Savings calculations
-        const billReduction = (monthlyBill * 0.5 * 12 * years); // 50% bill reduction
+        // Savings: annual savings = quarterlyBill * 0.5 * 4 * years
+        const billReduction = quarterlyBill * 0.5 * 4 * years;
         const scaledSavings = billReduction * efficiencyFactor * systemSizeFactor;
 
-        // Update UI elements
         summerDaily.textContent = `${summerDailyProduction.toFixed(1)} kWh`;
         winterDaily.textContent = `${winterDailyProduction.toFixed(1)} kWh`;
         combinedYearlyTotal.textContent = `${(combinedYearlyProduction * years).toFixed(0)} kWh`;
 
-        // CO2 and Trees calculations
-        const co2Base = 9526.5; // Base CO2 for 6.6kW system
+        const co2Base = 9526.5;
         const co2SavedValue = (co2Base * systemSizeFactor * efficiencyFactor * years).toFixed(0);
         co2Saved.textContent = co2SavedValue;
-        treesSaved.textContent = Math.round(co2SavedValue / 22); // 1 tree = 22kg CO2/year
+        treesSaved.textContent = Math.round(co2SavedValue / 22);
 
         totalAmount.textContent = `$${scaledSavings.toFixed(0)}`;
     }
 
-    function calculateEmissions(monthlyBill) {
-        const annual = monthlyBill * 12;
-        // Assuming average electricity cost of $0.30/kWh and emissions of 0.85kg CO2/kWh
-        const kWh = annual / 0.3158;
-        const emissions = (kWh * 0.85 / 1000).toFixed(1); // Convert to tonnes
-        
-        monthlyBillAmount.textContent = monthlyBill;
+    // Calculate Emissions
+    function calculateEmissions(quarterlyBill) {
+        // quarterlyBill is taken directly from the slider (e.g. 600)
+        const annual = quarterlyBill * 4;  // Annual bill = quarterly bill * 4
+        monthlyBillAmount.textContent = quarterlyBill;
         annualBill.textContent = annual;
+        // Emissions calculation using annual electricity cost assumptions
+        const kWh = annual / 0.3158;
+        const emissions = (kWh * 0.85 / 1000).toFixed(1);
         co2Emissions.textContent = emissions;
     }
 
+    // Additional event listener (already attached above) triggers calculations on slider input.
     billSlider.addEventListener('input', function() {
-        const billValue = this.value;
-        billAmount.textContent = `$${billValue}`;
-        calculateEmissions(billValue);
+        calculateEmissions(this.value);
         calculateSavings();
     });
 
     // Initial Calculation
     updateSpecsAndCalculate();
-    calculateEmissions(200); // Initialize with default value
-
+    calculateEmissions(billSlider.value); // Use default quarterly bill value
 });

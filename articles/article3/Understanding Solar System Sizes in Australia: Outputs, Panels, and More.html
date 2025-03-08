@@ -28,10 +28,12 @@
   <meta name="twitter:creator" content="@JaneSmithWA">
   <meta name="twitter:url" content="https://melonek.github.io/Solar-Website/articles/learn-template.html">
 
-  <!-- Styles -->
+  <!-- External Stylesheets -->
   <link rel="stylesheet" href="../learn-article-styles.css">
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- External TOC CSS -->
+  <link rel="stylesheet" href="toc-style.css">
 
   <title>Understanding Solar System Sizes in Australia: Outputs, Panels, and More</title>
 </head>
@@ -83,15 +85,28 @@
       </button>
     </div>
 
+    <!-- Table of Contents -->
+    <div id="article-toc" class="table-of-contents">
+      <h3>Table of Contents</h3>
+      <ul>
+        <li><a href="#why-solar">Why Solar System Size Matters</a></li>
+        <li><a href="#common-sizes">Common Solar System Sizes</a></li>
+        <li><a href="#panel-count">How Panel Count Affects Output</a></li>
+        <li><a href="#factors">Factors to Consider</a></li>
+        <li><a href="#popular-panels">Why 440W Panels Are Popular</a></li>
+        <li><a href="#next-steps">Next Steps</a></li>
+      </ul>
+    </div>
+    
     <!-- Featured Image -->
-    <img id="learn-featured-image" src="https://example.com/images/solar-panels-australia.jpg" alt="Solar panels on an Australian rooftop">
+    <img id="learn-featured-image" src="https://www.solarchoice.net.au/wp-content/uploads/iStock-1138203628-edited.webp" alt="Solar panels on an Australian rooftop">
 
-    <!-- Content -->
+    <!-- Article Content -->
     <section id="learn-content">
-      <h2>Why Solar System Size Matters</h2>
+      <h2 id="why-solar">Why Solar System Size Matters</h2>
       <p>Choosing the right solar system size is key to maximizing energy savings and meeting your household’s needs. In Australia, solar systems are measured in kilowatts (kW), and their size determines how many panels you’ll need and how much power they’ll generate. With abundant sunshine and a growing green energy market, understanding these sizes helps you make an informed decision.</p>
 
-      <h2>Common Solar System Sizes in Australia</h2>
+      <h2 id="common-sizes">Common Solar System Sizes in Australia</h2>
       <p>Most Australian homes opt for systems ranging from 6.6kW to 20kW, depending on energy usage, roof space, and budget. Here’s a breakdown based on 440W panels, a popular choice in 2025:</p>
 
       <!-- Table -->
@@ -137,7 +152,7 @@
         </tfoot>
       </table>
 
-      <h2>How Panel Count Affects Output</h2>
+      <h2 id="panel-count">How Panel Count Affects Output</h2>
       <p>Each 440W panel generates about 1.6-2 kWh per day in Australia, depending on sunlight exposure (typically 4-5 peak sun hours). For example:</p>
       <ul>
         <li>A <strong>6.6kW system</strong> with 15 panels produces enough for a small family, covering basic appliances and some air conditioning.</li>
@@ -145,7 +160,7 @@
       </ul>
       <p>The inverter size (e.g., 5kW for a 6.6kW system) also limits output, ensuring efficiency and compliance with grid rules.</p>
 
-      <h2>Factors to Consider</h2>
+      <h2 id="factors">Factors to Consider</h2>
       <p>When choosing a system size, think about:</p>
       <ol>
         <li><strong>Energy Needs</strong>: Check your electricity bill for daily kWh usage.</li>
@@ -156,18 +171,18 @@
 
       <!-- Image with Caption -->
       <figure class="learn-image">
-        <img src="https://example.com/images/solar-rooftop.jpg" alt="Solar panels on a modern Australian home">
+        <img src="https://cdn.prod.website-files.com/651dfcdb58358bd743a3ced0/651dfcdb58358bd743a3d2ea_Feature.jpg" alt="Solar panels on a modern Australian home">
         <figcaption>A 10kW system installed on a Perth rooftop, powering a family of five.</figcaption>
       </figure>
 
-      <h2>Why 440W Panels Are Popular</h2>
+      <h2 id="popular-panels">Why 440W Panels Are Popular</h2>
       <p>In 2025, 440W panels strike a balance between efficiency and cost. They’re compact, powerful, and widely available from brands like Jinko, Trina, and Longi, making them a go-to for Australian installers. Their higher wattage means fewer panels are needed, saving roof space and installation time.</p>
 
-      <h2>Next Steps</h2>
-      <p>Ready to size your solar system? Use our <a href=".././solarCalculator/solarCalculator.html">Solar Savings Calculator</a> to estimate your needs, or contact us for a custom quote tailored to your home.</p>
+      <h2 id="next-steps">Next Steps</h2>
+      <p>Ready to size your solar system? Use our <a href="../../solarCalculator/solarCalculator.html">Solar Savings Calculator</a> to estimate your needs, or contact us for a custom quote tailored to your home.</p>
     </section>
 
-    <!-- Share Buttons (Sticky, Row Layout) -->
+    <!-- Share Buttons -->
     <div id="learn-share-buttons">
       <a id="learn-share-twitter" href="#" target="_blank">Share on Twitter</a>
       <a id="learn-share-facebook" href="#" target="_blank">Share on Facebook</a>
@@ -176,10 +191,9 @@
     </div>
   </div>
 
-
   <script>
     // Redirect only for users, not crawlers, from external sources
-    const articleId = "1"; // Article ID for article2
+    const articleId = "3"; // Article ID for this article
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
@@ -189,7 +203,7 @@
 
     // Dynamic metatag updates
     document.addEventListener("DOMContentLoaded", () => {
-      const articleId = "1";
+      const articleId = "3";
       const article = allArticles.find(a => a.id == articleId);
       if (article) {
         document.querySelector('title').textContent = article.title;
@@ -211,7 +225,7 @@
     <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
   </footer>
 
-  </script>
+  <!-- External Scripts -->
   <script src="../articleArray.js"></script>
   <script src="../full-article.js"></script>
   <script src="../../script.js"></script>
