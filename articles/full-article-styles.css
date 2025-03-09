@@ -92,7 +92,7 @@ body {
     flex-direction: row;
     align-items: stretch;       /* Ensures both children match the container's height */
     justify-content: flex-start;   /* Positions items starting from the left */
-    gap: 100px;                    /* Creates a 100px gap between TOC and image */
+    gap: 20px;                    /* Creates a 100px gap between TOC and image */
     margin-bottom: 30px;
 }
 
