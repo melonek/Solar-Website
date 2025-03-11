@@ -196,7 +196,7 @@
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
     if (isExternalReferrer && !isCrawler) {
-      window.location.href = `/Solar-Website/articles/learn.html?articleId=${articleId}`;
+      window.location.href = `/articles/learn.html?articleId=${articleId}`;
     }
 
     // Dynamic metatag updates (for updating the meta tags if data is loaded dynamically)
