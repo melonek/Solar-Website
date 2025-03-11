@@ -254,14 +254,24 @@ document.addEventListener('DOMContentLoaded', () => {
   function scaleFacebookTimelines() {
     const containers = document.querySelectorAll('.timeline-container');
     containers.forEach(container => {
+      const scaler = container.querySelector('.scaler');
       const fbPage = container.querySelector('.fb-page');
-      if (fbPage) {
-        fbPage.setAttribute('data-width', container.clientWidth - 40);
-        // Re-parse to apply changes
-        if (typeof FB !== 'undefined') FB.XFBML.parse(container);
+      if (scaler && fbPage) {
+        const containerWidth = container.clientWidth - 40;
+        const defaultWidth = 500, defaultHeight = 600;
+        const scale = containerWidth / defaultWidth;
+        scaler.style.transform = `scale(${scale})`;
+        scaler.style.transformOrigin = 'top left';
+        scaler.style.width = `${defaultWidth}px`;
+        scaler.style.height = `${defaultHeight}px`;
+        fbPage.style.width = `${defaultWidth}px`;
+        fbPage.style.height = `${defaultHeight}px`;
+        container.style.height = `${defaultHeight * scale + 40}px`;
       }
     });
   }
+  window.addEventListener('resize', scaleFacebookTimelines);
+  scaleFacebookTimelines();
   
   // -------------------------
   // CONSOLIDATED INIT & EVENT HANDLERS
