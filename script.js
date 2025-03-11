@@ -561,6 +561,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  window.addEventListener('scroll', () => {
+    if (mediaQuery.matches && navLinks.classList.contains('active')) {
+      closeAllDropdowns();
+      navLinks.classList.remove('active');
+      mobileMenu.classList.remove('open');
+    }
+  });
+  
   
   document.querySelectorAll('.dropdown-content a').forEach(link => {
     link.addEventListener('click', () => {
@@ -591,3 +600,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
