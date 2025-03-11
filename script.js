@@ -1,80 +1,4 @@
 // -------------------------
-// FACEBOOK SDK INITIALIZATION & TIMELINE PRELOAD
-// -------------------------
-window.fbAsyncInit = function() {
-  FB.init({
-    appId: '1426450195430892',  // Your Facebook App ID
-    xfbml: true,
-    version: 'v22.0'
-  });
-  preloadFBTimelines();
-};
-
-(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-function preloadFBTimelines() {
-  const wrappers = document.querySelectorAll('.fb-page-wrapper');
-  wrappers.forEach(wrapper => {
-    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-      FB.XFBML.parse(wrapper);
-      wrapper.classList.add('fb-parsed', 'revealed');
-    }
-  });
-}
-
-// Re-render Facebook timelines when needed
-function updateFBTimeline(container) {
-  if (container && typeof FB !== 'undefined') {
-    FB.XFBML.parse(container);
-  } else {
-    console.error("Container not found or FB is not defined.");
-  }
-}
-
-function scaleFacebookTimelines() {
-  const containers = document.querySelectorAll('.timeline-container');
-  containers.forEach(container => {
-    const scaler = container.querySelector('.scaler');
-    const fbPage = container.querySelector('.fb-page');
-    if (scaler && fbPage) {
-      const containerWidth = container.clientWidth - 40;
-      const defaultWidth = 500;
-      const defaultHeight = 600;
-      const scale = containerWidth / defaultWidth;
-      scaler.style.transform = `scale(${scale})`;
-      scaler.style.transformOrigin = 'top left';
-      scaler.style.width = `${defaultWidth}px`;
-      scaler.style.height = `${defaultHeight}px`;
-      fbPage.style.width = `${defaultWidth}px`;
-      fbPage.style.height = `${defaultHeight}px`;
-      container.style.height = `${defaultHeight * scale + 40}px`;
-    }
-  });
-}
-
-// Attach event listeners for scaling timelines
-window.addEventListener('resize', scaleFacebookTimelines);
-document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
-
-// -------------------------
-// CONSOLIDATED INIT & EVENT HANDLERS
-// -------------------------
-document.addEventListener('DOMContentLoaded', () => {
-  let isScrolling = false;
-  let isTouching = false;
-  window.addEventListener('scroll', () => {
-    isScrolling = true;
-    setTimeout(() => { isScrolling = false; }, 200);
-  });
-
-  // -------------------------
   // HERO SECTION PARALLAX WITH THREE.JS AND GSAP (WITH PRELOADING AND 130VH HEIGHT)
   // -------------------------
   const heroSection = document.querySelector('.hero-section');
@@ -213,9 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       animateParallax();
 
-      // Resize handler (update canvas to 150vh)
+      // Resize handler (update canvas to 130vh)
       window.addEventListener('resize', () => {
-        const newCanvasHeight = window.innerHeight * 1.5; // 150vh
+        const newCanvasHeight = window.innerHeight * 1.3; // 130vh
         renderer.setSize(window.innerWidth, newCanvasHeight);
         camera.aspect = window.innerWidth / newCanvasHeight;
         camera.updateProjectionMatrix();
@@ -226,6 +150,82 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.error("Initialization failed. Check console for specific errors and ensure CDN scripts are loaded correctly.");
   }
+
+// -------------------------
+// FACEBOOK SDK INITIALIZATION & TIMELINE PRELOAD
+// -------------------------
+window.fbAsyncInit = function() {
+  FB.init({
+    appId: '1426450195430892',  // Your Facebook App ID
+    xfbml: true,
+    version: 'v22.0'
+  });
+  preloadFBTimelines();
+};
+
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+function preloadFBTimelines() {
+  const wrappers = document.querySelectorAll('.fb-page-wrapper');
+  wrappers.forEach(wrapper => {
+    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
+      FB.XFBML.parse(wrapper);
+      wrapper.classList.add('fb-parsed', 'revealed');
+    }
+  });
+}
+
+// Re-render Facebook timelines when needed
+function updateFBTimeline(container) {
+  if (container && typeof FB !== 'undefined') {
+    FB.XFBML.parse(container);
+  } else {
+    console.error("Container not found or FB is not defined.");
+  }
+}
+
+function scaleFacebookTimelines() {
+  const containers = document.querySelectorAll('.timeline-container');
+  containers.forEach(container => {
+    const scaler = container.querySelector('.scaler');
+    const fbPage = container.querySelector('.fb-page');
+    if (scaler && fbPage) {
+      const containerWidth = container.clientWidth - 40;
+      const defaultWidth = 500;
+      const defaultHeight = 600;
+      const scale = containerWidth / defaultWidth;
+      scaler.style.transform = `scale(${scale})`;
+      scaler.style.transformOrigin = 'top left';
+      scaler.style.width = `${defaultWidth}px`;
+      scaler.style.height = `${defaultHeight}px`;
+      fbPage.style.width = `${defaultWidth}px`;
+      fbPage.style.height = `${defaultHeight}px`;
+      container.style.height = `${defaultHeight * scale + 40}px`;
+    }
+  });
+}
+
+// Attach event listeners for scaling timelines
+window.addEventListener('resize', scaleFacebookTimelines);
+document.addEventListener('DOMContentLoaded', scaleFacebookTimelines);
+
+// -------------------------
+// CONSOLIDATED INIT & EVENT HANDLERS
+// -------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  let isScrolling = false;
+  let isTouching = false;
+  window.addEventListener('scroll', () => {
+    isScrolling = true;
+    setTimeout(() => { isScrolling = false; }, 200);
+  });
 
   // -------------------------
   // BUILD SOLAR SECTION PARALLAX

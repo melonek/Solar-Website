@@ -26,7 +26,7 @@ function getArticleNavigationUrl(article) {
 
 // Utility to get shareable URL
 function getShareableUrl(article) {
-    return `https://melonek.github.io${getArticleNavigationUrl(article)}`;
+    return `https://naturespark.com.au${getArticleNavigationUrl(article)}`;
 }
 
 // Display articles for main section
