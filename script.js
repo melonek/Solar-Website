@@ -433,7 +433,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const mediaQuery = window.matchMedia('(max-width: 768px)');
   
   function toggleHrefs() {
-    document.querySelectorAll('.dropdown > a').forEach(toggle => {
+    // Only target dropdown anchors that are not dropbtns
+    document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
       const href = toggle.getAttribute('href');
       if (href && href.endsWith("#unique-services")) return;
       if (mediaQuery.matches) {
@@ -457,24 +458,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------
   // NAVIGATION DROPDOWN HANDLERS
   // -------------------------
+  // Handle the dropdown header (dropbtn) clicks.
+  // On mobile, completely neutralize click/touch events so that it does nothing
+  // and does not close the mobile menu.
   document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
     dropbtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const dropdown = this.parentElement;
-      const dropdownContent = dropdown.querySelector('.dropdown-content');
-      const isActive = dropdownContent.classList.contains('active');
-      // Close all dropdowns before toggling this one.
-      closeAllDropdowns();
-      navLinks.classList.remove('active');
-      if (!isActive) {
-        dropdownContent.classList.add('active');
-        dropdown.classList.add('active');
+      if (mediaQuery.matches) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Do nothing on mobile—keep the mobile menu open.
+        return;
+      } else {
+        // On desktop, allow toggling via click (if desired).
+        e.preventDefault();
+        e.stopPropagation();
+        const dropdown = this.parentElement;
+        const dropdownContent = dropdown.querySelector('.dropdown-content');
+        const isActive = dropdownContent.classList.contains('active');
+        closeAllDropdowns();
+        navLinks.classList.remove('active');
+        if (!isActive) {
+          dropdownContent.classList.add('active');
+          dropdown.classList.add('active');
+        }
+      }
+    });
+    // Also add touchend neutralization on mobile.
+    dropbtn.addEventListener('touchend', function(e) {
+      if (mediaQuery.matches) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
       }
     });
   });
   
-  // For dropdowns that are still links:
+  // For dropdowns that are still links (if any):
   document.querySelectorAll('.dropdown > a').forEach(link => {
     link.addEventListener('click', function(e) {
       if (!mediaQuery.matches) return;
