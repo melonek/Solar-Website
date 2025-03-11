@@ -174,21 +174,21 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-// DOM selectors
-const carousel = document.querySelector('#installation-gallery .carousel');
-const leftBtn = document.querySelector('#installation-gallery .left-btn');
-const rightBtn = document.querySelector('#installation-gallery .right-btn');
-const modal = document.getElementById('modal');
-const modalBody = document.querySelector('.modal-body'); // Container for job modal content
-const closeModal = document.querySelector('.close-modal');
+  // DOM selectors
+  const carousel = document.querySelector('#installation-gallery .carousel');
+  const leftBtn = document.querySelector('#installation-gallery .left-btn');
+  const rightBtn = document.querySelector('#installation-gallery .right-btn');
+  const modal = document.getElementById('modal');
+  const modalBody = document.querySelector('.modal-body'); // Container for job modal content
+  const closeModal = document.querySelector('.close-modal');
 
-// Lightbox (image modal) elements
-const lightbox = document.getElementById('lightbox');
-const lightboxContent = document.querySelector('.lightbox-content');
-const closeLightbox = document.querySelector('.close-lightbox');
-const archiveGrid = document.querySelector('.archive-grid');
-const loadMoreBtn = document.querySelector('.load-more');
-const loadMoreWrapper = document.querySelector('.load-more-wrapper');
+  // Lightbox (image modal) elements
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = document.querySelector('.lightbox-content');
+  const closeLightbox = document.querySelector('.close-lightbox');
+  const archiveGrid = document.querySelector('.archive-grid');
+  const loadMoreBtn = document.querySelector('.load-more');
+  const loadMoreWrapper = document.querySelector('.load-more-wrapper');
 
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
@@ -355,6 +355,8 @@ const loadMoreWrapper = document.querySelector('.load-more-wrapper');
   // ─── JOB MODAL (Job Details Modal) ──────────────────────────────
   // This function builds a proper modal structure with a wrapper (".modal-content")
   function openModal(job) {
+    // Disable background scrolling when modal is open
+    document.body.style.overflow = 'hidden';
     modalBody.innerHTML = ''; // Clear previous content
 
     // Create a container for all job modal content
@@ -434,32 +436,38 @@ const loadMoreWrapper = document.querySelector('.load-more-wrapper');
   // Close job modal when clicking on the close button
   closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scrolling
   });
 
   // Close job modal when clicking outside the modal-content wrapper
   modal.addEventListener('click', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scrolling
     }
   });
 
   modal.addEventListener('touchstart', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scrolling
     }
   });
 
   // ─── LIGHTBOX (Image Modal) ─────────────────────────────────────
-
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
+    // Keep background locked if job modal is still open
     document.body.style.overflow = 'hidden';
   }
   
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
-    document.body.style.overflow = ''; // Restore scrolling
+    // Only restore scrolling if the job modal is not open
+    if (modal.style.display !== 'block') {
+      document.body.style.overflow = '';
+    }
   }
   
   // Prevent clicks on the close button from bubbling up
@@ -481,10 +489,6 @@ const loadMoreWrapper = document.querySelector('.load-more-wrapper');
       closeLightboxFunc();
     }
   });
-  
-  
-
-
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
