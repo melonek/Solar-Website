@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
-  
+
   const jobs = [
     {
       title: "Harrisdale Installation",
@@ -89,10 +89,46 @@ document.addEventListener('DOMContentLoaded', function() {
         "/images/Jobs/Job5/ee8b5e94-f9fd-4eeb-8339-2bf6eaadbcb2.jpg",
         "/images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
       ]
+    },
+    {
+      title: "Kardinya Installation",
+      "House Type": "Single-story",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Clay Tile",
+      completionDate: "10-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(8:45am-12:00pm)",
+      suburb: "Kardinya, WA, 6163",
+      mainImage: "/images/Jobs/Job6/Screenshot 2025-03-11 at 2.29.26 pm.png",
+      additionalImages: [
+        "/images/Jobs/Job6/dj6x8tprrc3aqt1lwslw.webp",
+        "/images/Jobs/Job6/ikks9mlyrfz1cjwuga0b.webp",
+        "/images/Jobs/Job6/ccjarhy6fomzku85sw9s.webp",
+        "/images/Jobs/Job6/vqc2wtzi3obwz2pdgg3r.webp",
+      ]
+    },
+    {
+      title: "St James Installation",
+      "House Type": "Double-story",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Metal Tin",
+      completionDate: "10-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(1:30pm-4:00pm)",
+      suburb: "St James, WA, 6102",
+      mainImage: "/images/Jobs/Job7/c4cba490-642e-409d-8e82-a5400385acbc.webp",
+      additionalImages: [
+        "/images/Jobs/Job7/75a6cbd6-cc41-4001-ac75-5b10a8f34d28.webp",
+        "/images/Jobs/Job7/83b35a29-2075-484f-b651-3ca17a7a716c.webp",
+        "/images/Jobs/Job7/27fc3f48-fc6e-4912-b14b-6f44b17583f8.webp",
+        "/images/Jobs/Job7/d8da588a-26b0-4a0f-a156-d4ff90fa593e.webp",
+      ]
     }
   ];
 
-  // Utility function to parse a time string (e.g. "7:00am")
+  // Utility functions
   function parseTimeString(timeStr) {
     const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
     if (match) {
@@ -110,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return { hours: 0, minutes: 0 };
   }
 
-  // Parse the finish time (from timeToComplete) and return a Date object based on completionDate
   function parseFinish(job) {
     const timeRange = job.timeToComplete.replace(/[()]/g, '');
     const parts = timeRange.split('-');
@@ -120,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return new Date(year, month - 1, day, hours, minutes);
   }
 
-  // Calculate the duration (in hours) from the timeToComplete string
   function calculateDuration(timeStr) {
     const cleaned = timeStr.replace(/[()]/g, '');
     const parts = cleaned.split('-');
@@ -135,21 +169,24 @@ document.addEventListener('DOMContentLoaded', function() {
     return duration.toFixed(2);
   }
 
-  // Format the date (dd-mm-yyyy)
   function formatDate(dateStr) {
     const [day, month, year] = dateStr.split("-");
     return `${day}-${month}-${year}`;
   }
 
-  // Scope selectors to target the gallery section on either page
+  // DOM selectors
   const carousel = document.querySelector('#installation-gallery .carousel');
   const leftBtn = document.querySelector('#installation-gallery .left-btn');
   const rightBtn = document.querySelector('#installation-gallery .right-btn');
   const modal = document.getElementById('modal');
-  const modalBody = document.querySelector('.modal-body');
+  const modalBody = document.querySelector('.modal-body'); // Container for job modal content
   const closeModal = document.querySelector('.close-modal');
+
+  // Lightbox (image modal) elements
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.querySelector('.lightbox-content');
+  const closeLightbox = document.querySelector('.close-lightbox');
+
   const archiveGrid = document.querySelector('.archive-grid');
   const loadMoreBtn = document.querySelector('.load-more');
   const loadMoreWrapper = document.querySelector('.load-more-wrapper');
@@ -159,28 +196,33 @@ document.addEventListener('DOMContentLoaded', function() {
   let loadedJobs = 0;
   const batchSize = 20;
 
-  // Create a sorted copy of jobs for the archive grid (newest to oldest based on finish time)
+  // Sort jobs (newest to oldest) for the archive grid
   const sortedJobs = jobs.slice().sort((a, b) => parseFinish(b) - parseFinish(a));
 
+  // Create a card for the carousel
   function createCard(job) {
     const card = document.createElement('div');
     card.className = 'card';
-    
+
     const mainImg = document.createElement('img');
     mainImg.src = job.mainImage;
     mainImg.alt = job.title;
     validateImage(mainImg);
-    mainImg.addEventListener('click', () => openLightbox(mainImg.src));
+    // Stop propagation so the lightbox click doesn't interfere with the job modal
+    mainImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(mainImg.src);
+    });
     card.appendChild(mainImg);
-    
+
     const title = document.createElement('h3');
     title.className = 'card-title';
     title.innerHTML = job.title;
     card.appendChild(title);
-    
+
     const detailsRow = document.createElement('div');
     detailsRow.className = 'details-row';
-    
+
     const detailsContainer = document.createElement('div');
     detailsContainer.className = 'job-details';
     detailsContainer.innerHTML = `
@@ -191,33 +233,36 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Time:</strong> ${job.timeToComplete}</p>
       <p><strong>Suburb:</strong> ${job.suburb}</p>
     `;
-    
+
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
     buttonContainer.innerHTML = `
       <p><strong>System Size:</strong> ${job["System Size"]}</p>
       <p><strong>Completion:</strong> ${formatDate(job.completionDate)} (Total: ${calculateDuration(job.timeToComplete)} hours)</p>
     `;
-    
+
     detailsRow.appendChild(detailsContainer);
     detailsRow.appendChild(buttonContainer);
-    
+
     const buttonWrapper = document.createElement('div');
     buttonWrapper.className = 'button-wrapper';
-    
+
     const readMoreBtn = document.createElement('button');
     readMoreBtn.className = 'read-more shiny';
     const innerSpan = document.createElement('span');
     innerSpan.className = 'button-inner';
     innerSpan.textContent = 'Read More';
     readMoreBtn.appendChild(innerSpan);
-    
-    readMoreBtn.addEventListener('click', () => openModal(job));
+    // Clicking Read More opens the job modal
+    readMoreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal(job);
+    });
     buttonWrapper.appendChild(readMoreBtn);
-    
+
     card.appendChild(detailsRow);
     card.appendChild(buttonWrapper);
-    
+
     const imagesContainer = document.createElement('div');
     imagesContainer.className = 'images';
     job.additionalImages.forEach((imgSrc) => {
@@ -225,42 +270,51 @@ document.addEventListener('DOMContentLoaded', function() {
       img.src = imgSrc;
       img.alt = job.title;
       validateImage(img);
-      img.addEventListener('click', () => openLightbox(img.src));
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(img.src);
+      });
       imagesContainer.appendChild(img);
     });
     card.appendChild(imagesContainer);
-    
+
     card.addEventListener('mouseenter', () => scrollSpeed = 0);
     card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
-    
+
     return card;
   }
 
+  // Create an archive square (for the archive grid)
   function createArchiveSquare(job) {
     const square = document.createElement('div');
     square.className = 'archive-square';
-    
+
     const img = document.createElement('img');
     img.src = job.mainImage;
     img.alt = job.suburb;
     validateImage(img);
     square.appendChild(img);
-    
+
     const text = document.createElement('p');
     text.textContent = job.suburb;
     square.appendChild(text);
-    
-    square.addEventListener('click', () => openModal(job));
-    
+
+    square.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openModal(job);
+    });
+
     return square;
   }
 
+  // Fallback for broken images
   function validateImage(img) {
     img.addEventListener('error', function() {
       img.src = fallbackImage;
     });
   }
 
+  // Render the carousel with duplicate sets for smooth scrolling
   function renderCarousel() {
     console.log("Rendering carousel...");
     jobs.forEach(job => {
@@ -274,20 +328,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     console.log("Total cards count:", carousel.children.length);
   }
-  
+
+  // Load jobs in batches for the archive grid
   function loadArchiveBatch() {
     const remainingJobs = sortedJobs.length - loadedJobs;
     const batchCount = Math.min(batchSize, remainingJobs);
-    
-    // Load the batch in order (newest to oldest)
+
     for (let i = 0; i < batchCount; i++) {
       const job = sortedJobs[loadedJobs + i];
       const square = createArchiveSquare(job);
       archiveGrid.appendChild(square);
     }
-    
+
     loadedJobs += batchCount;
-    
+
     if (remainingJobs <= 0 && loadedJobs > 0) {
       const existingNotification = loadMoreWrapper.querySelector('.load-notification');
       if (!existingNotification) {
@@ -298,18 +352,29 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   }
-  
+
+  // ─── JOB MODAL (Job Details Modal) ──────────────────────────────
+  // This function builds a proper modal structure with a wrapper (".modal-content")
   function openModal(job) {
-    modalBody.innerHTML = '';
-    
+    modalBody.innerHTML = ''; // Clear previous content
+
+    // Create a container for all job modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+
+    // Main image
     const mainImg = document.createElement('img');
     mainImg.className = 'modal-main-img';
     mainImg.src = job.mainImage;
     mainImg.alt = job.title;
     validateImage(mainImg);
-    mainImg.addEventListener('click', () => openLightbox(mainImg.src));
-    modalBody.appendChild(mainImg);
-    
+    mainImg.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(mainImg.src);
+    });
+    modalContent.appendChild(mainImg);
+
+    // Job details
     const detailsDiv = document.createElement('div');
     detailsDiv.className = 'modal-details';
     detailsDiv.innerHTML = `
@@ -322,80 +387,92 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Time:</strong> ${job.timeToComplete} // Total: ${calculateDuration(job.timeToComplete)} hours</p>
       <p><strong>Suburb:</strong> ${job.suburb}</p>
     `;
-    modalBody.appendChild(detailsDiv);
-    
+    modalContent.appendChild(detailsDiv);
+
+    // Columns for additional images
     const columnsContainer = document.createElement('div');
     columnsContainer.className = 'modal-columns';
-    
+
     const leftColumn = document.createElement('div');
     leftColumn.className = 'modal-column';
     leftColumn.innerHTML = `<h1>Rooftop solar installation (Panels)</h1>`;
-    job.additionalImages.slice(0,2).forEach(src => {
+    job.additionalImages.slice(0, 2).forEach(src => {
       const img = document.createElement('img');
       img.src = src;
       img.alt = job.title;
       validateImage(img);
-      img.addEventListener('click', () => openLightbox(img.src));
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(img.src);
+      });
       leftColumn.appendChild(img);
     });
-    
+
     const rightColumn = document.createElement('div');
     rightColumn.className = 'modal-column';
     rightColumn.innerHTML = `<h1>Wall-mounted inverter installation</h1>`;
-    job.additionalImages.slice(2,4).forEach(src => {
+    job.additionalImages.slice(2, 4).forEach(src => {
       const img = document.createElement('img');
       img.src = src;
       img.alt = job.title;
       validateImage(img);
-      img.addEventListener('click', () => openLightbox(img.src));
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLightbox(img.src);
+      });
       rightColumn.appendChild(img);
     });
-    
+
     columnsContainer.appendChild(leftColumn);
     columnsContainer.appendChild(rightColumn);
-    modalBody.appendChild(columnsContainer);
-    
+    modalContent.appendChild(columnsContainer);
+
+    // Append the content to the modal body and show the job modal
+    modalBody.appendChild(modalContent);
     modal.style.display = 'block';
   }
-  
+
+  // Close job modal when clicking on the close button
   closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
   });
-  
+
+  // Close job modal when clicking outside the modal-content wrapper
   modal.addEventListener('click', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
-  
+
   modal.addEventListener('touchstart', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
     }
   });
-  
+
+  // ─── LIGHTBOX (Image Modal) ─────────────────────────────────────
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
   }
-  
-  const closeLightbox = document.querySelector('.close-lightbox');
+
   closeLightbox.addEventListener('click', () => {
     lightbox.style.display = 'none';
   });
-  
+
   lightbox.addEventListener('click', (e) => {
     if (!lightboxContent.contains(e.target)) {
       lightbox.style.display = 'none';
     }
   });
-    
+
   lightbox.addEventListener('touchstart', (e) => {
     if (!lightboxContent.contains(e.target)) {
       lightbox.style.display = 'none';
     }
   });
-  
+
+  // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
     currentTranslateX -= scrollSpeed;
     if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
@@ -404,22 +481,20 @@ document.addEventListener('DOMContentLoaded', function() {
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
     requestAnimationFrame(autoScroll);
   }
-  
+
   leftBtn.addEventListener('click', () => {
     currentTranslateX += 200;
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
   });
-  
+
   rightBtn.addEventListener('click', () => {
     currentTranslateX -= 200;
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
   });
-  
-  
+
+  // ─── INITIALIZE ──────────────────────────────────────────────────
   renderCarousel();
   autoScroll();
-  
-  // Always load the archive batch and set up the load more event
   loadArchiveBatch();
   loadMoreBtn.addEventListener('click', loadArchiveBatch);
 });
