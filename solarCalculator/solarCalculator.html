@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Solar Savings Calculator</title>
 
   <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png" type="image/png">
@@ -16,6 +16,35 @@
   <!-- Ends here-->
   <link rel="stylesheet" href="../solarCalculator/solarCalculator.css">
   <link rel="stylesheet" href="../styles.css">
+
+  <!-- Preload & Prefetch Assets -->
+  <link rel="preload" as="image" href="../images/AboutUs/solarek.webp">
+  <link rel="preload" as="image" href="../images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+  <link rel="prefetch" href="../images/universalBanner/Solar-drone-photo-Perth.webp" as="image">
+  <link rel="prefetch" href="./images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image">
+  <link rel="prefetch" href="./images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image">
+  <link rel="prefetch" href="./images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image">
+
+  <!-- Standard Meta Tags -->
+  <meta name="description" content="Calculate your potential solar savings with our interactive Solar Savings Calculator. Discover estimated cost reductions and energy production for a more sustainable future with Nature's Spark Solar.">
+  <meta name="author" content="Nature's Spark Solar Team">
+  <meta name="keywords" content="solar savings calculator, solar calculator, energy savings, renewable energy savings, cost savings, Nature's Spark Solar">
+    
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Solar Savings Calculator - Nature's Spark Solar">
+  <meta property="og:description" content="Estimate your solar energy savings with our advanced calculator. See how switching to solar can reduce your electricity bills and boost energy efficiency.">
+  <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta property="og:url" content="https://naturespark.com.au/solarCalculator/solarCalculator.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nature's Spark Solar">
+  <meta property="og:locale" content="en_US">
+    
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solar Savings Calculator - Nature's Spark Solar">
+  <meta name="twitter:description" content="Estimate your solar savings with our interactive calculator and discover how renewable energy can lower your costs and carbon footprint.">
+  <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta name="twitter:url" content="https://naturespark.com.au/solarCalculator/solarCalculator.html">
 </head>
 <body>
   <nav>
@@ -26,7 +55,7 @@
     <ul class="nav-links">
       <li><a href="../index.html#about">About Us</a></li>
       <li class="dropdown">
-        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <span class="dropbtn">Services</span>
         <div class="dropdown-content">
           <a href="../packages/packages.html">Solar Systems</a>
           <a href="../packages/battery-only.html">Battery Storage</a>
@@ -182,7 +211,7 @@
   
   <!-- Footer -->
   <footer>
-    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
   </footer>
 
   <script src="../solarCalculator/solarCalculator.js" defer></script>

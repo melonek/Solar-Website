@@ -4,13 +4,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Battery Storage - Nature's Spark Solar</title>
+  
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="battery-only.css">
   <link rel="stylesheet" href="packages-custom.css">
-
+  
   <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png" type="image/png">
   <link rel="apple-touch-icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png">
-
+  
+  <!-- Preload & Prefetch Assets -->
+  <link rel="preload" href="../images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image">
+  <link rel="prefetch" href="../images/universalBanner/Solar-drone-photo-Perth.webp" as="image">
+  <link rel="prefetch" href="../images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image">
+  <link rel="prefetch" href="../images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image">
+  <link rel="prefetch" as="image" href="../images/AboutUs/solarek.webp">
+  <link rel="prefetch" as="image" href="../images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+  
+  <!-- Standard Meta Tags -->
+  <meta name="description" content="Nature's Spark Solar offers premium battery storage solutions for reliable backup power and energy independence. Explore our top battery storage systems for residential and commercial applications.">
+  <meta name="author" content="Nature's Spark Solar Team">
+  <meta name="keywords" content="battery storage, battery sale, backup power, renewable energy, home battery, commercial battery, Nature's Spark Solar">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Battery Storage - Nature's Spark Solar">
+  <meta property="og:description" content="Discover premium battery storage solutions from Nature's Spark Solar. Our battery systems provide reliable backup power for your home or business.">
+  <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta property="og:url" content="https://naturespark.com.au/battery-only.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nature's Spark Solar">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Battery Storage - Nature's Spark Solar">
+  <meta name="twitter:description" content="Discover premium battery storage solutions from Nature's Spark Solar. Explore our range of battery storage systems for residential and commercial applications.">
+  <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta name="twitter:url" content="https://naturespark.com.au/battery-only.html">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
+  
 </head>
 <body>
   <!-- Navigation -->
@@ -21,7 +56,7 @@
     <ul class="nav-links">
       <li><a href="../index.html#about">About Us</a></li>
       <li class="dropdown">
-        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <span class="dropbtn">Services</span>
         <div class="dropdown-content">
           <a href="packages.html">Solar Systems</a>
           <a href="battery-only.html">Battery Storage</a>
@@ -41,67 +76,65 @@
       <div class="bar half end"></div>
     </div>
   </nav>
-
-<!-- Universal Banner Section -->
-<section id="battery-logo-cards-text-section" class="universalBanner">
-  <div class="banner-background">
-    <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
-  </div>
-  <div class="banner-overlay">
-    <div class="banner-content">
-      <h1 data-animate="fadeInDown">Our Battery Storage Options</h1>
-      <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
-      <p data-animate="fadeIn">Enquire and explore our top battery storage systems.</p>
+  
+  <!-- Universal Banner Section -->
+  <section id="battery-logo-cards-text-section" class="universalBanner">
+    <div class="banner-background">
+      <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
     </div>
-  </div>
-</section>
-
+    <div class="banner-overlay">
+      <div class="banner-content">
+        <h1 data-animate="fadeInDown">Our Battery Storage Options</h1>
+        <h2 data-animate="fadeInUp">Power your future with reliable backup</h2>
+        <p data-animate="fadeIn">Enquire and explore our top battery storage systems designed for residential and commercial needs.</p>
+      </div>
+    </div>
+  </section>
+  
   <!-- Solar Brand Cards (Populated via JS) -->
   <section id="solar-logo-cards-container">
     <div class="solar-brands-container"></div>
   </section>
-
-<!-- Battery Storage Section -->
-<section class="battery-category section battery-storage" id="battery-storage">
+  
+  <!-- Battery Storage Section -->
+  <section class="battery-category section battery-storage" id="battery-storage">
     <h1 class="battery-title">Battery Storage</h1>
-
+  
     <!-- Filter Bar -->
     <div class="filter-bar">
-        <label for="battery-filter">Sort by:</label>
-        <select id="battery-filter">
-            <option value="default">Default</option>
-            <option value="expensive">Most Expensive</option>
-            <option value="cheap">Cheapest</option>
-            <option value="popular">Most Popular</option>
-        </select>
+      <label for="battery-filter">Sort by:</label>
+      <select id="battery-filter">
+        <option value="default">Default</option>
+        <option value="expensive">Most Expensive</option>
+        <option value="cheap">Cheapest</option>
+        <option value="popular">Most Popular</option>
+      </select>
     </div>
-
+  
     <!-- Battery Product Grid -->
     <div class="product-grid battery-grid" id="battery-grid"></div>
-</section>
-
-<!-- My Battery Package Section -->
-<div id="battery-package" class="section" style="display:none;">
-  <h1>My Battery Package</h1>
-  <div class="package-combination">
-    <!-- Battery Image Container with Brand Logo -->
-    <div class="battery-image-combination" id="battery-image-combination">
-      <img id="selected-battery-alone-image" src="" alt="Selected Battery">
-      <img id="battery-brand-logo-overlay" class="battery-brand-logo-overlay" src="" alt="Brand Logo">
-    </div>
-    
-    <p id="package-description"></p>
-    <div id="total-cost" class="total-cost-display"></div>
-
-    <div class="button-container">
-      <button id="confirm-selection">Let's Enquire!</button>
+  </section>
+  
+  <!-- My Battery Package Section -->
+  <div id="battery-package" class="section" style="display:none;">
+    <h1>My Battery Package</h1>
+    <div class="package-combination">
+      <!-- Battery Image Container with Brand Logo -->
+      <div class="battery-image-combination" id="battery-image-combination">
+        <img id="selected-battery-alone-image" src="" alt="Selected Battery">
+        <img id="battery-brand-logo-overlay" class="battery-brand-logo-overlay" src="" alt="Brand Logo">
+      </div>
+      
+      <p id="package-description"></p>
+      <div id="total-cost" class="total-cost-display"></div>
+  
+      <div class="button-container">
+        <button id="confirm-selection">Let's Enquire!</button>
+      </div>
     </div>
   </div>
-</div>
-
-
-
-    <!-- Package Form Section -->
+  
+  <!-- Package Form Section -->
   <section class="section">
     <form action="https://formspree.io/f/mgvoybrr" method="POST" class="package-form">
       <input type="hidden" name="solar-package" id="solar-package-input">
@@ -128,7 +161,7 @@
       <button id="enquire-button" type="submit">Enquire about this package</button>
     </form>
   </section>
-
+  
   <!-- Modal for Product Details -->
   <div id="product-modal" class="modal">
     <div class="modal-content">
@@ -137,13 +170,12 @@
       <div class="modal-product-details"></div>
     </div>
   </div>
-
+  
   <footer>
-    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
   </footer>
-
+  
   <!-- Scripts -->
-   <!-- GSAP Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" defer></script>
   <script src="packages.js" defer></script>

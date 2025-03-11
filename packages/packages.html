@@ -4,21 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Solar Packages - Nature's Spark Solar</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   
-  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" defer></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js" defer></script>
+  
   <link rel="stylesheet" href="../styles.css">
   <!-- Include custom CSS for package page -->
   <link rel="stylesheet" href="packages-custom.css">
   <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png" type="image/png">
   <link rel="apple-touch-icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png">
-
-
+  
+  <!-- Preload & Prefetch Assets -->
+  <link rel="preload" href="../images/universalBanner/Solar-drone-photo-Perth.webp" as="image">
+  <link rel="preload" href="../images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image">
+  <link rel="preload" href="../images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image">
+  <link rel="preload" href="../images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image">
+  <link rel="prefetch" as="image" href="../images/AboutUs/solarek.webp">
+  <link rel="prefetch" as="image" href="../images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+  
+  <!-- Updated Meta Tags Specific to the Solar Packages Page -->
+  <meta name="description" content="Discover tailored solar packages at Nature's Spark Solar. Explore a range of high-quality solar panel systems designed to meet your energy needs and maximize savings.">
+  <meta name="author" content="Nature's Spark Solar Team">
+  <meta name="keywords" content="solar packages, solar systems, solar panel packages, renewable energy, solar installation, Nature's Spark Solar">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Solar Packages - Nature's Spark Solar">
+  <meta property="og:description" content="Explore our range of tailored solar packages at Nature's Spark Solar. Find the perfect solar panel system to power your home or business with renewable energy.">
+  <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta property="og:url" content="https://naturespark.com.au/packages/packages.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nature's Spark Solar">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Solar Packages - Nature's Spark Solar">
+  <meta name="twitter:description" content="Discover our tailored solar packages designed to meet your energy needs. Explore Nature's Spark Solar for innovative solar panel systems and renewable energy solutions.">
+  <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta name="twitter:url" content="https://naturespark.com.au/packages/packages.html">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
+  
 </head>
 <body>
   <!-- Navigation -->
@@ -29,7 +62,7 @@
     <ul class="nav-links">
       <li><a href="../index.html#about">About Us</a></li>
       <li class="dropdown">
-        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <span class="dropbtn">Services</span>
         <div class="dropdown-content">
           <a href="packages.html">Solar Systems</a>
           <a href="./battery-only.html">Battery Storage</a>
@@ -50,19 +83,19 @@
     </div>
   </nav>
 
-<!-- Universal Banner Section -->
-<section id="battery-logo-cards-text-section" class="universalBanner">
-  <div class="banner-background">
-    <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
-  </div>
-  <div class="banner-overlay">
-    <div class="banner-content">
-      <h1 data-animate="fadeInDown">Our Solar Packages</h1>
-      <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
-      <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
+  <!-- Universal Banner Section -->
+  <section id="battery-logo-cards-text-section" class="universalBanner">
+    <div class="banner-background">
+      <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
     </div>
-  </div>
-</section>
+    <div class="banner-overlay">
+      <div class="banner-content">
+        <h1 data-animate="fadeInDown">Our Solar Packages</h1>
+        <h2 data-animate="fadeInUp">Choose the best for your energy needs</h2>
+        <p data-animate="fadeIn">Enquire and explore our wide range of solar panel options.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- Solar Brand Cards -->
   <section id="solar-logo-cards-container">
@@ -115,27 +148,26 @@
     </div>
   </section>
 
-<!-- New: Home Type Input (initially hidden) -->
-<div id="home-type-input" style="display:none; text-align:center; margin-top:20px;">
-  <label for="home-type-select">Is your house single or double-storey?</label>
-  <select id="home-type-select" onchange="handleHomeTypeSelection(this.value)">
-    <option value="">Choose your house type</option>
-    <option value="single">Single Storey</option>
-    <option value="double">Double Storey</option>
-  </select>
-</div>
+  <!-- New: Home Type Input (initially hidden) -->
+  <div id="home-type-input" style="display:none; text-align:center; margin-top:20px;">
+    <label for="home-type-select">Is your house single or double-storey?</label>
+    <select id="home-type-select" onchange="handleHomeTypeSelection(this.value)">
+      <option value="">Choose your house type</option>
+      <option value="single">Single Storey</option>
+      <option value="double">Double Storey</option>
+    </select>
+  </div>
 
-<!-- New: Power Supply Input (initially hidden) -->
-<div id="power-supply-input" style="display:none; text-align:center; margin-top:20px;">
-  <label for="power-supply-select">Select your power supply</label>
-<select id="power-supply-select" onchange="handlePowerSupplySelection(this.value)">
-  <option value="">Choose power supply</option>
-  <option value="single">Single-Phase (1 Phase)</option>
-  <option value="three">Three-Phase (3 Phase)</option>
-  <option value="notSure">Not sure</option>
-</select>
-</div>
-
+  <!-- New: Power Supply Input (initially hidden) -->
+  <div id="power-supply-input" style="display:none; text-align:center; margin-top:20px;">
+    <label for="power-supply-select">Select your power supply</label>
+    <select id="power-supply-select" onchange="handlePowerSupplySelection(this.value)">
+      <option value="">Choose power supply</option>
+      <option value="single">Single-Phase (1 Phase)</option>
+      <option value="three">Three-Phase (3 Phase)</option>
+      <option value="notSure">Not sure</option>
+    </select>
+  </div>
 
   <!-- Inverters Section -->
   <section class="inverter-category section inverters-section" id="inverters-section">
@@ -158,27 +190,27 @@
     </div>
   </section>
 
-<!-- Battery Storage Section -->
-<section class="battery-category section battery-storage" id="battery-storage">
-  <h1 class="battery-title">Battery Storage</h1>
-  <div class="filter-bar">
-    <label for="battery-filter">Sort by:</label>
-    <select id="battery-filter">
-      <option value="default">Default</option>
-      <option value="expensive">Most Expensive</option>
-      <option value="cheap">Cheapest</option>
-      <option value="popular">Most Popular</option>
-    </select>
-  </div>
-  <div class="product-grid battery-grid" id="battery-grid">
-    <!-- New banner as background for the grid -->
-    <div class="hero-image">
-      <canvas id="battery-canvas"></canvas> <!-- New canvas for battery -->
+  <!-- Battery Storage Section -->
+  <section class="battery-category section battery-storage" id="battery-storage">
+    <h1 class="battery-title">Battery Storage</h1>
+    <div class="filter-bar">
+      <label for="battery-filter">Sort by:</label>
+      <select id="battery-filter">
+        <option value="default">Default</option>
+        <option value="expensive">Most Expensive</option>
+        <option value="cheap">Cheapest</option>
+        <option value="popular">Most Popular</option>
+      </select>
     </div>
-    <!-- Grid content will overlay the banner -->
-  </div>
-  <button id="not-interested-btn" onclick="handleNotInterested()">Not Interested</button>
-</section>
+    <div class="product-grid battery-grid" id="battery-grid">
+      <!-- New banner as background for the grid -->
+      <div class="hero-image">
+        <canvas id="battery-canvas"></canvas> <!-- New canvas for battery -->
+      </div>
+      <!-- Grid content will overlay the banner -->
+    </div>
+    <button id="not-interested-btn" onclick="handleNotInterested()">Not Interested</button>
+  </section>
 
   <!-- My Solar Package Section -->
   <div id="solar-package" class="section" style="display:none;">
@@ -189,9 +221,9 @@
         <div class="panel-inverter-container" id="panel-inverter-container">
           <img id="selected-panel-image" src="" alt="Selected Panel">
           <img id="selected-inverter-image" src="" alt="Selected Inverter">
-        <img id="selected-battery-image" src="" alt="Selected Battery" style="visibility:hidden;">
+          <img id="selected-battery-image" src="" alt="Selected Battery" style="visibility:hidden;">
         </div>
-        </div>
+      </div>
       <!-- Package description -->
       <p id="package-description"></p>
       <!-- Total cost display (styled like a blue button) -->
@@ -245,7 +277,7 @@
   </div>
 
   <footer>
-    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
   </footer>
 
   <script src="./packages.js" defer></script>

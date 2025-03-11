@@ -2,20 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Updated viewport for consistency -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- Facebook Root (as per original) -->
   <div id="fb-root"></div>
-  <!-- Global CSS (styles.css) is in the root folder -->
+  
+  <!-- Global CSS -->
   <link rel="stylesheet" href="../styles.css">
-  <!-- Article-specific styles are in the /articles/ folder -->
+  <!-- Article-specific styles -->
   <link rel="stylesheet" href="./full-article-cards.css">
   <link rel="stylesheet" href="./learn-card-styles.css">
   <link rel="stylesheet" href="./learn-article-styles.css">
-  <!-- Packages custom styles: packages folder is in the root -->
+  <!-- Packages custom styles -->
   <link rel="stylesheet" href="../packages/packages-custom.css">
 
   <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png" type="image/png">
   <link rel="apple-touch-icon" href="https://naturespark.com.au/images/BusinessLogo/nse.png">
-
+  
+  <!-- Standard Meta Tags -->
+  <meta name="description" content="Explore insightful articles, news, and comprehensive guides on solar energy at Nature's Spark Solar. Dive into our Solar Nerd Hub to master solar technology and trends.">
+  <meta name="author" content="Nature's Spark Solar Team">
+  <meta name="keywords" content="solar articles, solar news, solar energy, solar guides, learn solar, Nature's Spark Solar, solar technology">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Articles and Explore Solar - Nature's Spark Solar">
+  <meta property="og:description" content="Stay updated with the latest solar energy news, articles, and educational resources at Nature's Spark Solar. Dive into our Solar Nerd Hub to explore in-depth solar insights.">
+  <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta property="og:url" content="https://naturespark.com.au/articles/learn.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Nature's Spark Solar">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Articles and Explore Solar - Nature's Spark Solar">
+  <meta name="twitter:description" content="Stay updated with the latest solar energy news, articles, and guides at Nature's Spark Solar. Explore our Solar Nerd Hub for expert insights into solar power.">
+  <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse.png">
+  <meta name="twitter:url" content="https://naturespark.com.au/articles/learn.html">
+  
+  <!-- Preload & Prefetch Assets -->
+  <link rel="prefetch" as="image" href=".././images/AboutUs/solarek.webp">
+  <link rel="prefetch" as="image" href=".././images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+  <link rel="prefetch" href=".././images/universalBanner/Solar-drone-photo-Perth.webp" as="image">
+  <link rel="prefetch" href=".././images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image">
+  <link rel="prefetch" href=".././images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image">
+  <link rel="prefetch" href=".././images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
+  
   <title>Articles and Explore Solar Page</title>
 </head>
 <body>
@@ -29,14 +67,14 @@
     <ul class="nav-links">
       <li><a href="../index.html#about">About Us</a></li>
       <li class="dropdown">
-        <a href="../index.html#unique-services" class="dropbtn" aria-haspopup="true" aria-expanded="false">Services</a>
+        <span class="dropbtn">Services</span>
         <div class="dropdown-content">
           <a href="../packages/packages.html">Solar Systems</a>
           <a href="../packages/battery-only.html">Battery Storage</a>
           <a href="../index.html#unique-ev-chargers">EV Chargers</a>
         </div>
       </li>
-      <!-- Note the corrected path for Solar Savings Calculator -->
+      <!-- Corrected path for Solar Savings Calculator -->
       <li><a href=".././solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
       <li><a href="../index.html#articles">Articles/News</a></li>
       <!-- "Explore Solar" is in the same folder (/articles/) -->
@@ -52,19 +90,19 @@
     </div>
   </nav>
 
-<!-- Universal Banner Section -->
-<section id="battery-logo-cards-text-section" class="universalBanner">
-  <div class="banner-background">
-    <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
-  </div>
-  <div class="banner-overlay">
-    <div class="banner-content">
-      <h1 data-animate="fadeInDown">Solar Nerd Hub</h1>
-      <h2 data-animate="fadeInUp">Dive Deep into Solar Energy</h2>
-      <p data-animate="fadeIn">Unravel the science, tech, and trends behind solar power—your gateway to mastering the sun’s potential.</p>
+  <!-- Universal Banner Section -->
+  <section id="battery-logo-cards-text-section" class="universalBanner">
+    <div class="banner-background">
+      <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
     </div>
-  </div>
-</section>
+    <div class="banner-overlay">
+      <div class="banner-content">
+        <h1 data-animate="fadeInDown">Solar Nerd Hub</h1>
+        <h2 data-animate="fadeInUp">Dive Deep into Solar Energy</h2>
+        <p data-animate="fadeIn">Unravel the science, tech, and trends behind solar power—your gateway to mastering the sun’s potential.</p>
+      </div>
+    </div>
+  </section>
   
   <!-- Learn Page Section -->
   <section id="learn" class="section">
@@ -99,18 +137,16 @@
 
   <!-- Footer -->
   <footer>
-    <p>© 2025 Nature's Spark Solar. All rights reserved.</p>
+    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
   </footer>
 
-  <!-- Global script.js is in the root folder (using absolute path) -->
+  <!-- Global scripts with defer -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" defer></script>
-  <!-- Article data and full article script from the /articles/ folder -->
+  <!-- Article data and full article scripts -->
   <script src="articleArray.js" defer></script>
   <script src="full-article.js" defer></script>
   <script src="../packages/packages.js" defer></script>
   <script src="../script.js" defer></script>
-
-  
 </body>
 </html>
