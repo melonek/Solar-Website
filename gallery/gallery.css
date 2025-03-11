@@ -1,13 +1,4 @@
-/* Global Styles */
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #eaeaea;
-  }
-  
-/* Installation Gallery: Remove overflow restrictions */
+ /* Installation Gallery: Remove overflow restrictions */
 #installation-gallery {
   padding: 40px 0;
   background: #f5f5f5;
