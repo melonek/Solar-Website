@@ -38,7 +38,6 @@ let submissionAttempted = false;    // becomes true when a submit button is clic
 // We'll use this to cancel any scheduled normal scroll.
 let defaultScrollTimeout = null;
 
-
 // ------------------------
 // Universal Banner Parallax (Zoom) with Preloading
 // ------------------------
@@ -277,43 +276,6 @@ function showTextCloudForSection(key) {
 }
 
 // --------------------
-// Intersection Observer for Text Clouds
-// --------------------
-function setupTextCloudObserver() {
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px 0px -300px 0px', // Shrink the bottom margin by 300px, requiring the section to be 300px lower
-    threshold: 0.5 // Trigger when 50% of the section is visible within the adjusted viewport
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        console.log('Section in view:', entry.target.id || entry.target.className);
-        console.log('Intersection ratio:', entry.intersectionRatio);
-        const config = textCloudConfig.find(c => entry.target.matches(c.selector));
-        if (config && !textCloudFlags[config.key]) {
-          console.log(`Triggering text cloud for ${config.key} with rootMargin -300px bottom`);
-          showTextCloud(config.message, 3000);
-          textCloudFlags[config.key] = true;
-          console.log(`Text cloud displayed for ${config.key}: ${config.message}`);
-        }
-      }
-    });
-  }, observerOptions);
-
-  textCloudConfig.forEach(config => {
-    const element = document.querySelector(config.selector);
-    if (element) {
-      console.log('Observing element:', element.id || element.className);
-      observer.observe(element);
-    } else {
-      console.error('Element not found for selector:', config.selector);
-    }
-  });
-}
-
-// --------------------
 // Missing Mode Validator for Select Fields
 // --------------------
 function getMissingSelectFields() {
@@ -372,6 +334,13 @@ function checkMissingAndMaybeReturn() {
       if (lastButtonClicked) {
         defaultScrollTimeout = setTimeout(() => {
           normalScrollToSection(lastButtonClicked.id, 0);
+          // If the confirm-selection button triggered the scroll (thus showing the form),
+          // schedule the "Fill in your details" text cloud after scrolling.
+          if (lastButtonClicked.id === "confirm-selection") {
+            setTimeout(() => {
+              showTextCloudForSection('packageForm');
+            }, 800);
+          }
         }, 500);
       }
     }
@@ -416,7 +385,7 @@ function handleSystemSizeSelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("home-type-input", 350);
-    showTextCloudForSection('homeType'); // Show text cloud for home type
+    showTextCloudForSection('homeType');
   } else if (missingInputs.length > 1) {
     const nextMissing = missingInputs.find(m => m.id !== "system-size-input");
     if (nextMissing) normalScrollToSection(nextMissing.id, 350);
@@ -434,7 +403,7 @@ function handleHomeTypeSelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("power-supply-input", 360);
-    showTextCloudForSection('powerSupply'); // Show text cloud for power supply
+    showTextCloudForSection('powerSupply');
   } else if (missingInputs.length > 1) {
     const nextMissing = missingInputs.find(m => m.id !== "home-type-input");
     if (nextMissing) normalScrollToSection(nextMissing.id, 350);
@@ -450,7 +419,7 @@ function handlePowerSupplySelection(value) {
   checkMissingAndMaybeReturn();
   if (!submissionAttempted) {
     normalScrollToSection("inverters-section", 0);
-    showTextCloudForSection('inverter'); // Show text cloud for inverter
+    showTextCloudForSection('inverter');
   } else if (missingInputs.length === 0 && lastButtonClicked) {
     normalScrollToSection(lastButtonClicked.id, 0);
   }
@@ -758,7 +727,6 @@ function createProductCard(product, type) {
       
       // Delay the scroll to allow the DOM to update.
       setTimeout(() => {
-        // Use normalScrollToSection with an offset if needed.
         normalScrollToSection("battery-storage", 0);
         showTextCloudForSection('battery');
       }, 300);
@@ -1021,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function() {
     attachAutoReturnListener("power-supply-select");
   }
   
-  setupTextCloudObserver();
+  // Removed IntersectionObserver setup to disable scroll-triggered text clouds.
   
   function markSubmissionAttempt() {
     submissionAttempted = true;
@@ -1038,6 +1006,10 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
       updateFormSummary();
       scrollToForm();
+      // After scrolling to the form, trigger the "Fill in your details" text cloud.
+      setTimeout(() => {
+        showTextCloudForSection('packageForm');
+      }, 800);
     }
   });
   
@@ -1112,7 +1084,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modal.classList.remove("active");
     }
   });
-})
+});
 
 // --------------------
 // Filter Bar Sorting for Solar Products
