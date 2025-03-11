@@ -1,3 +1,14 @@
+// -------------------------
+// HANDLE PAGE SHOW (bfcache)
+// -------------------------
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    // Instead of reloading the entire page,
+    // reinitialize the hero section.
+    initHeroSection();
+  }
+});
+
 // ===================== HELPER FUNCTIONS =====================
 
 // Promise‑based image preloader (for critical assets and sub‑page assets)
@@ -31,136 +42,176 @@ window.addEventListener('load', () => {
   preloadImages(subPageImages);
 });
 
-// ===================== MAIN INITIALIZATION =====================
-document.addEventListener('DOMContentLoaded', () => {
-  // -------------------------
-  // HERO SECTION PARALLAX WITH THREE.JS AND GSAP (WITH PRELOADING AND 130VH HEIGHT)
-  // -------------------------
+// Helper to get current dimensions based on viewport:
+function getHeroDimensions() {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  // Independent settings:
+  const solarek = isMobile 
+    ? { width: 5000, height: 3500 }   // Mobile settings for solarek.webp
+    : { width: 5000, height: 3500 };  // Desktop settings for solarek.webp
+
+  const leaves = isMobile 
+    ? { width: 4200, height: 3700 }   // Mobile settings for leaves.webp
+    : { width: 6500, height: 4500 };  // Desktop settings for leaves.webp
+
+  return { solarek, leaves, isMobile };
+}
+
+// ===================== HERO SECTION INITIALIZATION =====================
+function initHeroSection() {
   const heroSection = document.querySelector('.hero-section');
   const heroCanvas = document.querySelector('#hero-canvas');
   
-  if (!heroSection) console.error("Hero section (.hero-section) not found in DOM.");
-  if (!heroCanvas) console.error("Canvas (#hero-canvas) not found in DOM.");
-  if (typeof THREE === 'undefined') console.error("Three.js library not loaded. Check CDN or network.");
-  if (typeof gsap === 'undefined') console.error("GSAP library not loaded. Check CDN or network.");
-  if (typeof ScrollSmoother === 'undefined') console.warn("ScrollSmoother not loaded. Proceeding without smooth scrolling.");
+  if (!heroSection) {
+    console.error("Hero section (.hero-section) not found in DOM.");
+    return;
+  }
+  if (!heroCanvas) {
+    console.error("Canvas (#hero-canvas) not found in DOM.");
+    return;
+  }
+  if (typeof THREE === 'undefined') {
+    console.error("Three.js library not loaded. Check CDN or network.");
+    return;
+  }
+  if (typeof gsap === 'undefined') {
+    console.error("GSAP library not loaded. Check CDN or network.");
+    return;
+  }
+  if (typeof ScrollSmoother === 'undefined') {
+    console.warn("ScrollSmoother not loaded. Proceeding without smooth scrolling.");
+  }
   
+  // Get the initial dimensions:
+  let { solarek, leaves } = getHeroDimensions();
+  
+  // Define image paths.
   const heroImagePaths = [
     './images/AboutUs/solarek.webp',
     './images/leafBanner/—Pngtree—falling green leaves_5629857.webp'
   ];
   
-  if (heroSection && heroCanvas && typeof THREE !== 'undefined' && typeof gsap !== 'undefined') {
-    preloadImages(heroImagePaths).then(() => {
-      // Register ScrollSmoother if available
-      if (typeof ScrollSmoother !== 'undefined') {
-        gsap.registerPlugin(ScrollSmoother);
-        ScrollSmoother.create({
-          smooth: 1,
-          effects: true,
-        });
-      } else {
-        console.log("Running parallax without ScrollSmoother.");
-      }
-      
-      // Three.js Scene Setup
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
-      
-      // Set clear color to black so the canvas background isn’t gray
-      renderer.setClearColor(0x000000);
-      
-      // Set canvas size to 130vh
-      const canvasHeight = window.innerHeight * 1.3;
-      renderer.setSize(window.innerWidth, canvasHeight);
-      camera.aspect = window.innerWidth / canvasHeight;
-      camera.updateProjectionMatrix();
-      camera.position.z = 5;
-      
-      // Load textures (should be instant because of preloading)
-      const textureLoader = new THREE.TextureLoader();
-      const firstImageTexture = textureLoader.load(
-        './images/AboutUs/solarek.webp',
-        () => console.log('First image loaded successfully'),
-        undefined,
-        (err) => console.error('Error loading first image:', err)
-      );
-      const secondImageTexture = textureLoader.load(
-        './images/leafBanner/—Pngtree—falling green leaves_5629857.webp',
-        () => console.log('Second image loaded successfully'),
-        undefined,
-        (err) => console.error('Error loading second image:', err)
-      );
-      
-      // Image dimensions (in pixels)
-      const firstImageWidth = 5000, firstImageHeight = 3500;
-      const secondImageWidth = 6500, secondImageHeight = 4500;
-      
-      // Create planes with fixed size to overflow viewport
-      const planeWidth = 20;
-      const planeHeight = 20 * (firstImageHeight / firstImageWidth);
-      const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-      const firstMaterial = new THREE.MeshBasicMaterial({ 
-        map: firstImageTexture,
-        transparent: true,
-        side: THREE.DoubleSide
+  preloadImages(heroImagePaths).then(() => {
+    // Register ScrollSmoother if available
+    if (typeof ScrollSmoother !== 'undefined') {
+      gsap.registerPlugin(ScrollSmoother);
+      ScrollSmoother.create({
+        smooth: 1,
+        effects: true,
       });
-      const secondMaterial = new THREE.MeshBasicMaterial({ 
-        map: secondImageTexture,
-        transparent: true,
-        side: THREE.DoubleSide
-      });
-      const firstPlane = new THREE.Mesh(geometry, firstMaterial);
-      const secondPlane = new THREE.Mesh(geometry, secondMaterial);
-      
-      // Scale planes to match desired dimensions (without downscaling)
-      firstPlane.scale.set(firstImageWidth / 4000, firstImageHeight / 4000, 1);
-      secondPlane.scale.set(secondImageWidth / 4000, secondImageHeight / 4000, 1);
-      
-      // Position planes (first behind, second in front)
-      firstPlane.position.set(0, 0, -1);
-      secondPlane.position.set(0, 0, 0);
-      scene.add(firstPlane, secondPlane);
-      
-      // Parallax settings
-      const parallaxIntensityFirst = 0.25;
-      const parallaxIntensitySecond = 0.15;
-      const rotationIntensity = 0.3;
-      
-      function animateParallax() {
-        requestAnimationFrame(animateParallax);
-        const scrollY = window.scrollY;
-        const sectionTop = heroSection.offsetTop;
-        const sectionHeight = heroSection.clientHeight;
-        
-        if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-          const progress = (scrollY - sectionTop) / sectionHeight;
-          const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
-          const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
-          const rotation = -progress * rotationIntensity;
-          
-          firstPlane.position.y = -parallaxYFirst / 100;
-          secondPlane.position.y = -parallaxYSecond / 100;
-          secondPlane.rotation.z = rotation;
-        }
-        renderer.render(scene, camera);
-      }
-      animateParallax();
-      
-      window.addEventListener('resize', () => {
-        const newCanvasHeight = window.innerHeight * 1.3;
-        renderer.setSize(window.innerWidth, newCanvasHeight);
-        camera.aspect = window.innerWidth / newCanvasHeight;
-        camera.updateProjectionMatrix();
-      });
-    }).catch(() => {
-      console.error("Preloading failed for one or more hero images, but proceeding with initialization.");
+    } else {
+      console.log("Running parallax without ScrollSmoother.");
+    }
+    
+    // Three.js Scene Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
+    
+    // Set clear color to black so the canvas background isn’t gray
+    renderer.setClearColor(0x000000);
+    
+    // Set canvas size to 130vh
+    const canvasHeight = window.innerHeight * 1.3;
+    renderer.setSize(window.innerWidth, canvasHeight);
+    camera.aspect = window.innerWidth / canvasHeight;
+    camera.updateProjectionMatrix();
+    camera.position.z = 5;
+    
+    // Load textures (should be instant because of preloading)
+    const textureLoader = new THREE.TextureLoader();
+    const firstImageTexture = textureLoader.load(
+      './images/AboutUs/solarek.webp',
+      () => console.log('First image loaded successfully'),
+      undefined,
+      (err) => console.error('Error loading first image:', err)
+    );
+    const secondImageTexture = textureLoader.load(
+      './images/leafBanner/—Pngtree—falling green leaves_5629857.webp',
+      () => console.log('Second image loaded successfully'),
+      undefined,
+      (err) => console.error('Error loading second image:', err)
+    );
+    
+    // Create a plane geometry using solarek's ratio
+    const planeWidth = 20;
+    const planeHeight = 20 * (solarek.height / solarek.width);
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    const firstMaterial = new THREE.MeshBasicMaterial({ 
+      map: firstImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
     });
-  } else {
-    console.error("Initialization failed for hero section. Check console for errors and ensure CDN scripts are loaded correctly.");
-  }
-  
+    const secondMaterial = new THREE.MeshBasicMaterial({ 
+      map: secondImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const firstPlane = new THREE.Mesh(geometry, firstMaterial);
+    const secondPlane = new THREE.Mesh(geometry, secondMaterial);
+    
+    // Define a scaling factor (adjust as needed)
+    const scaleDivider = 4000;
+    
+    // Function to update the scale of the planes:
+    function updatePlaneScales() {
+      // Re-check dimensions on resize:
+      const dims = getHeroDimensions();
+      firstPlane.scale.set(dims.solarek.width / scaleDivider, dims.solarek.height / scaleDivider, 1);
+      secondPlane.scale.set(dims.leaves.width / scaleDivider, dims.leaves.height / scaleDivider, 1);
+    }
+    
+    // Set the initial scale:
+    updatePlaneScales();
+    
+    // Position planes (first behind, second in front)
+    firstPlane.position.set(0, 0, -1);
+    secondPlane.position.set(0, 0, 0);
+    scene.add(firstPlane, secondPlane);
+    
+    // Parallax settings
+    const parallaxIntensityFirst = 0.25;
+    const parallaxIntensitySecond = 0.15;
+    const rotationIntensity = 0.3;
+    
+    function animateParallax() {
+      requestAnimationFrame(animateParallax);
+      const scrollY = window.scrollY;
+      const sectionTop = heroSection.offsetTop;
+      const sectionHeight = heroSection.clientHeight;
+      
+      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+        const progress = (scrollY - sectionTop) / sectionHeight;
+        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
+        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
+        const rotation = -progress * rotationIntensity;
+        
+        firstPlane.position.y = -parallaxYFirst / 100;
+        secondPlane.position.y = -parallaxYSecond / 100;
+        secondPlane.rotation.z = rotation;
+      }
+      renderer.render(scene, camera);
+    }
+    animateParallax();
+    
+    // Update scales on window resize:
+    window.addEventListener('resize', () => {
+      const newCanvasHeight = window.innerHeight * 1.3;
+      renderer.setSize(window.innerWidth, newCanvasHeight);
+      camera.aspect = window.innerWidth / newCanvasHeight;
+      camera.updateProjectionMatrix();
+      updatePlaneScales(); // Recompute and update plane scales
+    });
+  }).catch(() => {
+    console.error("Preloading failed for one or more hero images, but proceeding with initialization.");
+  });
+}
+
+// ===================== MAIN INITIALIZATION =====================
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize hero section on first load.
+  initHeroSection();
+
   // -------------------------
   // FACEBOOK SDK INITIALIZATION & TIMELINE PRELOAD
   // -------------------------
