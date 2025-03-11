@@ -344,7 +344,7 @@ body {
   .lightbox {
     display: none;
     position: fixed;
-    z-index: 1000; /* increased for debugging */
+    z-index: 1000; /* Increase if necessary */
     top: 0;
     left: 0;
     width: 100%;
@@ -352,7 +352,6 @@ body {
     background: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
-    pointer-events: auto;
   }
 
   .lightbox-content {

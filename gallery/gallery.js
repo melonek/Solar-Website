@@ -174,22 +174,21 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-  // DOM selectors
-  const carousel = document.querySelector('#installation-gallery .carousel');
-  const leftBtn = document.querySelector('#installation-gallery .left-btn');
-  const rightBtn = document.querySelector('#installation-gallery .right-btn');
-  const modal = document.getElementById('modal');
-  const modalBody = document.querySelector('.modal-body'); // Container for job modal content
-  const closeModal = document.querySelector('.close-modal');
+// DOM selectors
+const carousel = document.querySelector('#installation-gallery .carousel');
+const leftBtn = document.querySelector('#installation-gallery .left-btn');
+const rightBtn = document.querySelector('#installation-gallery .right-btn');
+const modal = document.getElementById('modal');
+const modalBody = document.querySelector('.modal-body'); // Container for job modal content
+const closeModal = document.querySelector('.close-modal');
 
-  // Lightbox (image modal) elements
-  const lightbox = document.getElementById('lightbox');
-  const lightboxContent = document.querySelector('.lightbox-content');
-  const closeLightbox = document.querySelector('.close-lightbox');
-
-  const archiveGrid = document.querySelector('.archive-grid');
-  const loadMoreBtn = document.querySelector('.load-more');
-  const loadMoreWrapper = document.querySelector('.load-more-wrapper');
+// Lightbox (image modal) elements
+const lightbox = document.getElementById('lightbox');
+const lightboxContent = document.querySelector('.lightbox-content');
+const closeLightbox = document.querySelector('.close-lightbox');
+const archiveGrid = document.querySelector('.archive-grid');
+const loadMoreBtn = document.querySelector('.load-more');
+const loadMoreWrapper = document.querySelector('.load-more-wrapper');
 
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
@@ -451,25 +450,40 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ─── LIGHTBOX (Image Modal) ─────────────────────────────────────
-function openLightbox(src) {
-  lightboxContent.src = src;
-  lightbox.style.display = 'flex';
-}
 
-// Close the lightbox when clicking anywhere outside the image
-lightbox.addEventListener('click', (e) => {
-  if (!lightboxContent.contains(e.target)) {
-    lightbox.style.display = 'none';
+  function openLightbox(src) {
+    lightboxContent.src = src;
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   }
-});
+  
+  function closeLightboxFunc() {
+    lightbox.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+  
+  // Prevent clicks on the close button from bubbling up
+  closeLightbox.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLightboxFunc();
+  });
+  
+  // Close lightbox when clicking directly on the overlay
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      closeLightboxFunc();
+    }
+  });
+  
+  // Close lightbox on mobile touchend if tapped on the overlay
+  lightbox.addEventListener('touchend', (e) => {
+    if (e.target === e.currentTarget) {
+      closeLightboxFunc();
+    }
+  });
+  
+  
 
-// Close the lightbox on mobile when the touch ends outside the image
-lightbox.addEventListener('touchend', (e) => {
-  console.log("touchend fired on lightbox, target:", e.target);
-  if (!lightboxContent.contains(e.target)) {
-    lightbox.style.display = 'none';
-  }
-});
 
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
