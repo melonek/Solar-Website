@@ -469,7 +469,7 @@ window.addEventListener("load", () => {
                 displayArticles(currentArticlePage);
                 scrollToArticle(articleId, true);
                 // Wait 1000ms after scrolling before opening the modal.
-                setTimeout(() => displayModal(article), 1000);
+                setTimeout(() => displayModal(article), 500);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
@@ -479,7 +479,7 @@ window.addEventListener("load", () => {
                 // Delay scrolling then modal
                 setTimeout(() => {
                     scrollToArticle(articleId, true);
-                    setTimeout(() => displayModal(article), 1000);
+                    setTimeout(() => displayModal(article), 500);
                 }, 500);
             }
         } else {
