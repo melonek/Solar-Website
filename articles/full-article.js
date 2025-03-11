@@ -462,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentLearnPage = Math.floor(learnArticles.findIndex(a => a.id == articleId) / learnArticlesPerPage) + 1;
                 displayLearnArticles(currentLearnPage);
                 scrollToSection('learn');
-                // After a 500ms delay, scroll to and highlight the article, then pop the modal after another 500ms.
+                // After a 500ms delay, scroll to and highlight the learn card, then pop the modal after another 500ms.
                 setTimeout(() => {
                     scrollToArticle(articleId, true);
                     setTimeout(() => displayModal(article), 500);
