@@ -451,26 +451,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ─── LIGHTBOX (Image Modal) ─────────────────────────────────────
-  function openLightbox(src) {
-    lightboxContent.src = src;
-    lightbox.style.display = 'flex';
-  }
+function openLightbox(src) {
+  lightboxContent.src = src;
+  lightbox.style.display = 'flex';
+}
 
-  closeLightbox.addEventListener('click', () => {
+// Close the lightbox when clicking anywhere outside the image
+lightbox.addEventListener('click', (e) => {
+  if (!lightboxContent.contains(e.target)) {
     lightbox.style.display = 'none';
-  });
+  }
+});
 
-  lightbox.addEventListener('click', (e) => {
-    if (!lightboxContent.contains(e.target)) {
-      lightbox.style.display = 'none';
-    }
-  });
+// Close the lightbox on mobile when the touch ends outside the image
+lightbox.addEventListener('touchend', (e) => {
+  console.log("touchend fired on lightbox, target:", e.target);
+  if (!lightboxContent.contains(e.target)) {
+    lightbox.style.display = 'none';
+  }
+});
 
-  lightbox.addEventListener('touchstart', (e) => {
-    if (!lightboxContent.contains(e.target)) {
-      lightbox.style.display = 'none';
-    }
-  });
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
