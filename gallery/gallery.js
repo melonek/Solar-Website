@@ -493,7 +493,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // *** NEW: Prevent lightbox from closing when clicking on the image ***
   lightboxContent.addEventListener('click', function(e) {
     e.stopPropagation();
+    e.stopPropagation();
   });
+
+  
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
