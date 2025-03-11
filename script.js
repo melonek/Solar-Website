@@ -207,94 +207,61 @@ function initHeroSection() {
   });
 }
 
-// ===================== FACEBOOK TIMELINE INITIALIZATION =====================
-window.fbAsyncInit = function() {
-  FB.init({
-    appId: '1426450195430892',
-    xfbml: true,
-    version: 'v22.0'
-  });
-  // Initial parse of all FB timeline wrappers.
-  preloadFBTimelines();
-};
-
-(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s);
-  js.id = id;
-  js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-// Parse each timeline wrapper only once.
-function preloadFBTimelines() {
-  const wrappers = document.querySelectorAll('.fb-page-wrapper');
-  wrappers.forEach(wrapper => {
-    if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-      FB.XFBML.parse(wrapper);
-      wrapper.classList.add('fb-parsed', 'revealed');
-    }
-  });
-}
-
-/**
- * Forces a refresh of the Facebook timeline by clearing its content,
- * removing the parsed flag, and then re‑parsing the container.
- */
-function updateFBTimeline(container) {
-  if (container && typeof FB !== 'undefined') {
-    container.innerHTML = '';           // Clear existing content.
-    container.classList.remove('fb-parsed'); // Remove the flag.
-    FB.XFBML.parse(container);            // Re‑initialize to fetch new content.
-  } else {
-    console.error("Container not found or FB is not defined.");
-  }
-}
-
-// Example: When the user scrolls to the bottom of the timeline container, update it.
-window.addEventListener('scroll', () => {
-  const timelineContainer = document.querySelector('.timeline-container');
-  if (timelineContainer) {
-    // Check if the user has scrolled to the bottom of the timeline container.
-    if (window.innerHeight + window.scrollY >= timelineContainer.offsetTop + timelineContainer.offsetHeight) {
-      const fbPageWrapper = timelineContainer.querySelector('.fb-page-wrapper');
-      if (fbPageWrapper) {
-        updateFBTimeline(fbPageWrapper);
-      }
-    }
-  }
-});
-
 // ===================== MAIN INITIALIZATION =====================
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize hero section on first load.
   initHeroSection();
 
   // -------------------------
-  // FACEBOOK TIMELINE PRELOAD & SCALING
+  // FACEBOOK SDK INITIALIZATION & TIMELINE PRELOAD
   // -------------------------
-  function scaleFacebookTimelines() {
-    const containers = document.querySelectorAll('.timeline-container');
-    containers.forEach(container => {
-      const scaler = container.querySelector('.scaler');
-      const fbPage = container.querySelector('.fb-page');
-      if (scaler && fbPage) {
-        const containerWidth = container.clientWidth - 40;
-        const defaultWidth = 500, defaultHeight = 600;
-        const scale = containerWidth / defaultWidth;
-        scaler.style.transform = `scale(${scale})`;
-        scaler.style.transformOrigin = 'top left';
-        scaler.style.width = `${defaultWidth}px`;
-        scaler.style.height = `${defaultHeight}px`;
-        fbPage.style.width = `${defaultWidth}px`;
-        fbPage.style.height = `${defaultHeight}px`;
-        container.style.height = `${defaultHeight * scale + 40}px`;
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: '1426450195430892',
+      xfbml: true,
+      version: 'v22.0'
+    });
+    preloadFBTimelines();
+  };
+  
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  
+  function preloadFBTimelines() {
+    const wrappers = document.querySelectorAll('.fb-page-wrapper');
+    wrappers.forEach(wrapper => {
+      if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
+        FB.XFBML.parse(wrapper);
+        wrapper.classList.add('fb-parsed', 'revealed');
       }
     });
   }
-  window.addEventListener('resize', scaleFacebookTimelines);
-  scaleFacebookTimelines();
+  
+  function updateFBTimeline(container) {
+    if (container && typeof FB !== 'undefined') {
+      FB.XFBML.parse(container);
+    } else {
+      console.error("Container not found or FB is not defined.");
+    }
+  }
+  
+  function scaleFacebookTimelines() {
+    const containers = document.querySelectorAll('.timeline-container');
+    containers.forEach(container => {
+      const fbPage = container.querySelector('.fb-page');
+      if (fbPage) {
+        fbPage.setAttribute('data-width', container.clientWidth - 40);
+        // Re-parse to apply changes
+        if (typeof FB !== 'undefined') FB.XFBML.parse(container);
+      }
+    });
+  }
   
   // -------------------------
   // CONSOLIDATED INIT & EVENT HANDLERS
@@ -532,13 +499,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------
   // NAVIGATION DROPDOWN HANDLERS
   // -------------------------
+  // Handle the dropdown header (dropbtn) clicks.
+  // On mobile, completely neutralize click/touch events so that it does nothing
+  // and does not close the mobile menu.
   document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
     dropbtn.addEventListener('click', function(e) {
       if (mediaQuery.matches) {
         e.preventDefault();
         e.stopPropagation();
+        // Do nothing on mobile—keep the mobile menu open.
         return;
       } else {
+        // On desktop, allow toggling via click (if desired).
         e.preventDefault();
         e.stopPropagation();
         const dropdown = this.parentElement;
@@ -552,6 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+    // Also add touchend neutralization on mobile.
     dropbtn.addEventListener('touchend', function(e) {
       if (mediaQuery.matches) {
         e.preventDefault();
@@ -561,6 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
+  // For dropdowns that are still links (if any):
   document.querySelectorAll('.dropdown > a').forEach(link => {
     link.addEventListener('click', function(e) {
       if (!mediaQuery.matches) return;
@@ -577,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-  
+
   window.addEventListener('scroll', () => {
     if (mediaQuery.matches && navLinks.classList.contains('active')) {
       closeAllDropdowns();
@@ -585,6 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileMenu.classList.remove('open');
     }
   });
+  
   
   document.querySelectorAll('.dropdown-content a').forEach(link => {
     link.addEventListener('click', () => {
@@ -615,3 +590,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
