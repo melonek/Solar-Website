@@ -1091,6 +1091,20 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
+window.addEventListener('scroll', function panelsTextCloudScroll() {
+  if (!textCloudFlags.panels) {
+    const panelsSection = document.getElementById('panels-section');
+    if (panelsSection) {
+      const rect = panelsSection.getBoundingClientRect();
+      // Trigger when the 60% vertical point is within the panels section.
+      if (rect.top <= window.innerHeight * 0.3 && rect.bottom >= window.innerHeight * 0.3) {
+        showTextCloudForSection('panels');
+        window.removeEventListener('scroll', panelsTextCloudScroll);
+      }
+    }
+  }
+});
+
 // --------------------
 // Filter Bar Sorting for Solar Products
 // --------------------
