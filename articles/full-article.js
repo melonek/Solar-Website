@@ -17,6 +17,9 @@ let currentLearnPage = 1;
 // Global variable to store current share info (set when modal opens)
 let currentShareData = null;
 
+// Global reference to the currently highlighted card element
+let currentHighlightedCard = null;
+
 // Utility to get article navigation URL
 function getArticleNavigationUrl(article) {
     return `${BASE_URL}${article.fullArticlePath}`;
@@ -179,16 +182,18 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Scroll to specific article; if highlight is true, add the 'highlighted' class for 3 seconds
+// Scroll to specific article; if 'highlight' is true, add the 'highlighted' class (persistent until another card is interacted with)
 function scrollToArticle(articleId, highlight = false) {
     const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
     if (articleElement) {
         articleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         if (highlight) {
+            // Remove highlight from any previously highlighted card (if different)
+            if (currentHighlightedCard && currentHighlightedCard !== articleElement) {
+                currentHighlightedCard.classList.remove('highlighted');
+            }
             articleElement.classList.add('highlighted');
-            setTimeout(() => {
-                articleElement.classList.remove('highlighted');
-            }, 3000);
+            currentHighlightedCard = articleElement;
         }
     }
 }
@@ -208,7 +213,6 @@ function displayModal(article) {
     const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
     
-    // Set data attributes on the modal share button with title and snippet info
     modalContent.innerHTML = `
         <div class="modal-header">
             <h1 class="modal-title">${article.title}</h1>
@@ -223,7 +227,6 @@ function displayModal(article) {
         </div>
     `;
     
-    // Update global share data
     currentShareData = {
         url: shareUrl,
         title: article.title,
@@ -238,6 +241,7 @@ function displayModal(article) {
     const closeModal = () => {
         modal.style.display = "none";
         document.body.classList.remove('modal-open');
+        // Note: we intentionally do NOT remove the highlight here so it remains until the user interacts elsewhere.
         currentShareData = null;
     };
     
@@ -246,7 +250,6 @@ function displayModal(article) {
         if (event.target === modal) closeModal();
     };
     
-    // Bind the share button inside the modal
     const modalShareBtn = modalContent.querySelector('.share-button');
     if (modalShareBtn) {
         modalShareBtn.addEventListener('click', shareArticle);
@@ -257,7 +260,13 @@ function displayModal(article) {
 function handleSummaryClick(event) {
     if (event.target.classList.contains('summary-btn')) {
         event.preventDefault();
-        const articleId = event.target.closest('.article-card, .learn-card')?.getAttribute('data-article-id');
+        const clickedCard = event.target.closest('.article-card, .learn-card');
+        if (clickedCard && currentHighlightedCard && currentHighlightedCard !== clickedCard) {
+            // Remove highlight from previously highlighted card when a different card is clicked
+            currentHighlightedCard.classList.remove('highlighted');
+            currentHighlightedCard = null;
+        }
+        const articleId = clickedCard?.getAttribute('data-article-id');
         if (articleId) {
             const article = allArticles.find(a => a.id == articleId);
             if (article) {
@@ -276,14 +285,12 @@ function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Use global share data if available; otherwise, fallback to document defaults
     let shareData = currentShareData || {
         title: document.querySelector('title')?.textContent || 'Check this out!',
         text: document.querySelector('meta[name="description"]')?.content || 'Here is an interesting page for you.',
         url: window.location.href
     };
     
-    // If a share button was clicked, override with its data attributes if present
     if (event) {
         let button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
         if (button) {
@@ -296,13 +303,11 @@ function shareArticle(event) {
         }
     }
     
-    // Determine if the clicked button is from full-share or learn-share
     let buttonId = "";
     if (event && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
     }
     
-    // Construct the share URL based on platform from the button id
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
     else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
@@ -335,7 +340,6 @@ function shareArticle(event) {
             }
     }
     
-    // For both full-share and learn-share buttons, directly open the share URL
     window.open(shareUrl, '_blank');
     return false;
 }
@@ -426,11 +430,20 @@ function setupShareButtons() {
     });
 }
 
-// Setup event listeners for summary buttons and bind share buttons
+// Setup event listeners for summary buttons and bind share buttons, plus attach mouseenter events to remove highlight if another card is hovered
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
     setupShareButtons();
+    
+    document.querySelectorAll('.article-card, .learn-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            if (currentHighlightedCard && currentHighlightedCard !== card) {
+                currentHighlightedCard.classList.remove('highlighted');
+                currentHighlightedCard = null;
+            }
+        });
+    });
 }
 
 // Initial load: render articles and setup share buttons
@@ -454,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
                 currentArticlePage = Math.floor(mainArticles.findIndex(a => a.id == articleId) / articlesPerPage) + 1;
                 displayArticles(currentArticlePage);
-                scrollToArticle(articleId);
+                scrollToArticle(articleId, true);
                 setTimeout(() => displayModal(article), 500);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
@@ -462,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentLearnPage = Math.floor(learnArticles.findIndex(a => a.id == articleId) / learnArticlesPerPage) + 1;
                 displayLearnArticles(currentLearnPage);
                 scrollToSection('learn');
-                // After a 500ms delay, scroll to and highlight the learn card, then pop the modal after another 500ms.
+                // After a 500ms delay, scroll to and highlight the card, then pop the modal after another 500ms.
                 setTimeout(() => {
                     scrollToArticle(articleId, true);
                     setTimeout(() => displayModal(article), 500);
@@ -480,6 +493,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
     
-    // Bind share buttons on page load
     setupShareButtons();
 });
