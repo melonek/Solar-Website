@@ -1,7 +1,5 @@
 // Base URL for article navigation
-const BASE_URL = window.location.hostname === "melonek.github.io" 
-    ? "/Solar-Website/articles/" 
-    : "/articles/";
+const BASE_URL = "/articles/";
 
 // Check allArticles without redeclaring
 if (typeof allArticles === "undefined") {
