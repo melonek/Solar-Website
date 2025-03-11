@@ -458,12 +458,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
+    // Disable interaction on the modal while the lightbox is open
+    modal.style.pointerEvents = 'none';
     // Keep background locked if job modal is still open
     document.body.style.overflow = 'hidden';
   }
   
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
+    // Re-enable interaction on the modal after lightbox is closed
+    modal.style.pointerEvents = '';
     // Only restore scrolling if the job modal is not open
     if (modal.style.display !== 'block') {
       document.body.style.overflow = '';
