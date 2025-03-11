@@ -179,11 +179,17 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Scroll to specific article
-function scrollToArticle(articleId) {
+// Scroll to specific article; if highlight is true, add the 'highlighted' class for 3 seconds
+function scrollToArticle(articleId, highlight = false) {
     const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
     if (articleElement) {
         articleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (highlight) {
+            articleElement.classList.add('highlighted');
+            setTimeout(() => {
+                articleElement.classList.remove('highlighted');
+            }, 3000);
+        }
     }
 }
 
@@ -456,8 +462,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentLearnPage = Math.floor(learnArticles.findIndex(a => a.id == articleId) / learnArticlesPerPage) + 1;
                 displayLearnArticles(currentLearnPage);
                 scrollToSection('learn');
+                // After a 500ms delay, scroll to and highlight the article, then pop the modal after another 500ms.
                 setTimeout(() => {
-                    scrollToArticle(articleId);
+                    scrollToArticle(articleId, true);
                     setTimeout(() => displayModal(article), 500);
                 }, 500);
             }
