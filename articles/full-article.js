@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentArticlePage = Math.floor(mainArticles.findIndex(a => a.id == articleId) / articlesPerPage) + 1;
                 displayArticles(currentArticlePage);
                 scrollToArticle(articleId, true);
-                setTimeout(() => displayModal(article), 500);
+                setTimeout(() => displayModal(article), 1000);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
                     .sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // After a 500ms delay, scroll to and highlight the card, then pop the modal after another 500ms.
                 setTimeout(() => {
                     scrollToArticle(articleId, true);
-                    setTimeout(() => displayModal(article), 500);
+                    setTimeout(() => displayModal(article), 1000);
                 }, 500);
             }
         } else {
