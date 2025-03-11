@@ -98,6 +98,9 @@
     background: rgba(0, 0, 0, 0.9);
 }
 
+.learn-card.highlighted .overlay {
+    background: rgba(0, 0, 0, 0.9);
+}
 /* Title and Snippet */
 .learn-card .overlay h3 {
     margin: 0 0 10px;
