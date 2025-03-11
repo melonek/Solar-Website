@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         "/images/Jobs/Job5/da54523a-2d7d-4253-abfc-33ca0cb63f62.jpg",
         "/images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
         "/images/Jobs/Job5/ee8b5e94-f9fd-4eeb-8339-2bf6eaadbcb2.jpg",
-        "/images/Jobs/Job5/4f0bd18a-c425-43fc-af48-0ee40c2d460a.jpg",
+        "/images/Jobs/Job5/91170244-36a7-417b-97bf-90eb6da330c8.jpg",
       ]
     },
     {
