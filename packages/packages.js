@@ -704,12 +704,16 @@ function createProductCard(product, type) {
     <p>Specs: ${product.specs}</p>
     <p>Country: ${product.country}</p>
     <p>Datasheet: <a class="download-link" href="${product.datasheet}" target="_blank">Download</a></p>
-
     <button class="read-more-btn shiny" data-type="${type}" data-id="${product.id}">Read More</button>
   `;
+  // Attach event listener for the "Read More" button to open the modal.
   card.querySelector(".read-more-btn").addEventListener("click", handleModalOpen);
+  
+  // Attach click event to the entire card.
+  // Use closest() to detect if the click occurred on a read more button or its children.
   card.addEventListener("click", (e) => {
-    if (e.target.classList.contains("read-more-btn shiny")) return;
+    if (e.target.closest(".read-more-btn")) return; // Do nothing if "Read More" button was clicked.
+
     if (type === "panel") {
       document.querySelectorAll("#panels-grid .product-card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");
@@ -741,6 +745,7 @@ function createProductCard(product, type) {
   });
   return card;
 }
+
 
 function handleModalOpen(e) {
   e.preventDefault();
