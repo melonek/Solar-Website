@@ -36,7 +36,7 @@ const allArticles = [
     {
         "id": 3,
         "title": "Understanding Solar System Sizes in Australia: Outputs, Panels, and More",
-        "image": "https://actrightelectrical.com.au/wp-content/uploads/2023/03/DSC04505-scaled.jpg",
+        "image": "/articles/article3/DSC04505-scaled.jpg",
         "snippet": "Learn about solar system sizes in Australia, including panel counts, power outputs, and how they suit different households in 2025.",
         "summary": `
             <h2>Why Solar System Size Matters</h2>

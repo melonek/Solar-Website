@@ -3456,15 +3456,7 @@ footer {
       padding: 15px;
     }
   }
-
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
+  
 .page-nav, .page-number {
     padding: 5px 10px;
     margin: 0 10px;
