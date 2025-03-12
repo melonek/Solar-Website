@@ -1,9 +1,9 @@
 function runAnimationCycle() {
-    // Animate items in left and right containers only.
+    // Animate items in both left and right containers.
     document.querySelectorAll('.container').forEach(container => {
       const items = container.querySelectorAll('.item');
       items.forEach((item, index) => {
-        // Delay each item's animation: 0ms, 3000ms, 6000ms...
+        // Delay: first item 0ms, second 3000ms, third 6000ms, etc.
         const delay = index * 3000;
         setTimeout(() => {
           const img = item.querySelector('img');
@@ -14,11 +14,12 @@ function runAnimationCycle() {
       });
     });
   
-    // Reset animations after a full cycle (approx. 13 seconds) and restart.
+    // Calculate total cycle time: last item's delay + animation duration ≈ 6000ms + 6000ms = 12s, plus extra 1s.
     setTimeout(() => {
+      // Remove all animation classes and force reflow for a clean restart.
       document.querySelectorAll('.animate').forEach(el => {
         el.classList.remove('animate');
-        void el.offsetWidth; // Force reflow to restart animations
+        void el.offsetWidth;
       });
       runAnimationCycle();
     }, 13000);

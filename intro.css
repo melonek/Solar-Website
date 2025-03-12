@@ -1,15 +1,15 @@
 /* --- Intro Section ---
-       Arranged in three columns: left container, worker container, and right container */
+       Three columns: left container, worker container, right container */
   #intro {
     width: 100%;
     min-height: 60vh;
-    background: url('/images/AboutUs/plain.png') no-repeat center center;
+    background: url('https://cdn.discordapp.com/attachments/1137344059686539306/1349422908329431173/melonv4n17y_very_light_green_plain_gradient_background_6180340f-16b3-4fda-8882-03e7186ce4a8.png?ex=67d30b84&is=67d1ba04&hm=53867b417d9a666effeabaf8eea87ec1171d3ff9c099affe938bd74a4b19fa85&') no-repeat center center;
     background-size: cover;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    margin-top:20px;
+    margin-top: 20px;
   }
   
   /* --- Left & Right Containers --- */
@@ -21,9 +21,19 @@
     justify-content: center;
   }
   
+  .container.left {
+margin-bottom: 45px;
+margin-top: -55px;
+  }
+
+  .container.right {
+    margin-bottom: 45px;
+    margin-top: -55px;
+  }
+  
   /* --- Worker Container --- */
   .worker-container {
-    width: 200px; /* adjust as needed */
+    width: 200px; /* Adjust as needed */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,7 +41,8 @@
   }
   .worker-container img {
     width: auto;
-    height: 500px;
+    height: 480px;
+    margin-bottom: 65px;
   }
   
   /* --- Mirror Effect for Right Container Items --- */
@@ -52,24 +63,26 @@
     margin: 20px 0;
   }
   
-  /* Fixed-width wrapper for images to align vertically */
+  /* --- Fixed-Width Image Wrapper for Vertical Alignment --- */
   .img-wrapper {
     width: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .img-wrapper img {
+  /* Initially hide badge images in left/right containers */
+  .container .img-wrapper img {
     width: 100%;
     max-width: 130px;
     height: auto;
+    opacity: 0;
   }
   
-  /* Text Styles */
+  /* --- Text Styles --- */
   .text {
     font-size: 1.5em;
     color: rgb(255, 255, 255);
-    opacity: 0;
+    opacity: 0; /* Initially hidden for animation */
   }
   
   /* --- Keyframe Animations --- */
@@ -100,36 +113,39 @@
   }
   
   /* --- Animation Classes --- */
+  /* For images sliding from the right */
   img.animate.from-right {
     animation: slideInFromRight 2s forwards,
                bubble 2s forwards 2s,
                glow 2s forwards 2s,
                fadeOut 2s forwards 4s;
   }
+  /* For images sliding from the left */
   img.animate.from-left {
     animation: slideInFromLeft 2s forwards,
                bubble 2s forwards 2s,
                glow 2s forwards 2s,
                fadeOut 2s forwards 4s;
   }
+  /* For text sliding from the right */
   .text.animate.from-right {
     animation: slideInFromRight 2s forwards,
                textGlow 2s forwards 2s,
                fadeOut 2s forwards 4s;
   }
+  /* For text sliding from the left */
   .text.animate.from-left {
     animation: slideInFromLeft 2s forwards,
                textGlow 2s forwards 2s,
                fadeOut 2s forwards 4s;
   }
   
-  /* --- Mobile Viewport Styles --- */
+  /* --- Mobile Styles --- */
   @media (max-width: 768px) {
-    /* Hide worker container */
+    /* Hide worker container and text */
     .worker-container {
       display: none;
     }
-    /* Hide text badges */
     .text {
       display: none;
     }
@@ -137,10 +153,18 @@
     #intro {
       flex-direction: row;
       padding: 10px;
+      height: 80vh;
     }
     .container {
       width: 50%;
       margin: 0;
     }
+    .container .img-wrapper img {
+        width: 100%;
+        max-width: 130px;
+        height: auto;
+        margin-top :-10px;
+        opacity: 0;
+      }
   }
   
