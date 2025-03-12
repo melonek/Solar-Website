@@ -3,33 +3,30 @@
 // -------------------------
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
-    // Instead of reloading the entire page,
-    // reinitialize the hero section.
     initHeroSection();
   }
 });
 
 // ===================== HELPER FUNCTIONS =====================
 
-// Promise‑based image preloader (for critical assets and sub‑page assets)
-function preloadImages(imagePaths) {
-  return Promise.all(
-    imagePaths.map(url =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => {
-          console.log(`Preloaded image: ${url}`);
-          resolve();
-        };
-        img.onerror = () => {
-          console.error(`Failed to preload image: ${url}`);
-          resolve(); // Resolve even on error so initialization isn’t blocked
-        };
-      })
-    )
-  );
+function preloadXTimelines() {
+  if (window.twttr && window.twttr.widgets) {
+    twttr.widgets.load().then(() => {
+      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
+      wrappers.forEach(wrapper => {
+        if (!wrapper.classList.contains('tw-parsed')) {
+          wrapper.classList.add('tw-parsed');
+        }
+      });
+      console.log("X Timelines preloaded and initialized.");
+    }).catch(err => {
+      console.error("Error preloading X timelines:", err);
+    });
+  } else {
+    setTimeout(preloadXTimelines, 100);
+  }
 }
+preloadXTimelines();
 
 // ===================== PRELOAD SUB-PAGE ASSETS =====================
 const subPageImages = [
@@ -45,15 +42,12 @@ window.addEventListener('load', () => {
 // Helper to get current dimensions based on viewport:
 function getHeroDimensions() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  // Independent settings:
   const solarek = isMobile 
-    ? { width: 5000, height: 3500 }   // Mobile settings for solarek.webp
-    : { width: 5000, height: 3500 };  // Desktop settings for solarek.webp
-
+    ? { width: 5000, height: 3500 }
+    : { width: 5000, height: 3500 };
   const leaves = isMobile 
-    ? { width: 4200, height: 3700 }   // Mobile settings for leaves.webp
-    : { width: 6500, height: 4500 };  // Desktop settings for leaves.webp
-
+    ? { width: 4200, height: 3700 }
+    : { width: 6500, height: 4500 };
   return { solarek, leaves, isMobile };
 }
 
@@ -82,17 +76,13 @@ function initHeroSection() {
     console.warn("ScrollSmoother not loaded. Proceeding without smooth scrolling.");
   }
   
-  // Get the initial dimensions:
   let { solarek, leaves } = getHeroDimensions();
-  
-  // Define image paths.
   const heroImagePaths = [
     './images/AboutUs/solarek.webp',
     './images/leafBanner/—Pngtree—falling green leaves_5629857.webp'
   ];
   
   preloadImages(heroImagePaths).then(() => {
-    // Register ScrollSmoother if available
     if (typeof ScrollSmoother !== 'undefined') {
       gsap.registerPlugin(ScrollSmoother);
       ScrollSmoother.create({
@@ -103,22 +93,16 @@ function initHeroSection() {
       console.log("Running parallax without ScrollSmoother.");
     }
     
-    // Three.js Scene Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
-    
-    // Set clear color to black so the canvas background isn’t gray
     renderer.setClearColor(0x000000);
-    
-    // Set canvas size to 130vh
     const canvasHeight = window.innerHeight * 1.3;
     renderer.setSize(window.innerWidth, canvasHeight);
     camera.aspect = window.innerWidth / canvasHeight;
     camera.updateProjectionMatrix();
     camera.position.z = 5;
     
-    // Load textures (should be instant because of preloading)
     const textureLoader = new THREE.TextureLoader();
     const firstImageTexture = textureLoader.load(
       './images/AboutUs/solarek.webp',
@@ -133,7 +117,6 @@ function initHeroSection() {
       (err) => console.error('Error loading second image:', err)
     );
     
-    // Create a plane geometry using solarek's ratio
     const planeWidth = 20;
     const planeHeight = 20 * (solarek.height / solarek.width);
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
@@ -150,26 +133,18 @@ function initHeroSection() {
     const firstPlane = new THREE.Mesh(geometry, firstMaterial);
     const secondPlane = new THREE.Mesh(geometry, secondMaterial);
     
-    // Define a scaling factor (adjust as needed)
     const scaleDivider = 4000;
-    
-    // Function to update the scale of the planes:
     function updatePlaneScales() {
-      // Re-check dimensions on resize:
       const dims = getHeroDimensions();
       firstPlane.scale.set(dims.solarek.width / scaleDivider, dims.solarek.height / scaleDivider, 1);
       secondPlane.scale.set(dims.leaves.width / scaleDivider, dims.leaves.height / scaleDivider, 1);
     }
-    
-    // Set the initial scale:
     updatePlaneScales();
     
-    // Position planes (first behind, second in front)
     firstPlane.position.set(0, 0, -1);
     secondPlane.position.set(0, 0, 0);
     scene.add(firstPlane, secondPlane);
     
-    // Parallax settings
     const parallaxIntensityFirst = 0.25;
     const parallaxIntensitySecond = 0.15;
     const rotationIntensity = 0.3;
@@ -194,13 +169,12 @@ function initHeroSection() {
     }
     animateParallax();
     
-    // Update scales on window resize:
     window.addEventListener('resize', () => {
       const newCanvasHeight = window.innerHeight * 1.3;
       renderer.setSize(window.innerWidth, newCanvasHeight);
       camera.aspect = window.innerWidth / newCanvasHeight;
       camera.updateProjectionMatrix();
-      updatePlaneScales(); // Recompute and update plane scales
+      updatePlaneScales();
     });
   }).catch(() => {
     console.error("Preloading failed for one or more hero images, but proceeding with initialization.");
@@ -209,49 +183,26 @@ function initHeroSection() {
 
 // ===================== MAIN INITIALIZATION =====================
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize hero section on first load.
   initHeroSection();
-// Preload X Timelines and Apply Reveal
-function preloadXTimelines() {
-  if (document.readyState === 'complete' && window.twttr) {
-    twttr.ready(function (twttr) {
+
+  // Preload X Timelines and Trigger Early Rendering
+  function preloadXTimelines() {
+    if (window.twttr && window.twttr.widgets) {
+      twttr.widgets.load(); // Force X widgets to initialize immediately
       const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
       wrappers.forEach(wrapper => {
         if (!wrapper.classList.contains('tw-parsed')) {
-          wrapper.classList.add('tw-parsed', 'revealed');
+          wrapper.classList.add('tw-parsed');
         }
       });
-      scaleXTimelines(); // Initial scaling after load
-    });
-  } else {
-    setTimeout(preloadXTimelines, 100); // Retry after 100ms
-  }
-}
-
-// Scale X Timelines
-function scaleXTimelines() {
-  const containers = document.querySelectorAll('.timeline-container');
-  containers.forEach(container => {
-    const scaler = container.querySelector('.scaler');
-    const twitterTimeline = container.querySelector('.twitter-timeline');
-    if (scaler && twitterTimeline) {
-      const containerWidth = container.clientWidth - 40; // Account for padding
-      const defaultWidth = 500;
-      const scale = containerWidth / defaultWidth;
-      scaler.style.transform = `scale(${scale})`;
-      scaler.style.transformOrigin = 'top left';
-      scaler.style.width = `${defaultWidth}px`;
-      scaler.style.height = '';
-      twitterTimeline.style.width = `${defaultWidth}px`;
-      twitterTimeline.style.height = '';
+      console.log("X Timelines preloaded and initialized.");
+    } else {
+      setTimeout(preloadXTimelines, 100); // Retry if twttr isn’t ready
     }
-  });
-}
+  }
+  // Trigger preloading on DOMContentLoaded instead of waiting for full load
+  preloadXTimelines();
 
-// Event Listeners
-window.addEventListener('load', preloadXTimelines);
-window.addEventListener('resize', scaleXTimelines);
-  
   // -------------------------
   // CONSOLIDATED INIT & EVENT HANDLERS
   // -------------------------
@@ -290,8 +241,8 @@ window.addEventListener('resize', scaleXTimelines);
   // -------------------------
   // REVEAL FUNCTIONS
   // -------------------------
-  function revealFacebookTimelines() {
-    const timelines = document.querySelectorAll('.fb-page-wrapper');
+  function revealXTimelines() {
+    const timelines = document.querySelectorAll('.twitter-timeline-wrapper');
     const triggerBottom = window.innerHeight * 0.8;
     timelines.forEach(timeline => {
       const timelineTop = timeline.getBoundingClientRect().top;
@@ -302,7 +253,7 @@ window.addEventListener('resize', scaleXTimelines);
       }
     });
   }
-  
+
   function revealButtons() {
     const buttons = document.querySelectorAll('.fancy-button'),
           triggerBottom = window.innerHeight * 0.8;
@@ -377,7 +328,8 @@ window.addEventListener('resize', scaleXTimelines);
     });
   }
   window.addEventListener('scroll', revealProductSections);
-  revealFacebookTimelines();
+  window.addEventListener('scroll', revealXTimelines);
+  window.addEventListener('load', revealXTimelines);
   revealProductSections();
   
   let lastCall = 0, scrollTimeout;
@@ -393,6 +345,7 @@ window.addEventListener('resize', scaleXTimelines);
         revealArticles();
         revealUniqueServices();
         revealLearnCards();
+        revealXTimelines();
       });
     }, 100);
   }
@@ -404,7 +357,7 @@ window.addEventListener('resize', scaleXTimelines);
     revealArticles();
     revealUniqueServices();
     revealLearnCards();
-    if (typeof preloadFBTimelines === 'function') preloadFBTimelines();
+    revealXTimelines();
   }
   window.addEventListener('load', initAll);
   
@@ -463,7 +416,6 @@ window.addEventListener('resize', scaleXTimelines);
   const mediaQuery = window.matchMedia('(max-width: 768px)');
   
   function toggleHrefs() {
-    // Only target dropdown anchors that are not dropbtns
     document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
       const href = toggle.getAttribute('href');
       if (href && href.endsWith("#unique-services")) return;
@@ -488,18 +440,13 @@ window.addEventListener('resize', scaleXTimelines);
   // -------------------------
   // NAVIGATION DROPDOWN HANDLERS
   // -------------------------
-  // Handle the dropdown header (dropbtn) clicks.
-  // On mobile, completely neutralize click/touch events so that it does nothing
-  // and does not close the mobile menu.
   document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
     dropbtn.addEventListener('click', function(e) {
       if (mediaQuery.matches) {
         e.preventDefault();
         e.stopPropagation();
-        // Do nothing on mobile—keep the mobile menu open.
         return;
       } else {
-        // On desktop, allow toggling via click (if desired).
         e.preventDefault();
         e.stopPropagation();
         const dropdown = this.parentElement;
@@ -513,7 +460,6 @@ window.addEventListener('resize', scaleXTimelines);
         }
       }
     });
-    // Also add touchend neutralization on mobile.
     dropbtn.addEventListener('touchend', function(e) {
       if (mediaQuery.matches) {
         e.preventDefault();
@@ -523,7 +469,6 @@ window.addEventListener('resize', scaleXTimelines);
     });
   });
   
-  // For dropdowns that are still links (if any):
   document.querySelectorAll('.dropdown > a').forEach(link => {
     link.addEventListener('click', function(e) {
       if (!mediaQuery.matches) return;
@@ -548,7 +493,6 @@ window.addEventListener('resize', scaleXTimelines);
       mobileMenu.classList.remove('open');
     }
   });
-  
   
   document.querySelectorAll('.dropdown-content a').forEach(link => {
     link.addEventListener('click', () => {
@@ -579,4 +523,3 @@ window.addEventListener('resize', scaleXTimelines);
     });
   }
 });
-
