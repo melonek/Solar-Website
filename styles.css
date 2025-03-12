@@ -3235,6 +3235,13 @@ opacity: 1;
       height: 500px;
     }
   }
+
+  @media screen and (max-device-width: 480px) {
+    .twitter-timeline-wrapper {
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
   
       
 
