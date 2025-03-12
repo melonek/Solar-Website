@@ -3172,10 +3172,10 @@ opacity: 1;
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    padding: 0 20px; /* 20px margins from viewport edges */
+    padding: 0 20px;
     box-sizing: border-box;
   }
-  
+
   /* Default (Hidden) State - Starts Flipped */
   .twitter-timeline-wrapper {
     position: relative;
@@ -3186,36 +3186,36 @@ opacity: 1;
     width: 100%;
     height: 100%;
   }
-  
+
   /* Revealed state: timeline becomes visible */
   .twitter-timeline-wrapper.revealed {
     opacity: 1;
     transform: rotateY(0deg) scale(1);
   }
-  
+
   /* Scaler wrapper */
   .scaler {
     width: 100%;
     height: 100%;
   }
-  
+
   /* X Timeline */
   .twitter-timeline {
     width: 100% !important;
     height: 100% !important;
-    max-height: 100%; /* Enforce container bounds */
+    max-height: 100%;
   }
-  
+
   /* Container styling */
   .timeline-container {
     flex: 1 1 50%;
     padding: 20px 0;
     box-sizing: border-box;
     position: relative;
-    height: 800px; /* Fixed height for desktop */
-    overflow: hidden; /* Contain the iframe */
+    height: 800px;
+    overflow: hidden;
   }
-  
+
   /* Desktop view: Two columns with margins */
   @media screen and (min-width: 800px) {
     .timeline-container {
@@ -3224,7 +3224,7 @@ opacity: 1;
       height: 800px;
     }
   }
-  
+
   /* Mobile view: Full width with 20px margins */
   @media screen and (max-width: 799px) {
     .timeline-container {

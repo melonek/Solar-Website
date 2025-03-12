@@ -144,8 +144,10 @@ margin-top: -55px;
   @media (max-width: 768px) {
     /* Hide worker container and text */
     .worker-container {
-      display: none;
+        display: none;
     }
+
+
     .text {
       display: none;
     }

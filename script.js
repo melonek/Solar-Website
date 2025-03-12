@@ -185,23 +185,38 @@ function initHeroSection() {
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSection();
 
-// Preload Twitter widgets and reveal timelines after load
-function preloadXTimelines() {
+// Function to initialize and reveal timelines
+function initXTimelines() {
+  // Check if Twitter's twttr object is available
   if (window.twttr && window.twttr.widgets) {
-    // Force widget initialization
-    window.twttr.widgets.load();
-    const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
-    wrappers.forEach(wrapper => {
-      // Mark as parsed and force the reveal (bypassing scroll-triggered logic)
-      wrapper.classList.add('tw-parsed');
-      wrapper.classList.add('revealed');
+    // Load all widgets and reveal them
+    window.twttr.widgets.load(document.body).then(() => {
+      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
+      wrappers.forEach(wrapper => {
+        wrapper.classList.add('revealed');
+      });
+      console.log("X Timelines successfully loaded and revealed.");
+    }).catch(err => {
+      console.error("Error loading X timelines:", err);
     });
-    console.log("X Timelines preloaded and revealed.");
   } else {
-    setTimeout(preloadXTimelines, 100);
+    // Retry after a short delay if twttr isn't ready
+    console.log("Twitter widgets not ready, retrying...");
+    setTimeout(initXTimelines, 500);
   }
 }
-document.addEventListener('DOMContentLoaded', preloadXTimelines);
+
+// Run initialization when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  initXTimelines();
+});
+
+// Optional: Re-run on window load to catch late script loading
+window.addEventListener('load', () => {
+  if (!document.querySelector('.twitter-timeline-wrapper.revealed')) {
+    initXTimelines();
+  }
+});
 
 
   // -------------------------
