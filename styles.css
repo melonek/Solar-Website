@@ -3187,7 +3187,7 @@ opacity: 1;
     height: 100%;
   }
   
-  /* Revealed State */
+  /* Revealed state: timeline becomes visible */
   .twitter-timeline-wrapper.revealed {
     opacity: 1;
     transform: rotateY(0deg) scale(1);

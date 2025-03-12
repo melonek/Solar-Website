@@ -185,20 +185,18 @@ function initHeroSection() {
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSection();
 
-// Preload Twitter widgets and reveal timelines after they load
+// Preload Twitter widgets and reveal timelines after load
 function preloadXTimelines() {
   if (window.twttr && window.twttr.widgets) {
-    twttr.widgets.load();
+    // Force widget initialization
+    window.twttr.widgets.load();
     const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
     wrappers.forEach(wrapper => {
+      // Mark as parsed and force the reveal (bypassing scroll-triggered logic)
       wrapper.classList.add('tw-parsed');
+      wrapper.classList.add('revealed');
     });
-    console.log("X Timelines preloaded and initialized.");
-    // Immediately reveal them once preloaded
-    setTimeout(() => {
-      wrappers.forEach(wrapper => wrapper.classList.add('revealed'));
-      console.log("Timelines revealed.");
-    }, 1500);
+    console.log("X Timelines preloaded and revealed.");
   } else {
     setTimeout(preloadXTimelines, 100);
   }
