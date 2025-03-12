@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const jobs = [
     {
       title: "Harrisdale Installation",
-      "House Type": "Single-story",
+      "House Type": "Single-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Concrete Tile",
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "Westminister Installation",
-      "House Type": "Two-story",
+      "House Type": "Double-Storey",
       "Installation Type": "Battery + Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Metal Tin",
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "Mount Pleasant Installation",
-      "House Type": "Double-story",
+      "House Type": "Double-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "13.2kW (30 panels)",
       roofType: "Clay Tile",
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "Alexander Heights Installation",
-      "House Type": "Single-story",
+      "House Type": "Single-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Concrete Tile",
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "Two Rocks Installation",
-      "House Type": "Single-story",
+      "House Type": "Single-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Metal Tin",
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "Kardinya Installation",
-      "House Type": "Single-story",
+      "House Type": "Single-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Clay Tile",
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
       title: "St James Installation",
-      "House Type": "Double-story",
+      "House Type": "Double-Storey",
       "Installation Type": "Normal Solar",
       "System Size": "6.6kW (15 Panels)",
       roofType: "Metal Tin",
@@ -124,6 +124,24 @@ document.addEventListener('DOMContentLoaded', function() {
         "/images/Jobs/Job7/83b35a29-2075-484f-b651-3ca17a7a716c.webp",
         "/images/Jobs/Job7/27fc3f48-fc6e-4912-b14b-6f44b17583f8.webp",
         "/images/Jobs/Job7/d8da588a-26b0-4a0f-a156-d4ff90fa593e.webp",
+      ]
+    },
+    {
+      title: "Victoria Park Installation",
+      "House Type": "Double-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Metal Tin",
+      completionDate: "12-03-2025",
+      difficulty: "Moderate",
+      timeToComplete: "(8:45am-1:15pm)",
+      suburb: "Victoria Park, WA, 6100",
+      mainImage: "/images/Jobs/Job8/m.jpg",
+      additionalImages: [
+        "/images/Jobs/Job8/p1.jpg",
+        "/images/Jobs/Job8/p2.jpg",
+        "/images/Jobs/Job8/i1.jpg",
+        "/images/Jobs/Job8/i2.jpg",
       ]
     }
   ];
