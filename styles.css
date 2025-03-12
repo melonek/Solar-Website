@@ -3167,7 +3167,67 @@ opacity: 1;
     transform: translateY(0);
 }
 
-
+/* Default (Hidden) State - Starts Flipped */
+.twitter-timeline-wrapper {
+    position: relative;
+    transform-style: preserve-3d;
+    opacity: 0;
+    transform: rotateY(180deg) scale(0.8);
+    transition: transform 1s, opacity 1s;
+  }
+  
+  /* Revealed State */
+  .twitter-timeline-wrapper.revealed {
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
+  }
+  
+  /* New scaler wrapper – purely for scaling */
+  .scaler {
+    transform-origin: top left;
+  }
+  
+  /* X Timeline */
+  .twitter-timeline {
+    max-width: 100%;
+    display: block; /* Prevents inline element issues */
+  }
+  
+  /* Assuming timeline-wrapper and timeline-container base styles */
+  .timeline-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .timeline-container {
+    flex: 1 1 50%;
+    padding: 20px;
+  }
+  
+  /* Media Queries for Smaller Screens */
+  @media screen and (max-width: 1080px) {
+    .timeline-container {
+      min-height: auto !important; /* Allow JS to control height */
+      padding: 20px;
+    }
+  
+    .twitter-timeline-wrapper {
+      height: auto !important;
+    }
+  }
+  
+  @media screen and (max-width: 780px) {
+    .timeline-container {
+      flex: 1 1 100%;
+      min-height: auto !important; /* Allow JS to control height */
+      padding: 20px;
+    }
+  
+    .twitter-timeline-wrapper {
+      height: auto !important;
+    }
+  }
+  
 /* Timeline Wrapper */
 .timeline-wrapper {
     display: flex;
@@ -3192,57 +3252,19 @@ opacity: 1;
     perspective: 1000px; /* Enables 3D transforms for animation */
   }
   
-
-  /* Default (Hidden) State - Starts Flipped */
-  .fb-page-wrapper {
-    position: relative;
-    transform-style: preserve-3d;
-    opacity: 0;
-    transform: rotateY(180deg) scale(0.8);
-    transition: transform 1s, opacity 1s;
-  }
-  
-  .fb-page-wrapper.revealed {
-    opacity: 1;
-    transform: rotateY(0deg) scale(1);
-  }
-  
-  /* New scaler wrapper – purely for scaling */
-  .scaler {
-    transform-origin: top left;
-  }
-  
-
-  /* Facebook Page Plugin */
-.fb-page {
-    max-width: 100%;
-    display: block; /* Prevents inline element issues */
-  }
-  
-  /* Media Query for Smaller Screens */
-
   @media screen and (max-width: 1080px) {
     .timeline-container {
       min-height: auto !important; /* Allow JS to control height */
       padding: 20px;
     }
   
-    .fb-page-wrapper {
-      height: auto !important;
-    }
-  }
-
   @media screen and (max-width: 780px) {
     .timeline-container {
       flex: 1 1 100%;
       min-height: auto !important; /* Allow JS to control height */
       padding: 20px;
     }
-  
-    .fb-page-wrapper {
-      height: auto !important;
-    }
-  }
+}}
       
 
 
@@ -3799,3 +3821,4 @@ footer {
   #installations p{
     font-family: 'Roboto Slab', serif;
 }
+

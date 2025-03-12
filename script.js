@@ -211,67 +211,46 @@ function initHeroSection() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize hero section on first load.
   initHeroSection();
+// Preload X Timelines and Apply Reveal
+function preloadXTimelines() {
+  if (document.readyState === 'complete' && window.twttr) {
+    twttr.ready(function (twttr) {
+      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
+      wrappers.forEach(wrapper => {
+        if (!wrapper.classList.contains('tw-parsed')) {
+          wrapper.classList.add('tw-parsed', 'revealed');
+        }
+      });
+      scaleXTimelines(); // Initial scaling after load
+    });
+  } else {
+    setTimeout(preloadXTimelines, 100); // Retry after 100ms
+  }
+}
 
-  // -------------------------
-  // FACEBOOK SDK INITIALIZATION & TIMELINE PRELOAD
-  // -------------------------
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId: '1426450195430892',
-      xfbml: true,
-      version: 'v22.0'
-    });
-    preloadFBTimelines();
-  };
-  
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s);
-    js.id = id;
-    js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-  
-  function preloadFBTimelines() {
-    const wrappers = document.querySelectorAll('.fb-page-wrapper');
-    wrappers.forEach(wrapper => {
-      if (typeof FB !== 'undefined' && !wrapper.classList.contains('fb-parsed')) {
-        FB.XFBML.parse(wrapper);
-        wrapper.classList.add('fb-parsed', 'revealed');
-      }
-    });
-  }
-  
-  function updateFBTimeline(container) {
-    if (container && typeof FB !== 'undefined') {
-      FB.XFBML.parse(container);
-    } else {
-      console.error("Container not found or FB is not defined.");
+// Scale X Timelines
+function scaleXTimelines() {
+  const containers = document.querySelectorAll('.timeline-container');
+  containers.forEach(container => {
+    const scaler = container.querySelector('.scaler');
+    const twitterTimeline = container.querySelector('.twitter-timeline');
+    if (scaler && twitterTimeline) {
+      const containerWidth = container.clientWidth - 40; // Account for padding
+      const defaultWidth = 500;
+      const scale = containerWidth / defaultWidth;
+      scaler.style.transform = `scale(${scale})`;
+      scaler.style.transformOrigin = 'top left';
+      scaler.style.width = `${defaultWidth}px`;
+      scaler.style.height = '';
+      twitterTimeline.style.width = `${defaultWidth}px`;
+      twitterTimeline.style.height = '';
     }
-  }
-  
-  function scaleFacebookTimelines() {
-    const containers = document.querySelectorAll('.timeline-container');
-    containers.forEach(container => {
-      const scaler = container.querySelector('.scaler');
-      const fbPage = container.querySelector('.fb-page');
-      if (scaler && fbPage) {
-        const containerWidth = container.clientWidth - 40;
-        const defaultWidth = 500, defaultHeight = 600;
-        const scale = containerWidth / defaultWidth;
-        scaler.style.transform = `scale(${scale})`;
-        scaler.style.transformOrigin = 'top left';
-        scaler.style.width = `${defaultWidth}px`;
-        scaler.style.height = `${defaultHeight}px`;
-        fbPage.style.width = `${defaultWidth}px`;
-        fbPage.style.height = `${defaultHeight}px`;
-        container.style.height = `${defaultHeight * scale + 40}px`;
-      }
-    });
-  }
-  window.addEventListener('resize', scaleFacebookTimelines);
-  scaleFacebookTimelines();
+  });
+}
+
+// Event Listeners
+window.addEventListener('load', preloadXTimelines);
+window.addEventListener('resize', scaleXTimelines);
   
   // -------------------------
   // CONSOLIDATED INIT & EVENT HANDLERS
