@@ -185,23 +185,23 @@ function initHeroSection() {
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSection();
 
-  // Preload X Timelines and Trigger Early Rendering
-  function preloadXTimelines() {
-    if (window.twttr && window.twttr.widgets) {
-      twttr.widgets.load(); // Force X widgets to initialize immediately
-      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
-      wrappers.forEach(wrapper => {
-        if (!wrapper.classList.contains('tw-parsed')) {
-          wrapper.classList.add('tw-parsed');
-        }
-      });
-      console.log("X Timelines preloaded and initialized.");
-    } else {
-      setTimeout(preloadXTimelines, 100); // Retry if twttr isn’t ready
-    }
+// Preload X Timelines and trigger early rendering
+function preloadXTimelines() {
+  if (window.twttr && window.twttr.widgets) {
+    twttr.widgets.load(); // Force widgets to initialize immediately
+    const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
+    wrappers.forEach(wrapper => {
+      if (!wrapper.classList.contains('tw-parsed')) {
+        wrapper.classList.add('tw-parsed');
+      }
+    });
+    console.log("X Timelines preloaded and initialized.");
+  } else {
+    setTimeout(preloadXTimelines, 100); // Retry if twttr isn’t ready
   }
-  // Trigger preloading on DOMContentLoaded instead of waiting for full load
-  preloadXTimelines();
+}
+// Trigger preloading on DOMContentLoaded instead of waiting for full load
+preloadXTimelines();
 
   // -------------------------
   // CONSOLIDATED INIT & EVENT HANDLERS
