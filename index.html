@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollSmoother.min.js" defer></script>
     <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="intro.css">
     <link rel="stylesheet" href="./gallery/gallery.css">
     <link rel="stylesheet" href="./articles/learn-article-styles.css">
     <link rel="stylesheet" href="./articles/full-article-cards.css">
@@ -104,24 +105,56 @@
 
   
   
-  <!-- About Content -->
-  <div class="about-container">
-    <div class="about-text">
-      <h2>Our Commitment to Quality</h2>
-      <p>At Nature's Spark Solar, we install top-tier solar systems with precision and care.</p>
-      <p>We offer industry-leading warranties to ensure durability and reliability:</p>
-      <ul>
-        <li><strong>25-30 Year Panel Warranty:</strong> Ensuring long-term investment security.</li>
-        <li><strong>5-10 Year Inverter Warranty:</strong> High-efficiency inverters for your home or business.</li>
-      </ul>
-      <p>Join us in harnessing the power of the sun for a sustainable future.</p>
+  <section id="intro">
+    <!-- Left Container -->
+    <div class="container left">
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 1" class="from-right">
+        </div>
+        <span class="text from-right">Text for Image 1</span>
+      </div>
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 2" class="from-left">
+        </div>
+        <span class="text from-left">Text for Image 2</span>
+      </div>
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 3" class="from-right">
+        </div>
+        <span class="text from-right">Text for Image 3</span>
+      </div>
     </div>
-    <div class="about-images">
-      <img src="./images/AboutUs/about1.png" alt="Solar installation by Pert's best solar - Nature's Spark Solar" class="about-image">
-      <img src="./images/AboutUs/about2.jpg" alt="Another Pert's best solar project by Nature's Spark Solar" class="about-image">
+
+    <!-- Worker Container (centered between left and right) -->
+    <div class="worker-container">
+      <img src="images/AboutUs/worker-tradie.webp" alt="Worker Tradie">
     </div>
-  </div>
-  
+
+    <!-- Right Container (mirror reflection) -->
+    <div class="container right">
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 1" class="from-left">
+        </div>
+        <span class="text from-left">Text for Image 1</span>
+      </div>
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 2" class="from-right">
+        </div>
+        <span class="text from-right">Text for Image 2</span>
+      </div>
+      <div class="item">
+        <div class="img-wrapper">
+          <img src="images/AboutUs/440b7b3a-8a9d-4504-9cd9-4a9135b2ceda.webp" alt="Image 3" class="from-left">
+        </div>
+        <span class="text from-left">Text for Image 3</span>
+      </div>
+    </div>
+  </section>
   <!-- Brands Section -->
   <section id="brands">
     <!-- <h2>Brands we install</h2> -->
@@ -398,6 +431,7 @@
   
   <!-- Scripts -->
   <script src="script.js" defer></script>
+    <script src="intro.js" defer></script>
   <script src="./gallery/gallery.js" defer></script>
   <script src="./packages/packages.js" defer></script>
   <script src="./articles/articleArray.js" defer></script>

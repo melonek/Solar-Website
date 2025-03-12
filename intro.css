@@ -1,0 +1,146 @@
+/* --- Intro Section ---
+       Arranged in three columns: left container, worker container, and right container */
+  #intro {
+    width: 100%;
+    min-height: 60vh;
+    background: url('/images/AboutUs/plain.png') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin-top:20px;
+  }
+  
+  /* --- Left & Right Containers --- */
+  .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* --- Worker Container --- */
+  .worker-container {
+    width: 200px; /* adjust as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 20px;
+  }
+  .worker-container img {
+    width: auto;
+    height: 500px;
+  }
+  
+  /* --- Mirror Effect for Right Container Items --- */
+  .container.right .item {
+    flex-direction: row-reverse;
+  }
+  .container.left .text {
+    margin-left: 15px;
+  }
+  .container.right .text {
+    margin-right: 15px;
+  }
+  
+  /* --- Items --- */
+  .item {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  /* Fixed-width wrapper for images to align vertically */
+  .img-wrapper {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .img-wrapper img {
+    width: 100%;
+    max-width: 130px;
+    height: auto;
+  }
+  
+  /* Text Styles */
+  .text {
+    font-size: 1.5em;
+    color: rgb(255, 255, 255);
+    opacity: 0;
+  }
+  
+  /* --- Keyframe Animations --- */
+  @keyframes slideInFromRight {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideInFromLeft {
+    0% { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes bubble {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(192,192,192,0)); }
+    50% { filter: drop-shadow(0 0 10px rgba(192,192,192,1)); }
+  }
+  @keyframes textGlow {
+    0%, 100% { text-shadow: 0 0 0 rgba(192,192,192,0); }
+    50% { text-shadow: 0 0 10px rgba(192,192,192,1); }
+  }
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
+  /* --- Animation Classes --- */
+  img.animate.from-right {
+    animation: slideInFromRight 2s forwards,
+               bubble 2s forwards 2s,
+               glow 2s forwards 2s,
+               fadeOut 2s forwards 4s;
+  }
+  img.animate.from-left {
+    animation: slideInFromLeft 2s forwards,
+               bubble 2s forwards 2s,
+               glow 2s forwards 2s,
+               fadeOut 2s forwards 4s;
+  }
+  .text.animate.from-right {
+    animation: slideInFromRight 2s forwards,
+               textGlow 2s forwards 2s,
+               fadeOut 2s forwards 4s;
+  }
+  .text.animate.from-left {
+    animation: slideInFromLeft 2s forwards,
+               textGlow 2s forwards 2s,
+               fadeOut 2s forwards 4s;
+  }
+  
+  /* --- Mobile Viewport Styles --- */
+  @media (max-width: 768px) {
+    /* Hide worker container */
+    .worker-container {
+      display: none;
+    }
+    /* Hide text badges */
+    .text {
+      display: none;
+    }
+    /* Arrange left and right containers side by side */
+    #intro {
+      flex-direction: row;
+      padding: 10px;
+    }
+    .container {
+      width: 50%;
+      margin: 0;
+    }
+  }
+  
