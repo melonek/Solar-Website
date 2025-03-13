@@ -1,172 +1,177 @@
-/* --- Intro Section ---
-       Three columns: left container, worker container, right container */
-  #intro {
-    width: 100%;
-    min-height: 60vh;
-    background: url('https://cdn.discordapp.com/attachments/1137344059686539306/1349422908329431173/melonv4n17y_very_light_green_plain_gradient_background_6180340f-16b3-4fda-8882-03e7186ce4a8.png?ex=67d30b84&is=67d1ba04&hm=53867b417d9a666effeabaf8eea87ec1171d3ff9c099affe938bd74a4b19fa85&') no-repeat center center;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  /* --- Left & Right Containers --- */
-  .container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .container.left {
-margin-bottom: 45px;
-margin-top: -55px;
-  }
+/* Intro section */
+#intro {
+  position: relative;
+  height: 70vh;
+  overflow: hidden;
+  margin-top: 20px;
+}
 
-  .container.right {
-    margin-bottom: 45px;
-    margin-top: -55px;
+/* Banner background */
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/AboutUs/bannerski.webp') no-repeat center center;
+  background-size: cover;
+  z-index: 1;
+}
+
+/* Landing container – final area for the landing image */
+#landing-container {
+  position: absolute;
+  width: 300px;      /* Final desired image size */
+  height: 300px;
+  top: 60%;          /* Adjust to place the image where you want it */
+  left: 59.2%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+/* Caption text (free, outside landing container) */
+.text-item {
+  position: absolute;
+  top: -50px;              /* Adjust vertical position as needed */
+  left: 300px;              /* Center horizontally relative to parent */
+  transform: translateX(-50%);
+  width: 300px;       /* Limits the width */
+  overflow: hidden;       /* Hides any overflow */
+  text-align: center;
+  color: #ffffff;
+  font-size: 24px;
+  font-family: Arial, sans-serif;
+  letter-spacing: 1px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  opacity: 1;             /* Make sure it’s visible */
+  z-index: 4;
+}
+
+/* Landing image styles (injected via JS) */
+#landing-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Transition for transform and opacity */
+  transition: transform 3000ms cubic-bezier(0.1, 0.8, 0.2, 1), opacity 500ms ease;
+  /* Final state: no spin, normal scale */
+  transform: scale(1) rotateY(0deg);
+}
+
+/* Initial state: image starts larger and spun rapidly around Y-axis */
+.landing-initial {
+  transform: scale(1.2) rotateY(720deg);
+}
+
+/* Bubble animation for landing image */
+@keyframes bubbleGlow {
+  0% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
+  50% { transform: scale(1.05) rotateY(0deg); filter: brightness(1.5); }
+  100% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
+}
+.landing-bubble {
+  animation: bubbleGlow 1s ease-out forwards;
+}
+
+/* Bubble animation for caption text */
+@keyframes bubbleGlowText {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-text {
+  animation: bubbleGlowText 1s ease-out forwards;
+}
+
+/* Fade-out animation (used via JS) */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.fade-out {
+  animation: fadeOut 500ms ease-out forwards;
+}
+
+/* Media Query 1: Large Tablets/Laptops (max-width: 1199px) */
+@media (max-width: 1199px) {
+  #landing-container {
+    width: 280px;
+    height: 280px;
+    top: 58%;
+    left: 57%;
   }
-  
-  /* --- Worker Container --- */
-  .worker-container {
-    width: 200px; /* Adjust as needed */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 20px;
+  .text-item {
+    top: -40px;
+    left: 280px;
+    width: 280px;
+    font-size: 22px;
   }
-  .worker-container img {
-    width: auto;
-    height: 480px;
-    margin-bottom: 65px;
+}
+
+/* Media Query 2: Tablets (max-width: 991px) */
+@media (max-width: 991px) {
+  #landing-container {
+    width: 240px;
+    height: 240px;
+    top: 57%;
+    left: 56%;
   }
-  
-  /* --- Mirror Effect for Right Container Items --- */
-  .container.right .item {
-    flex-direction: row-reverse;
+  .text-item {
+    top: -30px;
+    left: 240px;
+    width: 240px;
+    font-size: 20px;
   }
-  .container.left .text {
-    margin-left: 15px;
-  }
-  .container.right .text {
-    margin-right: 15px;
-  }
-  
-  /* --- Items --- */
-  .item {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-  }
-  
-  /* --- Fixed-Width Image Wrapper for Vertical Alignment --- */
-  .img-wrapper {
+}
+
+/* Media Query 3: Small Tablets/Mobiles (max-width: 767px) */
+@media (max-width: 767px) {
+  #landing-container {
     width: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 200px;
+    top: 55%;
+    left: 50%;
   }
-  /* Initially hide badge images in left/right containers */
-  .container .img-wrapper img {
-    width: 100%;
-    max-width: 130px;
-    height: auto;
-    opacity: 0;
+  .text-item {
+    top: -20px;
+    left: 200px;
+    width: 200px;
+    font-size: 18px;
   }
-  
-  /* --- Text Styles --- */
-  .text {
-    font-size: 1.5em;
-    color: rgb(255, 255, 255);
-    opacity: 0; /* Initially hidden for animation */
-  }
-  
-  /* --- Keyframe Animations --- */
-  @keyframes slideInFromRight {
-    0% { transform: translateX(100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-  }
-  @keyframes slideInFromLeft {
-    0% { transform: translateX(-100%); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-  }
-  @keyframes bubble {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-  }
-  @keyframes glow {
-    0%, 100% { filter: drop-shadow(0 0 0 rgba(192,192,192,0)); }
-    50% { filter: drop-shadow(0 0 10px rgba(192,192,192,1)); }
-  }
-  @keyframes textGlow {
-    0%, 100% { text-shadow: 0 0 0 rgba(192,192,192,0); }
-    50% { text-shadow: 0 0 10px rgba(192,192,192,1); }
-  }
-  @keyframes fadeOut {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-  
-  /* --- Animation Classes --- */
-  /* For images sliding from the right */
-  img.animate.from-right {
-    animation: slideInFromRight 2s forwards,
-               bubble 2s forwards 2s,
-               glow 2s forwards 2s,
-               fadeOut 2s forwards 4s;
-  }
-  /* For images sliding from the left */
-  img.animate.from-left {
-    animation: slideInFromLeft 2s forwards,
-               bubble 2s forwards 2s,
-               glow 2s forwards 2s,
-               fadeOut 2s forwards 4s;
-  }
-  /* For text sliding from the right */
-  .text.animate.from-right {
-    animation: slideInFromRight 2s forwards,
-               textGlow 2s forwards 2s,
-               fadeOut 2s forwards 4s;
-  }
-  /* For text sliding from the left */
-  .text.animate.from-left {
-    animation: slideInFromLeft 2s forwards,
-               textGlow 2s forwards 2s,
-               fadeOut 2s forwards 4s;
-  }
-  
-  /* --- Mobile Styles --- */
-  @media (max-width: 768px) {
-    /* Hide worker container and text */
-    .worker-container {
-        display: none;
-    }
+}
 
-
-    .text {
-      display: none;
-    }
-    /* Arrange left and right containers side by side */
-    #intro {
-      flex-direction: row;
-      padding: 10px;
-      height: 80vh;
-    }
-    .container {
-      width: 50%;
-      margin: 0;
-    }
-    .container .img-wrapper img {
-        width: 100%;
-        max-width: 130px;
-        height: auto;
-        margin-top :-10px;
-        opacity: 0;
-      }
+/* Media Query 4: Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  #landing-container {
+    width: 160px;
+    height: 160px;
+    top: 55%;
+    left: 50%;
   }
-  
+  .text-item {
+    top: -10px;
+    left: 160px;
+    width: 160px;
+    font-size: 16px;
+  }
+}
+
+/* Media Query 5: Very Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+  #landing-container {
+    width: 140px;
+    height: 140px;
+    top: 55%;
+    left: 50%;
+  }
+  .text-item {
+    top: -10px;
+    left: 140px;
+    width: 140px;
+    font-size: 14px;
+  }
+}
