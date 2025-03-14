@@ -1,5 +1,28 @@
+/**
+ * IMPORTANT:
+ * – Ensure your HTML preload tags are correctly set up. For example:
+ *   <link rel="preload" as="image" href="images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+ * – Remove any extra spaces in your URLs.
+ */
+
 // -------------------------
-// HANDLE PAGE SHOW (bfcache)
+// HELPER: PRELOAD IMAGES FUNCTION
+// -------------------------
+function preloadImages(imageArray) {
+  return Promise.all(
+    imageArray.map(src => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(src);
+        img.onerror = () => reject(new Error('Failed to load image: ' + src));
+      });
+    })
+  );
+}
+
+// -------------------------
+// HANDLE PAGE SHOW (for bfcache)
 // -------------------------
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
@@ -7,8 +30,9 @@ window.addEventListener('pageshow', (event) => {
   }
 });
 
-// ===================== HELPER FUNCTIONS =====================
-
+// -------------------------
+// PRELOAD X TIMELINES
+// -------------------------
 function preloadXTimelines() {
   if (window.twttr && window.twttr.widgets) {
     twttr.widgets.load().then(() => {
@@ -28,7 +52,9 @@ function preloadXTimelines() {
 }
 preloadXTimelines();
 
-// ===================== PRELOAD SUB-PAGE ASSETS =====================
+// -------------------------
+// PRELOAD SUB-PAGE ASSETS
+// -------------------------
 const subPageImages = [
   './images/universalBanner/Solar-drone-photo-Perth.webp',
   './images/Green,Blue,Orange-sectionsInPpackages/green.webp',
@@ -36,22 +62,26 @@ const subPageImages = [
   './images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
 ];
 window.addEventListener('load', () => {
-  preloadImages(subPageImages);
+  preloadImages(subPageImages).catch(err => console.error(err));
 });
 
-// Helper to get current dimensions based on viewport:
+// -------------------------
+// HELPER: GET HERO DIMENSIONS (responsive sizing)
+// -------------------------
 function getHeroDimensions() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  const solarek = isMobile 
-    ? { width: 5000, height: 3500 }
-    : { width: 5000, height: 3500 };
+  // Dimensions for the primary hero image
+  const solarek = { width: 5000, height: 3500 };
+  // Different dimensions for the falling leaves image based on device
   const leaves = isMobile 
     ? { width: 4200, height: 3700 }
     : { width: 6500, height: 4500 };
   return { solarek, leaves, isMobile };
 }
 
-// ===================== HERO SECTION INITIALIZATION =====================
+// -------------------------
+// HERO SECTION INITIALIZATION
+// -------------------------
 function initHeroSection() {
   const heroSection = document.querySelector('.hero-section');
   const heroCanvas = document.querySelector('#hero-canvas');
@@ -82,6 +112,7 @@ function initHeroSection() {
     './images/leafBanner/—Pngtree—falling green leaves_5629857.webp'
   ];
   
+  // Preload hero images before initializing the Three.js scene
   preloadImages(heroImagePaths).then(() => {
     if (typeof ScrollSmoother !== 'undefined') {
       gsap.registerPlugin(ScrollSmoother);
@@ -93,6 +124,7 @@ function initHeroSection() {
       console.log("Running parallax without ScrollSmoother.");
     }
     
+    // Setup Three.js scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
@@ -117,6 +149,7 @@ function initHeroSection() {
       (err) => console.error('Error loading second image:', err)
     );
     
+    // Create plane geometry and materials for each image
     const planeWidth = 20;
     const planeHeight = 20 * (solarek.height / solarek.width);
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
@@ -133,6 +166,7 @@ function initHeroSection() {
     const firstPlane = new THREE.Mesh(geometry, firstMaterial);
     const secondPlane = new THREE.Mesh(geometry, secondMaterial);
     
+    // Helper function to update plane scales based on viewport dimensions
     const scaleDivider = 4000;
     function updatePlaneScales() {
       const dims = getHeroDimensions();
@@ -141,10 +175,12 @@ function initHeroSection() {
     }
     updatePlaneScales();
     
+    // Set initial positions and add to scene
     firstPlane.position.set(0, 0, -1);
     secondPlane.position.set(0, 0, 0);
     scene.add(firstPlane, secondPlane);
     
+    // Parallax and rotation intensities for scroll effect
     const parallaxIntensityFirst = 0.25;
     const parallaxIntensitySecond = 0.15;
     const rotationIntensity = 0.3;
@@ -169,6 +205,7 @@ function initHeroSection() {
     }
     animateParallax();
     
+    // Update renderer and scales on window resize
     window.addEventListener('resize', () => {
       const newCanvasHeight = window.innerHeight * 1.3;
       renderer.setSize(window.innerWidth, newCanvasHeight);
@@ -181,46 +218,40 @@ function initHeroSection() {
   });
 }
 
-// ===================== MAIN INITIALIZATION =====================
+// -------------------------
+// MAIN INITIALIZATION
+// -------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSection();
 
-// Function to initialize and reveal timelines
-function initXTimelines() {
-  // Check if Twitter's twttr object is available
-  if (window.twttr && window.twttr.widgets) {
-    // Load all widgets and reveal them
-    window.twttr.widgets.load(document.body).then(() => {
-      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
-      wrappers.forEach(wrapper => {
-        wrapper.classList.add('revealed');
+  // Initialize and reveal Twitter timelines
+  function initXTimelines() {
+    if (window.twttr && window.twttr.widgets) {
+      window.twttr.widgets.load(document.body).then(() => {
+        const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
+        wrappers.forEach(wrapper => {
+          wrapper.classList.add('revealed');
+        });
+        console.log("X Timelines successfully loaded and revealed.");
+      }).catch(err => {
+        console.error("Error loading X timelines:", err);
       });
-      console.log("X Timelines successfully loaded and revealed.");
-    }).catch(err => {
-      console.error("Error loading X timelines:", err);
-    });
-  } else {
-    // Retry after a short delay if twttr isn't ready
-    console.log("Twitter widgets not ready, retrying...");
-    setTimeout(initXTimelines, 500);
+    } else {
+      console.log("Twitter widgets not ready, retrying...");
+      setTimeout(initXTimelines, 500);
+    }
   }
-}
-
-// Run initialization when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-  initXTimelines();
-});
-
-// Optional: Re-run on window load to catch late script loading
-window.addEventListener('load', () => {
-  if (!document.querySelector('.twitter-timeline-wrapper.revealed')) {
-    initXTimelines();
-  }
-});
-
-
+  
+  // Use both DOMContentLoaded and load events to ensure timelines are initialized
+  document.addEventListener('DOMContentLoaded', initXTimelines);
+  window.addEventListener('load', () => {
+    if (!document.querySelector('.twitter-timeline-wrapper.revealed')) {
+      initXTimelines();
+    }
+  });
+  
   // -------------------------
-  // CONSOLIDATED INIT & EVENT HANDLERS
+  // GENERAL SCROLL & TOUCH HANDLING
   // -------------------------
   let isScrolling = false, isTouching = false;
   window.addEventListener('scroll', () => {
@@ -237,11 +268,11 @@ window.addEventListener('load', () => {
   function updateParallaxBuild() {
     const scrollY = window.scrollY;
     if (!buildSolarSection) return;
-    const sectionTop = buildSolarSection.offsetTop,
-          sectionHeight = buildSolarSection.clientHeight;
+    const sectionTop = buildSolarSection.offsetTop;
+    const sectionHeight = buildSolarSection.clientHeight;
     if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-    const progress = (scrollY - sectionTop) / sectionHeight,
-          parallaxY = progress * sectionHeight * 0.25;
+    const progress = (scrollY - sectionTop) / sectionHeight;
+    const parallaxY = progress * sectionHeight * 0.25;
     if (buildSolarVideo) {
       buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
     }
@@ -255,7 +286,7 @@ window.addEventListener('load', () => {
   });
   
   // -------------------------
-  // REVEAL FUNCTIONS
+  // REVEAL FUNCTIONS FOR VARIOUS SECTIONS
   // -------------------------
   function revealXTimelines() {
     const timelines = document.querySelectorAll('.twitter-timeline-wrapper');
@@ -271,8 +302,8 @@ window.addEventListener('load', () => {
   }
 
   function revealButtons() {
-    const buttons = document.querySelectorAll('.fancy-button'),
-          triggerBottom = window.innerHeight * 0.8;
+    const buttons = document.querySelectorAll('.fancy-button');
+    const triggerBottom = window.innerHeight * 0.8;
     buttons.forEach(button => {
       const buttonTop = button.getBoundingClientRect().top;
       button.classList.toggle('revealed', buttonTop < triggerBottom);
@@ -282,8 +313,8 @@ window.addEventListener('load', () => {
   window.addEventListener('load', revealButtons);
   
   function revealCards() {
-    const cards = document.querySelectorAll('.brand-card'),
-          triggerBottom = window.innerHeight * 0.9;
+    const cards = document.querySelectorAll('.brand-card');
+    const triggerBottom = window.innerHeight * 0.9;
     cards.forEach(card => {
       const cardTop = card.getBoundingClientRect().top;
       card.classList.toggle('active', cardTop < triggerBottom);
@@ -291,8 +322,8 @@ window.addEventListener('load', () => {
   }
   
   function revealArticles() {
-    const articles = document.querySelectorAll('.article-card'),
-          triggerBottom = window.innerHeight * 0.8;
+    const articles = document.querySelectorAll('.article-card');
+    const triggerBottom = window.innerHeight * 0.8;
     articles.forEach((article, index) => {
       const articleTop = article.getBoundingClientRect().top;
       if (articleTop < triggerBottom) {
@@ -304,8 +335,8 @@ window.addEventListener('load', () => {
   }
   
   function revealLearnCards() {
-    const learnCards = document.querySelectorAll('.learn-card'),
-          triggerBottom = window.innerHeight * 0.8;
+    const learnCards = document.querySelectorAll('.learn-card');
+    const triggerBottom = window.innerHeight * 0.8;
     learnCards.forEach((card, index) => {
       const cardTop = card.getBoundingClientRect().top;
       if (cardTop < triggerBottom) {
@@ -317,12 +348,12 @@ window.addEventListener('load', () => {
   }
   
   function revealUniqueServices() {
-    const products = document.querySelectorAll('#unique-services .unique-service-product'),
-          triggerBottom = window.innerHeight * 0.8;
+    const products = document.querySelectorAll('#unique-services .unique-service-product');
+    const triggerBottom = window.innerHeight * 0.8;
     products.forEach(product => {
-      const productTop = product.getBoundingClientRect().top,
-            revealDirection = product.getAttribute('data-reveal-direction'),
-            delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
+      const productTop = product.getBoundingClientRect().top;
+      const revealDirection = product.getAttribute('data-reveal-direction');
+      const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
       if (productTop < triggerBottom) {
         setTimeout(() => {
           product.classList.add('revealed');
@@ -336,8 +367,8 @@ window.addEventListener('load', () => {
   }
   
   function revealProductSections() {
-    const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product'),
-          triggerBottom = window.innerHeight * 0.8;
+    const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
+    const triggerBottom = window.innerHeight * 0.8;
     sections.forEach(section => {
       const sectionTop = section.getBoundingClientRect().top;
       section.classList.toggle('revealed', sectionTop < triggerBottom);
@@ -425,7 +456,7 @@ window.addEventListener('load', () => {
   });
   
   // -------------------------
-  // NAVIGATION DROPDOWN & TOGGLER
+  // NAVIGATION DROPDOWN & TOGGLER HANDLING
   // -------------------------
   const mobileMenu = document.getElementById('mobile-menu');
   const navLinks = document.querySelector('.nav-links');
@@ -454,7 +485,7 @@ window.addEventListener('load', () => {
   }
   
   // -------------------------
-  // NAVIGATION DROPDOWN HANDLERS
+  // NAVIGATION DROPDOWN EVENT HANDLERS
   // -------------------------
   document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
     dropbtn.addEventListener('click', function(e) {
@@ -501,7 +532,7 @@ window.addEventListener('load', () => {
       }
     });
   });
-
+  
   window.addEventListener('scroll', () => {
     if (mediaQuery.matches && navLinks.classList.contains('active')) {
       closeAllDropdowns();
