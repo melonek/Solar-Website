@@ -97,7 +97,9 @@
 
 @media screen and (max-width: 430px) {
   .fixed-image {
-      width: 260px;
-      height: 260px;
+    width: 260px;
+    height: 260px;
+    max-width: 260px;
+    max-height: 260px;
   }
 }
