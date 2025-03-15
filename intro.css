@@ -88,10 +88,10 @@
 
 @media screen and (max-width: 928px) {
   .fixed-image {
-    width: 180px;       /* Reduced width */
-    height: 180px;      /* Reduced height */
-    max-width: 180px;   /* Adjust max dimensions as needed */
-    max-height: 180px;
+    width: 170px;       /* Reduced width */
+    height: 170px;      /* Reduced height */
+    max-width: 170px;   /* Adjust max dimensions as needed */
+    max-height: 170px;
   }
 }
 
