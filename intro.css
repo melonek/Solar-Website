@@ -85,3 +85,12 @@
 .animate-text {
   animation: bubbleGlowText 1s ease-out forwards;
 }
+
+@media screen and (max-width: 928px) {
+  .fixed-image {
+    width: 200px;       /* Reduced width */
+    height: 200px;      /* Reduced height */
+    max-width: 200px;   /* Adjust max dimensions as needed */
+    max-height: 200px;
+  }
+}
