@@ -1302,7 +1302,7 @@ const bannerConfigs = [
     sectionSelector: '.panels-section',
     canvasId: 'hero-canvas',
     firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/green.webp',
-    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/green-leaf.webp', // Fixed typo: 'iimages' to 'images'
+    secondImagePath: '',
     firstWidth: 4500,
     firstHeight: 3500,
     secondWidth: 8000,
@@ -1312,7 +1312,7 @@ const bannerConfigs = [
     sectionSelector: '.inverters-section',
     canvasId: 'inverter-canvas',
     firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
-    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/blue-leaf.png', // Fixed typo: 'iimages' to 'images'
+    secondImagePath: '',
     firstWidth: 4500,
     firstHeight: 3500,
     secondWidth: 4000,
@@ -1322,7 +1322,7 @@ const bannerConfigs = [
     sectionSelector: '.battery-storage',
     canvasId: 'battery-canvas',
     firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
-    secondImagePath: '../idmages/Green,Blue,Orange-sectionsInPpackages/orange-leaf.png', // Fixed typo: 'iimages' to 'images'
+    secondImagePath: '',
     firstWidth: 6500,
     firstHeight: 4500,
     secondWidth: 2000,

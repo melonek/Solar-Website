@@ -1,33 +1,77 @@
-/**
- * IMPORTANT:
- * – Ensure your HTML preload tags are correctly set up.
- * – Remove any extra spaces in your URLs.
- */
-
 // -------------------------
-// HELPER: PRELOAD IMAGES FUNCTION
+// HELPER: PRELOAD IMAGES WITH PROGRESS FUNCTION
 // -------------------------
-function preloadImages(imageArray) {
-  return Promise.all(
-    imageArray.map(src => {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => resolve(src);
-        img.onerror = () => reject(new Error('Failed to load image: ' + src));
-      });
-    })
-  );
+function preloadImagesWithProgress(imageArray, progressCallback) {
+  let loadedCount = 0;
+  const totalImages = imageArray.length;
+  
+  return new Promise((resolve, reject) => {
+    imageArray.forEach(src => {
+      const img = new Image();
+      img.src = src.trim(); // remove extra spaces
+      img.onload = () => {
+        loadedCount++;
+        progressCallback(loadedCount / totalImages);
+        if (loadedCount === totalImages) {
+          resolve();
+        }
+      };
+      img.onerror = () => reject(new Error('Failed to load image: ' + src));
+    });
+  });
 }
 
 // -------------------------
-// HANDLE PAGE SHOW (for bfcache)
+// UPDATE PROGRESS BAR FUNCTION
 // -------------------------
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    initHeroSection();
+function updateProgressBar(progressRatio) {
+  const progressBar = document.getElementById('progress-bar');
+  if (progressBar) {
+    progressBar.style.width = `${progressRatio * 100}%`;
   }
+}
+
+// -------------------------
+// INITIALIZE HERO SECTION AFTER PRELOADING
+// -------------------------
+function initHeroSection() {
+  const heroSection = document.querySelector('.hero-section');
+  // (Existing hero initialization code here)
+  // ...
+  // After initializing Three.js scene and GSAP animations,
+  // Fade in the hero content (using GSAP fade from 0 to 1, for example)
+  gsap.fromTo(heroSection, { opacity: 0 }, { opacity: 1, duration: 1 });
+}
+
+// -------------------------
+// START PRELOADING ON DOMContentLoaded
+// -------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  // List of hero assets to preload (ensure URLs have no extra spaces)
+  const heroAssets = [
+    './images/AboutUs/solarek.webp',
+    './images/leafBanner/leaf.webp'
+  ];
+  
+  preloadImagesWithProgress(heroAssets, updateProgressBar)
+    .then(() => {
+      // Optionally, add a slight delay to show the progress bar filled
+      setTimeout(() => {
+        // Fade out the progress bar overlay
+        gsap.to('#progress-container', { opacity: 0, duration: 0.5, onComplete: () => {
+          document.getElementById('progress-container').style.display = 'none';
+          // Now initialize the hero section animations and Three.js scene
+          initHeroSection();
+        }});
+      }, 200);
+    })
+    .catch(err => {
+      console.error(err);
+      // In case of error, proceed with initialization
+      initHeroSection();
+    });
 });
+
 
 // -------------------------
 // PRELOAD SUB-PAGE ASSETS
@@ -83,8 +127,8 @@ function initHeroSection() {
   
   let { solarek, leaves } = getHeroDimensions();
   const heroImagePaths = [
-    './images/AboutUs/solarek.webp',
-    './images/leafBanner/—Pngtree—falling green leaves_5629857.webp'
+    '/images/AboutUs/solarek.webp',
+    '/images/leafBanner/leaf.webp'
   ];
   
   // Preload hero images before initializing the Three.js scene
@@ -118,7 +162,7 @@ function initHeroSection() {
       (err) => console.error('Error loading first image:', err)
     );
     const secondImageTexture = textureLoader.load(
-      './images/leafBanner/—Pngtree—falling green leaves_5629857.webp',
+      './images/leafBanner/leaf.webp',
       () => console.log('Second image loaded successfully'),
       undefined,
       (err) => console.error('Error loading second image:', err)
