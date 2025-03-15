@@ -23,9 +23,9 @@
 /* Anchor point – its position is computed by JS */
 .anchor-point {
   position: absolute;
-  width: 10px;  /* For debugging; hide or adjust in production */
-  height: 10px;
-  background: rgba(255, 0, 0, 0.5);
+  /* width: 10px;  For debugging; hide or adjust in production */
+  /* height: 10px; */
+  /* background: rgba(255, 0, 0, 0.5); */
   z-index: 10;
   left: 0;
   top: 0;
