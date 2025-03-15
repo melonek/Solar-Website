@@ -6,31 +6,63 @@
   margin-top: 20px;
 }
 
-/* Banner background and container */
+/* Banner container */
 .banner {
   position: relative;
   width: 100%;
   height: 100%;
-  background: url('/images/AboutUs/bannerski.webp') no-repeat center center;
-  background-size: 1620px auto;
   z-index: 1;
 }
 
-/* Landing container – its position & size will be updated dynamically */
-#landing-container {
+#banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Invisible anchor point */
+.anchor-point {
   position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 3;
+  width: 1px;
+  height: 1px;
+  top: 30%; /* Adjust to match your desired spot */
+  left: 47%; /* Adjust to match your desired spot */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Fixed images */
+.fixed-image {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  max-width: 340px;
+  max-height: 340px;
+  object-fit: contain;
+  z-index: 2;
+  transition: transform 3000ms cubic-bezier(0.1, 0.8, 0.2, 1), opacity 500ms ease;
+}
+
+/* Bubble animation for fixed images */
+@keyframes bubbleGlow {
+  0% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
+  50% { transform: scale(1.05) rotateY(0deg); filter: brightness(1.5); }
+  100% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
+}
+.landing-bubble {
+  animation: bubbleGlow 1s ease-out forwards;
 }
 
 /* Caption text */
 .text-item {
   position: absolute;
+  top: 60%;
+  left: 50%;
   transform: translateX(-50%);
-  display: -webkit-box;            /* Needed for line-clamp */
-  -webkit-box-orient: vertical;    /* Set the box orientation to vertical */
-  -webkit-line-clamp: 2;           /* Limit to 2 lines */
-  overflow: hidden;                /* Hide overflow */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   text-align: center;
   color: #ffffff;
   font-family: Arial, sans-serif;
@@ -41,37 +73,11 @@
   z-index: 4;
 }
 
-
-/* Landing image styles (injected via JS) */
-#landing-image {
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  transition: transform 3000ms cubic-bezier(0.1, 0.8, 0.2, 1), opacity 500ms ease;
-  transform: scale(1) rotateY(0deg);
-}
-
-/* Initial state: image starts larger and rotated */
-.landing-initial {
-  transform: scale(1.2) rotateY(720deg);
-}
-
-/* Bubble animation for landing image */
-@keyframes bubbleGlow {
-  0% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
-  50% { transform: scale(1.05) rotateY(0deg); filter: brightness(1.5); }
-  100% { transform: scale(1) rotateY(0deg); filter: brightness(1); }
-}
-.landing-bubble {
-  animation: bubbleGlow 1s ease-out forwards;
-}
-
 /* Bubble animation for caption text */
 @keyframes bubbleGlowText {
-  0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% { transform: scale(0.5) translateX(-50%); opacity: 0; }
+  50% { transform: scale(1.2) translateX(-50%); opacity: 1; }
+  100% { transform: scale(1) translateX(-50%); opacity: 1; }
 }
 .animate-text {
   animation: bubbleGlowText 1s ease-out forwards;
