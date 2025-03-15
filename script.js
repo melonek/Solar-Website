@@ -1,7 +1,6 @@
 /**
  * IMPORTANT:
- * – Ensure your HTML preload tags are correctly set up. For example:
- *   <link rel="preload" as="image" href="images/leafBanner/—Pngtree—falling green leaves_5629857.webp">
+ * – Ensure your HTML preload tags are correctly set up.
  * – Remove any extra spaces in your URLs.
  */
 
@@ -31,28 +30,6 @@ window.addEventListener('pageshow', (event) => {
 });
 
 // -------------------------
-// PRELOAD X TIMELINES
-// -------------------------
-function preloadXTimelines() {
-  if (window.twttr && window.twttr.widgets) {
-    twttr.widgets.load().then(() => {
-      const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
-      wrappers.forEach(wrapper => {
-        if (!wrapper.classList.contains('tw-parsed')) {
-          wrapper.classList.add('tw-parsed');
-        }
-      });
-      console.log("X Timelines preloaded and initialized.");
-    }).catch(err => {
-      console.error("Error preloading X timelines:", err);
-    });
-  } else {
-    setTimeout(preloadXTimelines, 100);
-  }
-}
-preloadXTimelines();
-
-// -------------------------
 // PRELOAD SUB-PAGE ASSETS
 // -------------------------
 const subPageImages = [
@@ -70,9 +47,7 @@ window.addEventListener('load', () => {
 // -------------------------
 function getHeroDimensions() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  // Dimensions for the primary hero image
   const solarek = { width: 5000, height: 3500 };
-  // Different dimensions for the falling leaves image based on device
   const leaves = isMobile 
     ? { width: 4200, height: 3700 }
     : { width: 6500, height: 4500 };
@@ -219,49 +194,44 @@ function initHeroSection() {
 }
 
 // -------------------------
-// MAIN INITIALIZATION
+// MAIN INITIALIZATION (Hero Section)
 // -------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSection();
+});
 
-  // Initialize and reveal Twitter timelines
-  function initXTimelines() {
-    if (window.twttr && window.twttr.widgets) {
-      window.twttr.widgets.load(document.body).then(() => {
-        const wrappers = document.querySelectorAll('.twitter-timeline-wrapper');
-        wrappers.forEach(wrapper => {
-          wrapper.classList.add('revealed');
-        });
-        console.log("X Timelines successfully loaded and revealed.");
-      }).catch(err => {
-        console.error("Error loading X timelines:", err);
-      });
-    } else {
-      console.log("Twitter widgets not ready, retrying...");
-      setTimeout(initXTimelines, 500);
-    }
+// -------------------------
+// SECOND INITIALIZATION BLOCK (UI, Scroll, Navigation, etc.)
+// -------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  function scaleFacebookTimelines() {
+    const containers = document.querySelectorAll('.timeline-container');
+    containers.forEach(container => {
+      const scaler = container.querySelector('.scaler');
+      const fbPage = container.querySelector('.fb-page');
+      if (scaler && fbPage) {
+        const containerWidth = container.clientWidth - 40;
+        const defaultWidth = 500, defaultHeight = 600;
+        const scale = containerWidth / defaultWidth;
+        scaler.style.transform = `scale(${scale})`;
+        scaler.style.transformOrigin = 'top left';
+        scaler.style.width = `${defaultWidth}px`;
+        scaler.style.height = `${defaultHeight}px`;
+        fbPage.style.width = `${defaultWidth}px`;
+        fbPage.style.height = `${defaultHeight}px`;
+        container.style.height = `${defaultHeight * scale + 40}px`;
+      }
+    });
   }
+  window.addEventListener('resize', scaleFacebookTimelines);
+  scaleFacebookTimelines();
   
-  // Use both DOMContentLoaded and load events to ensure timelines are initialized
-  document.addEventListener('DOMContentLoaded', initXTimelines);
-  window.addEventListener('load', () => {
-    if (!document.querySelector('.twitter-timeline-wrapper.revealed')) {
-      initXTimelines();
-    }
-  });
-  
-  // -------------------------
-  // GENERAL SCROLL & TOUCH HANDLING
-  // -------------------------
   let isScrolling = false, isTouching = false;
   window.addEventListener('scroll', () => {
     isScrolling = true;
     setTimeout(() => { isScrolling = false; }, 200);
   });
   
-  // -------------------------
-  // BUILD SOLAR SECTION PARALLAX
-  // -------------------------
   const buildSolarSection = document.getElementById('build-solar');
   const buildSolarVideo = document.querySelector('.build-solar-video video');
   let lastScrollBuild = 0;
@@ -285,22 +255,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // -------------------------
-  // REVEAL FUNCTIONS FOR VARIOUS SECTIONS
-  // -------------------------
-  function revealXTimelines() {
-    const timelines = document.querySelectorAll('.twitter-timeline-wrapper');
+  function revealFacebookTimelines() {
+    const timelines = document.querySelectorAll('.fb-page-wrapper');
     const triggerBottom = window.innerHeight * 0.8;
     timelines.forEach(timeline => {
       const timelineTop = timeline.getBoundingClientRect().top;
       if (timelineTop < triggerBottom) {
         timeline.classList.add('revealed');
-      } else {
-        timeline.classList.remove('revealed');
       }
     });
   }
-
+  
   function revealButtons() {
     const buttons = document.querySelectorAll('.fancy-button');
     const triggerBottom = window.innerHeight * 0.8;
@@ -375,8 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   window.addEventListener('scroll', revealProductSections);
-  window.addEventListener('scroll', revealXTimelines);
-  window.addEventListener('load', revealXTimelines);
+  window.addEventListener('scroll', revealFacebookTimelines);
+  window.addEventListener('load', revealFacebookTimelines);
   revealProductSections();
   
   let lastCall = 0, scrollTimeout;
@@ -392,7 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
         revealArticles();
         revealUniqueServices();
         revealLearnCards();
-        revealXTimelines();
       });
     }, 100);
   }
@@ -404,13 +368,10 @@ document.addEventListener('DOMContentLoaded', () => {
     revealArticles();
     revealUniqueServices();
     revealLearnCards();
-    revealXTimelines();
+    revealFacebookTimelines();
   }
   window.addEventListener('load', initAll);
   
-  // -------------------------
-  // BUTTON CLICK HANDLERS
-  // -------------------------
   document.querySelectorAll('.fancy-button').forEach(button => {
     button.addEventListener('click', function(event) {
       if (isScrolling || isTouching) {
@@ -455,9 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  // -------------------------
-  // NAVIGATION DROPDOWN & TOGGLER HANDLING
-  // -------------------------
   const mobileMenu = document.getElementById('mobile-menu');
   const navLinks = document.querySelector('.nav-links');
   const mediaQuery = window.matchMedia('(max-width: 768px)');
@@ -484,9 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // -------------------------
-  // NAVIGATION DROPDOWN EVENT HANDLERS
-  // -------------------------
   document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
     dropbtn.addEventListener('click', function(e) {
       if (mediaQuery.matches) {
@@ -569,4 +524,124 @@ document.addEventListener('DOMContentLoaded', () => {
       element.classList.remove('active');
     });
   }
+});
+
+// -------------------------
+// NEW: Facebook Graph API Page Timeline Fetch
+// -------------------------
+
+// IMPORTANT: To fetch a page's timeline, you need a valid Page Access Token that has the pages_read_engagement permission.
+// Replace the value below with your valid Page Access Token.
+const fbPageAccessToken = "EAAT8VyHgCQ8BO8XCpY2qNOdK0j5jH0trMBLhZAfWZBRojrfmR4A7HtMZAMQ4NbXhsHBv2fdQsZB0ZAPsvEaevBqTKBfZBdf80M2nSd8ZBVkww93AZAPx2HvMOhGIzmpEYPe4eo9uO1bfYvhuGBuo6J4hb723kFrCqCEebxFInTyrG9rmkC7P2JArPwZDZD";
+// Your App ID (for reference, if needed)
+const fbAppId = "10235620378314828";
+
+/**
+ * Fetches and renders timeline posts for a given Facebook page.
+ * @param {string} pageName - The page’s username or ID (e.g., "SolarQuotes").
+ * @param {string} containerSelector - CSS selector for the container to render posts into.
+ * @param {string} [nextURL] - (Optional) URL for fetching the next page of results.
+ */
+async function fetchFBPageTimeline(pageName, containerSelector, nextURL) {
+  let url = "";
+  if (nextURL) {
+    url = nextURL;
+  } else {
+    // Initial URL to fetch page posts
+    url = `https://graph.facebook.com/v12.0/${pageName}/posts?fields=message,created_time,story,permalink_url&access_token=${fbPageAccessToken}`;
+  }
+  
+  console.log("Fetching timeline for page", pageName, "from:", url);
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log("Fetched data for page", pageName, data);
+    
+    if (data.error) {
+      console.error("Graph API Error for page", pageName, data.error);
+      return;
+    }
+    renderFBPagePosts(data.data, containerSelector);
+    
+    // Add a "Load More" button if more posts are available
+    if (data.paging && data.paging.next) {
+      const container = document.querySelector(containerSelector);
+      if (container) {
+        const loadMoreBtn = document.createElement("button");
+        loadMoreBtn.textContent = "Load More Posts";
+        loadMoreBtn.style.marginTop = "10px";
+        loadMoreBtn.addEventListener("click", () => {
+          loadMoreBtn.remove();
+          fetchFBPageTimeline(pageName, containerSelector, data.paging.next);
+        });
+        container.appendChild(loadMoreBtn);
+      } else {
+        console.error("Page timeline container not found for selector:", containerSelector);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching timeline for page", pageName, error);
+  }
+}
+
+/**
+ * Renders fetched page posts into the specified container.
+ * @param {Array} posts - Array of post objects.
+ * @param {string} containerSelector - CSS selector for the container element.
+ */
+function renderFBPagePosts(posts, containerSelector) {
+  console.log("Rendering page posts:", posts);
+  const container = document.querySelector(containerSelector);
+  if (!container) {
+    console.error("Page timeline container not found for selector:", containerSelector);
+    return;
+  }
+  // Clear container before rendering posts
+  container.innerHTML = "";
+  
+  if (!posts || posts.length === 0) {
+    container.innerHTML = "<p>No posts available.</p>";
+    return;
+  }
+  
+  posts.forEach(post => {
+    const postDiv = document.createElement("div");
+    postDiv.className = "fb-post-custom";
+    postDiv.style.border = "1px solid #ddd";
+    postDiv.style.padding = "15px";
+    postDiv.style.marginBottom = "15px";
+    postDiv.style.borderRadius = "5px";
+    postDiv.style.background = "#f9f9f9";
+    
+    const content = post.message || post.story || "No content available";
+    const contentP = document.createElement("p");
+    contentP.textContent = content;
+    
+    const timeEl = document.createElement("small");
+    const d = new Date(post.created_time);
+    timeEl.textContent = d.toLocaleString();
+    
+    if (post.permalink_url) {
+      const linkEl = document.createElement("a");
+      linkEl.href = post.permalink_url;
+      linkEl.target = "_blank";
+      linkEl.rel = "noopener noreferrer";
+      linkEl.textContent = "View on Facebook";
+      postDiv.appendChild(linkEl);
+    }
+    
+    postDiv.appendChild(contentP);
+    postDiv.appendChild(timeEl);
+    container.appendChild(postDiv);
+  });
+}
+
+// When the DOM is fully loaded, fetch timeline posts for each page.
+document.addEventListener("DOMContentLoaded", () => {
+  // For SolarQuotes – this will replace the contents of its fb-page-wrapper.
+  fetchFBPageTimeline("SolarQuotes", ".timeline-container.solar-quotes .fb-page-wrapper");
+  
+  // For OneStepOffTheGrid – this will replace the contents of its fb-page-wrapper.
+  fetchFBPageTimeline("OneStepOffTheGrid", ".timeline-container.one-step-off-the-grid .fb-page-wrapper");
 });
