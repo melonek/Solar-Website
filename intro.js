@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const banner = document.querySelector('.banner');
   const bannerImg = document.getElementById('banner-image');
   const landingText = document.getElementById('landing-text');
-  const canvas = document.getElementById('hidden-canvas');
-  const ctx = canvas.getContext('2d');
+  const anchorEl = document.querySelector('.anchor-point');
 
   // Animation timing settings
   const landingDuration = 3000;
@@ -22,146 +21,117 @@ document.addEventListener("DOMContentLoaded", function () {
   const displayDuration = 5000;
   const fadeDuration = 500;
 
-  // Spin settings
-  const initialRotationDegrees = 720;
+  // Spin settings for fixed image animation
+  const initialRotationDegrees = 4000;  // as per new requirement
   const startingScaleFactor = 1.2;
   const finalScaleFactor = 1;
 
-  // Cache red dot position in natural coordinates
-  let redDotPosition = null;
+  // Desired anchor position in the natural coordinate system (percentages)
+  const desiredAnchorNaturalXPercent = 58.7; // center horizontally
+  const desiredAnchorNaturalYPercent = 59; // 40% from top
 
-  // Function to detect red dot (#ff0000) in natural image coordinates
-  function getRedDotPosition() {
-    canvas.width = bannerImg.naturalWidth;
-    canvas.height = bannerImg.naturalHeight;
-    ctx.drawImage(bannerImg, 0, 0, canvas.width, canvas.height);
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    let redDotX = 0;
-    let redDotY = 0;
-    let pixelCount = 0;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      if (r === 255 && g === 0 && b === 0) {
-        const x = (i / 4) % canvas.width;
-        const y = Math.floor(i / 4 / canvas.width);
-        redDotX += x;
-        redDotY += y;
-        pixelCount++;
-      }
-    }
-
-    if (pixelCount > 0) {
-      redDotX = redDotX / pixelCount;
-      redDotY = redDotY / pixelCount;
-      console.log(`Red dot (natural): ${redDotX}px, ${redDotY}px`);
-      return { x: redDotX, y: redDotY };
-    } else {
-      console.warn('No red dot found. Using fallback.');
-      return { x: bannerImg.naturalWidth * 0.47, y: bannerImg.naturalHeight * 0.30 };
-    }
-  }
-
-  // Function to position an image over the red dot
-  function positionImage(image) {
-    if (!redDotPosition) {
-      redDotPosition = getRedDotPosition();
-    }
-
-    // Get current banner dimensions
+  // Compute the container coordinates for the desired anchor point,
+  // taking into account object-fit: cover cropping.
+  function getAnchorCenter() {
     const bannerRect = banner.getBoundingClientRect();
-    const bannerWidth = bannerRect.width;
-    const bannerHeight = bannerRect.height;
+    const containerWidth = bannerRect.width;
+    const containerHeight = bannerRect.height;
+    const naturalWidth = bannerImg.naturalWidth;
+    const naturalHeight = bannerImg.naturalHeight;
 
-    // Calculate visible area due to object-fit: cover
-    const imgNaturalAspect = bannerImg.naturalWidth / bannerImg.naturalHeight;
-    const bannerAspect = bannerWidth / bannerHeight;
-    let visibleWidth, visibleHeight, offsetX, offsetY;
+    // Compute scale factor for cover mode
+    const scale = Math.max(containerWidth / naturalWidth, containerHeight / naturalHeight);
+    const visibleWidth = naturalWidth * scale;
+    const visibleHeight = naturalHeight * scale;
 
-    if (imgNaturalAspect > bannerAspect) {
-      // Image is wider than banner, cropped horizontally
-      visibleHeight = bannerImg.naturalHeight;
-      visibleWidth = visibleHeight * bannerAspect;
-      offsetX = (bannerImg.naturalWidth - visibleWidth) / 2;
-      offsetY = 0;
-    } else {
-      // Image is taller than banner, cropped vertically
-      visibleWidth = bannerImg.naturalWidth;
-      visibleHeight = visibleWidth / bannerAspect;
-      offsetX = 0;
-      offsetY = (bannerImg.naturalHeight - visibleHeight) / 2;
-    }
+    // Compute cropping offsets
+    const offsetX = (visibleWidth - containerWidth) / 2;
+    const offsetY = (visibleHeight - containerHeight) / 2;
 
-    // Scale red dot position to visible area
-    const redDotXVisible = redDotPosition.x - offsetX;
-    const redDotYVisible = redDotPosition.y - offsetY;
-    const scaleX = bannerWidth / visibleWidth;
-    const scaleY = bannerHeight / visibleHeight;
-    const redDotXScaled = redDotXVisible * scaleX;
-    const redDotYScaled = redDotYVisible * scaleY;
+    // Compute anchor position in the scaled image coordinate system
+    const anchorXScaled = (desiredAnchorNaturalXPercent / 100) * visibleWidth;
+    const anchorYScaled = (desiredAnchorNaturalYPercent / 100) * visibleHeight;
 
-    // Center the image over the red dot
-    const imageWidth = 260;
-    const imageHeight = 260;
-    const left = redDotXScaled - (imageWidth / 2);
-    const top = redDotYScaled - (imageHeight / 2);
+    // Convert to container coordinates
+    const containerX = anchorXScaled - offsetX;
+    const containerY = anchorYScaled - offsetY;
 
-    image.style.left = `${left}px`;
-    image.style.top = `${top}px`;
-    image.style.transform = `scale(${startingScaleFactor}) rotateY(${initialRotationDegrees}deg)`;
+    // Convert to percentages relative to the container
+    const xPercent = (containerX / containerWidth) * 100;
+    const yPercent = (containerY / containerHeight) * 100;
 
-    console.log(`Positioned at: left=${left}px, top=${top}px`);
+    return { xPercent, yPercent };
   }
 
+  // Update the anchor element's position
+  function updateAnchorPosition() {
+    const anchorPos = getAnchorCenter();
+    anchorEl.style.left = `${anchorPos.xPercent}%`;
+    anchorEl.style.top = `${anchorPos.yPercent}%`;
+  }
+
+  // Create a wrapper for the fixed image positioned at the computed anchor
+  function createFixedImageWrapper() {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('fixed-image-wrapper');
+    const anchorPos = getAnchorCenter();
+    wrapper.style.left = `${anchorPos.xPercent}%`;
+    wrapper.style.top = `${anchorPos.yPercent}%`;
+    wrapper.style.transform = "translate(-50%, -50%)";
+    return wrapper;
+  }
+
+  // Animate the next fixed image along with its caption.
   function animateNextImage() {
-    if (currentIndex >= imagesData.length) {
-      return;
-    }
+    if (currentIndex >= imagesData.length) return;
 
     const data = imagesData[currentIndex];
+
+    // Create and position the fixed image wrapper
+    const wrapper = createFixedImageWrapper();
+    banner.appendChild(wrapper);
+
+    // Create the fixed image inside the wrapper
     const landingImage = document.createElement('img');
     landingImage.src = data.src;
     landingImage.alt = 'Fixed Image';
     landingImage.classList.add('fixed-image');
-    banner.appendChild(landingImage);
+    wrapper.appendChild(landingImage);
 
+    // Set caption text and reset its opacity and class
     landingText.textContent = data.caption;
     landingText.style.opacity = '0';
+    landingText.classList.remove('animate-text');
 
+    // Ensure the image is visible
     landingImage.style.opacity = '1';
-    landingImage.classList.remove('landing-bubble', 'fade-out');
-    landingText.classList.remove('animate-text', 'fade-out');
 
-    // Position the image
-    positionImage(landingImage);
+    // Set initial transform (only scale and rotation are animated)
+    landingImage.style.transform = `scale(${startingScaleFactor}) rotateY(${initialRotationDegrees}deg)`;
 
-    // Trigger reflow
-    void landingImage.offsetWidth;
+    // Animate image transform using requestAnimationFrame
+    requestAnimationFrame(() => {
+      landingImage.style.transition = `transform ${landingDuration}ms cubic-bezier(0.1,0.8,0.2,1)`;
+      landingImage.style.transform = `scale(${finalScaleFactor}) rotateY(0deg)`;
+    });
 
-    // Transition to final state
-    landingImage.style.transition = `transform ${landingDuration}ms cubic-bezier(0.1, 0.8, 0.2, 1)`;
-    landingImage.style.transform = `scale(${finalScaleFactor}) rotateY(0deg)`;
-
+    // After landingDuration + bubbleDelay, add bubble glow and then animate the text.
     setTimeout(() => {
       landingImage.classList.add('landing-bubble');
       setTimeout(() => {
         landingText.classList.add('animate-text');
+        landingText.style.opacity = '1';
       }, captionDelay);
 
+      // After displayDuration, fade out both image and text.
       setTimeout(() => {
         landingImage.style.transition = `opacity ${fadeDuration}ms ease`;
         landingText.style.transition = `opacity ${fadeDuration}ms ease`;
         landingImage.style.opacity = '0';
         landingText.style.opacity = '0';
-
         setTimeout(() => {
-          banner.removeChild(landingImage);
+          // Clean up and animate the next image.
+          banner.removeChild(wrapper);
           landingText.classList.remove('animate-text');
           currentIndex++;
           animateNextImage();
@@ -170,29 +140,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }, landingDuration + bubbleDelay);
   }
 
-  // Start animation once banner image is loaded
-  if (bannerImg.complete) {
-    console.log('Banner image already loaded.');
-    redDotPosition = getRedDotPosition();
-    animateNextImage();
-  } else {
-    bannerImg.addEventListener('load', () => {
-      console.log('Banner image loaded.');
-      redDotPosition = getRedDotPosition();
-      animateNextImage();
+  // Update anchor (and wrapper) positions on window resize
+  function updatePositionsOnResize() {
+    updateAnchorPosition();
+    document.querySelectorAll('.fixed-image-wrapper').forEach(wrapper => {
+      const anchorPos = getAnchorCenter();
+      wrapper.style.left = `${anchorPos.xPercent}%`;
+      wrapper.style.top = `${anchorPos.yPercent}%`;
+      wrapper.style.transform = "translate(-50%, -50%)";
     });
   }
+  updateAnchorPosition();
+  window.addEventListener('resize', updatePositionsOnResize);
 
-  // Real-time repositioning on resize
-  window.addEventListener('resize', () => {
-    const currentImage = document.querySelector('.fixed-image');
-    if (currentImage) {
-      positionImage(currentImage);
-      if (currentImage.classList.contains('landing-bubble')) {
-        currentImage.style.transform = `scale(1) rotateY(0deg)`;
-      } else {
-        currentImage.style.transform = `scale(${finalScaleFactor}) rotateY(0deg)`;
-      }
-    }
-  });
+  // Start animation once the banner image is loaded.
+  if (bannerImg.complete) {
+    animateNextImage();
+  } else {
+    bannerImg.addEventListener('load', animateNextImage);
+  }
 });
