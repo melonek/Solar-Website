@@ -39,32 +39,6 @@ html {
     height: auto;
   }
   
-  /* Battery Products Grid */
-  #battery-grid-only {
-    padding: 20px;
-    text-align: center;
-  }
-  .product-grid.battery-grid-only {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  .product-grid.battery-grid-only .product-card {
-    width: 250px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    transition: border 0.3s;
-    cursor: pointer;
-  }
-  .product-grid.battery-grid-only .product-card:hover {
-    border-color: #FFA500;
-  }
-  /* Highlight selected battery card */
-  .product-card.selected-battery {
-    border: 2px solid #FFA500 !important;
-  }
-  
   /* My Battery Package Section */
   #battery-package {
     padding: 20px;

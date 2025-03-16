@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  const bannerImageUrl = '../images/universalBanner/Solar-drone-photo-Perth.webp';
+  const bannerImageUrl = 'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp';
   const bannerImageDiv = document.querySelector('.banner-image');
 
   // Preload and then initialize animation
@@ -1280,7 +1280,7 @@ function initParallaxBanner(sectionSelector, canvasId, firstImagePath, secondIma
     // Resize handler - adapt to section height
     window.addEventListener('resize', () => {
       const newSectionHeight = section.offsetHeight;
-      const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.3); // Adaptive or 130vh minimum
+      const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.5); // Adaptive or 150vh minimum
       renderer.setSize(window.innerWidth, newCanvasHeight);
       camera.aspect = window.innerWidth / newCanvasHeight;
       camera.updateProjectionMatrix();
@@ -1314,7 +1314,7 @@ const bannerConfigs = [
   {
     sectionSelector: '.panels-section',
     canvasId: 'hero-canvas',
-    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/green.webp',
+    firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
     secondImagePath: '',
     firstWidth: 4500,
     firstHeight: 3500,
@@ -1324,7 +1324,7 @@ const bannerConfigs = [
   {
     sectionSelector: '.inverters-section',
     canvasId: 'inverter-canvas',
-    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
+    firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
     secondImagePath: '',
     firstWidth: 4500,
     firstHeight: 3500,
@@ -1334,7 +1334,7 @@ const bannerConfigs = [
   {
     sectionSelector: '.battery-storage',
     canvasId: 'battery-canvas',
-    firstImagePath: '../images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
+    firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
     secondImagePath: '',
     firstWidth: 6500,
     firstHeight: 4500,
@@ -1346,17 +1346,6 @@ const bannerConfigs = [
 // Preload all images (non-blocking)
 const allImagePaths = bannerConfigs.flatMap(config => [config.firstImagePath, config.secondImagePath]);
 preloadImages(allImagePaths);
-
-// Initialize ScrollSmoother once globally
-if (typeof ScrollSmoother !== 'undefined') {
-  gsap.registerPlugin(ScrollSmoother);
-  ScrollSmoother.create({
-    smooth: 1,
-    effects: true,
-  });
-} else {
-  console.log("Running all parallax banners without ScrollSmoother.");
-}
 
 // Initialize banners for each grid immediately
 bannerConfigs.forEach(config => {

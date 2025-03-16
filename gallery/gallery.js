@@ -155,6 +155,60 @@ document.addEventListener('DOMContentLoaded', function() {
         "/images/Jobs/Job8/i1.jpg",
         "/images/Jobs/Job8/i2.jpg",
       ]
+    },
+    {
+      title: "Apple Cross Installation",
+      "House Type": "Double-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Metal Tin",
+      completionDate: "13-03-2025",
+      difficulty: "Moderate",
+      timeToComplete: "(7:45am-10:35am)",
+      suburb: "Apple Cross, WA, 6153",
+      mainImage: "/images/Jobs/Job9/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job9/p1.webp",
+        "/images/Jobs/Job9/p2.webp",
+        "/images/Jobs/Job9/i1.webp",
+        "/images/Jobs/Job9/i2.webp",
+      ]
+    },
+    {
+      title: "Bayswater Installation",
+      "House Type": "Double-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Clay Tile",
+      completionDate: "14-03-2025",
+      difficulty: "Moderate",
+      timeToComplete: "(8:30am-12:15pm)",
+      suburb: "Bayswater, WA, 6053",
+      mainImage: "/images/Jobs/Job10/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job10/p1.webp",
+        "/images/Jobs/Job10/p2.webp",
+        "/images/Jobs/Job10/i1.webp",
+        "/images/Jobs/Job10/i2.webp",
+      ]
+    },
+    {
+      title: "Victoria Park Installation",
+      "House Type": "Double-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Clay Tile",
+      completionDate: "14-03-2025",
+      difficulty: "Moderate",
+      timeToComplete: "(1:20pm-4:33pm)",
+      suburb: "Victoria Park, WA, 6100",
+      mainImage: "/images/Jobs/Job11/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job11/p1.webp",
+        "/images/Jobs/Job11/p2.webp",
+        "/images/Jobs/Job11/i1.webp",
+        "/images/Jobs/Job11/i2.webp",
+      ]
     }
   ];
 

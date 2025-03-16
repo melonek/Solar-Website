@@ -3007,6 +3007,7 @@ opacity: 1;
     transform: translateY(0);
 }
 
+
 /* Timeline Wrapper */
 .timeline-wrapper {
     display: flex;
@@ -3082,7 +3083,6 @@ opacity: 1;
       height: auto !important;
     }
   }
-
 
 /* FAQ Styling */
 .faq-container {
