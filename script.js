@@ -9,6 +9,22 @@
  * - Initializes the Three.js scene for the hero canvas.
  */
 
+
+// Register service worker if supported
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
+
+
+
 /* -------------------------
    HELPER: PRELOAD IMAGES FUNCTION
 ------------------------- */
@@ -125,8 +141,8 @@ function startLoadingAnimation(callback) {
   window.addEventListener('resize', resizeCanvas);
   
   // Phase durations.
-  const textRevealDuration = 3000; // in ms
-  const fillDuration = 2000;       // in ms
+  const textRevealDuration = 2000; // in ms
+  const fillDuration = 1500;       // in ms
   
   // Define separate vertical gaps (in cell units) for each section.
   const gapSec1Sec2 = -10; // Gap between sec1 and sec2.
