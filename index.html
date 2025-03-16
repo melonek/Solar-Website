@@ -1,393 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="preload" as="image" href=" images/AboutUs/solarek.webp">
-    <link rel="preload" as="image" href="images/leafBanner/leaf.webp">
-    <link rel="prefetch" href="images/universalBanner/Solar-drone-photo-Perth.webp" as="image">
-    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image">
-    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image">
-    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="preload" as="image" href="images/AboutUs/solarek.webp" />
+    <link rel="preload" as="image" href="images/leafBanner/leaf.webp" />
+    <link rel="prefetch" href="images/universalBanner/Solar-drone-photo-Perth.webp" as="image" />
+    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/green.webp" as="image" />
+    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/blue.webp" as="image" />
+    <link rel="prefetch" href="images/Green,Blue,Orange-sectionsInPpackages/orange.webp" as="image" />
 
-    <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-192.png" sizes="192x192" type="image/png">
+    <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-192.png" sizes="192x192" type="image/png" />
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollSmoother.min.js" defer></script>
-    <script src=" https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
-    <link rel="stylesheet" href="styles.css"> 
-    <link rel="stylesheet" href="intro.css">
-    <link rel="stylesheet" href="./gallery/gallery.css">
-    <link rel="stylesheet" href="./articles/learn-article-styles.css">
-    <link rel="stylesheet" href="./articles/full-article-cards.css">
-    <link rel="stylesheet" href="./articles/learn-card-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
+
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="intro.css" />
+    <link rel="stylesheet" href="./gallery/gallery.css" />
+    <link rel="stylesheet" href="./articles/learn-article-styles.css" />
+    <link rel="stylesheet" href="./articles/full-article-cards.css" />
+    <link rel="stylesheet" href="./articles/learn-card-styles.css" />
+
     <title>Nature's Spark Solar</title>
-    
+
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Akronim&family=Condiment&family=Sonsie+One&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Google Site Verification -->
     <meta name="google-site-verification" content="uohzGCwdD4BVwNQhTMnQWQQpq7D5paXl2SOOA0WJZdk" />
-    
+
     <!-- Standard Meta Tags -->
-    <meta name="description" content="Nature's Spark Solar offers clean energy solutions including high-quality solar panels, battery storage, and EV chargers.">
-    <meta name="author" content="Nature's Spark Solar Team">
-    <meta name="keywords" content="solar, solar australia, best solar perth, cheapest solar perth, renewable energy, solar panels, battery storage, EV chargers, clean energy">
-    
+    <meta
+      name="description"
+      content="Nature's Spark Solar offers clean energy solutions including high-quality solar panels, battery storage, and EV chargers."
+    />
+    <meta name="author" content="Nature's Spark Solar Team" />
+    <meta
+      name="keywords"
+      content="solar, solar australia, best solar perth, cheapest solar perth, renewable energy, solar panels, battery storage, EV chargers, clean energy"
+    />
+
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Nature's Spark Solar">
-    <meta property="og:description" content="Explore Nature's Spark Solar for innovative solar energy solutions, including solar panels, battery storage, and EV chargers to power a sustainable future.">
-    <!-- Use an absolute URL for your OG image (a large, high-quality version of your logo or a representative image) -->
-    <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse-v2.png">
-    <meta property="og:url" content="https://naturespark.com.au/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Nature's Spark Solar">
-    <meta property="og:locale" content="en_US">
-    
+    <meta property="og:title" content="Nature's Spark Solar" />
+    <meta
+      property="og:description"
+      content="Explore Nature's Spark Solar for innovative solar energy solutions, including solar panels, battery storage, and EV chargers to power a sustainable future."
+    />
+    <meta property="og:image" content="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" />
+    <meta property="og:url" content="https://naturespark.com.au/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nature's Spark Solar" />
+    <meta property="og:locale" content="en_US" />
+
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Nature's Spark Solar">
-    <meta name="twitter:description" content="Discover clean energy solutions with Nature's Spark Solar. We offer top-tier solar panels, battery storage, and EV charging solutions.">
-    <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse-v2.png">
-    <meta name="twitter:url" content="https://naturespark.com.au/">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nature's Spark Solar" />
+    <meta
+      name="twitter:description"
+      content="Discover clean energy solutions with Nature's Spark Solar. We offer top-tier solar panels, battery storage, and EV charging solutions."
+    />
+    <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" />
+    <meta name="twitter:url" content="https://naturespark.com.au/" />
   </head>
-  
-<body>
+  <body>
+    <div id="fb-root"></div>
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892"
+    ></script>
 
-    <!-- Progress Bar -->
-    <div id="progress-container">
-      <div id="progress-bar"></div>
+    <!-- Navigation -->
+    <nav>
+      <div class="floating-logo">
+        <img src="./images/BusinessLogo/nse-v2.png" alt="Nature's Spark Solar Logo" width="150" height="50" />
+      </div>
+      <ul class="nav-links">
+        <li><a href="#about">About Us</a></li>
+        <li class="dropdown">
+          <span class="dropbtn">Services</span>
+          <div class="dropdown-content">
+            <a href="./packages/packages.html">Solar Systems</a>
+            <a href="./packages/battery-only.html">Battery Storage</a>
+            <a href="#unique-ev-chargers">EV Chargers</a>
+          </div>
+        </li>
+        <li><a href="./solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+        <li><a href="#articles">Articles/News</a></li>
+        <li><a href="./articles/learn.html">Explore Solar</a></li>
+        <li><a href="./gallery/gallery.html">Installations</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+        <div class="bar half start"></div>
+        <div class="bar"></div>
+        <div class="bar half end"></div>
+      </div>
+    </nav>
+
+    <!-- Loading Screen (Independent Layer) -->
+    <div id="loading-screen">
+      <canvas id="loading-canvas"></canvas>
     </div>
-    
 
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892"></script>
-
-  <!-- Navigation -->
-  <nav>
-    <div class="floating-logo">
-      <img src="./images/BusinessLogo/nse-v2.png" alt="Nature's Spark Solar Logo" width="150" height="50">
-    </div>
-    <ul class="nav-links">
-      <li><a href="#about">About Us</a></li>
-      <li class="dropdown">
-        <span class="dropbtn">Services</span>
-        <div class="dropdown-content">
-          <a href="./packages/packages.html">Solar Systems</a>
-          <a href="./packages/battery-only.html">Battery Storage</a>
-          <a href="#unique-ev-chargers">EV Chargers</a>
+    <!-- Main Content (Initially hidden) -->
+    <div id="main-content" class="hidden">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-image">
+          <canvas id="hero-canvas"></canvas>
         </div>
-      </li>
-      
-      <li><a href="./solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
-      <li><a href="#articles">Articles/News</a></li>
-      <li><a href="./articles/learn.html">Explore Solar</a></li>
-      <li><a href="./gallery/gallery.html">Installations</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
-      <div class="bar half start"></div>
-      <div class="bar"></div>
-      <div class="bar half end"></div>
-    </div>
-  </nav>
-  
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-image">
-      <canvas id="hero-canvas"></canvas> <!-- Three.js will render here -->
-    </div>
-    <div class="hero-content">
-      <h1 class="main-title">Nature's Spark</h1>
-      <h3 class="subtitle">Clean Energy Solutions</h3>
-      <h3 class="subtitle">Welcome To Our Solar World</h3>
-    </div>
-  </section>
+        <div class="hero-content">
+          <h1 class="main-title">Nature's Spark</h1>
+          <h3 class="subtitle">Clean Energy Solutions</h3>
+          <h3 class="subtitle">Welcome To Our Solar World</h3>
+        </div>
+      </section>
 
-  <section id="intro">
-    <div class="banner">
-      <img src="/images/AboutUs/bannerski.webp" id="banner-image" alt="Banner" />
-      <div class="anchor-point"></div>
-      <!-- Fixed images (their wrappers) will be appended here -->
-    </div>
-    <div class="text-item" id="landing-text">Your Caption Here</div>
-  </section>
-  <canvas id="hidden-canvas" style="display: none;"></canvas>
+      <!-- Intro Section -->
+      <section id="intro">
+        <div class="banner">
+          <img src="/images/AboutUs/bannerski.webp" id="banner-image" alt="Banner" />
+          <div class="anchor-point"></div>
+          <!-- Fixed images (their wrappers) will be appended here -->
+        </div>
+        <div class="text-item" id="landing-text">Your Caption Here</div>
+      </section>
+      <canvas id="hidden-canvas" style="display: none;"></canvas>
 
-  <!-- Brands Section -->
-  <section id="brands">
-    <!-- <h2>Brands we install</h2> -->
-    <div class="brands-container">
-      <div class="brand-card">
-        <img src="" alt="Brand Logo">
-      </div>
-      <div class="brand-card">
-        <img src="" alt="Brand Logo">
-      </div>
-      <div class="brand-card">
-        <img src="" alt="Brand Logo">
-      </div>
-      <div class="brand-card">
-        <img src="" alt="Brand Logo">
-      </div>
-    </div>
-  </section>
-  
-<!-- Build Solar Section -->
-<section id="build-solar">
-  <div class="build-solar-video">
-    <video autoplay muted loop playsinline>
-      <source src="videos/solar-panels-timelapse-Perth.mp4" type="video/mp4">
-      <source src="videos/solar-panels-timelapse-Perth.webm" type="video/webm">
-      Your browser does not support HTML5 video.
-    </video>
-    
-  </div>
-  <div class="build-solar-content">
-      <h2>Design Your Custom Solar Solution</h2>
-      <h3>Create a personalized solar system tailored to your energy needs</h3>
-      <a id="build-solar-btn" class="shiny fancy-button" data-reveal="left" href="./packages/packages.html" target="_blank">
-        <span class="button-inner">Browse Solar Packages</span>
-      </a>
-  </div>
-</section>
+      <!-- Brands Section -->
+      <section id="brands">
+        <div class="brands-container">
+          <div class="brand-card">
+            <img src="" alt="Brand Logo" />
+          </div>
+          <div class="brand-card">
+            <img src="" alt="Brand Logo" />
+          </div>
+          <div class="brand-card">
+            <img src="" alt="Brand Logo" />
+          </div>
+          <div class="brand-card">
+            <img src="" alt="Brand Logo" />
+          </div>
+        </div>
+      </section>
 
-<!-- Unlock Solar Savings Section -->
-<section id="banner">
-  <div class="banner-content">
-    <h2>Unlock Solar Savings Today</h2>
-    <h3>Estimate your energy savings and make the smart switch to solar</h3>
-    <div>
-      <a id="$btn-savings" class="shiny fancy-button" data-reveal="right" href="./solarCalculator/solarCalculator.html">
-        <span class="button-inner">Start Savings Calculator</span>
-      </a>
-    </div>
-  </div>
-</section>
-  
-  <!-- Services Section -->
-    <section id="unique-services" class="unique-section">
-      <h1>Services</h1>
-      <div class="unique-services-wrapper">
-        <!-- Solar Systems -->
-        <div id="unique-solar-systems" class="unique-service-category unique-section">
-          <h2>Solar Panels</h2>
-          <div class="unique-product-grid">
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
-              <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar">
-              <h3>Residential Solar Panels</h3>
-              <p>High-efficiency panels for homes with a 25-year warranty.</p>
+      <!-- Build Solar Section -->
+      <section id="build-solar">
+        <div class="build-solar-video">
+          <video autoplay muted loop playsinline>
+            <source src="videos/solar-panels-timelapse-Perth.mp4" type="video/mp4" />
+            <source src="videos/solar-panels-timelapse-Perth.webm" type="video/webm" />
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+        <div class="build-solar-content">
+          <h2>Design Your Custom Solar Solution</h2>
+          <h3>Create a personalized solar system tailored to your energy needs</h3>
+          <a id="build-solar-btn" class="shiny fancy-button" data-reveal="left" href="./packages/packages.html" target="_blank">
+            <span class="button-inner">Browse Solar Packages</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Unlock Solar Savings Section -->
+      <section id="banner">
+        <div class="banner-content">
+          <h2>Unlock Solar Savings Today</h2>
+          <h3>Estimate your energy savings and make the smart switch to solar</h3>
+          <div>
+            <a id="$btn-savings" class="shiny fancy-button" data-reveal="right" href="./solarCalculator/solarCalculator.html">
+              <span class="button-inner">Start Savings Calculator</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="unique-services" class="unique-section">
+        <h1>Services</h1>
+        <div class="unique-services-wrapper">
+          <!-- Solar Systems -->
+          <div id="unique-solar-systems" class="unique-service-category unique-section">
+            <h2>Solar Panels</h2>
+            <div class="unique-product-grid">
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
+                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300" alt="Residential Solar" />
+                <h3>Residential Solar Panels</h3>
+                <p>High-efficiency panels for homes with a 25-year warranty.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
+                <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar" />
+                <h3>Commercial Solar Solutions</h3>
+                <p>Scalable systems for businesses to reduce energy costs.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
+                <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof" />
+                <h3>Solar Roof Tiles</h3>
+                <p>Aesthetic solar tiles that blend with your roof design.</p>
+              </div>
             </div>
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
-              <img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=300" alt="Commercial Solar">
-              <h3>Commercial Solar Solutions</h3>
-              <p>Scalable systems for businesses to reduce energy costs.</p>
+          </div>
+          <!-- Battery Storage -->
+          <div id="unique-battery-storage" class="unique-service-category unique-section">
+            <h2>Battery Storage</h2>
+            <div class="unique-product-grid">
+              <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.4">
+                <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Battery" />
+                <h3>Home Energy Storage</h3>
+                <p>Store excess solar energy for nighttime use.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.2">
+                <img src="https://images.pexels.com/photos/5239114/pexels-photo-5239114.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Industrial Battery" />
+                <h3>Industrial Battery Banks</h3>
+                <p>High-capacity storage for large-scale energy needs.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0">
+                <img src="https://images.pexels.com/photos/6153141/pexels-photo-6153141.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Portable Battery" />
+                <h3>Portable Power Stations</h3>
+                <p>Compact batteries for emergencies and outdoor use.</p>
+              </div>
             </div>
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
-              <img src="https://images.unsplash.com/photo-1617791160536-598cf32026fb?auto=format&fit=crop&w=300" alt="Solar Roof">
-              <h3>Solar Roof Tiles</h3>
-              <p>Aesthetic solar tiles that blend with your roof design.</p>
+          </div>
+          <!-- EV Chargers -->
+          <div id="unique-ev-chargers" class="unique-service-category unique-section">
+            <h2>EV Chargers</h2>
+            <div class="unique-product-grid">
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
+                <img src="https://images.pexels.com/photos/6977167/pexels-photo-6977167.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Charger" />
+                <h3>Home EV Chargers</h3>
+                <p>Fast and safe charging for your electric vehicle at home.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
+                <img src="https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Commercial Charger" />
+                <h3>Commercial Charging Stations</h3>
+                <p>Public charging stations for businesses and parking lots.</p>
+              </div>
+              <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
+                <img src="https://images.pexels.com/photos/4979470/pexels-photo-4979470.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Smart Charger" />
+                <h3>Smart EV Chargers</h3>
+                <p>WiFi-enabled chargers with app control and scheduling.</p>
+              </div>
             </div>
           </div>
         </div>
-        <!-- Battery Storage -->
-        <div id="unique-battery-storage" class="unique-service-category unique-section">
-          <h2>Battery Storage</h2>
-          <div class="unique-product-grid">
-            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.4">
-              <img src="https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Battery">
-              <h3>Home Energy Storage</h3>
-              <p>Store excess solar energy for nighttime use.</p>
+      </section>
+
+      <!-- Articles Section -->
+      <section id="articles" class="section">
+        <h1>Articles/News</h1>
+        <div class="articles-container">
+          <div id="articles-grid"></div>
+        </div>
+        <div class="pagination">
+          <div id="page-numbers"></div>
+        </div>
+        <div id="article-modal" class="modal">
+          <div class="modal-content">
+            <span class="close">×</span>
+            <div id="modal-article-content"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Facebook Timelines Section -->
+      <section id="social-timelines" class="section">
+        <h1>Social Solar Updates</h1>
+        <div class="timeline-wrapper">
+          <!-- SolarQuotes Facebook Page Timeline -->
+          <div class="timeline-container solar-quotes">
+            <div class="scaler">
+              <div class="fb-page-wrapper">
+                <!-- Timeline posts for SolarQuotes will be rendered here -->
+              </div>
             </div>
-            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0.2">
-              <img src="https://images.pexels.com/photos/5239114/pexels-photo-5239114.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Industrial Battery">
-              <h3>Industrial Battery Banks</h3>
-              <p>High-capacity storage for large-scale energy needs.</p>
-            </div>
-            <div class="unique-service-product" data-reveal-direction="right" data-reveal-delay="0">
-              <img src="https://images.pexels.com/photos/6153141/pexels-photo-6153141.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Portable Battery">
-              <h3>Portable Power Stations</h3>
-              <p>Compact batteries for emergencies and outdoor use.</p>
+          </div>
+          <!-- OneStepOffTheGrid Facebook Page Timeline -->
+          <div class="timeline-container one-step-off-the-grid">
+            <div class="scaler">
+              <div class="fb-page-wrapper">
+                <!-- Timeline posts for OneStepOffTheGrid will be rendered here -->
+              </div>
             </div>
           </div>
         </div>
-        <!-- EV Chargers -->
-        <div id="unique-ev-chargers" class="unique-service-category unique-section">
-          <h2>EV Chargers</h2>
-          <div class="unique-product-grid">
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0">
-              <img src="https://images.pexels.com/photos/6977167/pexels-photo-6977167.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Home Charger">
-              <h3>Home EV Chargers</h3>
-              <p>Fast and safe charging for your electric vehicle at home.</p>
+      </section>
+
+      <!-- Installation Gallery Section -->
+      <section id="installation-gallery">
+        <header>
+          <h1>Installations</h1>
+          <p>Explore our past projects and installations.</p>
+        </header>
+        <div class="gallery-container">
+          <button class="control-btn left-btn"><</button>
+          <div class="carousel">
+            <!-- Cards will be injected by JavaScript -->
+          </div>
+          <button class="control-btn right-btn">></button>
+        </div>
+      </section>
+
+      <!-- Modal for Job Details -->
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">X</span>
+          <div class="modal-body"></div>
+        </div>
+      </div>
+
+      <!-- Lightbox for Full-Size Image Display -->
+      <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">×</span>
+        <img class="lightbox-content" src="" alt="Full Size" />
+      </div>
+
+      <!-- FAQ Section -->
+      <section id="faq" class="section">
+        <h1>FAQ</h1>
+        <div class="faq-container">
+          <div class="faq-item">
+            <h3>
+              Q1: How do solar panels work?<span class="arrow">▼</span>
+            </h3>
+            <div class="answer">
+              <p>
+                <strong>A1:</strong> Solar panels convert sunlight into electricity through photovoltaic cells. These cells contain a semiconductor material, often silicon, which absorbs photons of light and releases electrons, generating an electric current.
+              </p>
             </div>
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.2">
-              <img src="https://images.pexels.com/photos/2486346/pexels-photo-2486346.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Commercial Charger">
-              <h3>Commercial Charging Stations</h3>
-              <p>Public charging stations for businesses and parking lots.</p>
-            </div>
-            <div class="unique-service-product" data-reveal-direction="left" data-reveal-delay="0.4">
-              <img src="https://images.pexels.com/photos/4979470/pexels-photo-4979470.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=300" alt="Smart Charger">
-              <h3>Smart EV Chargers</h3>
-              <p>WiFi-enabled chargers with app control and scheduling.</p>
+          </div>
+          <div class="faq-item">
+            <h3>
+              Q2: What are the benefits of installing solar panels at home?<span class="arrow">▼</span>
+            </h3>
+            <div class="answer">
+              <p>
+                <strong>A2:</strong>
+                - <strong>Cost Savings:</strong> Solar panels can significantly reduce or even eliminate your electricity bill.<br />
+                - <strong>Environmental Impact:</strong> They reduce your carbon footprint by using renewable energy.<br />
+                - <strong>Energy Independence:</strong> Less reliance on grid electricity, which can be beneficial during outages.<br />
+                - <strong>Increased Property Value:</strong> Homes with solar installations often have higher resale values.
+              </p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  
-  <!-- Articles Section -->
-  <section id="articles" class="section">
-    <h1>Articles/News</h1>
-    <div class="articles-container">
-      <div id="articles-grid"></div>
-    </div>
-    <div class="pagination">
-      <div id="page-numbers"></div>
-    </div>
-    <div id="article-modal" class="modal">
-      <div class="modal-content">
-        <span class="close">×</span>
-        <div id="modal-article-content"></div>
-      </div>
-    </div>
-  </section>
-  
-<!-- Facebook Timelines Section -->
-<section id="social-timelines" class="section">
-  <h1>Social Solar Updates</h1>
-  <div class="timeline-wrapper">
-    <!-- SolarQuotes Facebook Page Timeline -->
-    <div class="timeline-container solar-quotes">
-      <div class="scaler">
-        <div class="fb-page-wrapper">
-          <!-- Timeline posts for SolarQuotes will be rendered here -->
-        </div>
-      </div>
-    </div>
-    
-    <!-- OneStepOffTheGrid Facebook Page Timeline -->
-    <div class="timeline-container one-step-off-the-grid">
-      <div class="scaler">
-        <div class="fb-page-wrapper">
-          <!-- Timeline posts for OneStepOffTheGrid will be rendered here -->
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
+      <!-- Contact Section -->
+      <section id="contact" class="section">
+        <h1>Contact Us</h1>
+        <form action="https://formspree.io/f/mgvoybrr" method="POST">
+          <label for="fullName">
+            Full Name:
+            <input type="text" id="fullName" name="fullName" required />
+          </label>
+          <label for="mobilePhone">
+            Mobile Phone:
+            <input type="tel" id="mobilePhone" name="mobilePhone" required />
+          </label>
+          <label for="email">
+            Your Email:
+            <input type="email" id="email" name="email" required />
+          </label>
+          <label for="installationAddress">
+            Installation Address:
+            <textarea id="installationAddress" name="installationAddress" required></textarea>
+          </label>
+          <label for="serviceType">
+            Service Type:
+            <select id="serviceType" name="serviceType" required>
+              <option value="">Select Service</option>
+              <option value="solar-install">Solar Installation</option>
+              <option value="battery-install">Battery Storage Installation</option>
+              <option value="ev-charger">EV Charger Installation</option>
+            </select>
+          </label>
+          <label for="message">
+            Message:
+            <textarea id="message" name="message" required></textarea>
+          </label>
+          <button id="send-button" type="submit">Send</button>
+        </form>
+      </section>
 
-<section id="installation-gallery">
-  <header>
-    <h1>Installations</h1>
-    <p>Explore our past projects and installations.</p>
-  </header>
-  <div class="gallery-container">
-    <button class="control-btn left-btn"><</button>
-    <div class="carousel">
-      <!-- Cards will be injected by JavaScript -->
-    </div>
-    <button class="control-btn right-btn">></button>
-  </div>
-</section>
+      <!-- Footer -->
+      <footer>
+        <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered – all rights reserved.</p>
+      </footer>
+    </div> <!-- End of #main-content -->
 
-  <!-- Modal for job details -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal">X</span>
-      <div class="modal-body"></div>
-    </div>
-  </div>
-
-  <!-- Lightbox for full-size image display -->
-  <div id="lightbox" class="lightbox">
-    <span class="close-lightbox">×</span>
-    <img class="lightbox-content" src="" alt="Full Size">
-  </div>
-  
-  <!-- FAQ Section -->
-  <section id="faq" class="section">
-    <h1>FAQ</h1>
-    <div class="faq-container">
-      <div class="faq-item">
-        <h3>Q1: How do solar panels work?<span class="arrow">▼</span></h3>
-        <div class="answer">
-          <p><strong>A1:</strong> Solar panels convert sunlight into electricity through photovoltaic cells. These cells contain a semiconductor material, often silicon, which absorbs photons of light and releases electrons, generating an electric current.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <h3>Q2: What are the benefits of installing solar panels at home?<span class="arrow">▼</span></h3>
-        <div class="answer">
-          <p><strong>A2:</strong> 
-            - <strong>Cost Savings:</strong> Solar panels can significantly reduce or even eliminate your electricity bill.<br>
-            - <strong>Environmental Impact:</strong> They reduce your carbon footprint by using renewable energy.<br>
-            - <strong>Energy Independence:</strong> Less reliance on grid electricity, which can be particularly beneficial during power outages or in areas with unreliable power supply.<br>
-            - <strong>Increased Property Value:</strong> Homes with solar installations often have higher resale values.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Contact Section -->
-  <section id="contact" class="section">
-    <h1>Contact Us</h1>
-    <form action="https://formspree.io/f/mgvoybrr" method="POST">
-      <label for="fullName">
-        Full Name:
-        <input type="text" id="fullName" name="fullName" required>
-      </label>
-      
-      <label for="mobilePhone">
-        Mobile Phone:
-        <input type="tel" id="mobilePhone" name="mobilePhone" required>
-      </label>
-      
-      <label for="email">
-        Your Email:
-        <input type="email" id="email" name="email" required>
-      </label>
-      
-      <label for="installationAddress">
-        Installation Address:
-        <textarea id="installationAddress" name="installationAddress" required></textarea>
-      </label>
-      
-      <label for="serviceType">
-        Service Type:
-        <select id="serviceType" name="serviceType" required>
-          <option value="">Select Service</option>
-          <option value="solar-install">Solar Installation</option>
-          <option value="battery-install">Battery Storage Installation</option>
-          <option value="ev-charger">EV Charger Installation</option>
-        </select>
-      </label>
-      
-      <label for="message">
-        Message:
-        <textarea id="message" name="message" required></textarea>
-      </label>
-      
-      <button id="send-button" type="submit">Send</button>
-    </form>
-  </section>
-  
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
-  </footer>
-  
-  <!-- Scripts -->
-  <script src="script.js" defer></script>
+    <!-- Scripts -->
+    <script src="script.js" defer></script>
     <script src="intro.js" defer></script>
-  <script src="./gallery/gallery.js" defer></script>
-  <script src="./packages/packages.js" defer></script>
-  <script src="./articles/articleArray.js" defer></script>
-  <script src="./articles/full-article.js" defer></script>
-</body>
+    <script src="./gallery/gallery.js" defer></script>
+    <script src="./packages/packages.js" defer></script>
+    <script src="./articles/articleArray.js" defer></script>
+    <script src="./articles/full-article.js" defer></script>
+    <script src="main.js" defer></script>
+  </body>
 </html>
