@@ -883,3 +883,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loadingOverlay = document.getElementById('loading-screen');
+  const mainContent = document.getElementById('main-content');
+
+  // Check if the loading screen has been shown before
+  if (localStorage.getItem('loadingScreenShown')) {
+    // Skip the animation and reveal the content immediately
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+    if (mainContent) {
+      mainContent.classList.remove('hidden');
+      mainContent.style.display = 'block';
+    }
+    initHeroSection();
+  } else {
+    // Run the loading animation, then set the flag
+    startLoadingAnimation(() => {
+      initHeroSection();
+      localStorage.setItem('loadingScreenShown', 'true');
+    });
+  }
+});
