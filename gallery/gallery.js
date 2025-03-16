@@ -542,16 +542,33 @@ document.addEventListener('DOMContentLoaded', function() {
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
-    // Disable interaction on the modal while the lightbox is open
-    modal.style.pointerEvents = 'none';
-    // Keep background locked if job modal is still open
+    // Disable interaction on the modal content for both click and touch
+    modalBody.style.pointerEvents = 'none';
+    modalBody.style.touchAction = 'none';
+    // Add an overlay to intercept mobile touch/click events on the modal
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.style.position = 'absolute';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.zIndex = '10'; // Above modal content but below the lightbox
+    overlay.addEventListener('touchstart', (e) => e.stopPropagation());
+    overlay.addEventListener('touchend', (e) => e.stopPropagation());
+    overlay.addEventListener('click', (e) => e.stopPropagation());
+    modal.appendChild(overlay);
     document.body.style.overflow = 'hidden';
   }
   
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
-    // Re-enable interaction on the modal after lightbox is closed
-    modal.style.pointerEvents = '';
+    // Re-enable interaction on the modal content
+    modalBody.style.pointerEvents = '';
+    modalBody.style.touchAction = '';
+    // Remove the overlay
+    const overlay = document.getElementById('modal-overlay');
+    if (overlay) overlay.remove();
     // Only restore scrolling if the job modal is not open
     if (modal.style.display !== 'block') {
       document.body.style.overflow = '';
@@ -578,13 +595,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // *** NEW: Prevent lightbox from closing when clicking on the image ***
+  // Prevent lightbox from closing when clicking on the image
   lightboxContent.addEventListener('click', function(e) {
     e.stopPropagation();
-    e.stopPropagation();
   });
-
-  
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
