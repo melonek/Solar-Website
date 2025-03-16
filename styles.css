@@ -3607,13 +3607,19 @@ footer {
     padding: 0 20px;
   }
   
-  .unique-services-wrapper {
+/* Container: allow wrapping instead of forcing one row */
+.unique-services-wrapper {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px; /* Space between the service categories */
+    flex-wrap: wrap; /* Allow children to wrap */
+    justify-content: space-between;
+    gap: 30px;
   }
-  
+/* Each service category takes roughly one-third of the container’s width on large screens,
+   but will shrink (with a minimum width) on smaller screens */
+   .unique-service-category {
+    flex: 1 1 300px;  /* Adjust the base width as needed */
+  }
+
   /* Unique Service Product Grid */
 #unique-services .unique-product-grid {
     display: flex;
@@ -3633,6 +3639,79 @@ footer {
       max-width: none; /* Full width on mobile */
     }
   }
+
+/* Style for the Solar Packages link styled as a button */
+#solar-button {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #007bff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: -10px;
+    margin-bottom:10px;
+  }
+  
+  /* Hover effect for the link */
+  #solar-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  /* Style for the Energy Packages button with id "energy-button" */
+#energy-button {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #007bff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: -10px;
+    margin-bottom:10px;
+  }
+  
+  /* Hover effect for the energy button */
+  #energy-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  /* Style for the EV Chargers button (similar to solar and energy buttons) */
+#ev-button {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: not-allowed; /* Indicates inactive */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: -10px;
+    margin-bottom:10px;
+  }
+  
+  /* Hover effect for enabled buttons only */
+  #ev-button:not(:disabled):hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  /* Optional: Styling for disabled state */
+  #ev-button:disabled {
+    opacity: 0.6;
+  }
+  
+  
+  
   
   #installations p{
     font-family: 'Roboto Slab', serif;

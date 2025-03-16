@@ -722,14 +722,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (productTop < triggerBottom) {
         setTimeout(() => {
           product.classList.add('revealed');
-          product.style.transform = 'translateX(0)';
+          // Reset transform regardless of direction when revealed.
+          product.style.transform = 'translate(0)';
         }, delay * 200);
       } else {
         product.classList.remove('revealed');
-        product.style.transform = (revealDirection === 'right') ? 'translateX(50px)' : 'translateX(-50px)';
+        // Apply the correct transform based on the reveal direction.
+        if (revealDirection === 'right') {
+          product.style.transform = 'translateX(50px)';
+        } else if (revealDirection === 'left') {
+          product.style.transform = 'translateX(-50px)';
+        } else if (revealDirection === 'bottom') {
+          product.style.transform = 'translateY(50px)';
+        }
       }
     });
   }
+  
   
   function revealProductSections() {
     const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
