@@ -113,7 +113,7 @@ function startLoadingAnimation(callback) {
     if (callback) callback();
     return;
   }
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.imageSmoothingEnabled = false;
   
   // Set canvas to fill the viewport.
@@ -427,9 +427,9 @@ window.addEventListener('pageshow', (event) => {
    PRELOAD SUB-PAGE ASSETS
 ------------------------- */
 const subPageImages = [
-  './images/universalBanner/Solar-drone-photo-Perth.webp',
-  './images/Green,Blue,Orange-sectionsInPpackages/green.webp',
-  './images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
+  '/images/universalBanner/Solar-drone-photo-Perth.webp',
+  '/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
+  '/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
   './images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
 ];
 window.addEventListener('load', () => {
