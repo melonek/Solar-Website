@@ -6,21 +6,24 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <link rel="preload" as="image" href="https://naturespark.com.au/images/AboutUs/solarek.webp" />
-    <link rel="preload" as="image" href="https://naturespark.com.au/images/leafBanner/leaf.webp" />
+
+    <!-- Preload / Prefetch Images -->
+    <link rel="preload" as="image" fetchpriority="high" href="https://naturespark.com.au/images/AboutUs/solarek.webp" />
+    <link rel="preload" as="image" fetchpriority="high" href="https://naturespark.com.au/images/leafBanner/leaf.webp" />
     <link rel="prefetch" as="image" href="https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp" />
     <link rel="prefetch" as="image" href="https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp" />
     <link rel="prefetch" as="image" href="https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp" />
     <link rel="prefetch" as="image" href="https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp" />
 
+    <!-- Favicon -->
     <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="https://naturespark.com.au/images/BusinessLogo/nse-192.png" sizes="192x192" type="image/png" />
 
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
-    <!-- <script src=" https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollSmoother.min.js" defer></script> -->
 
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="intro.css" />
     <link rel="stylesheet" href="./gallery/gallery.css" />
@@ -73,10 +76,9 @@
     />
     <meta name="twitter:image" content="https://naturespark.com.au/images/BusinessLogo/nse-v2.png" />
     <meta name="twitter:url" content="https://naturespark.com.au/" />
+
   </head>
   <body>
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v22.0&appId=1403351067527439"></script>
 
     <!-- Navigation -->
     <nav>
@@ -107,11 +109,12 @@
       </div>
     </nav>
 
-    <!-- Loading Screen (Independent Layer) -->
+    <!-- Loading Screen -->
     <div id="loading-screen">
       <canvas id="loading-canvas"></canvas>
     </div>
 
+    
     <!-- Main Content (Initially hidden) -->
     <div id="main-content" class="hidden">
       <!-- Hero Section -->
@@ -280,7 +283,8 @@
         </div>
       </section>
 
-<!-- Facebook Timelines Section -->
+
+      <!-- Facebook Timelines Section -->
 <section id="social-timelines" class="section">
   <h1>Social Solar Updates</h1>
   <div class="timeline-wrapper">
@@ -304,8 +308,8 @@
       </div>
     </div>
     </div>
-    
-    <!-- OneStepOffTheGrid Facebook Page Timeline -->
+
+        <!-- OneStepOffTheGrid Facebook Page Timeline -->
     <div class="timeline-container one-step-off-the-grid">
       <div class="scaler">
       <div class="fb-page-wrapper">

@@ -3084,6 +3084,7 @@ opacity: 1;
     }
   }
 
+
 /* FAQ Styling */
 .faq-container {
     max-width: 800px;
@@ -3744,3 +3745,14 @@ footer {
     transition: width 0.2s ease;
   }
   
+  /* Initially hide main content but preserve layout */
+#main-content.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* When not hidden, fade in */
+  #main-content {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+  }
