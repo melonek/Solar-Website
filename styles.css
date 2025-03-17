@@ -540,21 +540,55 @@ nav {
 }
 
 
-/* Animate the Three.js canvas */
-/* Loading screen as an independent layer */
+/* Full-screen loading overlay */
 #loading-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000; /* Black background */
-    z-index: 9999;
+    background: #1a1a1a;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
   }
-
+  
+  /* Fade-out effect */
+  #loading-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Loading bar container */
+  .loading-bar-container {
+    width: 80%;
+    max-width: 500px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  
+  /* The progress bar */
+  .loading-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #00ff00, #00f0ff);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  /* Percentage text */
+  #loading-percentage {
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  
   /* Hide the main content initially */
   .hidden {
     display: none;
