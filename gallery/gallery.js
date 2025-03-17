@@ -263,10 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const leftBtn = document.querySelector('#installation-gallery .left-btn');
   const rightBtn = document.querySelector('#installation-gallery .right-btn');
   const modal = document.getElementById('modal');
-  const modalBody = document.querySelector('.modal-body'); // Container for job modal content
+  const modalBody = document.querySelector('.modal-body');
   const closeModal = document.querySelector('.close-modal');
-
-  // Lightbox (image modal) elements
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.querySelector('.lightbox-content');
   const closeLightbox = document.querySelector('.close-lightbox');
@@ -279,10 +277,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let loadedJobs = 0;
   const batchSize = 20;
 
-  // Sort jobs (newest to oldest) for the archive grid
   const sortedJobs = jobs.slice().sort((a, b) => parseFinish(b) - parseFinish(a));
 
-  // Create a card for the carousel
   function createCard(job) {
     const card = document.createElement('div');
     card.className = 'card';
@@ -291,7 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
     mainImg.src = job.mainImage;
     mainImg.alt = job.title;
     validateImage(mainImg);
-    // Stop propagation so the lightbox click doesn't interfere with the job modal
     mainImg.addEventListener('click', (e) => {
       e.stopPropagation();
       openLightbox(mainImg.src);
@@ -333,7 +328,6 @@ document.addEventListener('DOMContentLoaded', function() {
     innerSpan.className = 'button-inner';
     innerSpan.textContent = 'Read More';
     readMoreBtn.appendChild(innerSpan);
-    // Clicking Read More opens the job modal
     readMoreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       openModal(job);
@@ -363,7 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return card;
   }
 
-  // Create an archive square (for the archive grid)
   function createArchiveSquare(job) {
     const square = document.createElement('div');
     square.className = 'archive-square';
@@ -382,14 +375,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return square;
   }
 
-  // Fallback for broken images
   function validateImage(img) {
     img.addEventListener('error', function() {
       img.src = fallbackImage;
     });
   }
 
-  // Render the carousel with duplicate sets for smooth scrolling
   function renderCarousel() {
     console.log("Rendering carousel...");
     jobs.forEach(job => {
@@ -404,7 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Total cards count:", carousel.children.length);
   }
 
-  // Load jobs in batches for the archive grid
   function loadArchiveBatch() {
     const remainingJobs = sortedJobs.length - loadedJobs;
     const batchCount = Math.min(batchSize, remainingJobs);
@@ -425,15 +415,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // ─── JOB MODAL (Job Details Modal) ──────────────────────────────
   function openModal(job) {
-    // Disable background scrolling when modal is open
     document.body.style.overflow = 'hidden';
-    modalBody.innerHTML = ''; // Clear previous content
-    // Create a container for all job modal content
+    modalBody.innerHTML = '';
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content';
-    // Main image
     const mainImg = document.createElement('img');
     mainImg.className = 'modal-main-img';
     mainImg.src = job.mainImage;
@@ -444,7 +430,6 @@ document.addEventListener('DOMContentLoaded', function() {
       openLightbox(mainImg.src);
     });
     modalContent.appendChild(mainImg);
-    // Job details
     const detailsDiv = document.createElement('div');
     detailsDiv.className = 'modal-details';
     detailsDiv.innerHTML = `
@@ -458,7 +443,6 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Suburb:</strong> ${job.suburb}</p>
     `;
     modalContent.appendChild(detailsDiv);
-    // Columns for additional images
     const columnsContainer = document.createElement('div');
     columnsContainer.className = 'modal-columns';
     const leftColumn = document.createElement('div');
@@ -492,29 +476,26 @@ document.addEventListener('DOMContentLoaded', function() {
     columnsContainer.appendChild(leftColumn);
     columnsContainer.appendChild(rightColumn);
     modalContent.appendChild(columnsContainer);
-    // Append the content to the modal body and show the job modal
     modalBody.appendChild(modalContent);
     modal.style.display = 'block';
   }
 
-  // Close job modal when clicking on the close button
   closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
-    document.body.style.overflow = ''; // Restore scrolling
+    document.body.style.overflow = '';
   });
 
-  // Close job modal when clicking outside the modal-content wrapper
   modal.addEventListener('click', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
-      document.body.style.overflow = ''; // Restore scrolling
+      document.body.style.overflow = '';
     }
   });
 
   modal.addEventListener('touchstart', (e) => {
     if (!e.target.closest('.modal-content')) {
       modal.style.display = 'none';
-      document.body.style.overflow = ''; // Restore scrolling
+      document.body.style.overflow = '';
     }
   });
 
@@ -522,16 +503,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
-    // Ensure lightbox appears above everything (set a high z-index)
-    lightbox.style.zIndex = '1000';
-    // Disable interaction on the modal container
+    lightbox.style.zIndex = '1000'; // Lightbox on top
+
+    // Disable interactions with the modal
     modal.style.pointerEvents = 'none';
-    // Also disable interaction on the modal content (i.e. "#modal .modal-content")
     const modalContent = document.querySelector('#modal .modal-content');
     if (modalContent) {
       modalContent.style.pointerEvents = 'none';
     }
-    // Create a blurred background overlay using the same image
+
+    // Create blurred background overlay (between modal and lightbox)
     const blurredOverlay = document.createElement('div');
     blurredOverlay.id = 'blurred-background';
     blurredOverlay.style.position = 'fixed';
@@ -539,75 +520,74 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.left = '0';
     blurredOverlay.style.width = '100%';
     blurredOverlay.style.height = '100%';
-    blurredOverlay.style.zIndex = '998'; // Behind the lightbox but above the modal
+    blurredOverlay.style.zIndex = '999'; // Above modal, below lightbox
     blurredOverlay.style.backgroundImage = `url(${src})`;
     blurredOverlay.style.backgroundSize = 'cover';
     blurredOverlay.style.backgroundPosition = 'center';
-    // Adjusted settings for more visible blurred background:
-    blurredOverlay.style.filter = 'blur(10px)';
-    blurredOverlay.style.transform = 'scale(1.0)';
-    blurredOverlay.style.opacity = '0.9';
+    blurredOverlay.style.filter = 'blur(5px)'; // Increased blur for better effect
+    blurredOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Dark overlay to obscure modal
+    blurredOverlay.style.opacity = '1';
     document.body.appendChild(blurredOverlay);
-    // Create a global overlay to completely block interactions with the modal
-    const overlay = document.createElement('div');
-    overlay.id = 'global-modal-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.zIndex = '999'; // Below the lightbox (which is 1000)
-    overlay.style.background = 'transparent';
-    document.body.appendChild(overlay);
+
     // Lock scrolling
     document.body.style.overflow = 'hidden';
   }
-  
+
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
-    // Re-enable modal container interactions
+
+    // Re-enable modal interactions
     modal.style.pointerEvents = '';
-    // Also restore interaction on the modal content if present
     const modalContent = document.querySelector('#modal .modal-content');
     if (modalContent) {
       modalContent.style.pointerEvents = '';
     }
-    // Remove the global overlay if it exists
-    const overlay = document.getElementById('global-modal-overlay');
-    if (overlay) overlay.remove();
-    // Remove the blurred background overlay if it exists
+
+    // Remove blurred background
     const blurredOverlay = document.getElementById('blurred-background');
     if (blurredOverlay) blurredOverlay.remove();
-    // Only restore scrolling if the job modal is not open
+
+    // Restore scrolling if modal is not open
     if (modal.style.display !== 'block') {
       document.body.style.overflow = '';
     }
   }
-  
-  // Prevent clicks on the close button from bubbling up
+
   closeLightbox.addEventListener('click', (e) => {
     e.stopPropagation();
     closeLightboxFunc();
   });
-  
-  // Close lightbox when clicking directly on the lightbox overlay area
+
   lightbox.addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) {
+    if (e.target === lightbox) { // Only trigger if clicking the lightbox container
       closeLightboxFunc();
     }
   });
-  
-  // Close lightbox on mobile touchend if tapped on the overlay area
+
+  // Close lightbox on mobile touch (outside image)
+  let touchStartX, touchStartY;
+  lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
   lightbox.addEventListener('touchend', (e) => {
-    if (e.target === e.currentTarget) {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaX = Math.abs(touchEndX - touchStartX);
+    const deltaY = Math.abs(touchEndY - touchStartY);
+    if (deltaX < 10 && deltaY < 10 && e.target === lightbox) {
       closeLightboxFunc();
     }
-  });
-  
-  // Prevent lightbox from closing when clicking on the image
-  lightboxContent.addEventListener('click', function(e) {
+  }, { passive: true });
+
+  lightboxContent.addEventListener('click', (e) => {
     e.stopPropagation();
   });
+
+  lightboxContent.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+  }, { passive: true });
 
   // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
   function autoScroll() {
