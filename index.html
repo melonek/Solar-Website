@@ -109,10 +109,13 @@
       </div>
     </nav>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-      <canvas id="loading-canvas"></canvas>
-    </div>
+ <!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-bar-container">
+    <div class="loading-bar"></div>
+  </div>
+  <span id="loading-percentage">0%</span>
+</div>
 
     
     <!-- Main Content (Initially hidden) -->
@@ -439,12 +442,14 @@
     <!-- Facebook SDK -->
    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892"></script>
 
-    <!-- Scripts -->
-    <script src="script.js" defer></script>
-    <script src="intro.js" defer></script>
-    <script src="./gallery/gallery.js" defer></script>
-    <script src="./packages/packages.js" defer></script>
-    <script src="./articles/articleArray.js" defer></script>
-    <script src="./articles/full-article.js" defer></script>
+<!-- Scripts -->
+<script src="modern-loading.js" defer></script>
+<script src="script.js" defer></script>
+<script src="intro.js" defer></script>
+<script src="./gallery/gallery.js" defer></script>
+<script src="./packages/packages.js" defer></script>
+<script src="./articles/articleArray.js" defer></script>
+<script src="./articles/full-article.js" defer></script>
+
   </body>
 </html>
