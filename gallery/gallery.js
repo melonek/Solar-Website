@@ -23,8 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
   
-  // Fallback image in case a job image fails to load
+  // Fallback image in case an image fails to load
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
+  
+  // Flag to remember if modal was open when lightbox is triggered
+  let modalWasOpen = false;
   
   // ----------------------
   // Utility Functions
@@ -171,6 +174,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Lightbox Functions
   // ----------------------
   function openLightbox(src) {
+    // If modal is open, hide it temporarily and flag it
+    if (modal.style.display === 'flex') {
+      modalWasOpen = true;
+      modal.style.display = 'none';
+    } else {
+      modalWasOpen = false;
+    }
+    
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
     lightbox.style.zIndex = '1000';
@@ -197,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
       pointerEvents: 'none'
     });
     
-    // Transparent blocking overlay to prevent clicking through
+    // Transparent blocking overlay to prevent click-through
     let blockingOverlay = document.getElementById('blocking-overlay');
     if (!blockingOverlay) {
       blockingOverlay = document.createElement('div');
@@ -226,6 +237,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const blockingOverlay = document.getElementById('blocking-overlay');
     if (blockingOverlay) blockingOverlay.remove();
     
+    // Restore modal if it was previously open
+    if (modalWasOpen) {
+      modal.style.display = 'flex';
+    }
+    
+    // Restore body scroll only if modal isn't open
     if (modal.style.display !== 'flex') {
       document.body.style.overflow = '';
     }
@@ -258,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, { passive: true });
   
-  // Prevent clicks on the lightbox image from propagating to the lightbox container
+  // Prevent clicks on lightbox image from propagating to the container
   lightboxContent.addEventListener('click', function(e) {
     e.stopPropagation();
   });
@@ -352,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     card.appendChild(imagesContainer);
     
-    // Pause carousel auto scroll on hover
+    // Pause carousel auto-scroll on hover
     card.addEventListener('mouseenter', () => scrollSpeed = 0);
     card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
     
@@ -377,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Render Archive (if you have an archive grid)
   let loadedJobs = 0;
   const batchSize = 20;
-  // Sort jobs by a finishing time (assuming parseFinish exists, you can implement as needed)
+  // Sort jobs by completion date (newest first)
   const sortedJobs = jobs.slice().sort((a, b) => new Date(b.completionDate) - new Date(a.completionDate));
   
   function createArchiveSquare(job) {
