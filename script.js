@@ -1,5 +1,16 @@
 (function () {
   // -------------------------
+  // HELPER: Debounce Function
+  // -------------------------
+  function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  // -------------------------
   // FACEBOOK SDK LOADING
   // -------------------------
   function loadFacebookSDK() {
@@ -12,13 +23,15 @@
       }
       const fbScript = document.createElement('script');
       fbScript.id = 'fb-sdk-script';
-      fbScript.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+      fbScript.src =
+        'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
       fbScript.async = true;
       fbScript.defer = true;
       document.body.appendChild(fbScript);
     }
   }
 
+  // The SDK will call this once it loads.
   window.fbAsyncInit = function () {
     FB.init({
       appId: '1426450195430892',
@@ -26,7 +39,8 @@
       version: 'v22.0'
     });
     console.log('FB SDK initialized via fbAsyncInit');
-    scaleFacebookTimelines(); // Ensure timelines scale after SDK loads
+    // Minor consolidation: call scaleFacebookTimelines after FB loads
+    scaleFacebookTimelines();
   };
 
   // -------------------------
@@ -35,8 +49,12 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('Service Worker registered with scope:', registration.scope))
-        .catch(error => console.error('Service Worker registration failed:', error));
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
     });
   }
 
@@ -52,15 +70,6 @@
         img.onerror = () => reject(new Error('Failed to load image: ' + src));
       }))
     );
-  }
-
-  // Debounce function for performance
-  function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
   }
 
   function scaleFacebookTimelines() {
@@ -91,10 +100,11 @@
       }
     });
   }
-  window.addEventListener('resize', debounce(scaleFacebookTimelines, 100));
+  // Apply debouncing with a 50ms delay on resize events for timelines
+  window.addEventListener('resize', debounce(scaleFacebookTimelines, 50));
 
   // -------------------------
-  // MODERN LOADING BAR
+  // MODERN LOADING BAR (REPLACES PIXEL-DRAWING LOADING)
   // -------------------------
   function initModernLoading() {
     const images = document.images;
@@ -110,7 +120,7 @@
     }
 
     function finishLoading() {
-      // Small delay so the user sees 100%
+      // Removed timeout fallback to simplify loading
       setTimeout(() => {
         loadingScreen.classList.add('fade-out');
         setTimeout(() => {
@@ -124,7 +134,9 @@
       loadedImages++;
       const percent = Math.round((loadedImages / totalImages) * 100);
       updateProgress(percent);
-      if (loadedImages === totalImages) finishLoading();
+      if (loadedImages === totalImages) {
+        finishLoading();
+      }
     }
 
     if (totalImages === 0) {
@@ -146,13 +158,6 @@
   // -------------------------
   // HERO SECTION INITIALIZATION
   // -------------------------
-  function getHeroDimensions() {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    const solarek = { width: 5000, height: 3500 };
-    const leaves = isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 };
-    return { solarek, leaves, isMobile };
-  }
-
   async function initHeroSection() {
     const heroSection = document.querySelector('.hero-section');
     const heroCanvas = document.querySelector('#hero-canvas');
@@ -184,72 +189,84 @@
     camera.updateProjectionMatrix();
     camera.position.z = 5;
 
+    // Async Hero Textures: load both textures concurrently
     const textureLoader = new THREE.TextureLoader();
+    let firstImageTexture, secondImageTexture;
     try {
-      const [firstImageTexture, secondImageTexture] = await Promise.all([
+      [firstImageTexture, secondImageTexture] = await Promise.all([
         textureLoader.loadAsync('https://naturespark.com.au/images/AboutUs/solarek.webp'),
         textureLoader.loadAsync('https://naturespark.com.au/images/leafBanner/leaf.webp')
       ]);
-
-      const planeWidth = 20;
-      const planeHeight = 20 * (solarek.height / solarek.width);
-      const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-      const firstMaterial = new THREE.MeshBasicMaterial({ 
-        map: firstImageTexture,
-        transparent: true,
-        side: THREE.DoubleSide
-      });
-      const secondMaterial = new THREE.MeshBasicMaterial({ 
-        map: secondImageTexture,
-        transparent: true,
-        side: THREE.DoubleSide
-      });
-      const firstPlane = new THREE.Mesh(geometry, firstMaterial);
-      const secondPlane = new THREE.Mesh(geometry, secondMaterial);
-
-      const scaleDivider = 4000;
-      function updatePlaneScales() {
-        firstPlane.scale.set(solarek.width / scaleDivider, solarek.height / scaleDivider, 1);
-        secondPlane.scale.set(leaves.width / scaleDivider, leaves.height / scaleDivider, 1);
-      }
-      updatePlaneScales();
-
-      firstPlane.position.set(0, 0, -1);
-      secondPlane.position.set(0, 0, 0);
-      scene.add(firstPlane, secondPlane);
-
-      const parallaxIntensityFirst = 0.25;
-      const parallaxIntensitySecond = 0.15;
-      const rotationIntensity = 0.3;
-
-      function animateParallax() {
-        requestAnimationFrame(animateParallax);
-        const scrollY = window.scrollY;
-        const sectionTop = heroSection.offsetTop;
-        const sectionHeight = heroSection.clientHeight;
-        if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-          const progress = (scrollY - sectionTop) / sectionHeight;
-          const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
-          const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
-          const rotation = -progress * rotationIntensity;
-          firstPlane.position.y = -parallaxYFirst / 100;
-          secondPlane.position.y = -parallaxYSecond / 100;
-          secondPlane.rotation.z = rotation;
-        }
-        renderer.render(scene, camera);
-      }
-      animateParallax();
-
-      window.addEventListener('resize', debounce(() => {
-        const newCanvasHeight = window.innerHeight * 1.3;
-        renderer.setSize(window.innerWidth, newCanvasHeight);
-        camera.aspect = window.innerWidth / newCanvasHeight;
-        camera.updateProjectionMatrix();
-        updatePlaneScales();
-      }, 100));
+      console.log('Hero textures loaded successfully');
     } catch (err) {
       console.error('Error loading hero textures:', err);
+      return;
     }
+
+    const planeWidth = 20;
+    const planeHeight = 20 * (solarek.height / solarek.width);
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    const firstMaterial = new THREE.MeshBasicMaterial({
+      map: firstImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const secondMaterial = new THREE.MeshBasicMaterial({
+      map: secondImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const firstPlane = new THREE.Mesh(geometry, firstMaterial);
+    const secondPlane = new THREE.Mesh(geometry, secondMaterial);
+
+    const scaleDivider = 4000;
+    function updatePlaneScales() {
+      firstPlane.scale.set(solarek.width / scaleDivider, solarek.height / scaleDivider, 1);
+      secondPlane.scale.set(leaves.width / scaleDivider, leaves.height / scaleDivider, 1);
+    }
+    updatePlaneScales();
+
+    firstPlane.position.set(0, 0, -1);
+    secondPlane.position.set(0, 0, 0);
+    scene.add(firstPlane, secondPlane);
+
+    const parallaxIntensityFirst = 0.25;
+    const parallaxIntensitySecond = 0.15;
+    const rotationIntensity = 0.3;
+
+    function animateParallax() {
+      requestAnimationFrame(animateParallax);
+      const scrollY = window.scrollY;
+      const sectionTop = heroSection.offsetTop;
+      const sectionHeight = heroSection.clientHeight;
+      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+        const progress = (scrollY - sectionTop) / sectionHeight;
+        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
+        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
+        const rotation = -progress * rotationIntensity;
+        firstPlane.position.y = -parallaxYFirst / 100;
+        secondPlane.position.y = -parallaxYSecond / 100;
+        secondPlane.rotation.z = rotation;
+      }
+      renderer.render(scene, camera);
+    }
+    animateParallax();
+
+    // Debounced resize for hero canvas updates (100ms delay)
+    window.addEventListener('resize', debounce(() => {
+      const newCanvasHeight = window.innerHeight * 1.3;
+      renderer.setSize(window.innerWidth, newCanvasHeight);
+      camera.aspect = window.innerWidth / newCanvasHeight;
+      camera.updateProjectionMatrix();
+      updatePlaneScales();
+    }, 100));
+  }
+
+  function getHeroDimensions() {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const solarek = { width: 5000, height: 3500 };
+    const leaves = isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 };
+    return { solarek, leaves, isMobile };
   }
 
   // -------------------------
@@ -273,12 +290,12 @@
       }
       requestAnimationFrame(updateParallaxBuild);
     }
-    window.addEventListener('scroll', debounce(() => {
+    window.addEventListener('scroll', () => {
       if (Math.abs(window.scrollY - lastScrollBuild) > 2) {
         requestAnimationFrame(updateParallaxBuild);
         lastScrollBuild = window.scrollY;
       }
-    }, 50));
+    });
 
     // Reveal Functions for UI elements
     function revealFacebookTimelines() {
@@ -301,9 +318,6 @@
         button.classList.toggle('revealed', buttonTop < triggerBottom);
       });
     }
-    window.addEventListener('scroll', revealButtons);
-    window.addEventListener('load', revealButtons);
-
     function revealCards() {
       const cards = document.querySelectorAll('.brand-card');
       const triggerBottom = window.innerHeight * 0.9;
@@ -373,36 +387,27 @@
     window.addEventListener('load', revealFacebookTimelines);
     revealProductSections();
 
-    let lastCall = 0, scrollTimeout;
+    // Debounced handleScroll for grouped UI reveal functions (100ms delay)
     function handleScroll() {
-      const now = Date.now();
-      if (now - lastCall < 100) return;
-      lastCall = now;
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        requestAnimationFrame(() => {
-          revealButtons();
-          revealCards();
-          revealArticles();
-          revealUniqueServices();
-          revealLearnCards();
-        });
-      }, 100);
+      requestAnimationFrame(() => {
+        revealButtons();
+        revealCards();
+        revealArticles();
+        revealUniqueServices();
+        revealLearnCards();
+      });
     }
-    window.addEventListener('scroll', debounce(handleScroll, 50), { passive: true });
-
-    function initAll() {
+    window.addEventListener('scroll', debounce(handleScroll, 100), { passive: true });
+    window.addEventListener('load', () => {
       revealButtons();
       revealCards();
       revealArticles();
       revealUniqueServices();
       revealLearnCards();
       revealFacebookTimelines();
-    }
-    window.addEventListener('load', initAll);
+    });
 
     // Navigation and mobile menu handling
-    let isScrolling = false, isTouching = false;
     document.querySelectorAll('.fancy-button').forEach(button => {
       button.addEventListener('click', function(event) {
         if (isScrolling || isTouching) {
@@ -561,8 +566,16 @@
   // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
   function initPage() {
-    initHeroSection();
-    initUI();
+    // Initialize hero section
+    if (typeof initHeroSection === 'function') {
+      // Call without awaiting – textures will load asynchronously.
+      initHeroSection();
+    }
+    // Initialize UI and navigation
+    if (typeof initUI === 'function') {
+      initUI();
+    }
+    // Load the Facebook SDK (only once)
     loadFacebookSDK();
   }
 
@@ -573,6 +586,7 @@
     const loadingOverlay = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
 
+    // Check if the loading screen was shown before (to skip on repeat visits)
     if (localStorage.getItem('loadingScreenShown')) {
       if (loadingOverlay) loadingOverlay.style.display = 'none';
       if (mainContent) {
@@ -581,6 +595,7 @@
       }
       initPage();
     } else {
+      // Start the modern loading bar; it will call initPage() when complete.
       initModernLoading();
       localStorage.setItem('loadingScreenShown', 'true');
     }
