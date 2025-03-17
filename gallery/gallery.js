@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Modified openModal function for scrollable modal
   function openModal(job) {
-    // Disable background scrolling
     document.body.style.overflow = 'hidden';
     modalBody.innerHTML = '';
     const modalContent = document.createElement('div');
@@ -284,8 +283,8 @@ document.addEventListener('DOMContentLoaded', function() {
     modalContent.appendChild(columnsContainer);
     modalBody.appendChild(modalContent);
 
-    // Show modal as flex so that the flex rules (centering, internal scrolling) apply.
     modal.style.display = 'flex';
+    modal.scrollTop = 0; // Force scroll to top when opening
   }
 
   closeModal.addEventListener('click', () => {
@@ -307,14 +306,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // ─── LIGHTBOX (Image Modal) ─────────────────────────────────────
+  // Lightbox (Image Modal)
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
     lightbox.style.zIndex = '1000'; // Lightbox on top
 
-    // Instead of disabling pointer events on the modal,
-    // create a blocking overlay to intercept clicks on underlying content.
     const blockingOverlay = document.createElement('div');
     blockingOverlay.id = 'blocking-overlay';
     blockingOverlay.style.position = 'fixed';
@@ -326,7 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
     blockingOverlay.style.backgroundColor = 'transparent';
     document.body.appendChild(blockingOverlay);
 
-    // Create blurred background overlay (between modal and lightbox)
     const blurredOverlay = document.createElement('div');
     blurredOverlay.id = 'blurred-background';
     blurredOverlay.style.position = 'fixed';
@@ -343,22 +339,18 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.opacity = '1';
     document.body.appendChild(blurredOverlay);
 
-    // Lock scrolling
     document.body.style.overflow = 'hidden';
   }
 
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
 
-    // Remove blurred background overlay
     const blurredOverlay = document.getElementById('blurred-background');
     if (blurredOverlay) blurredOverlay.remove();
 
-    // Remove the blocking overlay
     const blockingOverlay = document.getElementById('blocking-overlay');
     if (blockingOverlay) blockingOverlay.remove();
 
-    // Restore scrolling if modal is not open
     if (modal.style.display !== 'flex') {
       document.body.style.overflow = '';
     }
@@ -370,12 +362,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) { // Only trigger if clicking the lightbox container
+    if (e.target === lightbox) {
       closeLightboxFunc();
     }
   });
 
-  // Close lightbox on mobile touch (outside image)
   let touchStartX, touchStartY;
   lightbox.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
@@ -400,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
     e.stopPropagation();
   }, { passive: true });
 
-  // ─── CAROUSEL SCROLLING ──────────────────────────────────────────
+  // Carousel Scrolling
   function autoScroll() {
     currentTranslateX -= scrollSpeed;
     if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
@@ -420,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
     carousel.style.transform = `translateX(${currentTranslateX}px)`;
   });
 
-  // ─── INITIALIZE ──────────────────────────────────────────────────
+  // Initialize
   renderCarousel();
   autoScroll();
   loadArchiveBatch();

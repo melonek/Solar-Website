@@ -228,16 +228,14 @@
   left: 0;
   top: 0;
   width: 100%;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  overflow-y: auto; /* Make modal scrollable */
-  padding-top: 5px; /* 5px from top as requested */
+  height: 100%; /* Changed from 100vh to allow full content height */
+  background-color: rgba(0,0,0,0.2);
+  overflow-y: auto; /* Ensure the modal itself scrolls */
+  padding-top: 5px; /* Keep as requested */
 }
-
 .modal-body {
   width: 100%;
-  max-height: 100%;
-  overflow-y: auto;
+  overflow-y: auto; /* Keep internal scrolling if needed */
 }
 
 
@@ -249,21 +247,20 @@
   width: 80%;
   border-radius: 8px;
   position: relative;
-  max-height: 90vh; /* Fit within viewport */
-  overflow-y: auto; /* Scrollable content */
+  max-height: none; /* Remove max-height restriction */
+  overflow-y: visible; /* Let content flow naturally */
 }
 
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .modal {
-      padding-top: 5px;
-      height: 100vh; /* Full viewport height */
+    padding-top: 5px;
+    height: 100%; /* Full height, not capped at viewport */
   }
   .modal-content {
-      width: 90%;
-      margin: 0 auto;
-      max-height: none; /* Allow natural height on mobile */
-      height: auto;
+    width: 90%;
+    margin: 0 auto;
+    height: auto; /* Natural height on mobile */
   }
 }
 
@@ -317,14 +314,15 @@
     cursor: pointer;
   }
   
-  /* Close Modal Button */
-  .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-  }
+/* Close Modal Button */
+.close-modal {
+  position: sticky; /* Changed from absolute to sticky for better accessibility */
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 21; /* Ensure it stays above content */
+}
   
   /* Lightbox Styles */
   .lightbox {
