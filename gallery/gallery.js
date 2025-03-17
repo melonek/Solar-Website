@@ -544,9 +544,9 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.backgroundSize = 'cover';
     blurredOverlay.style.backgroundPosition = 'center';
     // Adjusted settings for more visible blurred background:
-    blurredOverlay.style.filter = 'blur(3px)';
+    blurredOverlay.style.filter = 'blur(10px)';
     blurredOverlay.style.transform = 'scale(1.0)';
-    blurredOverlay.style.opacity = '1';
+    blurredOverlay.style.opacity = '0.9';
     document.body.appendChild(blurredOverlay);
     // Create a global overlay to completely block interactions with the modal
     const overlay = document.createElement('div');
