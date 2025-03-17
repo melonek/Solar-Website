@@ -222,7 +222,7 @@
   
 /* Modal Container */
 .modal {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -331,7 +331,7 @@
   
 /* Lightbox Container */
 .lightbox {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   position: fixed;
