@@ -13,7 +13,6 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', function() {
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
 
-
   // Utility Functions
   function parseTimeString(timeStr) {
     const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
@@ -287,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show modal as flex so that the flex rules (centering, internal scrolling) apply.
     modal.style.display = 'flex';
-    // (CSS for .modal-content already handles max-height & overflow-y)
   }
 
   closeModal.addEventListener('click', () => {
@@ -315,12 +313,18 @@ document.addEventListener('DOMContentLoaded', function() {
     lightbox.style.display = 'flex';
     lightbox.style.zIndex = '1000'; // Lightbox on top
 
-    // Disable interactions with the modal
-    modal.style.pointerEvents = 'none';
-    const modalContent = document.querySelector('#modal .modal-content');
-    if (modalContent) {
-      modalContent.style.pointerEvents = 'none';
-    }
+    // Instead of disabling pointer events on the modal,
+    // create a blocking overlay to intercept clicks on underlying content.
+    const blockingOverlay = document.createElement('div');
+    blockingOverlay.id = 'blocking-overlay';
+    blockingOverlay.style.position = 'fixed';
+    blockingOverlay.style.top = '0';
+    blockingOverlay.style.left = '0';
+    blockingOverlay.style.width = '100%';
+    blockingOverlay.style.height = '100%';
+    blockingOverlay.style.zIndex = '950'; // Below lightbox, above modal
+    blockingOverlay.style.backgroundColor = 'transparent';
+    document.body.appendChild(blockingOverlay);
 
     // Create blurred background overlay (between modal and lightbox)
     const blurredOverlay = document.createElement('div');
@@ -330,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.left = '0';
     blurredOverlay.style.width = '100%';
     blurredOverlay.style.height = '100%';
-    blurredOverlay.style.zIndex = '999'; // Above modal, below lightbox
+    blurredOverlay.style.zIndex = '900'; // Above modal, below blocking overlay and lightbox
     blurredOverlay.style.backgroundImage = `url(${src})`;
     blurredOverlay.style.backgroundSize = 'cover';
     blurredOverlay.style.backgroundPosition = 'center';
@@ -346,16 +350,13 @@ document.addEventListener('DOMContentLoaded', function() {
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
 
-    // Re-enable modal interactions
-    modal.style.pointerEvents = '';
-    const modalContent = document.querySelector('#modal .modal-content');
-    if (modalContent) {
-      modalContent.style.pointerEvents = '';
-    }
-
-    // Remove blurred background
+    // Remove blurred background overlay
     const blurredOverlay = document.getElementById('blurred-background');
     if (blurredOverlay) blurredOverlay.remove();
+
+    // Remove the blocking overlay
+    const blockingOverlay = document.getElementById('blocking-overlay');
+    if (blockingOverlay) blockingOverlay.remove();
 
     // Restore scrolling if modal is not open
     if (modal.style.display !== 'flex') {
