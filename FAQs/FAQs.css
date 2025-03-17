@@ -1,0 +1,40 @@
+  /* Global Styles */
+  body {
+    font-family: 'Roboto Slab', serif;
+    margin: 0;
+    padding: 0;
+  }
+
+/* Load more button */
+#loadMoreBtn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* FAQ Section */
+.section {
+    padding: 40px 20px;
+  }
+  
+  /* Banner styles */
+  .banner {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Section description */
+  .faq-description {
+    text-align: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  

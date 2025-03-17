@@ -165,3 +165,4 @@ document.addEventListener("DOMContentLoaded", function () {
     bannerImg.addEventListener('load', animateNextImage);
   }
 });
+a

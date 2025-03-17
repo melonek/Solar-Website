@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FAQ Page</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="FAQs.css">
+  <link rel="stylesheet" href="../packages/packages-custom.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js" defer></script>
+  <script src=" https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollSmoother.min.js" defer></script> -->
+
+</head>
+<body>
+
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="floating-logo">
+      <img src="../images/BusinessLogo/nse-v2.png" alt="Nature's Spark Solar Logo" width="150" height="50">
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About Us</a></li>
+      <li class="dropdown">
+        <span class="dropbtn">Services</span>
+        <div class="dropdown-content">
+          <a href="packages.html">Solar Systems</a>
+          <a href="battery-only.html">Battery Storage</a>
+          <a href="../index.html#unique-ev-chargers">EV Chargers</a>
+        </div>
+      </li>
+      <li><a href="../solarCalculator/solarCalculator.html">Solar Savings Calculator</a></li>
+      <li><a href="../index.html#articles">Articles/News</a></li>
+      <li><a href="../articles/learn.html">Explore Solar</a></li>
+      <li><a href="../gallery/gallery.html">Installations</a></li>
+      <li><a href="FAQs.html">FAQ</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+      <div class="bar half start"></div>
+      <div class="bar"></div>
+      <div class="bar half end"></div>
+    </div>
+  </nav>
+  
+<!-- FAQ Banner Section -->
+<section id="faq-banner" class="universalBanner">
+    <div class="banner-background">
+      <div class="banner-image"></div> <!-- This will hold the parallax/zoom background -->
+    </div>
+    <div class="banner-overlay">
+      <div class="banner-content">
+        <h1 data-animate="fadeInDown">Frequently Asked Questions</h1>
+        <h2 data-animate="fadeInUp">Answers to Your Most Common Queries</h2>
+        <p data-animate="fadeIn">Explore our FAQ section to find detailed insights about our products and services, ensuring you have all the information you need.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Full-width thin banner image -->
+  <header class="banner">
+    <img src="banner.jpg" alt="FAQ Banner">
+  </header>
+
+  <!-- Section description -->
+  <section class="faq-description">
+    <p>
+      Here you will find answers to the most frequently asked questions regarding our solar installation process and system performance.
+    </p>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="section">
+    <h1>FAQ</h1>
+    <div class="faq-container">
+      <!-- Hardcoded FAQ items -->
+      <div class="faq-item">
+        <h3>
+          Q1: How do solar panels work?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A1:</strong> Solar panels convert sunlight into electricity using photovoltaic cells that absorb photons and release electrons to generate current.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q2: What are the benefits of installing solar panels at home?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A2:</strong>
+            - <strong>Cost Savings:</strong> Reduced or even eliminated electricity bills.<br />
+            - <strong>Environmental Impact:</strong> Lower carbon footprint with renewable energy.<br />
+            - <strong>Energy Independence:</strong> Less reliance on grid power, especially during outages.<br />
+            - <strong>Property Value:</strong> Homes with solar installations tend to have a higher resale value.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q3: Do I need spare tiles?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A3:</strong> For tile roofs, it is wise to have spare tiles. Homeowners often find extras stored along walls, behind sheds, or in a corner. Though breakage is rare, having spares ensures any accidental damage is quickly fixed, keeping your roof leak free.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q4: Are there any holes in my roof after the solar install?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A4:</strong> A small, approximately 30mm hole is made to feed the DC cable through the roof. This hole is discreetly hidden beneath the panels and sealed with deck tape and silicone to ensure a leak‐free installation.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q5: How does a typical day during installation look?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A5:</strong> The day begins with an on-site consultation to confirm design details and placement of the inverter and panels. The installer then connects the system to WiFi for monitoring. Depending on your property’s structure, installation typically takes between 2.5 to 6 hours.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q6: Do I have to be at home during the installation?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A6:</strong> No, you do not have to be present the entire time. Most work is carried out on the roof or in the garage, with only brief visits inside if needed.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q7: How is roof access managed during installation?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A7:</strong> Roof access can be achieved via an available manhole, by temporarily removing a section of the metal roof sheet, or by carefully taking out a few tiles. All removed elements are securely reinstalled after the work is completed.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q8: Can I monitor my solar production through an app?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A8:</strong> Yes. At the end of the installation, the system is connected to WiFi and an app is configured so you can monitor your solar production and savings in real time.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q9: What is the lifespan of solar panels?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A9:</strong> Solar panels are typically designed to last between 25 and 30 years, with only gradual efficiency reductions over time.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <h3>
+          Q10: How much maintenance do solar panels require?<span class="arrow">▼</span>
+        </h3>
+        <div class="answer">
+          <p>
+            <strong>A10:</strong> Maintenance is minimal – usually just periodic cleaning and routine inspections to ensure the system remains efficient.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Button to load more FAQs -->
+    <button id="loadMoreBtn">More FAQs</button>
+    <p id="noMoreFaqs" style="display: none;">All FAQs are loaded.</p>
+  </section>
+
+  <footer>
+    <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
+  </footer>
+
+  <script src="FAQs.js"></script>
+  <script src="../packages/packages.js"></script>
+</body>
+</html>
