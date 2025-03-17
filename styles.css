@@ -693,7 +693,7 @@ nav {
     font-size: clamp(8rem, 8vw, 5rem);
     margin-bottom: 1rem;
     color: #00ffea; /* Neon color for h1 */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
   }
   
   .subtitle {
