@@ -220,15 +220,20 @@
     right: 10px;
   }
   
-/* Modal Styles */
+/* Modal Container */
 .modal {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .modal-body {
@@ -237,6 +242,7 @@
   overflow-y: visible; /* Let content dictate height */
 }
 
+/* Modal Content */
 .modal-content {
   position: relative;
   background: #fff;
@@ -245,7 +251,7 @@
   width: 80%;
   border-radius: 8px;
   box-sizing: border-box;
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - 40px); /* full height minus top padding */
   overflow-y: auto;
 }
 
@@ -313,29 +319,52 @@
     cursor: pointer;
   }
   
-/* Close Modal Button */
+/* Close Button */
 .close-modal {
   position: absolute;
-  top: 35px; /* Adjust this value if needed */
-  right: 20px; /* Adjusted to be within the modal-content's padding */
+  top: 10px;
+  right: 10px;
   font-size: 28px;
   cursor: pointer;
   z-index: 21;
 }
   
-  /* Lightbox Styles */
-  .lightbox {
-    display: none;
-    position: fixed;
-    z-index: 1000; /* Increase if necessary */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.3);
-    justify-content: center;
-    align-items: center;
-  }
+/* Lightbox Container */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+/* Blurred Background for Lightbox */
+#blurred-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 998;
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px);
+  opacity: 1;
+  pointer-events: none; /* Let the blocking overlay handle interactions */
+}
+
+/* Transparent Blocking Overlay */
+#blocking-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999; /* Above blurred background but below lightbox */
+  background-color: transparent;
+}
 
   .lightbox-content {
     width: 920px;
