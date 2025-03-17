@@ -116,14 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Refresh ScrollTrigger on orientation or window resize
-window.addEventListener('orientationchange', function() {
-  ScrollTrigger.refresh();
-});
-window.addEventListener('resize', function() {
-  ScrollTrigger.refresh();
-});
-
 // Optional: Fix for mobile viewport height issues
 function setVh() {
   let vh = window.innerHeight * 0.01;
