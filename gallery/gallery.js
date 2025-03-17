@@ -542,32 +542,32 @@ document.addEventListener('DOMContentLoaded', function() {
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
-    // Disable interaction on the modal content for both click and touch
-    modalBody.style.pointerEvents = 'none';
-    modalBody.style.touchAction = 'none';
-    // Add an overlay to intercept mobile touch/click events on the modal
+    // Ensure lightbox appears above everything (set a higher z-index)
+    lightbox.style.zIndex = '1000';
+    // Completely disable any interaction on the modal by:
+    // 1. Disabling pointer events on the modal element
+    modal.style.pointerEvents = 'none';
+    // 2. Creating a full-page transparent overlay to intercept any touches/clicks
     const overlay = document.createElement('div');
-    overlay.id = 'modal-overlay';
-    overlay.style.position = 'absolute';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
+    overlay.id = 'global-modal-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
     overlay.style.width = '100%';
     overlay.style.height = '100%';
-    overlay.style.zIndex = '10'; // Above modal content but below the lightbox
-    overlay.addEventListener('touchstart', (e) => e.stopPropagation());
-    overlay.addEventListener('touchend', (e) => e.stopPropagation());
-    overlay.addEventListener('click', (e) => e.stopPropagation());
-    modal.appendChild(overlay);
+    overlay.style.zIndex = '999'; // Below the lightbox (which is 1000)
+    overlay.style.background = 'transparent';
+    document.body.appendChild(overlay);
+    // Lock scrolling
     document.body.style.overflow = 'hidden';
   }
   
   function closeLightboxFunc() {
     lightbox.style.display = 'none';
-    // Re-enable interaction on the modal content
-    modalBody.style.pointerEvents = '';
-    modalBody.style.touchAction = '';
-    // Remove the overlay
-    const overlay = document.getElementById('modal-overlay');
+    // Re-enable modal interactions
+    modal.style.pointerEvents = '';
+    // Remove the global overlay if it exists
+    const overlay = document.getElementById('global-modal-overlay');
     if (overlay) overlay.remove();
     // Only restore scrolling if the job modal is not open
     if (modal.style.display !== 'block') {
@@ -581,14 +581,14 @@ document.addEventListener('DOMContentLoaded', function() {
     closeLightboxFunc();
   });
   
-  // Close lightbox when clicking directly on the overlay
+  // Close lightbox when clicking directly on the lightbox overlay area
   lightbox.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) {
       closeLightboxFunc();
     }
   });
   
-  // Close lightbox on mobile touchend if tapped on the overlay
+  // Close lightbox on mobile touchend if tapped on the overlay area
   lightbox.addEventListener('touchend', (e) => {
     if (e.target === e.currentTarget) {
       closeLightboxFunc();
