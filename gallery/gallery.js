@@ -216,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Modified openModal function for scrollable modal
   function openModal(job) {
     document.body.style.overflow = 'hidden';
     modalBody.innerHTML = '';
@@ -284,7 +283,11 @@ document.addEventListener('DOMContentLoaded', function() {
     modalBody.appendChild(modalContent);
 
     modal.style.display = 'flex';
-    modal.scrollTop = 0; // Force scroll to top when opening
+    modal.scrollTop = 0; // Reset scroll to top
+    // Force reflow to ensure scroll position takes effect
+    window.requestAnimationFrame(() => {
+      modal.scrollTop = 0;
+    });
   }
 
   closeModal.addEventListener('click', () => {
@@ -310,7 +313,13 @@ document.addEventListener('DOMContentLoaded', function() {
   function openLightbox(src) {
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
-    lightbox.style.zIndex = '1000'; // Lightbox on top
+    lightbox.style.zIndex = '1000';
+
+    if (modal.style.display === 'flex') {
+      lightbox.style.background = 'rgba(0, 0, 0, 0.3)';
+    } else {
+      lightbox.style.background = 'rgba(0, 0, 0, 0.8)';
+    }
 
     const blockingOverlay = document.createElement('div');
     blockingOverlay.id = 'blocking-overlay';
@@ -319,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
     blockingOverlay.style.left = '0';
     blockingOverlay.style.width = '100%';
     blockingOverlay.style.height = '100%';
-    blockingOverlay.style.zIndex = '950'; // Below lightbox, above modal
+    blockingOverlay.style.zIndex = '950';
     blockingOverlay.style.backgroundColor = 'transparent';
     document.body.appendChild(blockingOverlay);
 
@@ -330,12 +339,12 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.left = '0';
     blurredOverlay.style.width = '100%';
     blurredOverlay.style.height = '100%';
-    blurredOverlay.style.zIndex = '900'; // Above modal, below blocking overlay and lightbox
+    blurredOverlay.style.zIndex = '900';
     blurredOverlay.style.backgroundImage = `url(${src})`;
     blurredOverlay.style.backgroundSize = 'cover';
     blurredOverlay.style.backgroundPosition = 'center';
     blurredOverlay.style.filter = 'blur(5px)';
-    blurredOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    blurredOverlay.style.backgroundColor = 'rgba(128, 128, 128, 0.5)';
     blurredOverlay.style.opacity = '1';
     document.body.appendChild(blurredOverlay);
 

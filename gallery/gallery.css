@@ -222,45 +222,44 @@
   
 /* Modal Styles */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 20;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%; /* Changed from 100vh to allow full content height */
-  background-color: rgba(0,0,0,0.2);
-  overflow-y: auto; /* Ensure the modal itself scrolls */
-  padding-top: 5px; /* Keep as requested */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
 .modal-body {
   width: 100%;
-  overflow-y: auto; /* Keep internal scrolling if needed */
+  height: auto;
+  overflow-y: visible; /* Let content dictate height */
 }
 
-
-/* Modal Content */
 .modal-content {
+  position: relative;
   background: #fff;
   margin: 0 auto;
   padding: 20px;
   width: 80%;
   border-radius: 8px;
-  position: relative;
-  max-height: none; /* Remove max-height restriction */
-  overflow-y: visible; /* Let content flow naturally */
+  box-sizing: border-box;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .modal {
-    padding-top: 5px;
-    height: 100%; /* Full height, not capped at viewport */
+    padding: 0; /* Consistent with desktop */
   }
   .modal-content {
     width: 90%;
-    margin: 0 auto;
-    height: auto; /* Natural height on mobile */
+    min-height: 100vh; /* Maintain full height */
+  }
+  .close-modal {
+    right: 10px;
   }
 }
 
@@ -316,12 +315,12 @@
   
 /* Close Modal Button */
 .close-modal {
-  position: sticky; /* Changed from absolute to sticky for better accessibility */
-  top: 10px;
-  right: 20px;
+  position: absolute;
+  top: 35px; /* Adjust this value if needed */
+  right: 20px; /* Adjusted to be within the modal-content's padding */
   font-size: 28px;
   cursor: pointer;
-  z-index: 21; /* Ensure it stays above content */
+  z-index: 21;
 }
   
   /* Lightbox Styles */
@@ -333,7 +332,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.3);
     justify-content: center;
     align-items: center;
   }
@@ -346,6 +345,7 @@
     object-fit: contain;
     pointer-events: none;
   }
+
   .close-lightbox {
     position: absolute;
     top: 20px;
