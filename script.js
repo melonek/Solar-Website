@@ -1,91 +1,119 @@
 (function () {
   // -------------------------
-  // UTILITY FUNCTIONS
-  // -------------------------
-  const debounce = (func, wait) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  };
-
-  const preloadImages = (imageArray) => Promise.all(
-    imageArray.map(src => new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => resolve(src);
-      img.onerror = () => reject(new Error(`Failed to load: ${src}`));
-    }))
-  );
-
-  // -------------------------
   // FACEBOOK SDK LOADING
   // -------------------------
-  const loadFacebookSDK = () => {
-    if (!document.getElementById('social-timelines') || document.getElementById('fb-sdk-script')) return;
-    const fbRoot = document.createElement('div');
-    fbRoot.id = 'fb-root';
-    document.body.appendChild(fbRoot);
-    const fbScript = document.createElement('script');
-    fbScript.id = 'fb-sdk-script';
-    fbScript.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
-    fbScript.async = fbScript.defer = true;
-    document.body.appendChild(fbScript);
-  };
+  function loadFacebookSDK() {
+    if (!document.getElementById('fb-sdk-script')) {
+      let fbRoot = document.getElementById('fb-root');
+      if (!fbRoot) {
+        fbRoot = document.createElement('div');
+        fbRoot.id = 'fb-root';
+        document.body.appendChild(fbRoot);
+      }
+      const fbScript = document.createElement('script');
+      fbScript.id = 'fb-sdk-script';
+      fbScript.src =
+        'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+      fbScript.async = true;
+      fbScript.defer = true;
+      document.body.appendChild(fbScript);
+    }
+  }
 
-  window.fbAsyncInit = () => {
-    FB.init({ appId: '1426450195430892', xfbml: true, version: 'v22.0' });
-    console.log('FB SDK initialized');
-    scaleFacebookTimelines();
+  // The SDK will call this once it loads.
+  window.fbAsyncInit = function () {
+    FB.init({
+      appId: '1426450195430892',
+      xfbml: true,
+      version: 'v22.0'
+    });
+    console.log('FB SDK initialized via fbAsyncInit');
   };
 
   // -------------------------
   // SERVICE WORKER REGISTRATION
   // -------------------------
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () =>
+    window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker registered:', reg.scope))
-        .catch(err => console.error('Service Worker failed:', err))
-    );
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
   }
 
   // -------------------------
-  // FACEBOOK TIMELINE SCALING
+  // HELPER FUNCTIONS
   // -------------------------
-  const scaleFacebookTimelines = () => {
+  function preloadImages(imageArray) {
+    return Promise.all(
+      imageArray.map(src => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(src);
+        img.onerror = () => reject(new Error('Failed to load image: ' + src));
+      }))
+    );
+  }
+
+  function scaleFacebookTimelines() {
     const containers = document.querySelectorAll('.timeline-container');
     containers.forEach(container => {
       const scaler = container.querySelector('.scaler');
       const fbPage = container.querySelector('.fb-page');
-      if (!scaler || !fbPage) return console.warn('Scaler or fb-page missing:', container);
-      const containerWidth = Math.max(container.clientWidth - 40, 100);
-      const defaultWidth = 500, defaultHeight = 600;
-      const scale = containerWidth / defaultWidth;
-      scaler.style.transform = `scale(${scale})`;
-      scaler.style.transformOrigin = 'top left';
-      scaler.style.width = `${defaultWidth}px`;
-      scaler.style.height = `${defaultHeight}px`;
-      fbPage.style.width = `${defaultWidth}px`;
-      fbPage.style.height = `${defaultHeight}px`;
-      container.style.height = `${defaultHeight * scale + 40}px`;
+      if (scaler && fbPage) {
+        const rawWidth = container.clientWidth;
+        console.log("Raw container width:", rawWidth);
+        if (rawWidth < 100) {
+          setTimeout(scaleFacebookTimelines, 200);
+          return;
+        }
+        const containerWidth = rawWidth - 40;
+        const defaultWidth = 500, defaultHeight = 600;
+        let scale = containerWidth / defaultWidth;
+        console.log(`Computed scale: ${scale} (containerWidth: ${containerWidth}, defaultWidth: ${defaultWidth})`);
+        scaler.style.transform = `scale(${scale})`;
+        scaler.style.transformOrigin = 'top left';
+        scaler.style.width = `${defaultWidth}px`;
+        scaler.style.height = `${defaultHeight}px`;
+        fbPage.style.width = `${defaultWidth}px`;
+        fbPage.style.height = `${defaultHeight}px`;
+        container.style.height = `${defaultHeight * scale + 40}px`;
+      } else {
+        console.warn('Scaler or fb-page not found in:', container);
+      }
     });
-  };
+  }
+  window.addEventListener('resize', scaleFacebookTimelines);
 
   // -------------------------
-  // MODERN LOADING BAR
+  // MODERN LOADING BAR (REPLACES PIXEL-DRAWING LOADING)
   // -------------------------
-  const initModernLoading = () => {
+  function initModernLoading() {
+    const images = document.images;
+    const totalImages = images.length;
+    let loadedImages = 0;
     const progressBar = document.querySelector('.loading-bar');
     const percentageText = document.getElementById('loading-percentage');
     const loadingScreen = document.getElementById('loading-screen');
-    const images = Array.from(document.querySelectorAll('img:not([loading="lazy"])'));
-    let loadedImages = 0;
 
-    const finishLoading = () => {
-      progressBar.style.width = '100%';
-      percentageText.textContent = '100%';
+    // Fallback: finish loading after 10 seconds if some images never load
+    let loadingTimeout = setTimeout(() => {
+      console.warn("Loading timeout reached, finishing loading.");
+      finishLoading();
+    }, 10000);
+
+    function updateProgress(percent) {
+      progressBar.style.width = percent + '%';
+      percentageText.textContent = percent + '%';
+    }
+
+    function finishLoading() {
+      clearTimeout(loadingTimeout);
+      // Small delay so the user sees 100%
       setTimeout(() => {
         loadingScreen.classList.add('fade-out');
         setTimeout(() => {
@@ -93,216 +121,348 @@
           initPage();
         }, 500);
       }, 300);
-    };
+    }
 
-    if (!images.length) return finishLoading();
-    images.forEach(img => {
-      if (img.complete) {
-        loadedImages++;
-      } else {
-        img.onload = () => {
-          loadedImages++;
-          const percent = Math.round((loadedImages / images.length) * 100);
-          progressBar.style.width = `${percent}%`;
-          percentageText.textContent = `${percent}%`;
-          if (loadedImages === images.length) finishLoading();
-        };
-        img.onerror = () => loadedImages++; // Continue even if an image fails
+    function incrementCounter() {
+      loadedImages++;
+      const percent = Math.round((loadedImages / totalImages) * 100);
+      updateProgress(percent);
+      if (loadedImages === totalImages) {
+        finishLoading();
       }
-    });
-    if (loadedImages === images.length) finishLoading();
-  };
+    }
+
+    if (totalImages === 0) {
+      updateProgress(100);
+      finishLoading();
+    } else {
+      for (let i = 0; i < totalImages; i++) {
+        const img = images[i];
+        if (img.complete) {
+          incrementCounter();
+        } else {
+          img.addEventListener('load', incrementCounter, false);
+          img.addEventListener('error', incrementCounter, false);
+        }
+      }
+    }
+  }
 
   // -------------------------
   // HERO SECTION INITIALIZATION
   // -------------------------
-  const getHeroDimensions = () => {
+  function getHeroDimensions() {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    return {
-      solarek: { width: 5000, height: 3500 },
-      leaves: isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 }
-    };
-  };
+    const solarek = { width: 5000, height: 3500 };
+    const leaves = isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 };
+    return { solarek, leaves, isMobile };
+  }
 
-  const initHeroSection = async () => {
+  function initHeroSection() {
     const heroSection = document.querySelector('.hero-section');
-    const heroCanvas = document.getElementById('hero-canvas');
-    if (!heroSection || !heroCanvas || !window.THREE || !window.gsap) {
-      console.error('Hero section setup failed: missing elements or libraries');
+    const heroCanvas = document.querySelector('#hero-canvas');
+    if (!heroSection) {
+      console.error("Hero section (.hero-section) not found in DOM.");
+      return;
+    }
+    if (!heroCanvas) {
+      console.error("Canvas (#hero-canvas) not found in DOM.");
+      return;
+    }
+    if (typeof THREE === 'undefined') {
+      console.error("Three.js library not loaded. Check CDN or network.");
+      return;
+    }
+    if (typeof gsap === 'undefined') {
+      console.error("GSAP library not loaded. Check CDN or network.");
       return;
     }
 
-    const { solarek, leaves } = getHeroDimensions();
+    let { solarek, leaves } = getHeroDimensions();
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true });
     renderer.setClearColor(0x000000);
     const canvasHeight = window.innerHeight * 1.3;
     renderer.setSize(window.innerWidth, canvasHeight);
+    camera.aspect = window.innerWidth / canvasHeight;
+    camera.updateProjectionMatrix();
     camera.position.z = 5;
 
     const textureLoader = new THREE.TextureLoader();
-    try {
-      const [firstImageTexture, secondImageTexture] = await Promise.all([
-        textureLoader.loadAsync('https://naturespark.com.au/images/AboutUs/solarek.webp'),
-        textureLoader.loadAsync('https://naturespark.com.au/images/leafBanner/leaf.webp')
-      ]);
+    const firstImageTexture = textureLoader.load(
+      'https://naturespark.com.au/images/AboutUs/solarek.webp',
+      () => console.log('First image loaded successfully'),
+      undefined,
+      err => console.error('Error loading first image:', err)
+    );
+    const secondImageTexture = textureLoader.load(
+      'https://naturespark.com.au/images/leafBanner/leaf.webp',
+      () => console.log('Second image loaded successfully'),
+      undefined,
+      err => console.error('Error loading second image:', err)
+    );
 
-      const planeWidth = 20, planeHeight = 20 * (solarek.height / solarek.width);
-      const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-      const firstMaterial = new THREE.MeshBasicMaterial({ map: firstImageTexture, transparent: true, side: THREE.DoubleSide });
-      const secondMaterial = new THREE.MeshBasicMaterial({ map: secondImageTexture, transparent: true, side: THREE.DoubleSide });
-      const firstPlane = new THREE.Mesh(geometry, firstMaterial);
-      const secondPlane = new THREE.Mesh(geometry, secondMaterial);
+    const planeWidth = 20;
+    const planeHeight = 20 * (solarek.height / solarek.width);
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    const firstMaterial = new THREE.MeshBasicMaterial({ 
+      map: firstImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const secondMaterial = new THREE.MeshBasicMaterial({ 
+      map: secondImageTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const firstPlane = new THREE.Mesh(geometry, firstMaterial);
+    const secondPlane = new THREE.Mesh(geometry, secondMaterial);
 
-      const scaleDivider = 4000;
-      const updatePlaneScales = () => {
-        firstPlane.scale.set(solarek.width / scaleDivider, solarek.height / scaleDivider, 1);
-        secondPlane.scale.set(leaves.width / scaleDivider, leaves.height / scaleDivider, 1);
-      };
-      updatePlaneScales();
-
-      firstPlane.position.set(0, 0, -1);
-      secondPlane.position.set(0, 0, 0);
-      scene.add(firstPlane, secondPlane);
-
-      const parallaxIntensityFirst = 0.25, parallaxIntensitySecond = 0.15, rotationIntensity = 0.3;
-      const animateParallax = () => {
-        requestAnimationFrame(animateParallax);
-        const scrollY = window.scrollY;
-        const { offsetTop: sectionTop, clientHeight: sectionHeight } = heroSection;
-        if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
-          const progress = (scrollY - sectionTop) / sectionHeight;
-          firstPlane.position.y = -(progress * parallaxIntensityFirst * sectionHeight) / 100;
-          secondPlane.position.y = -(progress * parallaxIntensitySecond * sectionHeight) / 100;
-          secondPlane.rotation.z = -progress * rotationIntensity;
-        }
-        renderer.render(scene, camera);
-      };
-      animateParallax();
-
-      window.addEventListener('resize', debounce(() => {
-        const newCanvasHeight = window.innerHeight * 1.3;
-        renderer.setSize(window.innerWidth, newCanvasHeight);
-        camera.aspect = window.innerWidth / newCanvasHeight;
-        camera.updateProjectionMatrix();
-        updatePlaneScales();
-      }, 100));
-    } catch (err) {
-      console.error('Hero texture loading failed:', err);
+    const scaleDivider = 4000;
+    function updatePlaneScales() {
+      firstPlane.scale.set(solarek.width / scaleDivider, solarek.height / scaleDivider, 1);
+      secondPlane.scale.set(leaves.width / scaleDivider, leaves.height / scaleDivider, 1);
     }
-  };
+    updatePlaneScales();
+
+    firstPlane.position.set(0, 0, -1);
+    secondPlane.position.set(0, 0, 0);
+    scene.add(firstPlane, secondPlane);
+
+    const parallaxIntensityFirst = 0.25;
+    const parallaxIntensitySecond = 0.15;
+    const rotationIntensity = 0.3;
+
+    function animateParallax() {
+      requestAnimationFrame(animateParallax);
+      const scrollY = window.scrollY;
+      const sectionTop = heroSection.offsetTop;
+      const sectionHeight = heroSection.clientHeight;
+      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+        const progress = (scrollY - sectionTop) / sectionHeight;
+        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
+        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
+        const rotation = -progress * rotationIntensity;
+        firstPlane.position.y = -parallaxYFirst / 100;
+        secondPlane.position.y = -parallaxYSecond / 100;
+        secondPlane.rotation.z = rotation;
+      }
+      renderer.render(scene, camera);
+    }
+    animateParallax();
+
+    window.addEventListener('resize', () => {
+      const newCanvasHeight = window.innerHeight * 1.3;
+      renderer.setSize(window.innerWidth, newCanvasHeight);
+      camera.aspect = window.innerWidth / newCanvasHeight;
+      camera.updateProjectionMatrix();
+      updatePlaneScales();
+    });
+  }
 
   // -------------------------
   // UI & NAVIGATION INITIALIZATION
   // -------------------------
-  const initUI = () => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    let isScrolling = false, isTouching = false;
-
-    // Parallax for Build Solar Section
+  function initUI() {
+    // Build Solar Section Parallax
     const buildSolarSection = document.getElementById('build-solar');
     const buildSolarVideo = document.querySelector('.build-solar-video video');
     let lastScrollBuild = 0;
-    const updateParallaxBuild = () => {
-      if (!buildSolarSection || !buildSolarVideo) return;
+    function updateParallaxBuild() {
       const scrollY = window.scrollY;
-      const { offsetTop: sectionTop, clientHeight: sectionHeight } = buildSolarSection;
-      if (scrollY <= sectionTop + sectionHeight && scrollY >= sectionTop) {
-        const progress = (scrollY - sectionTop) / sectionHeight;
-        buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${progress * sectionHeight * 0.25}px))`;
+      if (!buildSolarSection) return;
+      const sectionTop = buildSolarSection.offsetTop,
+            sectionHeight = buildSolarSection.clientHeight;
+      if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
+      const progress = (scrollY - sectionTop) / sectionHeight,
+            parallaxY = progress * sectionHeight * 0.25;
+      if (buildSolarVideo) {
+        buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
       }
-    };
-    window.addEventListener('scroll', debounce(() => {
+      requestAnimationFrame(updateParallaxBuild);
+    }
+    window.addEventListener('scroll', () => {
       if (Math.abs(window.scrollY - lastScrollBuild) > 2) {
         requestAnimationFrame(updateParallaxBuild);
         lastScrollBuild = window.scrollY;
       }
-    }, 50));
+    });
 
-    // Reveal Animations with IntersectionObserver
-    const observerOptions = { threshold: 0.1 };
-    const createObserver = (selector, className, delay = 0, toggle = false) => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              entry.target.classList.add(className);
-              if (!toggle) observer.unobserve(entry.target);
-            }, delay);
-          } else if (toggle) {
-            entry.target.classList.remove(className);
-          }
-        });
-      }, observerOptions);
-      document.querySelectorAll(selector).forEach(el => observer.observe(el));
-    };
-    createObserver('.fancy-button', 'revealed', 0, true);
-    createObserver('.brand-card', 'active', 0, true);
-    createObserver('.article-card', 'revealed', 200);
-    createObserver('.learn-card', 'revealed', 300);
-    createObserver('.fb-page-wrapper', 'revealed', 0, true);
-    createObserver('.panels-grid .product, .inverters-grid .product, .battery-grid .product', 'revealed', 0, true);
-
-    const uniqueServicesObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const delay = parseFloat(entry.target.getAttribute('data-reveal-delay')) || 0;
-          setTimeout(() => {
-            entry.target.classList.add('revealed');
-            entry.target.style.transform = 'translate(0)';
-          }, delay * 200);
-          uniqueServicesObserver.unobserve(entry.target);
+    // Reveal Functions for UI elements
+    function revealFacebookTimelines() {
+      const timelines = document.querySelectorAll('.fb-page-wrapper');
+      const triggerBottom = window.innerHeight * 0.8;
+      timelines.forEach(timeline => {
+        const timelineTop = timeline.getBoundingClientRect().top;
+        if (timelineTop < triggerBottom) {
+          timeline.classList.add('revealed');
         } else {
-          const direction = entry.target.getAttribute('data-reveal-direction');
-          entry.target.classList.remove('revealed');
-          entry.target.style.transform = direction === 'right' ? 'translateX(50px)' :
-                                        direction === 'left' ? 'translateX(-50px)' :
-                                        direction === 'bottom' ? 'translateY(50px)' : '';
+          timeline.classList.remove('revealed');
         }
       });
-    }, observerOptions);
-    document.querySelectorAll('#unique-services .unique-service-product').forEach(el => uniqueServicesObserver.observe(el));
+    }
+    function revealButtons() {
+      const buttons = document.querySelectorAll('.fancy-button');
+      const triggerBottom = window.innerHeight * 0.8;
+      buttons.forEach(button => {
+        const buttonTop = button.getBoundingClientRect().top;
+        button.classList.toggle('revealed', buttonTop < triggerBottom);
+      });
+    }
+    window.addEventListener('scroll', revealButtons);
+    window.addEventListener('load', revealButtons);
 
-    // Navigation Handling
-    const handleButtonClick = (button, e) => {
-      if (isScrolling || isTouching) {
-        e.preventDefault();
-        return;
-      }
-      const url = button.getAttribute('href');
-      if (!url) return;
-      if (button.classList.contains('mirror-left')) {
-        e.preventDefault();
-        setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 100);
-      } else {
-        window.location.href = url;
-      }
-    };
-    document.querySelectorAll('.fancy-button, .savings-btn, .build-button').forEach(button => {
-      button.addEventListener('click', e => handleButtonClick(button, e));
-      button.addEventListener('touchstart', () => isTouching = true);
-      button.addEventListener('touchend', e => {
+    function revealCards() {
+      const cards = document.querySelectorAll('.brand-card');
+      const triggerBottom = window.innerHeight * 0.9;
+      cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+        card.classList.toggle('active', cardTop < triggerBottom);
+      });
+    }
+    function revealArticles() {
+      const articles = document.querySelectorAll('.article-card');
+      const triggerBottom = window.innerHeight * 0.8;
+      articles.forEach((article, index) => {
+        const articleTop = article.getBoundingClientRect().top;
+        if (articleTop < triggerBottom) {
+          setTimeout(() => { article.classList.add('revealed'); }, index * 200);
+        } else {
+          article.classList.remove('revealed');
+        }
+      });
+    }
+    function revealLearnCards() {
+      const learnCards = document.querySelectorAll('.learn-card');
+      const triggerBottom = window.innerHeight * 0.8;
+      learnCards.forEach((card, index) => {
+        const cardTop = card.getBoundingClientRect().top;
+        if (cardTop < triggerBottom) {
+          setTimeout(() => { card.classList.add('revealed'); }, index * 300);
+        } else {
+          card.classList.remove('revealed');
+        }
+      });
+    }
+    function revealUniqueServices() {
+      const products = document.querySelectorAll('#unique-services .unique-service-product');
+      const triggerBottom = window.innerHeight * 0.8;
+      products.forEach(product => {
+        const productTop = product.getBoundingClientRect().top;
+        const revealDirection = product.getAttribute('data-reveal-direction');
+        const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
+        if (productTop < triggerBottom) {
+          setTimeout(() => {
+            product.classList.add('revealed');
+            product.style.transform = 'translate(0)';
+          }, delay * 200);
+        } else {
+          product.classList.remove('revealed');
+          if (revealDirection === 'right') {
+            product.style.transform = 'translateX(50px)';
+          } else if (revealDirection === 'left') {
+            product.style.transform = 'translateX(-50px)';
+          } else if (revealDirection === 'bottom') {
+            product.style.transform = 'translateY(50px)';
+          }
+        }
+      });
+    }
+    function revealProductSections() {
+      const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
+      const triggerBottom = window.innerHeight * 0.8;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        section.classList.toggle('revealed', sectionTop < triggerBottom);
+      });
+    }
+    window.addEventListener('scroll', revealProductSections);
+    window.addEventListener('scroll', revealFacebookTimelines);
+    window.addEventListener('load', revealFacebookTimelines);
+    revealProductSections();
+
+    let lastCall = 0, scrollTimeout;
+    function handleScroll() {
+      const now = Date.now();
+      if (now - lastCall < 100) return;
+      lastCall = now;
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        requestAnimationFrame(() => {
+          revealButtons();
+          revealCards();
+          revealArticles();
+          revealUniqueServices();
+          revealLearnCards();
+        });
+      }, 100);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    function initAll() {
+      revealButtons();
+      revealCards();
+      revealArticles();
+      revealUniqueServices();
+      revealLearnCards();
+      revealFacebookTimelines();
+    }
+    window.addEventListener('load', initAll);
+
+    // Navigation and mobile menu handling
+    document.querySelectorAll('.fancy-button').forEach(button => {
+      button.addEventListener('click', function(event) {
+        if (isScrolling || isTouching) {
+          event.preventDefault();
+          return false;
+        }
+        const url = this.getAttribute('href');
+        if (this.classList.contains('mirror-left')) {
+          event.preventDefault();
+          setTimeout(() => {
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }, 100);
+        } else {
+          window.location.href = url;
+        }
+      });
+      button.addEventListener('touchstart', () => { isTouching = true; });
+      button.addEventListener('touchend', function(event) {
         isTouching = false;
-        e.preventDefault();
-        button.click();
+        event.preventDefault();
+        this.click();
       }, { passive: false });
+    });
+
+    document.querySelectorAll('.savings-btn, .build-button').forEach(button => {
+      button.addEventListener('click', function(event) {
+        if (isScrolling || isTouching) {
+          event.preventDefault();
+          return false;
+        }
+        const url = this.getAttribute('href');
+        if (url) {
+          if (this.classList.contains('mirror-left')) {
+            event.preventDefault();
+            setTimeout(() => {
+              window.open(url, '_blank', 'noopener,noreferrer');
+            }, 100);
+          } else {
+            window.location.href = url;
+          }
+        }
+      });
     });
 
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
-    if (mobileMenu && navLinks) {
-      mobileMenu.addEventListener('click', e => {
-        e.stopPropagation();
-        navLinks.classList.toggle('active');
-        mobileMenu.classList.toggle('open');
-      });
-    }
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
 
-    const toggleHrefs = () => {
+    function toggleHrefs() {
       document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
         const href = toggle.getAttribute('href');
-        if (href?.endsWith('#unique-services')) return;
+        if (href && href.endsWith("#unique-services")) return;
         if (mediaQuery.matches) {
           toggle.dataset.originalHref = href;
           toggle.href = 'javascript:void(0);';
@@ -310,39 +470,56 @@
           toggle.href = toggle.dataset.originalHref;
         }
       });
-    };
+    }
     toggleHrefs();
-    mediaQuery.addEventListener('change', toggleHrefs);
 
-    const closeAllDropdowns = () => {
-      document.querySelectorAll('.dropdown-content, .dropdown').forEach(el => el.classList.remove('active'));
-    };
+    if (mobileMenu && navLinks) {
+      mobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navLinks.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+      });
+    }
 
     document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
-      dropbtn.addEventListener('click', e => {
-        if (mediaQuery.matches) return;
-        e.preventDefault();
-        e.stopPropagation();
-        const dropdown = dropbtn.parentElement;
-        const dropdownContent = dropdown.querySelector('.dropdown-content');
-        const isActive = dropdownContent.classList.contains('active');
-        closeAllDropdowns();
-        if (!isActive) {
-          dropdownContent.classList.add('active');
-          dropdown.classList.add('active');
+      dropbtn.addEventListener('click', function(e) {
+        if (mediaQuery.matches) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        } else {
+          e.preventDefault();
+          e.stopPropagation();
+          const dropdown = this.parentElement;
+          const dropdownContent = dropdown.querySelector('.dropdown-content');
+          const isActive = dropdownContent.classList.contains('active');
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+          if (!isActive) {
+            dropdownContent.classList.add('active');
+            dropdown.classList.add('active');
+          }
+        }
+      });
+      dropbtn.addEventListener('touchend', function(e) {
+        if (mediaQuery.matches) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
         }
       });
     });
 
     document.querySelectorAll('.dropdown > a').forEach(link => {
-      link.addEventListener('click', e => {
+      link.addEventListener('click', function(e) {
         if (!mediaQuery.matches) return;
         e.preventDefault();
         e.stopPropagation();
-        const dropdown = link.parentElement;
+        const dropdown = this.parentElement;
         const dropdownContent = dropdown.querySelector('.dropdown-content');
         const isActive = dropdownContent.classList.contains('active');
         closeAllDropdowns();
+        navLinks.classList.remove('active');
         if (!isActive) {
           dropdownContent.classList.add('active');
           dropdown.classList.add('active');
@@ -351,67 +528,100 @@
     });
 
     window.addEventListener('scroll', () => {
-      if (mediaQuery.matches && navLinks?.classList.contains('active')) {
+      if (mediaQuery.matches && navLinks.classList.contains('active')) {
         closeAllDropdowns();
         navLinks.classList.remove('active');
         mobileMenu.classList.remove('open');
       }
     });
 
-    document.addEventListener('click', e => {
+    document.querySelectorAll('.dropdown-content a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (mediaQuery.matches) {
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+        }
+      });
+    });
+
+    document.addEventListener('click', function(e) {
       if (!e.target.closest('.nav-links')) {
         closeAllDropdowns();
-        navLinks?.classList.remove('active');
+        navLinks.classList.remove('active');
       }
     });
 
-    window.addEventListener('resize', debounce(() => {
+    window.addEventListener('resize', () => {
       if (!mediaQuery.matches) {
         closeAllDropdowns();
-        navLinks?.classList.remove('active');
+        navLinks.classList.remove('active');
       }
-      scaleFacebookTimelines();
-    }, 100));
-  };
+    });
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
+        element.classList.remove('active');
+      });
+    }
+  }
 
   // -------------------------
-  // PAGE INITIALIZATION
+  // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
-  const initPage = () => {
-    initHeroSection();
-    initUI();
+  function initPage() {
+    // Initialize hero section
+    if (typeof initHeroSection === 'function') {
+      initHeroSection();
+    }
+    // Initialize UI and navigation
+    if (typeof initUI === 'function') {
+      initUI();
+    }
+    // Load the Facebook SDK (only once)
     loadFacebookSDK();
-    scaleFacebookTimelines();
-  };
+  }
 
   // -------------------------
-  // EVENT HANDLERS
+  // DOMContentLoaded HANDLER
   // -------------------------
   document.addEventListener('DOMContentLoaded', () => {
-    const loadingScreen = document.getElementById('loading-screen');
+    const loadingOverlay = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
+
+    // Check if the loading screen was shown before (to skip on repeat visits)
     if (localStorage.getItem('loadingScreenShown')) {
-      loadingScreen.style.display = 'none';
-      mainContent.classList.remove('hidden');
-      mainContent.style.display = 'block';
+      if (loadingOverlay) loadingOverlay.style.display = 'none';
+      if (mainContent) {
+        mainContent.classList.remove('hidden');
+        mainContent.style.display = 'block';
+      }
       initPage();
     } else {
+      // Start the modern loading bar; it will call initPage() when complete.
       initModernLoading();
       localStorage.setItem('loadingScreenShown', 'true');
     }
   });
 
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) initHeroSection();
+  // -------------------------
+  // HANDLE PAGESHOW (for bfcache)
+  // -------------------------
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      initHeroSection();
+    }
   });
 
+  // -------------------------
+  // PRELOAD SUB-PAGE ASSETS
+  // -------------------------
+  const subPageImages = [
+    'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
+    'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
+    'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
+    'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
+  ];
   window.addEventListener('load', () => {
-    const subPageImages = [
-      'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
-      'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
-      'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
-      'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
-    ];
-    preloadImages(subPageImages).catch(err => console.error('Preload failed:', err));
+    preloadImages(subPageImages).catch(err => console.error(err));
   });
 })();
