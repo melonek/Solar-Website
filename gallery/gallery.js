@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
     blurredOverlay.style.backgroundSize = 'cover';
     blurredOverlay.style.backgroundPosition = 'center';
     blurredOverlay.style.filter = 'blur(5px)';
-    blurredOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    blurredOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
     blurredOverlay.style.opacity = '1';
     document.body.appendChild(blurredOverlay);
 
