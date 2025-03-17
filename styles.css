@@ -556,7 +556,7 @@ nav {
     transition: opacity 0.5s ease;
   }
   
-  /* Fade-out when done */
+  /* Fade-out effect */
   #loading-screen.fade-out {
     opacity: 0;
     pointer-events: none;
@@ -573,7 +573,7 @@ nav {
     margin-bottom: 10px;
   }
   
-  /* The progress bar itself */
+  /* The progress bar */
   .loading-bar {
     height: 100%;
     width: 0;
