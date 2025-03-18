@@ -617,41 +617,49 @@
   // -------------------------
   // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
-  function initPage() {
-    if (typeof initHeroSection === 'function') {
-      initHeroSection();
-    }
-    if (typeof initUI === 'function') {
-      initUI();
-    }
-    loadFacebookSDK();
-    setupRevealObservers();
+// Consolidated Page Initialization
+function initPage() {
+  // Only initialize the hero section if it exists.
+  const heroSection = document.querySelector('.hero-section');
+  if (heroSection && typeof initHeroSection === 'function') {
+    initHeroSection();
   }
+  if (typeof initUI === 'function') {
+    initUI();
+  }
+  loadFacebookSDK();
+  setupRevealObservers();
+}
 
-  // -------------------------
-  // INITIAL LOADING HANDLERS
-  // -------------------------
-  window.addEventListener('load', () => {
-    const loadingOverlay = document.getElementById('loading-screen');
-    const mainContent = document.getElementById('main-content');
-    if (localStorage.getItem('loadingScreenShown')) {
-      if (loadingOverlay) loadingOverlay.style.display = 'none';
-      if (mainContent) {
-        mainContent.classList.remove('hidden');
-        mainContent.style.display = 'block';
-      }
-      initPage();
-    } else {
-      initModernLoading();
-      localStorage.setItem('loadingScreenShown', 'true');
+// INITIAL LOADING HANDLERS
+window.addEventListener('load', () => {
+  const loadingOverlay = document.getElementById('loading-screen');
+  const mainContent = document.getElementById('main-content');
+  if (localStorage.getItem('loadingScreenShown')) {
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+    if (mainContent) {
+      mainContent.classList.remove('hidden');
+      mainContent.style.display = 'block';
     }
-  });
+    initPage();
+  } else {
+    initModernLoading();
+    localStorage.setItem('loadingScreenShown', 'true');
+  }
+});
 
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
+// When pageshow fires (e.g. from bfcache), only reinitialize hero section if it exists.
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
       initHeroSection();
+    } else {
+      console.warn("pageshow: No hero section found; skipping initHeroSection.");
     }
-  });
+  }
+});
+
 
   const subPageImages = [
     'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
