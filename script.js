@@ -704,20 +704,55 @@
   // -------------------------
   // MOBILE MENU TOGGLE SETUP
   // -------------------------
+  // -------------------------
+  // MOBILE MENU TOGGLE SETUP
+  // -------------------------
   function setupMobileMenu() {
     const mobileMenu = document.getElementById('mobile-menu');
     const navLinks = document.querySelector('.nav-links');
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
     if (mobileMenu && navLinks) {
+      // Toggle menu on click
       mobileMenu.addEventListener('click', (e) => {
         e.stopPropagation();
         navLinks.classList.toggle('active');
         mobileMenu.classList.toggle('open');
         console.log('Mobile menu toggled');
       });
+
+      // Close menu when clicking outside on mobile
+      document.addEventListener('click', (e) => {
+        if (mediaQuery.matches && navLinks.classList.contains('active')) {
+          if (!e.target.closest('.nav-links') && !e.target.closest('#mobile-menu')) {
+            navLinks.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            console.log('Mobile menu closed due to outside click');
+          }
+        }
+      });
+
+      // Handle dropdown links for same-page redirects on mobile
+      document.querySelectorAll('.dropdown-content a, .nav-links a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          if (mediaQuery.matches) {
+            const href = link.getAttribute('href');
+            // Check if it's an anchor link (starts with #)
+            if (href && href.startsWith('#')) {
+              navLinks.classList.remove('active');
+              mobileMenu.classList.remove('open');
+              console.log('Mobile menu closed due to same-page redirect:', href);
+            }
+          }
+        });
+      });
     } else {
       console.warn('Mobile menu or nav links not found:', { mobileMenu, navLinks });
     }
   }
+
+  // Attach mobile menu listener as soon as DOM is ready
+  document.addEventListener('DOMContentLoaded', setupMobileMenu);
 
   // Attach mobile menu listener as soon as DOM is ready
   document.addEventListener('DOMContentLoaded', setupMobileMenu);
