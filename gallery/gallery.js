@@ -81,15 +81,23 @@ document.addEventListener('DOMContentLoaded', function() {
   // Modal Functions
   // ----------------------
   function openModal(job) {
+    if (!modal || !modalBody) {
+      console.error('Modal or modal-body not found');
+      return;
+    }
     modalActive = true;
     updateCarouselPauseState();
     document.body.style.overflow = 'hidden';
-    modalBody.innerHTML = ''; // Clear previous content
 
-    // Create modal content container
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal-content';
-    
+    // Check for existing modal-content; reuse if present, otherwise create new
+    let modalContent = modalBody.querySelector('.modal-content');
+    if (!modalContent) {
+      modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
+      modalBody.appendChild(modalContent);
+    }
+    modalContent.innerHTML = ''; // Clear existing content
+
     // Main Image
     const mainImg = document.createElement('img');
     mainImg.className = 'modal-main-img';
@@ -155,8 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     columnsContainer.appendChild(rightColumn);
     modalContent.appendChild(columnsContainer);
     
-    // Append modal content to modal body and show modal
-    modalBody.appendChild(modalContent);
+    // Show modal
     modal.style.display = 'flex';
     
     // Reset scroll position to top
@@ -165,37 +172,43 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Close modal when clicking the close button
-  closeModal.addEventListener('click', function() {
-    modalActive = false;
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-    updateCarouselPauseState();
-  });
+  if (closeModal) {
+    closeModal.addEventListener('click', function() {
+      modalActive = false;
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+      updateCarouselPauseState();
+    });
+  }
   
   // Close modal when clicking outside the modal-content
-  modal.addEventListener('click', function(e) {
-    if (!e.target.closest('.modal-content')) {
-      modalActive = false;
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
-      updateCarouselPauseState();
-    }
-  });
-  
-  modal.addEventListener('touchstart', function(e) {
-    if (!e.target.closest('.modal-content')) {
-      modalActive = false;
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
-      updateCarouselPauseState();
-    }
-  });
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (!e.target.closest('.modal-content')) {
+        modalActive = false;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        updateCarouselPauseState();
+      }
+    });
+    modal.addEventListener('touchstart', function(e) {
+      if (!e.target.closest('.modal-content')) {
+        modalActive = false;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        updateCarouselPauseState();
+      }
+    });
+  }
   
   // ----------------------
   // Lightbox Functions
   // ----------------------
   function openLightbox(src) {
-    // If modal is active, record that it was open but hide it visually while lightbox is open.
+    if (!lightbox || !lightboxContent) {
+      console.error('Lightbox elements not found');
+      return;
+    }
     if (modalActive) {
       modalWasOpenBeforeLightbox = true;
       modal.style.display = 'none';
@@ -229,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
       pointerEvents: 'none'
     });
     
-    // Transparent blocking overlay to prevent click-through
+    // Transparent blocking overlay
     let blockingOverlay = document.getElementById('blocking-overlay');
     if (!blockingOverlay) {
       blockingOverlay = document.createElement('div');
@@ -261,55 +274,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const blockingOverlay = document.getElementById('blocking-overlay');
     if (blockingOverlay) blockingOverlay.remove();
     
-    // If the modal was active before opening the lightbox, restore its visual display.
     if (modalWasOpenBeforeLightbox) {
       modal.style.display = 'flex';
       modalWasOpenBeforeLightbox = false;
-      // Note: modalActive remains true.
       updateCarouselPauseState();
     }
     
-    // Restore body scroll only if no overlay is active.
     if (!modalActive && !lightboxActive) {
       document.body.style.overflow = '';
     }
   }
   
-  closeLightbox.addEventListener('click', function(e) {
-    e.stopPropagation();
-    closeLightboxFunc();
-  });
-  
-  lightbox.addEventListener('click', function(e) {
-    if (e.target === lightbox) {
+  if (closeLightbox) {
+    closeLightbox.addEventListener('click', function(e) {
+      e.stopPropagation();
       closeLightboxFunc();
-    }
-  });
+    });
+  }
   
-  let touchStartX, touchStartY;
-  lightbox.addEventListener('touchstart', function(e) {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-  
-  lightbox.addEventListener('touchend', function(e) {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaX = Math.abs(touchEndX - touchStartX);
-    const deltaY = Math.abs(touchEndY - touchStartY);
-    if (deltaX < 10 && deltaY < 10 && e.target === lightbox) {
-      closeLightboxFunc();
-    }
-  }, { passive: true });
-  
-  // Prevent clicks on lightbox image from propagating to the container
-  lightboxContent.addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
-  
-  lightboxContent.addEventListener('touchstart', function(e) {
-    e.stopPropagation();
-  }, { passive: true });
+  if (lightbox) {
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox) {
+        closeLightboxFunc();
+      }
+    });
+    
+    let touchStartX, touchStartY;
+    lightbox.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    lightbox.addEventListener('touchend', function(e) {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = Math.abs(touchEndX - touchStartX);
+      const deltaY = Math.abs(touchEndY - touchStartY);
+      if (deltaX < 10 && deltaY < 10 && e.target === lightbox) {
+        closeLightboxFunc();
+      }
+    }, { passive: true });
+    
+    lightboxContent.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    
+    lightboxContent.addEventListener('touchstart', function(e) {
+      e.stopPropagation();
+    }, { passive: true });
+  }
   
   // ----------------------
   // Image Validation Utility
@@ -380,7 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
     card.appendChild(detailsRow);
     card.appendChild(buttonWrapper);
     
-    // Additional images thumbnails
     const imagesContainer = document.createElement('div');
     imagesContainer.className = 'images';
     job.additionalImages.forEach((imgSrc) => {
@@ -396,21 +408,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     card.appendChild(imagesContainer);
     
-    // Pause carousel auto-scroll on hover over a card
     card.addEventListener('mouseenter', () => scrollSpeed = 0);
     card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
     
     return card;
   }
   
-  // Render carousel: Duplicate jobs to enable infinite-like scrolling
   function renderCarousel() {
+    if (!carousel) {
+      console.error('Carousel not found');
+      return;
+    }
     console.log("Rendering carousel...");
     jobs.forEach(job => {
       const card = createCard(job);
       carousel.appendChild(card);
     });
-    // Duplicate the jobs for seamless scrolling
     jobs.forEach(job => {
       const cardClone = createCard(job);
       carousel.appendChild(cardClone);
@@ -418,11 +431,10 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Total cards count:", carousel.children.length);
   }
   
-  // Render Archive (if you have an archive grid)
+  // Render Archive (if present)
   let loadedJobs = 0;
   const batchSize = 20;
   
-  // Helper functions for archive sorting:
   function parseDate(dateStr) {
     const [day, month, year] = dateStr.split("-");
     return new Date(year, month - 1, day);
@@ -436,11 +448,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return timeObj.hours * 60 + timeObj.minutes;
   }
   
-  // Updated sort: sort by completionDate (newest first), then by start time (later first)
   const sortedJobs = jobs.slice().sort((a, b) => {
     const dateA = parseDate(a.completionDate);
     const dateB = parseDate(b.completionDate);
-    
     if (dateA.getTime() !== dateB.getTime()) {
       return dateB - dateA;
     } else {
@@ -467,6 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function loadArchiveBatch() {
+    if (!archiveGrid) return;
     const remainingJobs = sortedJobs.length - loadedJobs;
     const batchCount = Math.min(batchSize, remainingJobs);
     for (let i = 0; i < batchCount; i++) {
@@ -475,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
       archiveGrid.appendChild(square);
     }
     loadedJobs += batchCount;
-    if (remainingJobs <= 0 && loadedJobs > 0) {
+    if (remainingJobs <= 0 && loadedJobs > 0 && loadMoreWrapper) {
       const existingNotification = loadMoreWrapper.querySelector('.load-notification');
       if (!existingNotification) {
         const notification = document.createElement('p');
@@ -490,9 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Carousel Auto-Scroll
   // ----------------------
   function autoScroll() {
-    if (!carouselPaused) {
+    if (!carouselPaused && carousel) {
       currentTranslateX -= scrollSpeed;
-      // Reset scrolling when half the width is scrolled (due to duplicate cards)
       if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
         currentTranslateX = 0;
       }
@@ -502,14 +512,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Left and Right control buttons
-  leftBtn.addEventListener('click', function() {
-    currentTranslateX += 200;
-    carousel.style.transform = `translateX(${currentTranslateX}px)`;
-  });
-  rightBtn.addEventListener('click', function() {
-    currentTranslateX -= 200;
-    carousel.style.transform = `translateX(${currentTranslateX}px)`;
-  });
+  if (leftBtn) {
+    leftBtn.addEventListener('click', function() {
+      currentTranslateX += 200;
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
+    });
+  }
+  if (rightBtn) {
+    rightBtn.addEventListener('click', function() {
+      currentTranslateX -= 200;
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
+    });
+  }
   
   // ----------------------
   // Initialize Everything
