@@ -9,7 +9,7 @@
       timeout = setTimeout(() => func.apply(this, args), delay);
     };
   }
-  
+
   // -------------------------
   // HELPER: Throttle Function
   // -------------------------
@@ -54,7 +54,6 @@
     }
   }
 
-  // The SDK will call this once it loads.
   window.fbAsyncInit = function () {
     FB.init({
       appId: '1426450195430892',
@@ -125,7 +124,7 @@
   window.addEventListener('resize', debounce(scaleFacebookTimelines, 50));
 
   // -------------------------
-  // MODERN LOADING BAR (REPLACES PIXEL-DRAWING LOADING)
+  // MODERN LOADING BAR
   // -------------------------
   function initModernLoading() {
     const criticalImages = Array.from(document.images).filter(img =>
@@ -170,7 +169,6 @@
       updateProgress(100);
       finishLoading();
     } else {
-      // Fallback: force finish after 5 seconds.
       setTimeout(() => {
         finishLoading();
       }, 5000);
@@ -301,7 +299,6 @@
   // -------------------------
   // GLOBAL INTERSECTION OBSERVER & REVEAL FUNCTIONS
   // -------------------------
-  // We’ll keep a map of timeouts so we can cancel delayed reveals if an element leaves.
   const revealTimeouts = new Map();
   const observerOptions = { threshold: 0.2 };
 
@@ -309,12 +306,10 @@
     entries.forEach(entry => {
       const delay = parseFloat(entry.target.getAttribute('data-reveal-delay')) || 0;
       if (entry.isIntersecting) {
-        // When entering, cancel any pending removal and schedule a reveal.
         if (revealTimeouts.has(entry.target)) {
           clearTimeout(revealTimeouts.get(entry.target));
         }
         const timeoutId = setTimeout(() => {
-          // For unique service products, also set transform to 0.
           if (entry.target.classList.contains('unique-service-product')) {
             entry.target.style.transform = 'translate(0)';
           }
@@ -322,13 +317,11 @@
         }, delay * 200);
         revealTimeouts.set(entry.target, timeoutId);
       } else {
-        // When leaving, cancel any pending reveal and remove the class.
         if (revealTimeouts.has(entry.target)) {
           clearTimeout(revealTimeouts.get(entry.target));
           revealTimeouts.delete(entry.target);
         }
         entry.target.classList.remove('revealed');
-        // For unique service products, reset the transform based on the direction.
         if (entry.target.classList.contains('unique-service-product')) {
           const revealDirection = entry.target.getAttribute('data-reveal-direction');
           if (revealDirection === 'right') {
@@ -343,13 +336,10 @@
     });
   }
 
-  // Instead of unobserving, we continuously observe elements so that they reanimate.
   const globalRevealObserver = new IntersectionObserver(revealCallback, observerOptions);
 
-  // Observe a set of elements by selector.
   function observeElements(selector) {
     document.querySelectorAll(selector).forEach((el, index) => {
-      // Assign a delay if not already set.
       if (!el.hasAttribute('data-reveal-delay')) {
         el.setAttribute('data-reveal-delay', index);
       }
@@ -357,7 +347,6 @@
     });
   }
 
-  // For dynamically added article cards.
   function initArticlesMutationObserver() {
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) return;
@@ -386,7 +375,6 @@
     globalRevealObserver.observe(node);
   }
 
-  // Initialize observers for static elements.
   function setupRevealObservers() {
     observeElements('.fancy-button');
     observeElements('.brand-card');
@@ -397,101 +385,79 @@
   }
 
   // -------------------------
+  // REVEAL FUNCTIONS (GLOBAL SCOPE)
+  // -------------------------
+  function revealFacebookTimelines() {
+    const timelines = document.querySelectorAll('.fb-page-wrapper');
+    const triggerBottom = window.innerHeight * 0.8;
+    timelines.forEach(timeline => {
+      const timelineTop = timeline.getBoundingClientRect().top;
+      if (timelineTop < triggerBottom) {
+        timeline.classList.add('revealed');
+      } else {
+        timeline.classList.remove('revealed');
+      }
+    });
+  }
+
+  function revealProductSections() {
+    const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
+    const triggerBottom = window.innerHeight * 0.8;
+    sections.forEach(section => {
+      const sectionTop = section.getBoundingClientRect().top;
+      section.classList.toggle('revealed', sectionTop < triggerBottom);
+    });
+  }
+
+  const throttledReveal = throttle(() => {
+    revealFacebookTimelines();
+    revealProductSections();
+  }, 100);
+
+  window.addEventListener('scroll', throttledReveal, { passive: true });
+  window.addEventListener('load', () => {
+    revealFacebookTimelines();
+    revealProductSections();
+  });
+  revealProductSections(); // Initial call
+
+  // -------------------------
   // UI & NAVIGATION INITIALIZATION
   // -------------------------
   function initUI() {
-    // Build Solar Section Parallax
-    const buildSolarSection = document.getElementById('build-solar');
-    const buildSolarVideo = document.querySelector('.build-solar-video video');
-    let lastScrollBuild = 0;
-    function updateParallaxBuild() {
-      const scrollY = window.scrollY;
-      if (!buildSolarSection) return;
-      const sectionTop = buildSolarSection.offsetTop,
-            sectionHeight = buildSolarSection.clientHeight;
-      if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-      const progress = (scrollY - sectionTop) / sectionHeight,
-            parallaxY = progress * sectionHeight * 0.25;
-      if (buildSolarVideo) {
-        buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
-      }
-      requestAnimationFrame(updateParallaxBuild);
-    }
-    window.addEventListener('scroll', () => {
-      if (Math.abs(window.scrollY - lastScrollBuild) > 2) {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('initUI: DOMContentLoaded fired');
+
+      const buildSolarSection = document.getElementById('build-solar');
+      const buildSolarVideo = document.querySelector('.build-solar-video video');
+      let lastScrollBuild = 0;
+      function updateParallaxBuild() {
+        const scrollY = window.scrollY;
+        if (!buildSolarSection) return;
+        const sectionTop = buildSolarSection.offsetTop,
+              sectionHeight = buildSolarSection.clientHeight;
+        if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
+        const progress = (scrollY - sectionTop) / sectionHeight,
+              parallaxY = progress * sectionHeight * 0.25;
+        if (buildSolarVideo) {
+          buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
+        }
         requestAnimationFrame(updateParallaxBuild);
-        lastScrollBuild = window.scrollY;
       }
-    });
-
-    // Manual reveal functions for non-observed elements (e.g. Facebook timelines, product sections)
-    function revealFacebookTimelines() {
-      const timelines = document.querySelectorAll('.fb-page-wrapper');
-      const triggerBottom = window.innerHeight * 0.8;
-      timelines.forEach(timeline => {
-        const timelineTop = timeline.getBoundingClientRect().top;
-        if (timelineTop < triggerBottom) {
-          timeline.classList.add('revealed');
-        } else {
-          timeline.classList.remove('revealed');
+      window.addEventListener('scroll', () => {
+        if (Math.abs(window.scrollY - lastScrollBuild) > 2) {
+          requestAnimationFrame(updateParallaxBuild);
+          lastScrollBuild = window.scrollY;
         }
       });
-    }
-    function revealProductSections() {
-      const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
-      const triggerBottom = window.innerHeight * 0.8;
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        section.classList.toggle('revealed', sectionTop < triggerBottom);
-      });
-    }
-    window.addEventListener('scroll', revealProductSections);
-    window.addEventListener('scroll', revealFacebookTimelines);
-    window.addEventListener('load', revealFacebookTimelines);
-    revealProductSections();
 
-    // Throttled handleScroll for grouped UI reveal functions
-    function handleScroll() {
-      // (Any additional UI reveals can be called here if needed)
-    }
-    window.addEventListener('scroll', throttle(handleScroll, 100), { passive: true });
-    window.addEventListener('load', () => {
-      revealFacebookTimelines();
-    });
-
-    // Navigation and mobile menu handling
-    document.querySelectorAll('.fancy-button').forEach(button => {
-      button.addEventListener('click', function(event) {
-        if (isScrolling || isTouching) {
-          event.preventDefault();
-          return false;
-        }
-        const url = this.getAttribute('href');
-        if (this.classList.contains('mirror-left')) {
-          event.preventDefault();
-          setTimeout(() => {
-            window.open(url, '_blank', 'noopener,noreferrer');
-          }, 100);
-        } else {
-          window.location.href = url;
-        }
-      });
-      button.addEventListener('touchstart', () => { isTouching = true; });
-      button.addEventListener('touchend', function(event) {
-        isTouching = false;
-        event.preventDefault();
-        this.click();
-      }, { passive: false });
-    });
-
-    document.querySelectorAll('.savings-btn, .build-button').forEach(button => {
-      button.addEventListener('click', function(event) {
-        if (isScrolling || isTouching) {
-          event.preventDefault();
-          return false;
-        }
-        const url = this.getAttribute('href');
-        if (url) {
+      document.querySelectorAll('.fancy-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+          if (isScrolling || isTouching) {
+            event.preventDefault();
+            return false;
+          }
+          const url = this.getAttribute('href');
           if (this.classList.contains('mirror-left')) {
             event.preventDefault();
             setTimeout(() => {
@@ -500,43 +466,97 @@
           } else {
             window.location.href = url;
           }
-        }
+        });
+        button.addEventListener('touchstart', () => { isTouching = true; });
+        button.addEventListener('touchend', function(event) {
+          isTouching = false;
+          event.preventDefault();
+          this.click();
+        }, { passive: false });
       });
-    });
 
-    const mobileMenu = document.getElementById('mobile-menu');
-    const navLinks = document.querySelector('.nav-links');
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-
-    function toggleHrefs() {
-      document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
-        const href = toggle.getAttribute('href');
-        if (href && href.endsWith("#unique-services")) return;
-        if (mediaQuery.matches) {
-          toggle.dataset.originalHref = href;
-          toggle.href = 'javascript:void(0);';
-        } else if (toggle.dataset.originalHref) {
-          toggle.href = toggle.dataset.originalHref;
-        }
+      document.querySelectorAll('.savings-btn, .build-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+          if (isScrolling || isTouching) {
+            event.preventDefault();
+            return false;
+          }
+          const url = this.getAttribute('href');
+          if (url) {
+            if (this.classList.contains('mirror-left')) {
+              event.preventDefault();
+              setTimeout(() => {
+                window.open(url, '_blank', 'noopener,noreferrer');
+              }, 100);
+            } else {
+              window.location.href = url;
+            }
+          }
+        });
       });
-    }
-    toggleHrefs();
 
-    if (mobileMenu && navLinks) {
-      mobileMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        navLinks.classList.toggle('active');
-        mobileMenu.classList.toggle('open');
-      });
-    }
+      const mobileMenu = document.getElementById('mobile-menu');
+      const navLinks = document.querySelector('.nav-links');
+      const mediaQuery = window.matchMedia('(max-width: 768px)');
+      console.log('initUI: Mobile menu:', mobileMenu, 'Nav links:', navLinks);
 
-    document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
-      dropbtn.addEventListener('click', function(e) {
-        if (mediaQuery.matches) {
-          e.preventDefault();
+      function toggleHrefs() {
+        document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
+          const href = toggle.getAttribute('href');
+          if (href && href.endsWith("#unique-services")) return;
+          if (mediaQuery.matches) {
+            toggle.dataset.originalHref = href;
+            toggle.href = 'javascript:void(0);';
+          } else if (toggle.dataset.originalHref) {
+            toggle.href = toggle.dataset.originalHref;
+          }
+        });
+      }
+      toggleHrefs();
+
+      if (mobileMenu && navLinks) {
+        mobileMenu.addEventListener('click', (e) => {
           e.stopPropagation();
-          return;
-        } else {
+          navLinks.classList.toggle('active');
+          mobileMenu.classList.toggle('open');
+          console.log('Mobile menu toggled');
+        });
+      } else {
+        console.warn('Mobile menu or nav links not found');
+      }
+
+      document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
+        dropbtn.addEventListener('click', function(e) {
+          if (mediaQuery.matches) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          } else {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdown = this.parentElement;
+            const dropdownContent = dropdown.querySelector('.dropdown-content');
+            const isActive = dropdownContent.classList.contains('active');
+            closeAllDropdowns();
+            navLinks.classList.remove('active');
+            if (!isActive) {
+              dropdownContent.classList.add('active');
+              dropdown.classList.add('active');
+            }
+          }
+        });
+        dropbtn.addEventListener('touchend', function(e) {
+          if (mediaQuery.matches) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+        });
+      });
+
+      document.querySelectorAll('.dropdown > a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          if (!mediaQuery.matches) return;
           e.preventDefault();
           e.stopPropagation();
           const dropdown = this.parentElement;
@@ -547,119 +567,138 @@
           if (!isActive) {
             dropdownContent.classList.add('active');
             dropdown.classList.add('active');
+            console.log('Dropdown toggled on mobile');
           }
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        if (mediaQuery.matches && navLinks.classList.contains('active')) {
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+          mobileMenu.classList.remove('open');
         }
       });
-      dropbtn.addEventListener('touchend', function(e) {
-        if (mediaQuery.matches) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
+
+      document.querySelectorAll('.dropdown-content a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (mediaQuery.matches) {
+            closeAllDropdowns();
+            navLinks.classList.remove('active');
+          }
+        });
       });
-    });
 
-    document.querySelectorAll('.dropdown > a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (!mediaQuery.matches) return;
-        e.preventDefault();
-        e.stopPropagation();
-        const dropdown = this.parentElement;
-        const dropdownContent = dropdown.querySelector('.dropdown-content');
-        const isActive = dropdownContent.classList.contains('active');
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-        if (!isActive) {
-          dropdownContent.classList.add('active');
-          dropdown.classList.add('active');
-        }
-      });
-    });
-
-    window.addEventListener('scroll', () => {
-      if (mediaQuery.matches && navLinks.classList.contains('active')) {
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-        mobileMenu.classList.remove('open');
-      }
-    });
-
-    document.querySelectorAll('.dropdown-content a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (mediaQuery.matches) {
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-links')) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
         }
       });
-    });
 
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.nav-links')) {
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (!mediaQuery.matches) {
-        closeAllDropdowns();
-        navLinks.classList.remove('active');
-      }
-    });
-
-    function closeAllDropdowns() {
-      document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
-        element.classList.remove('active');
+      window.addEventListener('resize', () => {
+        toggleHrefs();
+        if (!mediaQuery.matches) {
+          closeAllDropdowns();
+          navLinks.classList.remove('active');
+        }
       });
-    }
+
+      function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-content, .dropdown').forEach(element => {
+          element.classList.remove('active');
+        });
+      }
+
+      // MutationObserver for dynamic navigation
+      function initNavigationObserver() {
+        const navContainer = document.querySelector('nav') || document.body;
+        const observer = new MutationObserver(() => {
+          toggleHrefs();
+          document.querySelectorAll('.dropdown > a').forEach(link => {
+            link.addEventListener('click', function(e) {
+              if (!mediaQuery.matches) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const dropdown = this.parentElement;
+              const dropdownContent = dropdown.querySelector('.dropdown-content');
+              const isActive = dropdownContent.classList.contains('active');
+              closeAllDropdowns();
+              navLinks.classList.remove('active');
+              if (!isActive) {
+                dropdownContent.classList.add('active');
+                dropdown.classList.add('active');
+              }
+            });
+          });
+          console.log('Navigation updated dynamically');
+          observer.disconnect();
+        });
+        observer.observe(navContainer, { childList: true, subtree: true });
+      }
+      initNavigationObserver();
+
+      // MutationObserver for dynamic product cards
+      function initProductMutationObserver() {
+        const productContainers = document.querySelectorAll('.panels-grid, .inverters-grid, .battery-grid');
+        if (!productContainers.length) return;
+        const config = { childList: true, subtree: true };
+        const mutationCallback = () => {
+          revealProductSections();
+          console.log('Product sections updated dynamically');
+        };
+        productContainers.forEach(container => {
+          const observer = new MutationObserver(mutationCallback);
+          observer.observe(container, config);
+        });
+      }
+      initProductMutationObserver();
+
+    }, { once: true });
   }
 
   // -------------------------
   // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
-// Consolidated Page Initialization
-function initPage() {
-  // Only initialize the hero section if it exists.
-  const heroSection = document.querySelector('.hero-section');
-  if (heroSection && typeof initHeroSection === 'function') {
-    initHeroSection();
-  }
-  if (typeof initUI === 'function') {
-    initUI();
-  }
-  loadFacebookSDK();
-  setupRevealObservers();
-}
-
-// INITIAL LOADING HANDLERS
-window.addEventListener('load', () => {
-  const loadingOverlay = document.getElementById('loading-screen');
-  const mainContent = document.getElementById('main-content');
-  if (localStorage.getItem('loadingScreenShown')) {
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
-    if (mainContent) {
-      mainContent.classList.remove('hidden');
-      mainContent.style.display = 'block';
-    }
-    initPage();
-  } else {
-    initModernLoading();
-    localStorage.setItem('loadingScreenShown', 'true');
-  }
-});
-
-// When pageshow fires (e.g. from bfcache), only reinitialize hero section if it exists.
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
+  function initPage() {
     const heroSection = document.querySelector('.hero-section');
-    if (heroSection) {
+    if (heroSection && typeof initHeroSection === 'function') {
       initHeroSection();
-    } else {
-      console.warn("pageshow: No hero section found; skipping initHeroSection.");
     }
+    if (typeof initUI === 'function') {
+      initUI();
+    }
+    loadFacebookSDK();
+    setupRevealObservers();
   }
-});
 
+  // INITIAL LOADING HANDLERS
+  window.addEventListener('load', () => {
+    const loadingOverlay = document.getElementById('loading-screen');
+    const mainContent = document.getElementById('main-content');
+    if (localStorage.getItem('loadingScreenShown')) {
+      if (loadingOverlay) loadingOverlay.style.display = 'none';
+      if (mainContent) {
+        mainContent.classList.remove('hidden');
+        mainContent.style.display = 'block';
+      }
+      initPage();
+    } else {
+      initModernLoading();
+      localStorage.setItem('loadingScreenShown', 'true');
+    }
+  });
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      const heroSection = document.querySelector('.hero-section');
+      if (heroSection) {
+        initHeroSection();
+      } else {
+        console.warn("pageshow: No hero section found; skipping initHeroSection.");
+      }
+    }
+  });
 
   const subPageImages = [
     'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
@@ -670,4 +709,7 @@ window.addEventListener('pageshow', (event) => {
   window.addEventListener('load', () => {
     preloadImages(subPageImages).catch(err => console.error(err));
   });
+
+  // Define globals used in event handlers
+  let isScrolling = false, isTouching = false;
 })();
