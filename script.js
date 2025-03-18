@@ -107,8 +107,11 @@
   // MODERN LOADING BAR (REPLACES PIXEL-DRAWING LOADING)
   // -------------------------
   function initModernLoading() {
-    const images = document.images;
-    const totalImages = images.length;
+    // Only count images that are critical (exclude images with loading="lazy")
+    const criticalImages = Array.from(document.images).filter(img =>
+      !img.hasAttribute('loading') || img.getAttribute('loading') !== 'lazy'
+    );
+    const totalImages = criticalImages.length;
     let loadedImages = 0;
     const progressBar = document.querySelector('.loading-bar');
     const percentageText = document.getElementById('loading-percentage');
@@ -120,7 +123,6 @@
     }
 
     function finishLoading() {
-      // Removed timeout fallback to simplify loading
       setTimeout(() => {
         loadingScreen.classList.add('fade-out');
         setTimeout(() => {
@@ -143,15 +145,20 @@
       updateProgress(100);
       finishLoading();
     } else {
-      for (let i = 0; i < totalImages; i++) {
-        const img = images[i];
+      // Fallback: if loading takes too long, force finish after 5 seconds.
+      setTimeout(() => {
+        finishLoading();
+      }, 5000);
+
+      // Attach load/error event handlers to each critical image
+      criticalImages.forEach(img => {
         if (img.complete) {
           incrementCounter();
         } else {
           img.addEventListener('load', incrementCounter, false);
           img.addEventListener('error', incrementCounter, false);
         }
-      }
+      });
     }
   }
 
@@ -566,26 +573,20 @@
   // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
   function initPage() {
-    // Initialize hero section
     if (typeof initHeroSection === 'function') {
       initHeroSection();
     }
-    // Initialize UI and navigation
     if (typeof initUI === 'function') {
       initUI();
     }
-    // Load the Facebook SDK (only once)
     loadFacebookSDK();
   }
 
-  // -------------------------
   // Use window.load for initial loading logic
-  // -------------------------
   window.addEventListener('load', () => {
     const loadingOverlay = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
 
-    // Check if the loading screen was shown before (to skip on repeat visits)
     if (localStorage.getItem('loadingScreenShown')) {
       if (loadingOverlay) loadingOverlay.style.display = 'none';
       if (mainContent) {
@@ -594,24 +595,17 @@
       }
       initPage();
     } else {
-      // Start the modern loading bar; it will call initPage() when complete.
       initModernLoading();
       localStorage.setItem('loadingScreenShown', 'true');
     }
   });
 
-  // -------------------------
-  // HANDLE PAGESHOW (for bfcache)
-  // -------------------------
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
       initHeroSection();
     }
   });
 
-  // -------------------------
-  // PRELOAD SUB-PAGE ASSETS
-  // -------------------------
   const subPageImages = [
     'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
     'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
