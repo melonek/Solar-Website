@@ -22,12 +22,11 @@
     display: flex;
     flex-direction: column;
     margin: 0;
-    opacity: 0; /* Start hidden */
+    opacity: 0;
 }
 
-/* Revealed State */
 .article-card.revealed {
-    opacity: 1; /* Fade in when revealed */
+    opacity: 1;
     transform: translateY(0);
 }
 

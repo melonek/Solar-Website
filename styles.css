@@ -1806,8 +1806,8 @@ opacity: 1;
 }
 
 .brand-card {
-    width: calc(100% - 20px); /* Full width minus margin */
-    max-width: 240px; /* Set a max width for larger screens */
+    width: calc(100% - 20px);
+    max-width: 240px;
     height: 180px;
     background: white;
     border-radius: 8px;
@@ -1815,20 +1815,23 @@ opacity: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
-    margin-top: 0;
-    text-align: center;
-    padding: 10px; /* Add padding inside the card */
-    margin: 0 10px; /* Add small margins */
+    padding: 10px;
+    margin: 0 10px;
     opacity: 0;
-    transform: translateY(20px); /* Start slightly below */
+    transform: translateY(20px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .brand-card.active {
     opacity: 1;
     transform: translateY(0);
-    animation: bounce 0.8s ease; /* Add bounce effect */
+    animation: bounce 0.8s ease;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(20px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
 }
 
 
@@ -1886,6 +1889,10 @@ opacity: 1;
         width:100%;
     }
 }
+
+.brand-card.revealed {
+    opacity: 1;
+  }
 
 
 /*===BRANDS SLIDER IN PACKAGES.HTML===*/

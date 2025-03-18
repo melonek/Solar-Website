@@ -313,7 +313,8 @@
           if (entry.target.classList.contains('unique-service-product')) {
             entry.target.style.transform = 'translate(0)';
           }
-          entry.target.classList.add('revealed');
+          // Use .active for brand-card, .revealed for others
+          entry.target.classList.add(entry.target.classList.contains('brand-card') ? 'active' : 'revealed');
         }, delay * 200);
         revealTimeouts.set(entry.target, timeoutId);
       } else {
@@ -321,7 +322,7 @@
           clearTimeout(revealTimeouts.get(entry.target));
           revealTimeouts.delete(entry.target);
         }
-        entry.target.classList.remove('revealed');
+        entry.target.classList.remove(entry.target.classList.contains('brand-card') ? 'active' : 'revealed');
         if (entry.target.classList.contains('unique-service-product')) {
           const revealDirection = entry.target.getAttribute('data-reveal-direction');
           if (revealDirection === 'right') {
@@ -341,7 +342,7 @@
   function observeElements(selector) {
     document.querySelectorAll(selector).forEach((el, index) => {
       if (!el.hasAttribute('data-reveal-delay')) {
-        el.setAttribute('data-reveal-delay', index);
+        el.setAttribute('data-reveal-delay', index * 0.1); // Adjusted to 0.1 for consistency
       }
       globalRevealObserver.observe(el);
     });
@@ -382,6 +383,79 @@
     observeElements('.learn-card');
     observeElements('#unique-services .unique-service-product');
     initArticlesMutationObserver();
+  }
+
+  // -------------------------
+  // BRAND LOGOS INITIALIZATION
+  // -------------------------
+  let brandImages = [
+    { name: 'Trina', url: 'https://naturespark.com.au/images/BrandLogos/Trina-Solar.webp' },
+    { name: 'SMA', url: 'https://naturespark.com.au/images/BrandLogos/SMA.webp' },
+    { name: 'Canadian Solar', url: 'https://naturespark.com.au/images/BrandLogos/Canadian-Solar.webp' },
+    { name: 'DaSolar', url: 'https://naturespark.com.au/images/BrandLogos/DaSolar.webp' },
+    { name: 'Fronius', url: 'https://naturespark.com.au/images/BrandLogos/Fronius.webp' },
+    { name: 'Growatt', url: 'https://naturespark.com.au/images/BrandLogos/Growatt.webp' },
+    { name: 'Huawei/iStore', url: 'https://naturespark.com.au/images/BrandLogos/Huawei.webp' },
+    { name: 'JASolar', url: 'https://naturespark.com.au/images/BrandLogos/JASolar.webp' },
+    { name: 'Goodwe', url: 'https://naturespark.com.au/images/BrandLogos/Goodwe.webp' },
+    { name: 'Jinko', url: 'https://naturespark.com.au/images/BrandLogos/Jinko.webp' },
+    { name: 'Longi', url: 'https://naturespark.com.au/images/BrandLogos/Longi.webp' },
+    { name: 'Risen', url: 'https://naturespark.com.au/images/BrandLogos/Risen-Solar.webp' },
+    { name: 'Seraphim', url: 'https://naturespark.com.au/images/BrandLogos/Seraphim.webp' },
+    { name: 'Sofar', url: 'https://naturespark.com.au/images/BrandLogos/Sofar.webp' },
+    { name: 'SolarEdge', url: 'https://naturespark.com.au/images/BrandLogos/Solar-Edge.webp' },
+    { name: 'Solis', url: 'https://naturespark.com.au/images/BrandLogos/Solis.webp' },
+    { name: 'Sungrow', url: 'https://naturespark.com.au/images/BrandLogos/Sungrow.webp' },
+    { name: 'EgingPV', url: 'https://naturespark.com.au/images/BrandLogos/EgingPV.webp' },
+    { name: 'QCells', url: 'https://naturespark.com.au/images/BrandLogos/QCells.webp' },
+    { name: 'Tesla', url: 'https://naturespark.com.au/images/BrandLogos/Tesla.webp' }
+  ];
+
+  function initializeBrandSlider(cardSelector, containerSelector) {
+    console.log('Initializing brand slider...');
+    const cards = document.querySelectorAll(cardSelector);
+    console.log('Found', cards.length, 'brand cards');
+    if (!cards.length) {
+      console.error('No brand cards found with selector:', cardSelector);
+      return;
+    }
+
+    let currentIndex = 0;
+    function updateCards() {
+      console.log('Updating brand cards...');
+      cards.forEach((card, i) => {
+        const imgIndex = (currentIndex + i) % brandImages.length;
+        const brand = brandImages[imgIndex];
+        const imgEl = card.querySelector('img');
+        if (imgEl) {
+          imgEl.src = brand.url;
+          imgEl.alt = brand.name;
+          // Trigger bounce by removing and re-adding .active
+          card.classList.remove('active');
+          setTimeout(() => card.classList.add('active'), 10); // Small delay to reset animation
+          console.log(`Set card ${i} img src to ${brand.url}`);
+        } else {
+          console.warn('No img element found in card:', card);
+        }
+      });
+    }
+
+    updateCards();
+    const interval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % brandImages.length;
+      updateCards();
+    }, 5000);
+
+    const container = document.querySelector(containerSelector);
+    if (container) {
+      container.addEventListener('mouseenter', () => clearInterval(interval));
+      container.addEventListener('mouseleave', () => setInterval(() => {
+        currentIndex = (currentIndex + 1) % brandImages.length;
+        updateCards();
+      }, 5000));
+    } else {
+      console.warn('Container not found:', containerSelector);
+    }
   }
 
   // -------------------------
@@ -562,12 +636,19 @@
           const dropdown = this.parentElement;
           const dropdownContent = dropdown.querySelector('.dropdown-content');
           const isActive = dropdownContent.classList.contains('active');
-          closeAllDropdowns();
-          navLinks.classList.remove('active');
+          document.querySelectorAll('.dropdown-content').forEach(content => {
+            if (content !== dropdownContent) content.classList.remove('active');
+          });
+          document.querySelectorAll('.dropdown').forEach(d => {
+            if (d !== dropdown) d.classList.remove('active');
+          });
           if (!isActive) {
             dropdownContent.classList.add('active');
             dropdown.classList.add('active');
             console.log('Dropdown toggled on mobile');
+          } else {
+            dropdownContent.classList.remove('active');
+            dropdown.classList.remove('active');
           }
         });
       });
@@ -623,11 +704,18 @@
               const dropdown = this.parentElement;
               const dropdownContent = dropdown.querySelector('.dropdown-content');
               const isActive = dropdownContent.classList.contains('active');
-              closeAllDropdowns();
-              navLinks.classList.remove('active');
+              document.querySelectorAll('.dropdown-content').forEach(content => {
+                if (content !== dropdownContent) content.classList.remove('active');
+              });
+              document.querySelectorAll('.dropdown').forEach(d => {
+                if (d !== dropdown) d.classList.remove('active');
+              });
               if (!isActive) {
                 dropdownContent.classList.add('active');
                 dropdown.classList.add('active');
+              } else {
+                dropdownContent.classList.remove('active');
+                dropdown.classList.remove('active');
               }
             });
           });
@@ -670,6 +758,13 @@
     }
     loadFacebookSDK();
     setupRevealObservers();
+    initializeBrandSlider('.brand-card', '#brands'); // Added here for reliability
+    setTimeout(() => {
+      document.querySelectorAll('.article-card').forEach((el, i) => {
+        el.setAttribute('data-reveal-delay', i * 0.1);
+        globalRevealObserver.observe(el);
+      });
+    }, 500); // For articles appended by full-article.js
   }
 
   // INITIAL LOADING HANDLERS
