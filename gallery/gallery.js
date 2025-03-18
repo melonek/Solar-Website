@@ -23,11 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
   
+  // Global flag to pause/resume carousel auto-scroll
+  let carouselPaused = false;
+  
+  // Flags for overlays:
+  let modalActive = false;
+  let lightboxActive = false;
+  let modalWasOpenBeforeLightbox = false;
+  
+  function updateCarouselPauseState() {
+    if (modalActive || lightboxActive) {
+      carouselPaused = true;
+    } else {
+      carouselPaused = false;
+    }
+  }
+  
   // Fallback image in case an image fails to load
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
-  
-  // Flag to remember if modal was open when lightbox is triggered
-  let modalWasOpen = false;
   
   // ----------------------
   // Utility Functions
@@ -68,6 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Modal Functions
   // ----------------------
   function openModal(job) {
+    modalActive = true;
+    updateCarouselPauseState();
     document.body.style.overflow = 'hidden';
     modalBody.innerHTML = ''; // Clear previous content
 
@@ -151,22 +166,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Close modal when clicking the close button
   closeModal.addEventListener('click', function() {
+    modalActive = false;
     modal.style.display = 'none';
     document.body.style.overflow = '';
+    updateCarouselPauseState();
   });
   
   // Close modal when clicking outside the modal-content
   modal.addEventListener('click', function(e) {
     if (!e.target.closest('.modal-content')) {
+      modalActive = false;
       modal.style.display = 'none';
       document.body.style.overflow = '';
+      updateCarouselPauseState();
     }
   });
   
   modal.addEventListener('touchstart', function(e) {
     if (!e.target.closest('.modal-content')) {
+      modalActive = false;
       modal.style.display = 'none';
       document.body.style.overflow = '';
+      updateCarouselPauseState();
     }
   });
   
@@ -174,13 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Lightbox Functions
   // ----------------------
   function openLightbox(src) {
-    // If modal is open, hide it temporarily and flag it
-    if (modal.style.display === 'flex') {
-      modalWasOpen = true;
+    // If modal is active, record that it was open but hide it visually while lightbox is open.
+    if (modalActive) {
+      modalWasOpenBeforeLightbox = true;
       modal.style.display = 'none';
-    } else {
-      modalWasOpen = false;
     }
+    lightboxActive = true;
+    updateCarouselPauseState();
     
     lightboxContent.src = src;
     lightbox.style.display = 'flex';
@@ -229,6 +250,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function closeLightboxFunc() {
+    lightboxActive = false;
+    updateCarouselPauseState();
+    
     lightbox.style.display = 'none';
     
     const blurredOverlay = document.getElementById('blurred-background');
@@ -237,13 +261,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const blockingOverlay = document.getElementById('blocking-overlay');
     if (blockingOverlay) blockingOverlay.remove();
     
-    // Restore modal if it was previously open
-    if (modalWasOpen) {
+    // If the modal was active before opening the lightbox, restore its visual display.
+    if (modalWasOpenBeforeLightbox) {
       modal.style.display = 'flex';
+      modalWasOpenBeforeLightbox = false;
+      // Note: modalActive remains true.
+      updateCarouselPauseState();
     }
     
-    // Restore body scroll only if modal isn't open
-    if (modal.style.display !== 'flex') {
+    // Restore body scroll only if no overlay is active.
+    if (!modalActive && !lightboxActive) {
       document.body.style.overflow = '';
     }
   }
@@ -369,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     card.appendChild(imagesContainer);
     
-    // Pause carousel auto-scroll on hover
+    // Pause carousel auto-scroll on hover over a card
     card.addEventListener('mouseenter', () => scrollSpeed = 0);
     card.addEventListener('mouseleave', () => scrollSpeed = 0.5);
     
@@ -394,8 +421,32 @@ document.addEventListener('DOMContentLoaded', function() {
   // Render Archive (if you have an archive grid)
   let loadedJobs = 0;
   const batchSize = 20;
-  // Sort jobs by completion date (newest first)
-  const sortedJobs = jobs.slice().sort((a, b) => new Date(b.completionDate) - new Date(a.completionDate));
+  
+  // Helper functions for archive sorting:
+  function parseDate(dateStr) {
+    const [day, month, year] = dateStr.split("-");
+    return new Date(year, month - 1, day);
+  }
+  
+  function getStartTime(timeStr) {
+    const cleaned = timeStr.replace(/[()]/g, '');
+    const parts = cleaned.split('-');
+    const startStr = parts[0].trim();
+    const timeObj = parseTimeString(startStr);
+    return timeObj.hours * 60 + timeObj.minutes;
+  }
+  
+  // Updated sort: sort by completionDate (newest first), then by start time (later first)
+  const sortedJobs = jobs.slice().sort((a, b) => {
+    const dateA = parseDate(a.completionDate);
+    const dateB = parseDate(b.completionDate);
+    
+    if (dateA.getTime() !== dateB.getTime()) {
+      return dateB - dateA;
+    } else {
+      return getStartTime(b.timeToComplete) - getStartTime(a.timeToComplete);
+    }
+  });
   
   function createArchiveSquare(job) {
     const square = document.createElement('div');
@@ -439,12 +490,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Carousel Auto-Scroll
   // ----------------------
   function autoScroll() {
-    currentTranslateX -= scrollSpeed;
-    // Reset scrolling when half the width is scrolled (due to duplicate cards)
-    if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
-      currentTranslateX = 0;
+    if (!carouselPaused) {
+      currentTranslateX -= scrollSpeed;
+      // Reset scrolling when half the width is scrolled (due to duplicate cards)
+      if (Math.abs(currentTranslateX) >= carousel.scrollWidth / 2) {
+        currentTranslateX = 0;
+      }
+      carousel.style.transform = `translateX(${currentTranslateX}px)`;
     }
-    carousel.style.transform = `translateX(${currentTranslateX}px)`;
     requestAnimationFrame(autoScroll);
   }
   
