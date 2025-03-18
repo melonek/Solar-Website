@@ -221,7 +221,7 @@ const jobs = [
       roofType: "Metal Tin",
       completionDate: "17-03-2025",
       difficulty: "Easy",
-      timeToComplete: "(2:00pm-4:30:00pm)",
+      timeToComplete: "(2:00pm-4:30pm)",
       suburb: "Pearsall, WA, 6065",
       mainImage: "/images/Jobs/Job13/m.webp",
       additionalImages: [
@@ -229,6 +229,24 @@ const jobs = [
         "/images/Jobs/Job13/p2.webp",
         "/images/Jobs/Job13/i1.webp",
         "/images/Jobs/Job13/i2.webp",
+      ]
+    },
+    {
+      title: "Brabham Installation",
+      "House Type": "Single-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (15 Panels)",
+      roofType: "Metal Tin",
+      completionDate: "18-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(7:15am-10:00am)",
+      suburb: "Brabham, WA, 6055",
+      mainImage: "/images/Jobs/Job14/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job14/p1.webp",
+        "/images/Jobs/Job14/p2.webp",
+        "/images/Jobs/Job14/i1.webp",
+        "/images/Jobs/Job14/i2.webp",
       ]
     }
   ];
