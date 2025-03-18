@@ -76,6 +76,12 @@ function preloadImagesUnified(items) {
   );
 }
 
+// Helper function to preload product card images
+function preloadProductCardImages(products) {
+  const imageUrls = products.map(product => product.image);
+  return preloadImagesUnified(imageUrls);
+}
+
 // --------------------
 // Preload Crucial Images
 // --------------------
@@ -161,11 +167,11 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   function showTextCloud(message, duration = 2000, withIcon = false) {
-    if (activeTextCloud) {
-      clearTimeout(activeTextCloud.fadeTimeout);
-      clearTimeout(activeTextCloud.removeTimeout);
-      activeTextCloud.remove();
-      activeTextCloud = null;
+    if (window.activeTextCloud) {
+      clearTimeout(window.activeTextCloud.fadeTimeout);
+      clearTimeout(window.activeTextCloud.removeTimeout);
+      window.activeTextCloud.remove();
+      window.activeTextCloud = null;
     }
     let iconHTML = withIcon ? `<span class="warning-icon">⚠️</span> ` : "";
     const cloud = document.createElement("div");
@@ -173,12 +179,12 @@ document.addEventListener("DOMContentLoaded", function() {
     cloud.innerHTML = iconHTML + message;
     cloud.style.opacity = "1";
     document.body.appendChild(cloud);
-    activeTextCloud = cloud;
+    window.activeTextCloud = cloud;
     cloud.fadeTimeout = setTimeout(() => {
       cloud.style.opacity = "0";
       cloud.removeTimeout = setTimeout(() => {
         cloud.remove();
-        if (activeTextCloud === cloud) activeTextCloud = null;
+        if (window.activeTextCloud === cloud) window.activeTextCloud = null;
       }, 500);
     }, duration);
   }
@@ -868,15 +874,25 @@ document.addEventListener("DOMContentLoaded", function() {
   
   updatePackageDisplay();
   
-  const panelsGrid = document.getElementById("panels-grid");
-  const invertersGrid = document.getElementById("inverters-grid");
-  const batteryGrid = document.getElementById("battery-grid");
+  // Preload product card images before creating product cards
+  Promise.all([
+    preloadProductCardImages(solarProducts.panels),
+    preloadProductCardImages(solarProducts.inverters),
+    solarProducts.batteries ? preloadProductCardImages(solarProducts.batteries) : Promise.resolve()
+  ])
+    .then(() => {
+      const panelsGrid = document.getElementById("panels-grid");
+      const invertersGrid = document.getElementById("inverters-grid");
+      const batteryGrid = document.getElementById("battery-grid");
+      
+      solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, "panel")));
+      solarProducts.inverters.forEach(inv => invertersGrid.appendChild(createProductCard(inv, "inverter")));
+      if (solarProducts.batteries) {
+        solarProducts.batteries.forEach(bat => batteryGrid.appendChild(createProductCard(bat, "battery")));
+      }
+    })
+    .catch(err => console.error("Error preloading product images:", err));
   
-  solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, "panel")));
-  solarProducts.inverters.forEach(inv => invertersGrid.appendChild(createProductCard(inv, "inverter")));
-  if (solarProducts.batteries) {
-    solarProducts.batteries.forEach(bat => batteryGrid.appendChild(createProductCard(bat, "battery")));
-  }
   document.getElementById("solar-package").style.display = "none";
   
   const sysSelect = document.getElementById("system-size-select");

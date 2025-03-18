@@ -1,3 +1,4 @@
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -11,30 +12,247 @@ if ('serviceWorker' in navigator) {
 }
 
 (function () {
-  // Scoped variables to avoid global conflicts
+  // Scoped variables
   let hasShownBatteryCloud = false;
   let hasShownFormCloud = false;
   let activeTextCloud = null;
   let selectedBattery = null;
+  let brandImages = [];
+
+  // Global solarProducts data (subset for batteries)
+  const solarProducts = {
+    batteries: [
+      {
+        id: 1,
+        name: "Tesla Powerwall",
+        brand: "Tesla",
+        specs: "13.5 kWh",
+        country: "USA",
+        warranty: "10 years",
+        datasheet: "",
+        image: "https://switchtecsolutions.com.au/wp-content/uploads/2024/08/powerwall-2.png.webp",
+        price: 8000,
+        popularity: 5,
+        description: "Battery storage system description..."
+      }
+    ]
+  };
+
+  // Unified Preload Function
+  function preloadImagesUnified(items) {
+    return Promise.all(
+      items.map(item => {
+        const url = (typeof item === "string") ? item : item.url;
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => {
+            console.log(`Preloaded image: ${url}`);
+            resolve(url);
+          };
+          img.onerror = () => {
+            console.error(`Failed to preload image: ${url}`);
+            resolve(url);
+          };
+        });
+      })
+    );
+  }
+
+  // Helper to preload product card images
+  function preloadProductCardImages(products) {
+    const imageUrls = products.map(product => product.image);
+    return preloadImagesUnified(imageUrls);
+  }
+
+  // Initialize brand images
+  function initializeBrandImages() {
+    const prefix = getPathPrefix();
+    brandImages = [
+      { name: 'Trina', url: `${prefix}images/BrandLogos/Trina-Solar.webp` },
+      { name: 'SMA', url: `${prefix}images/BrandLogos/SMA.webp` },
+      { name: 'Canadian Solar', url: `${prefix}images/BrandLogos/Canadian-Solar.webp` },
+      { name: 'DaSolar', url: `${prefix}images/BrandLogos/DaSolar.webp` },
+      { name: 'Fronius', url: `${prefix}images/BrandLogos/Fronius.webp` },
+      { name: 'Growatt', url: `${prefix}images/BrandLogos/Growatt.webp` },
+      { name: 'Huawei/iStore', url: `${prefix}images/BrandLogos/Huawei.webp` },
+      { name: 'JASolar', url: `${prefix}images/BrandLogos/JASolar.webp` },
+      { name: 'Goodwe', url: `${prefix}images/BrandLogos/Goodwe.webp` },
+      { name: 'Jinko', url: `${prefix}images/BrandLogos/Jinko.webp` },
+      { name: 'Longi', url: `${prefix}images/BrandLogos/Longi.webp` },
+      { name: 'Risen', url: `${prefix}images/BrandLogos/Risen-Solar.webp` },
+      { name: 'Seraphim', url: `${prefix}images/BrandLogos/Seraphim.webp` },
+      { name: 'Sofar', url: `${prefix}images/BrandLogos/Sofar.webp` },
+      { name: 'SolarEdge', url: `${prefix}images/BrandLogos/Solar-Edge.webp` },
+      { name: 'Solis', url: `${prefix}images/BrandLogos/Solis.webp` },
+      { name: 'Sungrow', url: `${prefix}images/BrandLogos/Sungrow.webp` },
+      { name: 'EgingPV', url: `${prefix}images/BrandLogos/EgingPV.webp` },
+      { name: 'QCells', url: `${prefix}images/BrandLogos/QCells.webp` },
+      { name: 'Tesla', url: `${prefix}images/BrandLogos/Tesla.webp` }
+    ];
+  }
+
+  // Preload brand images
+  function preloadBrandImages() {
+    return preloadImagesUnified(brandImages);
+  }
+
+  // Path prefix helper
+  function getPathPrefix() {
+    return window.location.pathname.includes('/packages/') ? "../" : "./";
+  }
+
+  // Parallax Banner Initialization (single image, subtle effect)
+  function initParallaxBanner(sectionSelector, canvasId, imagePath, imageWidth, imageHeight) {
+    const section = document.querySelector(sectionSelector);
+    const canvas = document.querySelector(`#${canvasId}`);
+    
+    if (!section) {
+      console.error(`Section (${sectionSelector}) not found in DOM.`);
+      return;
+    }
+    if (!canvas) {
+      console.error(`Canvas (#${canvasId}) not found in DOM.`);
+      return;
+    }
+    if (typeof THREE === 'undefined') {
+      console.error("Three.js library not loaded.");
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+
+    // Size canvas to match section height or a minimum
+    const sectionHeight = section.offsetHeight;
+    const minCanvasHeight = window.innerHeight * 1.3;
+    const canvasHeight = Math.max(sectionHeight, minCanvasHeight);
+    renderer.setSize(window.innerWidth, canvasHeight);
+    canvas.style.width = '100%';
+    canvas.style.height = `${canvasHeight}px`;
+    camera.aspect = window.innerWidth / canvasHeight;
+    camera.updateProjectionMatrix();
+    camera.position.z = 5;
+
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(imagePath,
+      () => console.log(`Image for ${canvasId} loaded successfully`),
+      undefined,
+      (err) => console.error(`Error loading image for ${canvasId}:`, err)
+    );
+    const planeWidth = 20;
+    const planeHeightValue = 20 * (imageHeight / imageWidth);
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeightValue);
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      color: texture ? null : 0xff0000
+    });
+
+    const planeHeightInWorld = planeHeightValue * (imageHeight / 4000);
+    const repeatsNeeded = Math.ceil((canvasHeight * 1.5) / planeHeightInWorld) + 1;
+    const planes = [];
+
+    for (let i = 0; i < repeatsNeeded; i++) {
+      const plane = new THREE.Mesh(geometry, material);
+      plane.scale.set(imageWidth / 4000, imageHeight / 4000, 1);
+      plane.position.set(0, -i * planeHeightInWorld, -1);
+      scene.add(plane);
+      planes.push(plane);
+    }
+
+    const parallaxIntensity = 0.25; // Subtle effect, adjustable
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const scrollY = window.scrollY;
+      const sectionTop = section.offsetTop;
+      const sectionHeightValue = section.clientHeight;
+
+      if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeightValue) {
+        const progress = (scrollY - sectionTop) / sectionHeightValue;
+        const parallaxY = progress * parallaxIntensity * sectionHeightValue;
+
+        planes.forEach((plane, index) => {
+          plane.position.y = (-index * planeHeightInWorld) - (parallaxY / 100);
+        });
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      const newSectionHeight = section.offsetHeight;
+      const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.5);
+      renderer.setSize(window.innerWidth, newCanvasHeight);
+      camera.aspect = window.innerWidth / newCanvasHeight;
+      camera.updateProjectionMatrix();
+      canvas.style.height = `${newCanvasHeight}px`;
+      const newRepeatsNeeded = Math.ceil((newCanvasHeight * 1.5) / planeHeightInWorld) + 1;
+      if (newRepeatsNeeded > planes.length) {
+        for (let i = planes.length; i < newRepeatsNeeded; i++) {
+          const plane = new THREE.Mesh(geometry, material);
+          plane.scale.set(imageWidth / 4000, imageHeight / 4000, 1);
+          plane.position.set(0, -i * planeHeightInWorld, -1);
+          scene.add(plane);
+          planes.push(plane);
+        }
+      }
+    });
+  }
+
+  // Banner Config for Battery Section
+  const batteryBannerConfig = {
+    sectionSelector: '.battery-storage',
+    canvasId: 'battery-canvas',
+    imagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
+    imageWidth: 6500,
+    imageHeight: 4500
+  };
 
   // Initialize when DOM is fully loaded
   document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM fully loaded, initializing battery-only page...");
-    try {
-      populateBrandSlider();
-      populateBatteryGrid();
-      attachModalHandlers();
-      attachSorting();
-      attachEnquiryScroll();
-      attachFormSubmitHandler();
-      setupScrollObservers();
-      setupFallbackScrollListener();
-    } catch (error) {
-      console.error("Error during initialization:", error);
-    }
+
+    initializeBrandImages();
+    preloadBrandImages()
+      .then(() => {
+        console.log("Brand images preloaded successfully.");
+        populateBrandSlider();
+      })
+      .catch(error => console.error("Error preloading brand images:", error));
+
+    preloadProductCardImages(solarProducts.batteries)
+      .then(() => {
+        console.log("Battery product images preloaded.");
+        populateBatteryGrid();
+      })
+      .catch(error => console.error("Error preloading battery images:", error));
+
+    preloadImagesUnified([batteryBannerConfig.imagePath])
+      .then(() => {
+        console.log("Battery banner image preloaded.");
+        initParallaxBanner(
+          batteryBannerConfig.sectionSelector,
+          batteryBannerConfig.canvasId,
+          batteryBannerConfig.imagePath,
+          batteryBannerConfig.imageWidth,
+          batteryBannerConfig.imageHeight
+        );
+      })
+      .catch(error => console.error("Error preloading battery banner image:", error));
+
+    attachModalHandlers();
+    attachSorting();
+    attachEnquiryScroll();
+    attachFormSubmitHandler();
+    setupScrollObservers();
+    setupFallbackScrollListener();
   });
 
-  // ===================== BRAND SLIDER =====================
+  // Brand Slider Functions
   function populateBrandSlider() {
     const brandContainer = document.querySelector('.solar-brands-container');
     if (!brandContainer) {
@@ -45,7 +263,6 @@ if ('serviceWorker' in navigator) {
     brandImages.slice(0, 4).forEach(brand => {
       const card = document.createElement('div');
       card.className = 'solar-brand-card';
-      // Use backticks to create a template literal
       card.innerHTML = `<img src="${brand.url || ''}" alt="${brand.name || 'Brand'}">`;
       brandContainer.appendChild(card);
     });
@@ -54,7 +271,10 @@ if ('serviceWorker' in navigator) {
 
   function initializeBrandSlider(cardSelector, containerSelector) {
     const cards = document.querySelectorAll(cardSelector);
-    if (!cards.length) return;
+    if (!cards.length) {
+      console.warn("No brand cards found for slider!");
+      return;
+    }
     let currentIndex = 0;
 
     function updateCards() {
@@ -66,7 +286,7 @@ if ('serviceWorker' in navigator) {
           imgEl.src = brand.url;
           imgEl.alt = brand.name;
         }
-        card.classList.remove("active");
+        card.className = 'solar-brand-card';
         setTimeout(() => card.classList.add("active"), 50);
       });
     }
@@ -93,7 +313,7 @@ if ('serviceWorker' in navigator) {
     }, 500);
   }
 
-  // ===================== BATTERY GRID POPULATION =====================
+  // Battery Grid Population
   function populateBatteryGrid() {
     const batteryGrid = document.getElementById('battery-grid');
     if (!batteryGrid) {
@@ -101,9 +321,7 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
-    // Preserve the hero-image container if it exists
     const heroImageElement = batteryGrid.querySelector('.hero-image');
-    // Remove only product cards (assume they have the class 'product-card')
     const existingCards = batteryGrid.querySelectorAll('.product-card');
     existingCards.forEach(card => card.remove());
 
@@ -116,21 +334,16 @@ if ('serviceWorker' in navigator) {
     }
 
     solarProducts.batteries.forEach(battery => {
-      try {
-        const card = createProductCard(battery, 'battery');
-        card.setAttribute('data-id', battery.id || Math.random());
-        card.addEventListener('click', function (e) {
-          if (!e.target.classList.contains('read-more-btn')) {
-            handleBatterySelection(battery, this);
-          }
-        });
-        batteryGrid.appendChild(card);
-      } catch (error) {
-        console.error("Error creating product card:", error);
-      }
+      const card = createProductCard(battery, 'battery');
+      card.setAttribute('data-id', battery.id || Math.random());
+      card.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('read-more-btn')) {
+          handleBatterySelection(battery, this);
+        }
+      });
+      batteryGrid.appendChild(card);
     });
 
-    // Create the bundle button and insert it after the battery grid
     const bundleButton = document.createElement('a');
     bundleButton.id = 'bundle-btn';
     bundleButton.classList.add('fancy-button', 'shiny');
@@ -158,7 +371,7 @@ if ('serviceWorker' in navigator) {
     return card;
   }
 
-  // ===================== BATTERY SELECTION =====================
+  // Battery Selection
   function handleBatterySelection(battery, card) {
     document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected-battery'));
     card.classList.add('selected-battery');
@@ -171,12 +384,11 @@ if ('serviceWorker' in navigator) {
     }, 300);
   }
 
-  // ===================== UPDATE BATTERY PACKAGE DISPLAY =====================
+  // Update Battery Package Display
   function updateBatteryPackageDisplay() {
     const batteryImage = document.getElementById('selected-battery-alone-image');
     const batteryPackage = document.getElementById('battery-package');
     const totalCostDisplay = document.getElementById('total-cost');
-    const batteryContainer = document.getElementById('battery-image-combination');
 
     if (!selectedBattery || !batteryImage || !batteryPackage || !totalCostDisplay) {
       console.warn("Required elements for battery package display not found!");
@@ -215,15 +427,8 @@ if ('serviceWorker' in navigator) {
       enquiryDescription.id = 'enquiry-description';
       const buttonContainer = batteryPackage.querySelector('.button-container');
       if (buttonContainer) {
-        const parent = buttonContainer.parentNode;
-        if (parent) {
-          parent.insertBefore(enquiryDescription, buttonContainer);
-        } else {
-          console.warn("Button container has no parentNode, appending to battery package as fallback.");
-          batteryPackage.appendChild(enquiryDescription);
-        }
+        buttonContainer.parentNode.insertBefore(enquiryDescription, buttonContainer);
       } else {
-        console.warn("Button container not found in battery package, appending to battery package as fallback.");
         batteryPackage.appendChild(enquiryDescription);
       }
     }
@@ -236,7 +441,7 @@ if ('serviceWorker' in navigator) {
     }
   }
 
-  // ===================== BATTERY PACKAGE SUMMARY HELPER FUNCTIONS =====================
+  // Battery Package Summary Helpers
   function collectBatteryPackageData() {
     return `
       <ul class="package-summary-list">
@@ -264,12 +469,11 @@ if ('serviceWorker' in navigator) {
     }
   }
 
-  // ===================== SCROLL TO FORM & SHOW TEXT CLOUD =====================
+  // Enquiry Scroll Handler
   function attachEnquiryScroll() {
     const confirmSelectionBtn = document.getElementById('confirm-selection');
     if (confirmSelectionBtn) {
       confirmSelectionBtn.addEventListener('click', () => {
-        console.log("Confirm selection button clicked");
         if (!selectedBattery) {
           showTextCloud("Please select a battery before enquiring.", 5000, true);
           setTimeout(() => {
@@ -277,8 +481,10 @@ if ('serviceWorker' in navigator) {
           }, 3000);
         } else {
           updateBatteryFormSummary();
-          scrollTo_form();
-          showTextCloud("Fill in details", 5000);
+          scrollToForm();
+          setTimeout(() => {
+            showTextCloud("Fill in details", 5000);
+          }, 800);
         }
       });
     } else {
@@ -286,7 +492,19 @@ if ('serviceWorker' in navigator) {
     }
   }
 
-  // ===================== ATTACH FORM SUBMISSION HANDLER =====================
+  // Scroll to Form Function
+  function scrollToForm() {
+    const formEl = document.querySelector('.package-form');
+    if (formEl) {
+      const desiredOffset = 500; // Adjust this number to change scroll position
+      const elementTop = formEl.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: elementTop - desiredOffset, behavior: 'smooth' });
+    } else {
+      console.warn("Form section with class 'package-form' not found!");
+    }
+  }
+
+  // Form Submission Handler
   function attachFormSubmitHandler() {
     const packageForm = document.querySelector('.package-form');
     if (!packageForm) {
@@ -295,7 +513,7 @@ if ('serviceWorker' in navigator) {
     }
 
     packageForm.addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent default form submission
+      e.preventDefault();
 
       if (!selectedBattery) {
         showTextCloud("Please select a battery before submitting the form.", 5000, true);
@@ -312,51 +530,37 @@ if ('serviceWorker' in navigator) {
 
       const formData = new FormData(packageForm);
       fetch(packageForm.action, {
-        method: form.method,
+        method: packageForm.method,
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      }).then(data => {
-        showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 5000);
-        packageForm.reset();
-      }).catch(error => {
-        console.error("Fetch error:", error.message);
-        showTextCloud("Oops! There was a problem submitting your form: " + error.message, 5000, true);
-      });
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then(() => {
+          showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 5000);
+          packageForm.reset();
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+          showTextCloud("Oops! There was a problem submitting your form: " + error.message, 5000, true);
+        });
     });
   }
 
-  // ===================== SCROLL TO FORM FUNCTION =====================
-  function scrollTo_form() {
-    const formSection = document.querySelector('.package-form');
-    if (formSection) {
-      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      console.warn("Form section not found for scrollTo_form!");
-    }
-  }
-
-  // ===================== MODAL HANDLERS =====================
+  // Modal Handlers
   function handleModalOpen(e) {
     e.preventDefault();
     const type = e.target.dataset.type;
     const id = parseInt(e.target.dataset.id);
-    let product;
-    if (type === "battery") {
-      product = solarProducts.batteries.find(p => p.id === id);
-    }
+    let product = solarProducts.batteries.find(p => p.id === id);
     if (!product) return;
+
     const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
     const brandLogoUrl = brand ? brand.url : "";
     const modal = document.getElementById("product-modal");
 
-    // Set the modal content for battery
     document.querySelector(".modal-product-image").innerHTML = `
       <div class="product-image-container">
         <img src="${product.image}" alt="${product.name}" class="main-product-image">
@@ -388,7 +592,7 @@ if ('serviceWorker' in navigator) {
     }
   }
 
-  // ===================== SORTING FUNCTION =====================
+  // Sorting Function
   function attachSorting() {
     const batteryFilter = document.getElementById('battery-filter');
     if (batteryFilter) {
@@ -402,7 +606,7 @@ if ('serviceWorker' in navigator) {
 
   function sortProducts(type, criteria) {
     const grid = document.getElementById("battery-grid");
-    let products = [...solarProducts[type + "s"]];
+    let products = [...solarProducts.batteries];
     if (criteria === "expensive") {
       products.sort((a, b) => b.price - a.price);
     } else if (criteria === "cheap") {
@@ -411,25 +615,23 @@ if ('serviceWorker' in navigator) {
       products.sort((a, b) => b.popularity - a.popularity);
     }
     grid.innerHTML = '';
-    // Reinsert the hero-image container from within the battery-grid
     const hero = grid.querySelector('.hero-image');
     if (hero) grid.appendChild(hero);
     products.forEach(product => grid.appendChild(createProductCard(product, type)));
   }
 
-  // ===================== SCROLL FUNCTION =====================
+  // Scroll Function
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      console.warn(`Section ${sectionId} not found for scrollToSection!`);
+      console.warn(`Section ${sectionId} not found!`);
     }
   }
 
-  // ===================== TEXT CLOUD FUNCTION =====================
+  // Text Cloud Function
   function showTextCloud(message, duration = 5000, withIcon = false) {
-    console.log("Showing text cloud:", message);
     if (activeTextCloud) {
       clearTimeout(activeTextCloud.fadeTimeout);
       clearTimeout(activeTextCloud.removeTimeout);
@@ -438,7 +640,7 @@ if ('serviceWorker' in navigator) {
     }
     const cloud = document.createElement("div");
     cloud.className = "text-cloud";
-    const iconHTML = withIcon ? '<span class="warning-icon">⚠️</span>' : "";
+    const iconHTML = withIcon ? '<span class="warning-icon">⚠️</span> ' : "";
     cloud.innerHTML = iconHTML + message;
     cloud.style.position = 'fixed';
     cloud.style.left = '50%';
@@ -452,22 +654,18 @@ if ('serviceWorker' in navigator) {
     cloud.style.fontSize = '16px';
     cloud.style.color = '#333';
     cloud.style.opacity = '1';
-    cloud.style.display = 'block';
     document.body.appendChild(cloud);
-    console.log("Text cloud appended to DOM:", cloud);
     activeTextCloud = cloud;
     activeTextCloud.fadeTimeout = setTimeout(() => {
-      console.log("Fading out text cloud:", message);
       cloud.style.opacity = "0";
       activeTextCloud.removeTimeout = setTimeout(() => {
-        console.log("Removing text cloud:", message);
         cloud.remove();
         if (activeTextCloud === cloud) activeTextCloud = null;
       }, 1000);
     }, duration);
   }
 
-  // ===================== SETUP SCROLL OBSERVERS FOR TEXT CLOUDS =====================
+  // Scroll Observers for Text Clouds
   function setupScrollObservers() {
     const batteryGridSection = document.getElementById('battery-grid');
     if (!batteryGridSection) {
@@ -482,7 +680,6 @@ if ('serviceWorker' in navigator) {
     const batteryObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !hasShownBatteryCloud) {
-          console.log("Battery grid section visible, showing cloud");
           showTextCloud("Choose your battery", 5000);
           hasShownBatteryCloud = true;
         }
@@ -491,7 +688,7 @@ if ('serviceWorker' in navigator) {
     batteryObserver.observe(batteryGridSection);
   }
 
-  // ===================== FALLBACK SCROLL LISTENER FOR "Choose your battery" =====================
+  // Fallback Scroll Listener
   function setupFallbackScrollListener() {
     window.addEventListener('scroll', () => {
       const batteryGridSection = document.getElementById('battery-grid');
@@ -499,62 +696,9 @@ if ('serviceWorker' in navigator) {
       const rect = batteryGridSection.getBoundingClientRect();
       const windowHeight = window.innerHeight || document.documentElement.clientHeight;
       if (rect.top >= 0 && rect.top <= windowHeight * 0.5) {
-        console.log("Fallback scroll: Battery grid in view, showing cloud");
         showTextCloud("Choose your battery", 5000);
         hasShownBatteryCloud = true;
       }
     });
   }
-
-  // Define banner configurations
-  const bannerConfigs = [
-    {
-      sectionSelector: '.panels-section',
-      canvasId: 'hero-canvas',
-      firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
-      secondImagePath: '',
-      firstWidth: 4500,
-      firstHeight: 3500,
-      secondWidth: 8000,
-      secondHeight: 4000
-    },
-    {
-      sectionSelector: '.inverters-section',
-      canvasId: 'inverter-canvas',
-      firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
-      secondImagePath: '',
-      firstWidth: 4500,
-      firstHeight: 3500,
-      secondWidth: 4000,
-      secondHeight: 1000
-    },
-    {
-      sectionSelector: '.battery-storage',
-      canvasId: 'battery-canvas',
-      firstImagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
-      secondImagePath: '',
-      firstWidth: 6500,
-      firstHeight: 4500,
-      secondWidth: 2000,
-      secondHeight: 2000
-    }
-  ];
-
-  // Preload all images (non-blocking)
-  const allImagePaths = bannerConfigs.flatMap(config => [config.firstImagePath, config.secondImagePath]);
-  preloadImages(allImagePaths);
-
-  // Initialize banners for each grid immediately
-  bannerConfigs.forEach(config => {
-    initParallaxBanner(
-      config.sectionSelector,
-      config.canvasId,
-      config.firstImagePath,
-      config.secondImagePath,
-      config.firstWidth,
-      config.firstHeight,
-      config.secondWidth,
-      config.secondHeight
-    );
-  });
 })();
