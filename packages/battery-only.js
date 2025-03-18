@@ -496,7 +496,7 @@ if ('serviceWorker' in navigator) {
   function scrollToForm() {
     const formEl = document.querySelector('.package-form');
     if (formEl) {
-      const desiredOffset = 500; // Adjust this number to change scroll position
+      const desiredOffset = 50; // Adjust this number to change scroll position
       const elementTop = formEl.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top: elementTop - desiredOffset, behavior: 'smooth' });
     } else {
