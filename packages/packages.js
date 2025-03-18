@@ -55,8 +55,6 @@ let defaultScrollTimeout = null;
 // Universal Banner Parallax (Zoom) with Preloading
 // ------------------------
 document.addEventListener('DOMContentLoaded', function() {
-  // Register GSAP's ScrollTrigger plugin
-  gsap.registerPlugin(ScrollTrigger);
 
   // Preload the Banner Image
   function preloadImage(url) {
