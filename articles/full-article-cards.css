@@ -194,7 +194,6 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    display: flex; /* Flex layout for centering */
     justify-content: center;
     align-items: center;
     overflow: auto;

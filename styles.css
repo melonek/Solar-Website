@@ -1828,13 +1828,6 @@ opacity: 1;
     animation: bounce 0.8s ease;
 }
 
-@keyframes bounce {
-    0% { transform: translateY(20px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-}
-
-
 .brand-card img {
     width: 100%; /* Image takes up the full width of its container */
     height: auto; /* Maintain aspect ratio */
