@@ -17,7 +17,8 @@
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(200, 200, 200, 0.2);
     box-shadow: 0 8px 30px rgba(78, 77, 77, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+    transform: translateY(50px);
+    transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -27,6 +28,7 @@
 /* Revealed State */
 .article-card.revealed {
     opacity: 1; /* Fade in when revealed */
+    transform: translateY(0);
 }
 
 /* Normal Hover Effect */
