@@ -7,11 +7,24 @@
 
 /* Load more button */
 #loadMoreBtn {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+  display: inline-block;
+  padding: 0.75em 1.5em;
+  font-size: 1rem;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  color: #333;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-decoration: none;
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out, box-shadow 0.3s ease;
+  opacity: 1;
+  }
+
+
+  #loadMoreBtn:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   }
 
   /* FAQ Section */
