@@ -568,7 +568,6 @@
   function initPage() {
     // Initialize hero section
     if (typeof initHeroSection === 'function') {
-      // Call without awaiting – textures will load asynchronously.
       initHeroSection();
     }
     // Initialize UI and navigation
@@ -580,9 +579,9 @@
   }
 
   // -------------------------
-  // DOMContentLoaded HANDLER
+  // Use window.load for initial loading logic
   // -------------------------
-  document.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('load', () => {
     const loadingOverlay = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
 
