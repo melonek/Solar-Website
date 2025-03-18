@@ -31,6 +31,7 @@ const jobs = [
       additionalImages: [
         "/images/Jobs/Job2/panels.jpg",
         "/images/Jobs/Job2/panels1.jpg",
+        "/images/Jobs/Job2/panels1copy.jpg",
         "/images/Jobs/Job2/inverter:battery.jpg",
       ]
     },
@@ -48,6 +49,7 @@ const jobs = [
       additionalImages: [
         "/images/Jobs/Job3/48771b1d-ce9c-4f01-a632-e3141255724e.jpg",
         "/images/Jobs/Job3/a71afa1a-b842-427c-abc2-eed41bc355b9.jpg",
+        "/images/Jobs/Job3/a71afa1a-b842-427c-abc2-eed41bc355b9copy.jpg",
         "/images/Jobs/Job3/ed3d4d52-21e3-4755-9fe3-e1c8c2b8de40.jpg",
       ]
     },
@@ -60,7 +62,7 @@ const jobs = [
       completionDate: "07-03-2025",
       difficulty: "Easy",
       timeToComplete: "(7:00am-11:20am)",
-      suburb: "Alexander Heights, WA, 6064",
+      suburb: "Alexander Heights, 6064",
       mainImage: "/images/Jobs/Job4/df5cb2b5-c55b-477f-a8a5-31e5eeb53ab4.jpg",
       additionalImages: [
         "/images/Jobs/Job4/e2fded1a-6a90-446e-b64f-52567e2c61b8.jpg",
