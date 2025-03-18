@@ -611,23 +611,6 @@ margin-top: 20px;
 }
 }
 
-@media (max-width: 767px) {
-  .universalBanner .banner-content {
-    /* Reduce padding if needed */
-    padding: 10px;
-  }
-  .universalBanner h1 {
-    font-size: 3rem; /* smaller than 4.5rem */
-  }
-  .universalBanner h2 {
-    font-size: 2rem; /* smaller than 2.5rem */
-  }
-  .universalBanner p {
-    font-size: 1rem; /* smaller than 1.5rem */
-  }
-}
-
-
 .inverters-section {
 width: 100%;
 padding: 20px;
