@@ -9,6 +9,29 @@
       timeout = setTimeout(() => func.apply(this, args), delay);
     };
   }
+  
+  // -------------------------
+  // HELPER: Throttle Function
+  // -------------------------
+  function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+      const context = this;
+      if (!lastRan) {
+        func.apply(context, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc);
+        lastFunc = setTimeout(function() {
+          if ((Date.now() - lastRan) >= limit) {
+            func.apply(context, args);
+            lastRan = Date.now();
+          }
+        }, limit - (Date.now() - lastRan));
+      }
+    }
+  }
 
   // -------------------------
   // FACEBOOK SDK LOADING
@@ -127,6 +150,12 @@
         loadingScreen.classList.add('fade-out');
         setTimeout(() => {
           loadingScreen.style.display = 'none';
+          // Unhide main content before initializing the page
+          const mainContent = document.getElementById('main-content');
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'block';
+          }
           initPage();
         }, 500);
       }, 300);
@@ -394,17 +423,15 @@
     window.addEventListener('load', revealFacebookTimelines);
     revealProductSections();
 
-    // Debounced handleScroll for grouped UI reveal functions (100ms delay)
+    // Throttled handleScroll for grouped UI reveal functions (100ms interval)
     function handleScroll() {
-      requestAnimationFrame(() => {
-        revealButtons();
-        revealCards();
-        revealArticles();
-        revealUniqueServices();
-        revealLearnCards();
-      });
+      revealButtons();
+      revealCards();
+      revealArticles();
+      revealUniqueServices();
+      revealLearnCards();
     }
-    window.addEventListener('scroll', debounce(handleScroll, 100), { passive: true });
+    window.addEventListener('scroll', throttle(handleScroll, 100), { passive: true });
     window.addEventListener('load', () => {
       revealButtons();
       revealCards();
