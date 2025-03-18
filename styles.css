@@ -3326,7 +3326,6 @@ footer {
     transition: opacity 0.6s ease, transform 0.6s ease; /* Slow down the reveal */
     border-radius: 8px; /* Rounded corners */
     margin-top: 10px; /* Adjust the value as needed */
-    overflow: hidden;
   }
 
   #unique-services .unique-service-product.revealed {
@@ -3405,6 +3404,7 @@ footer {
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px; /* Space between the product cards */
+    overflow: hidden;
   }
 
   /* Responsive Design */
