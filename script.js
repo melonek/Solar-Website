@@ -16,21 +16,21 @@
   function throttle(func, limit) {
     let lastFunc;
     let lastRan;
-    return function(...args) {
+    return function (...args) {
       const context = this;
       if (!lastRan) {
         func.apply(context, args);
         lastRan = Date.now();
       } else {
         clearTimeout(lastFunc);
-        lastFunc = setTimeout(function() {
-          if ((Date.now() - lastRan) >= limit) {
+        lastFunc = setTimeout(function () {
+          if (Date.now() - lastRan >= limit) {
             func.apply(context, args);
             lastRan = Date.now();
           }
         }, limit - (Date.now() - lastRan));
       }
-    }
+    };
   }
 
   // -------------------------
@@ -62,7 +62,6 @@
       version: 'v22.0'
     });
     console.log('FB SDK initialized via fbAsyncInit');
-    // Minor consolidation: call scaleFacebookTimelines after FB loads
     scaleFacebookTimelines();
   };
 
@@ -123,14 +122,12 @@
       }
     });
   }
-  // Apply debouncing with a 50ms delay on resize events for timelines
   window.addEventListener('resize', debounce(scaleFacebookTimelines, 50));
 
   // -------------------------
   // MODERN LOADING BAR (REPLACES PIXEL-DRAWING LOADING)
   // -------------------------
   function initModernLoading() {
-    // Only count images that are critical (exclude images with loading="lazy")
     const criticalImages = Array.from(document.images).filter(img =>
       !img.hasAttribute('loading') || img.getAttribute('loading') !== 'lazy'
     );
@@ -150,7 +147,6 @@
         loadingScreen.classList.add('fade-out');
         setTimeout(() => {
           loadingScreen.style.display = 'none';
-          // Unhide main content before initializing the page
           const mainContent = document.getElementById('main-content');
           if (mainContent) {
             mainContent.classList.remove('hidden');
@@ -174,12 +170,11 @@
       updateProgress(100);
       finishLoading();
     } else {
-      // Fallback: if loading takes too long, force finish after 5 seconds.
+      // Fallback: force finish after 5 seconds.
       setTimeout(() => {
         finishLoading();
       }, 5000);
 
-      // Attach load/error event handlers to each critical image
       criticalImages.forEach(img => {
         if (img.complete) {
           incrementCounter();
@@ -225,7 +220,6 @@
     camera.updateProjectionMatrix();
     camera.position.z = 5;
 
-    // Async Hero Textures: load both textures concurrently
     const textureLoader = new THREE.TextureLoader();
     let firstImageTexture, secondImageTexture;
     try {
@@ -288,7 +282,6 @@
     }
     animateParallax();
 
-    // Debounced resize for hero canvas updates (100ms delay)
     window.addEventListener('resize', debounce(() => {
       const newCanvasHeight = window.innerHeight * 1.3;
       renderer.setSize(window.innerWidth, newCanvasHeight);
@@ -303,6 +296,104 @@
     const solarek = { width: 5000, height: 3500 };
     const leaves = isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 };
     return { solarek, leaves, isMobile };
+  }
+
+  // -------------------------
+  // GLOBAL INTERSECTION OBSERVER & REVEAL FUNCTIONS
+  // -------------------------
+  // We’ll keep a map of timeouts so we can cancel delayed reveals if an element leaves.
+  const revealTimeouts = new Map();
+  const observerOptions = { threshold: 0.2 };
+
+  function revealCallback(entries, observer) {
+    entries.forEach(entry => {
+      const delay = parseFloat(entry.target.getAttribute('data-reveal-delay')) || 0;
+      if (entry.isIntersecting) {
+        // When entering, cancel any pending removal and schedule a reveal.
+        if (revealTimeouts.has(entry.target)) {
+          clearTimeout(revealTimeouts.get(entry.target));
+        }
+        const timeoutId = setTimeout(() => {
+          // For unique service products, also set transform to 0.
+          if (entry.target.classList.contains('unique-service-product')) {
+            entry.target.style.transform = 'translate(0)';
+          }
+          entry.target.classList.add('revealed');
+        }, delay * 200);
+        revealTimeouts.set(entry.target, timeoutId);
+      } else {
+        // When leaving, cancel any pending reveal and remove the class.
+        if (revealTimeouts.has(entry.target)) {
+          clearTimeout(revealTimeouts.get(entry.target));
+          revealTimeouts.delete(entry.target);
+        }
+        entry.target.classList.remove('revealed');
+        // For unique service products, reset the transform based on the direction.
+        if (entry.target.classList.contains('unique-service-product')) {
+          const revealDirection = entry.target.getAttribute('data-reveal-direction');
+          if (revealDirection === 'right') {
+            entry.target.style.transform = 'translateX(50px)';
+          } else if (revealDirection === 'left') {
+            entry.target.style.transform = 'translateX(-50px)';
+          } else if (revealDirection === 'bottom') {
+            entry.target.style.transform = 'translateY(50px)';
+          }
+        }
+      }
+    });
+  }
+
+  // Instead of unobserving, we continuously observe elements so that they reanimate.
+  const globalRevealObserver = new IntersectionObserver(revealCallback, observerOptions);
+
+  // Observe a set of elements by selector.
+  function observeElements(selector) {
+    document.querySelectorAll(selector).forEach((el, index) => {
+      // Assign a delay if not already set.
+      if (!el.hasAttribute('data-reveal-delay')) {
+        el.setAttribute('data-reveal-delay', index);
+      }
+      globalRevealObserver.observe(el);
+    });
+  }
+
+  // For dynamically added article cards.
+  function initArticlesMutationObserver() {
+    const articlesGrid = document.getElementById('articles-grid');
+    if (!articlesGrid) return;
+    const config = { childList: true, subtree: true };
+    const mutationCallback = (mutationsList) => {
+      mutationsList.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.matches('.article-card')) {
+              observeNewElement(node);
+            } else {
+              node.querySelectorAll('.article-card').forEach(observeNewElement);
+            }
+          }
+        });
+      });
+    };
+    const mutationObserver = new MutationObserver(mutationCallback);
+    mutationObserver.observe(articlesGrid, config);
+  }
+
+  function observeNewElement(node) {
+    if (!node.hasAttribute('data-reveal-delay')) {
+      node.setAttribute('data-reveal-delay', 0);
+    }
+    globalRevealObserver.observe(node);
+  }
+
+  // Initialize observers for static elements.
+  function setupRevealObservers() {
+    observeElements('.fancy-button');
+    observeElements('.brand-card');
+    observeElements('.article-card');
+    observeElements('.learn-card');
+    observeElements('#unique-services .unique-service-product');
+    initArticlesMutationObserver();
   }
 
   // -------------------------
@@ -333,7 +424,7 @@
       }
     });
 
-    // Reveal Functions for UI elements
+    // Manual reveal functions for non-observed elements (e.g. Facebook timelines, product sections)
     function revealFacebookTimelines() {
       const timelines = document.querySelectorAll('.fb-page-wrapper');
       const triggerBottom = window.innerHeight * 0.8;
@@ -343,70 +434,6 @@
           timeline.classList.add('revealed');
         } else {
           timeline.classList.remove('revealed');
-        }
-      });
-    }
-    function revealButtons() {
-      const buttons = document.querySelectorAll('.fancy-button');
-      const triggerBottom = window.innerHeight * 0.8;
-      buttons.forEach(button => {
-        const buttonTop = button.getBoundingClientRect().top;
-        button.classList.toggle('revealed', buttonTop < triggerBottom);
-      });
-    }
-    function revealCards() {
-      const cards = document.querySelectorAll('.brand-card');
-      const triggerBottom = window.innerHeight * 0.9;
-      cards.forEach(card => {
-        const cardTop = card.getBoundingClientRect().top;
-        card.classList.toggle('active', cardTop < triggerBottom);
-      });
-    }
-    function revealArticles() {
-      const articles = document.querySelectorAll('.article-card');
-      const triggerBottom = window.innerHeight * 0.8;
-      articles.forEach((article, index) => {
-        const articleTop = article.getBoundingClientRect().top;
-        if (articleTop < triggerBottom) {
-          setTimeout(() => { article.classList.add('revealed'); }, index * 200);
-        } else {
-          article.classList.remove('revealed');
-        }
-      });
-    }
-    function revealLearnCards() {
-      const learnCards = document.querySelectorAll('.learn-card');
-      const triggerBottom = window.innerHeight * 0.8;
-      learnCards.forEach((card, index) => {
-        const cardTop = card.getBoundingClientRect().top;
-        if (cardTop < triggerBottom) {
-          setTimeout(() => { card.classList.add('revealed'); }, index * 300);
-        } else {
-          card.classList.remove('revealed');
-        }
-      });
-    }
-    function revealUniqueServices() {
-      const products = document.querySelectorAll('#unique-services .unique-service-product');
-      const triggerBottom = window.innerHeight * 0.8;
-      products.forEach(product => {
-        const productTop = product.getBoundingClientRect().top;
-        const revealDirection = product.getAttribute('data-reveal-direction');
-        const delay = parseFloat(product.getAttribute('data-reveal-delay')) || 0;
-        if (productTop < triggerBottom) {
-          setTimeout(() => {
-            product.classList.add('revealed');
-            product.style.transform = 'translate(0)';
-          }, delay * 200);
-        } else {
-          product.classList.remove('revealed');
-          if (revealDirection === 'right') {
-            product.style.transform = 'translateX(50px)';
-          } else if (revealDirection === 'left') {
-            product.style.transform = 'translateX(-50px)';
-          } else if (revealDirection === 'bottom') {
-            product.style.transform = 'translateY(50px)';
-          }
         }
       });
     }
@@ -423,21 +450,12 @@
     window.addEventListener('load', revealFacebookTimelines);
     revealProductSections();
 
-    // Throttled handleScroll for grouped UI reveal functions (100ms interval)
+    // Throttled handleScroll for grouped UI reveal functions
     function handleScroll() {
-      revealButtons();
-      revealCards();
-      revealArticles();
-      revealUniqueServices();
-      revealLearnCards();
+      // (Any additional UI reveals can be called here if needed)
     }
     window.addEventListener('scroll', throttle(handleScroll, 100), { passive: true });
     window.addEventListener('load', () => {
-      revealButtons();
-      revealCards();
-      revealArticles();
-      revealUniqueServices();
-      revealLearnCards();
       revealFacebookTimelines();
     });
 
@@ -607,13 +625,15 @@
       initUI();
     }
     loadFacebookSDK();
+    setupRevealObservers();
   }
 
-  // Use window.load for initial loading logic
+  // -------------------------
+  // INITIAL LOADING HANDLERS
+  // -------------------------
   window.addEventListener('load', () => {
     const loadingOverlay = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
-
     if (localStorage.getItem('loadingScreenShown')) {
       if (loadingOverlay) loadingOverlay.style.display = 'none';
       if (mainContent) {
