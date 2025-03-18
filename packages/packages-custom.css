@@ -612,7 +612,7 @@ animation-delay: 0.6s;
 /* Media Query for Small Screens (max-width: 480px) */
 @media (max-width: 480px) {
   .universalBanner .banner-content h1 {
-    font-size: clamp(1.8rem, 14vw, 3.5rem);
+    font-size: clamp(1.8rem, 12vw, 3.5rem);
     letter-spacing: 1px;
   }
   .universalBanner .banner-content h2 {
