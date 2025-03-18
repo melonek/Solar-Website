@@ -152,18 +152,25 @@
             mainContent.style.display = 'block';
           }
           initPage();
-        }, 500);
+        }, 500); // Matches CSS transition duration
       }, 300);
     }
 
-    function incrementCounter() {
-      loadedImages++;
-      const percent = Math.round((loadedImages / totalImages) * 100);
-      updateProgress(percent);
-      if (loadedImages === totalImages) {
-        finishLoading();
+    // Fallback to ensure loading screen hides after 2 seconds
+    setTimeout(() => {
+      if (!loadingScreen.classList.contains('fade-out')) {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+          const mainContent = document.getElementById('main-content');
+          if (mainContent) {
+            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'block';
+          }
+          initPage();
+        }, 500);
       }
-    }
+    }, 2000);
 
     if (totalImages === 0) {
       updateProgress(100);
@@ -175,10 +182,23 @@
 
       criticalImages.forEach(img => {
         if (img.complete) {
-          incrementCounter();
+          loadedImages++;
+          const percent = Math.round((loadedImages / totalImages) * 100);
+          updateProgress(percent);
+          if (loadedImages === totalImages) finishLoading();
         } else {
-          img.addEventListener('load', incrementCounter, false);
-          img.addEventListener('error', incrementCounter, false);
+          img.addEventListener('load', () => {
+            loadedImages++;
+            const percent = Math.round((loadedImages / totalImages) * 100);
+            updateProgress(percent);
+            if (loadedImages === totalImages) finishLoading();
+          }, false);
+          img.addEventListener('error', () => {
+            loadedImages++;
+            const percent = Math.round((loadedImages / totalImages) * 100);
+            updateProgress(percent);
+            if (loadedImages === totalImages) finishLoading();
+          }, false);
         }
       });
     }
@@ -428,13 +448,11 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('initUI: DOMContentLoaded fired');
 
-      // Brand logos initialization (moved to initPage for reliability)
       const brandContainer = document.querySelector('#brands') || document.querySelector('.brand-container');
       if (brandContainer) {
         const brands = [
           { src: 'https://naturespark.com.au/images/brands/logo1.png', alt: 'Brand 1' },
           { src: 'https://naturespark.com.au/images/brands/logo2.png', alt: 'Brand 2' },
-          // Replace with your actual brand logo URLs and alt texts
         ];
         brands.forEach((brand, index) => {
           const brandCard = document.createElement('div');
@@ -519,11 +537,7 @@
         });
       });
 
-      const mobileMenu = document.getElementById('mobile-menu');
-      const navLinks = document.querySelector('.nav-links');
       const mediaQuery = window.matchMedia('(max-width: 768px)');
-      console.log('initUI: Mobile menu:', mobileMenu, 'Nav links:', navLinks);
-
       function toggleHrefs() {
         document.querySelectorAll('.dropdown > a:not(.dropbtn)').forEach(toggle => {
           const href = toggle.getAttribute('href');
@@ -538,17 +552,6 @@
       }
       toggleHrefs();
 
-      if (mobileMenu && navLinks) {
-        mobileMenu.addEventListener('click', (e) => {
-          e.stopPropagation();
-          navLinks.classList.toggle('active');
-          mobileMenu.classList.toggle('open');
-          console.log('Mobile menu toggled');
-        });
-      } else {
-        console.warn('Mobile menu or nav links not found');
-      }
-
       document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
         dropbtn.addEventListener('click', function(e) {
           if (mediaQuery.matches) {
@@ -562,6 +565,7 @@
             const dropdownContent = dropdown.querySelector('.dropdown-content');
             const isActive = dropdownContent.classList.contains('active');
             closeAllDropdowns();
+            const navLinks = document.querySelector('.nav-links');
             navLinks.classList.remove('active');
             if (!isActive) {
               dropdownContent.classList.add('active');
@@ -586,7 +590,6 @@
           const dropdown = this.parentElement;
           const dropdownContent = dropdown.querySelector('.dropdown-content');
           const isActive = dropdownContent.classList.contains('active');
-          // Only close other dropdowns, keep navLinks active
           document.querySelectorAll('.dropdown-content').forEach(content => {
             if (content !== dropdownContent) content.classList.remove('active');
           });
@@ -605,6 +608,8 @@
       });
 
       window.addEventListener('scroll', () => {
+        const navLinks = document.querySelector('.nav-links');
+        const mobileMenu = document.getElementById('mobile-menu');
         if (mediaQuery.matches && navLinks.classList.contains('active')) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
@@ -616,12 +621,14 @@
         link.addEventListener('click', () => {
           if (mediaQuery.matches) {
             closeAllDropdowns();
+            const navLinks = document.querySelector('.nav-links');
             navLinks.classList.remove('active');
           }
         });
       });
 
       document.addEventListener('click', function(e) {
+        const navLinks = document.querySelector('.nav-links');
         if (!e.target.closest('.nav-links')) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
@@ -630,6 +637,7 @@
 
       window.addEventListener('resize', () => {
         toggleHrefs();
+        const navLinks = document.querySelector('.nav-links');
         if (!mediaQuery.matches) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
@@ -642,7 +650,6 @@
         });
       }
 
-      // MutationObserver for dynamic navigation
       function initNavigationObserver() {
         const navContainer = document.querySelector('nav') || document.body;
         const observer = new MutationObserver(() => {
@@ -677,7 +684,6 @@
       }
       initNavigationObserver();
 
-      // MutationObserver for dynamic product cards
       function initProductMutationObserver() {
         const productContainers = document.querySelectorAll('.panels-grid, .inverters-grid, .battery-grid');
         if (!productContainers.length) return;
@@ -692,9 +698,29 @@
         });
       }
       initProductMutationObserver();
-
     }, { once: true });
   }
+
+  // -------------------------
+  // MOBILE MENU TOGGLE SETUP
+  // -------------------------
+  function setupMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+    if (mobileMenu && navLinks) {
+      mobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navLinks.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+        console.log('Mobile menu toggled');
+      });
+    } else {
+      console.warn('Mobile menu or nav links not found:', { mobileMenu, navLinks });
+    }
+  }
+
+  // Attach mobile menu listener as soon as DOM is ready
+  document.addEventListener('DOMContentLoaded', setupMobileMenu);
 
   // -------------------------
   // CONSOLIDATED PAGE INITIALIZATION
@@ -710,7 +736,6 @@
     loadFacebookSDK();
     setupRevealObservers();
 
-    // Brand slider initialization (moved here to ensure DOM is fully loaded)
     const brandImages = [
       { name: 'Trina', url: 'https://naturespark.com.au/images/BrandLogos/Trina-Solar.webp' },
       { name: 'SMA', url: 'https://naturespark.com.au/images/BrandLogos/SMA.webp' },
@@ -792,7 +817,6 @@
 
     initializeBrandSlider('.brand-card', '#brands');
 
-    // Ensure articles are observed after being appended
     setTimeout(() => {
       document.querySelectorAll('.article-card').forEach((el, i) => {
         el.setAttribute('data-reveal-delay', i * 0.1);
