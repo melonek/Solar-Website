@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         question: "Q14: What is the typical payback period for solar panels?",
-        answer: "Most systems pay for themselves in about 5 to 10 years, depending on local energy rates and available incentives."
+        answer: "Most systems pay for themselves in about 3 to 5 years, depending on local energy rates and available incentives."
       }
     ];
   

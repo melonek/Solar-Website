@@ -1,3 +1,13 @@
+// At the top of your script.js or in a global scope
+const originalConsoleError = console.error;
+console.error = function (...args) {
+  // Filter out Facebook SDK errors
+  if (args.some(arg => typeof arg === 'string' && arg.includes('N_K8-X0_Ici.js'))) {
+    return; // Silently ignore
+  }
+  originalConsoleError.apply(console, args); // Log everything else
+};
+
 (function () {
   // -------------------------
   // HELPER: Debounce Function
@@ -46,14 +56,14 @@
       }
       const fbScript = document.createElement('script');
       fbScript.id = 'fb-sdk-script';
-      fbScript.src =
-        'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+      fbScript.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
       fbScript.async = true;
       fbScript.defer = true;
+      fbScript.onload = () => console.log('Facebook SDK script loaded');
       document.body.appendChild(fbScript);
     }
   }
-
+  
   window.fbAsyncInit = function () {
     FB.init({
       appId: '1426450195430892',
@@ -61,7 +71,19 @@
       version: 'v22.0'
     });
     console.log('FB SDK initialized via fbAsyncInit');
-    scaleFacebookTimelines();
+    FB.XFBML.parse(document.getElementById('social-timelines'), () => {
+      console.log('Facebook timelines rendered successfully');
+      scaleFacebookTimelines();
+    });
+  };
+  
+  // Override console.error to filter Facebook-specific errors
+  const originalConsoleError = console.error;
+  console.error = function (...args) {
+    if (typeof args[0] === 'string' && args[0].includes('N_K8-X0_Ici.js')) {
+      return; // Silently ignore
+    }
+    originalConsoleError.apply(console, args);
   };
 
   // -------------------------
@@ -96,32 +118,24 @@
   function scaleFacebookTimelines() {
     const containers = document.querySelectorAll('.timeline-container');
     containers.forEach(container => {
-      const scaler = container.querySelector('.scaler');
       const fbPage = container.querySelector('.fb-page');
-      if (scaler && fbPage) {
-        const rawWidth = container.clientWidth;
-        console.log("Raw container width:", rawWidth);
-        if (rawWidth < 100) {
-          setTimeout(scaleFacebookTimelines, 200);
-          return;
+      if (fbPage) {
+        const containerWidth = container.clientWidth - 40; // Adjust for padding/margins
+        console.log(`Setting fb-page width to ${containerWidth}px`);
+        fbPage.setAttribute('data-width', containerWidth);
+        // Re-parse the widget to apply the new width
+        if (window.FB) {
+          FB.XFBML.parse(container);
         }
-        const containerWidth = rawWidth - 40;
-        const defaultWidth = 500, defaultHeight = 600;
-        let scale = containerWidth / defaultWidth;
-        console.log(`Computed scale: ${scale} (containerWidth: ${containerWidth}, defaultWidth: ${defaultWidth})`);
-        scaler.style.transform = `scale(${scale})`;
-        scaler.style.transformOrigin = 'top left';
-        scaler.style.width = `${defaultWidth}px`;
-        scaler.style.height = `${defaultHeight}px`;
-        fbPage.style.width = `${defaultWidth}px`;
-        fbPage.style.height = `${defaultHeight}px`;
-        container.style.height = `${defaultHeight * scale + 40}px`;
       } else {
-        console.warn('Scaler or fb-page not found in:', container);
+        console.warn('fb-page not found in:', container);
       }
     });
   }
-  window.addEventListener('resize', debounce(scaleFacebookTimelines, 50));
+  
+  // Debounce resize events
+// Increase debounce delay to reduce frequent calls
+window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was 50ms, now 200ms
 
   // -------------------------
   // MODERN LOADING BAR
