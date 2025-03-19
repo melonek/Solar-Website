@@ -384,44 +384,26 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   
-  
-  function handleHomeTypeSelection(value) {
-    if (value === "") return;
-    selectedHomeType = value;
-    updatePackageDisplay();
-    document.getElementById("power-supply-input").style.display = "block";
-    updatePackageDisplay();
-    checkMissingAndMaybeReturn();
-    if (!submissionAttempted) {
-      normalScrollToSection("power-supply-input", 360);
-      showTextCloudForSection('powerSupply');
-    } else if (missingInputs.length > 1) {
-      const nextMissing = missingInputs.find(m => m.id !== "home-type-input");
-      if (nextMissing) normalScrollToSection(nextMissing.id, 350);
-    } else if (missingInputs.length === 0 && lastButtonClicked) {
-      normalScrollToSection(lastButtonClicked.id, 0);
-    }
-  }
 
   function handleHomeTypeSelection(value) {
-    // Clear the value if empty, otherwise update it.
     if (value === "") {
       selectedHomeType = "";
     } else {
       selectedHomeType = value;
     }
     
-    // Update the display, which calls updateFormSummary() via updatePackageDisplay().
+    // Update the display, which internally updates images, prices, etc.
     updatePackageDisplay();
     
-    // Reveal the power supply input if not already visible.
+    // Reveal the power supply input
     document.getElementById("power-supply-input").style.display = "block";
     
-    // Check missing fields and update summary live.
+    // Check missing fields and update the scroll logic
     checkMissingAndMaybeReturn();
+    
+    // Only update the summary if all required inputs are now selected.
     updateFormSummary();
     
-    // Scroll behavior based on missing mode.
     if (!submissionAttempted) {
       normalScrollToSection("power-supply-input", 360);
       showTextCloudForSection('powerSupply');
@@ -435,19 +417,18 @@ document.addEventListener("DOMContentLoaded", function() {
   
   
   function handlePowerSupplySelection(value) {
-    // Clear the value if empty, otherwise update it.
     if (value === "") {
       selectedPowerSupply = "";
     } else {
       selectedPowerSupply = value;
     }
     
-    // Update the package display and summary live.
     updatePackageDisplay();
     checkMissingAndMaybeReturn();
+    
+    // Only update the summary if all required inputs are selected.
     updateFormSummary();
     
-    // Adjust scroll behavior.
     if (!submissionAttempted) {
       normalScrollToSection("inverters-section", 0);
       showTextCloudForSection('inverter');
@@ -455,6 +436,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  
   
   
   function checkDefaultInputs() {
@@ -525,6 +507,16 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // Modified updateFormSummary: if data has been saved, re-append it instead of overwriting
   function updateFormSummary() {
+    // Only update (or display) the summary if all required inputs are filled.
+    if (getMissingSelectFields().length > 0) {
+      // If a summary element exists, clear its content
+      let summaryEl = document.getElementById("package-summary");
+      if (summaryEl) {
+        summaryEl.innerHTML = "";
+      }
+      return;
+    }
+    
     const formEl = document.querySelector(".package-form");
     if (!formEl) return;
     
@@ -532,15 +524,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!summaryEl) {
       summaryEl = document.createElement("div");
       summaryEl.id = "package-summary";
-      // Insert the summary element before the first form group (or at the top)
       const firstGroup = formEl.querySelector(".form-group") || formEl.firstChild;
       formEl.insertBefore(summaryEl, firstGroup);
     }
     
-    // Always update the summary live from current selections.
     summaryEl.innerHTML = collectPackageData();
-    summaryEl.style.display = "block"; // Ensure it’s visible
+    summaryEl.style.display = "block";
   }
+  
   
   
   function validateFormDetails() {
