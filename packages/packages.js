@@ -53,9 +53,13 @@ let submissionAttempted = false;
 let defaultScrollTimeout = null;
 
 // --------------------
+// Global variable to persist package summary data
+// --------------------
+let savedPackageData = null;
+
+// --------------------
 // Unified Preload Function
 // --------------------
-// Accepts an array of items. If an item is an object with a .url property, that is used; otherwise, the item itself is assumed to be a URL.
 function preloadImagesUnified(items) {
   return Promise.all(
     items.map(item => {
@@ -91,7 +95,6 @@ const crucialSectionImages = [
   'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
   'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
 ];
-// Preload banner and section images
 preloadImagesUnified([crucialBannerImage, ...crucialSectionImages])
   .then(() => console.log("Crucial banner/section images preloaded."))
   .catch(err => console.error("Error preloading crucial images:", err));
@@ -262,7 +265,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   function preloadBrandImages() {
-    // Preload only the crucial brand logos.
     return preloadImagesUnified(brandImages);
   }
   
@@ -289,11 +291,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const missingArr = getMissingSelectFields();
     const currentMissingCount = missingArr.length;
   
+    // Mark missing fields
     missingInputs.forEach(input => {
       if (submissionAttempted) {
         input.element.classList.add("missing");
       }
     });
+    // Remove "missing" class from valid fields
     ["system-size-select", "home-type-select", "power-supply-select"].forEach(id => {
       const el = document.getElementById(id);
       if (el && !missingInputs.some(m => m.element === el)) {
@@ -319,10 +323,13 @@ document.addEventListener("DOMContentLoaded", function() {
       } else if (currentMissingCount === 0) {
         disableAllScroll = false;
         if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
-        if (lastButtonClicked) {
+        // When all missing inputs are fixed, scroll to the package form and update the summary live.
+        const packageForm = document.querySelector(".package-form");
+        if (packageForm) {
           defaultScrollTimeout = setTimeout(() => {
-            normalScrollToSection(lastButtonClicked.id, 0);
-            if (lastButtonClicked.id === "confirm-selection") {
+            packageForm.scrollIntoView({ behavior: 'smooth' });
+            updateFormSummary();
+            if (lastButtonClicked && lastButtonClicked.id === "confirm-selection") {
               setTimeout(() => {
                 showTextCloudForSection('packageForm');
               }, 800);
@@ -332,6 +339,8 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   }
+  
+  
   
   function attachAutoReturnListener(fieldId) {
     const field = document.getElementById(fieldId);
@@ -355,11 +364,14 @@ document.addEventListener("DOMContentLoaded", function() {
   
   // --- Input Handlers for Select Fields ---
   function handleSystemSizeSelection(value) {
-    if (value === "") return;
-    selectedSystemSize = value;
+    if (value === "") {
+      selectedSystemSize = "";
+    } else {
+      selectedSystemSize = value;
+    }
     updatePanelPrice();
     document.getElementById("home-type-input").style.display = "block";
-    updatePackageDisplay();
+    updatePackageDisplay(); // This now calls updateFormSummary() at its end
     checkMissingAndMaybeReturn();
     if (!submissionAttempted) {
       normalScrollToSection("home-type-input", 350);
@@ -371,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  
   
   function handleHomeTypeSelection(value) {
     if (value === "") return;
@@ -389,12 +402,52 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+
+  function handleHomeTypeSelection(value) {
+    // Clear the value if empty, otherwise update it.
+    if (value === "") {
+      selectedHomeType = "";
+    } else {
+      selectedHomeType = value;
+    }
+    
+    // Update the display, which calls updateFormSummary() via updatePackageDisplay().
+    updatePackageDisplay();
+    
+    // Reveal the power supply input if not already visible.
+    document.getElementById("power-supply-input").style.display = "block";
+    
+    // Check missing fields and update summary live.
+    checkMissingAndMaybeReturn();
+    updateFormSummary();
+    
+    // Scroll behavior based on missing mode.
+    if (!submissionAttempted) {
+      normalScrollToSection("power-supply-input", 360);
+      showTextCloudForSection('powerSupply');
+    } else if (missingInputs.length > 1) {
+      const nextMissing = missingInputs.find(m => m.id !== "home-type-input");
+      if (nextMissing) normalScrollToSection(nextMissing.id, 350);
+    } else if (missingInputs.length === 0 && lastButtonClicked) {
+      normalScrollToSection(lastButtonClicked.id, 0);
+    }
+  }
+  
   
   function handlePowerSupplySelection(value) {
-    if (value === "") return;
-    selectedPowerSupply = value;
+    // Clear the value if empty, otherwise update it.
+    if (value === "") {
+      selectedPowerSupply = "";
+    } else {
+      selectedPowerSupply = value;
+    }
+    
+    // Update the package display and summary live.
     updatePackageDisplay();
     checkMissingAndMaybeReturn();
+    updateFormSummary();
+    
+    // Adjust scroll behavior.
     if (!submissionAttempted) {
       normalScrollToSection("inverters-section", 0);
       showTextCloudForSection('inverter');
@@ -402,6 +455,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  
   
   function checkDefaultInputs() {
     const sysSelect = document.getElementById("system-size-select");
@@ -469,19 +523,25 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
   }
   
+  // Modified updateFormSummary: if data has been saved, re-append it instead of overwriting
   function updateFormSummary() {
     const formEl = document.querySelector(".package-form");
-    if (formEl) {
-      let summaryEl = document.getElementById("package-summary");
-      if (!summaryEl) {
-        summaryEl = document.createElement("div");
-        summaryEl.id = "package-summary";
-        const firstGroup = formEl.querySelector(".form-group");
-        formEl.insertBefore(summaryEl, firstGroup);
-      }
-      summaryEl.innerHTML = collectPackageData();
+    if (!formEl) return;
+    
+    let summaryEl = document.getElementById("package-summary");
+    if (!summaryEl) {
+      summaryEl = document.createElement("div");
+      summaryEl.id = "package-summary";
+      // Insert the summary element before the first form group (or at the top)
+      const firstGroup = formEl.querySelector(".form-group") || formEl.firstChild;
+      formEl.insertBefore(summaryEl, firstGroup);
     }
+    
+    // Always update the summary live from current selections.
+    summaryEl.innerHTML = collectPackageData();
+    summaryEl.style.display = "block"; // Ensure it’s visible
   }
+  
   
   function validateFormDetails() {
     const fullNameField = document.getElementById("fullName");
@@ -820,6 +880,7 @@ document.addEventListener("DOMContentLoaded", function() {
       confirmBtn.style.visibility = "hidden";
     }
     
+    // Re-append the package summary.
     if (document.getElementById("package-summary"))
       updateFormSummary();
   }
@@ -874,7 +935,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
   updatePackageDisplay();
   
-  // Preload product card images before creating product cards
   Promise.all([
     preloadProductCardImages(solarProducts.panels),
     preloadProductCardImages(solarProducts.inverters),
@@ -931,6 +991,7 @@ document.addEventListener("DOMContentLoaded", function() {
     submissionAttempted = true;
   }
   
+  // Modified confirm-selection button click event:
   document.getElementById("confirm-selection").addEventListener("click", function() {
     lastButtonClicked = this;
     markSubmissionAttempt();
@@ -940,6 +1001,8 @@ document.addEventListener("DOMContentLoaded", function() {
       showCombinedMissingMessage(missing);
       checkMissingAndMaybeReturn();
     } else {
+      // Save the package data so that it can be re-appended if needed
+      savedPackageData = collectPackageData();
       updateFormSummary();
       scrollToForm();
       setTimeout(() => {
@@ -1173,7 +1236,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   ];
   
-  // Preload crucial banner images for Three.js banners
   const allCrucialBannerImages = bannerConfigs.flatMap(config => [config.firstImagePath,].filter(Boolean));
   preloadImagesUnified(allCrucialBannerImages)
     .then(() => console.log("Crucial Three.js banner images preloaded."))

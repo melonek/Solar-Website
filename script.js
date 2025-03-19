@@ -1,13 +1,3 @@
-// At the top of your script.js or in a global scope
-const originalConsoleError = console.error;
-console.error = function (...args) {
-  // Filter out Facebook SDK errors
-  if (args.some(arg => typeof arg === 'string' && arg.includes('N_K8-X0_Ici.js'))) {
-    return; // Silently ignore
-  }
-  originalConsoleError.apply(console, args); // Log everything else
-};
-
 (function () {
   // -------------------------
   // HELPER: Debounce Function
