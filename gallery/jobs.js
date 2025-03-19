@@ -250,5 +250,23 @@ const jobs = [
         "/images/Jobs/Job14/i1.webp",
         "/images/Jobs/Job14/i2.webp",
       ]
+    },
+    {
+      title: "Hammilton Hill Installation",
+      "House Type": "Single-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.65kW (14 Panels)",
+      roofType: "Concrete Tile",
+      completionDate: "19-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(7:00am-11:40am)",
+      suburb: "Hammilton Hill, WA, 6163",
+      mainImage: "/images/Jobs/Job15/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job15/p1.webp",
+        "/images/Jobs/Job15/p2.webp",
+        "/images/Jobs/Job15/i1.webp",
+        "/images/Jobs/Job15/i2.webp",
+      ]
     }
   ];
