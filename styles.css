@@ -2790,7 +2790,6 @@ opacity: 1;
   
   /* Individual Timeline Containers */
   .timeline-container {
-    position: relative;
     flex: 1 1 calc(50% - 10px); /* Two columns with gap adjustment */
     min-width: 300px; /* Ensures usability on smaller screens */
     padding: 20px; /* 20px padding on all sides */
@@ -2826,6 +2825,7 @@ opacity: 1;
 
   /* Facebook Page Plugin */
 .fb-page {
+    max-width: 100%;
     display: block; /* Prevents inline element issues */
   }
   
