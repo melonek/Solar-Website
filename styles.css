@@ -21,7 +21,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'Roboto Slab', Arial, sans-serif; /* Keep your body font */
+    font-family: 'Roboto Slab' !important; /* Keep your body font */
     line-height: 1.6;
     color: #333;
     background: #f4f4f4;
@@ -695,6 +695,7 @@ nav {
     margin-bottom: 1rem;
     color: #00ffea; /* Neon color for h1 */
     text-shadow: 0 0 10px rgba(0, 255, 234, 0.5);
+    font-family: 'Roboto Slab', serif;
   }
   
   .subtitle {
@@ -702,6 +703,7 @@ nav {
     margin: 0.5rem 0;
     color: #fff; /* White color for h2 and p */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: 'Roboto Slab', serif;
   }
   
   /* Mobile Optimization */
