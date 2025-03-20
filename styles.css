@@ -577,7 +577,7 @@ nav {
   
   /* Background circle (static reference) */
   .loader-background {
-    /* You can adjust styling if needed */
+    /* Optional styling */
   }
   
   /* Progress group rotates continuously clockwise */
@@ -585,9 +585,12 @@ nav {
     animation: rotateProgress 2s linear infinite;
   }
   
-  /* Progress circle with dashed stroke (little straight bars) */
+  /* Progress circle with dashed stroke */
   .loader-progress {
-    stroke-dasharray: 4, 4; /* Adjust this for the desired dash pattern */
+    /* Setting a fixed dash pattern so the colored progress stays within the circle.
+       Here "5 5" means a dash length of 5 pixels followed by a gap of 5 pixels.
+       Adjust these values as needed. */
+    stroke-dasharray: 5 5;
     transition: stroke-dashoffset 0.3s ease;
   }
   
@@ -615,7 +618,7 @@ nav {
     animation: rotateHighlight 2s linear infinite;
   }
   
-  /* Keyframes for the rotating progress group */
+  /* Keyframes for rotating progress group */
   @keyframes rotateProgress {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

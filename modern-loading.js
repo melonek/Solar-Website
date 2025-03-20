@@ -1,82 +1,68 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Select only crucial images (those with the "crucial" class)
-  const crucialImages = Array.from(document.querySelectorAll('img.crucial'));
-  const totalImages = crucialImages.length;
-  let loadedImages = 0;
-  let currentDisplay = 0;
-
-  // Elements for the circular loader
+  const loadingScreen = document.getElementById('loading-screen');
   const progressCircle = document.querySelector('.loader-progress');
   const percentageText = document.querySelector('.loader-percentage');
-  const loadingScreen = document.getElementById('loading-screen');
-
-  // For a circle with radius 50 (as defined in the SVG), the circumference is:
+  
+  // Our circle has r = 50; its circumference is:
   const radius = 50;
   const circumference = 2 * Math.PI * radius;
-
-  // Smoothly animate the displayed progress (number and dash offset)
-  function animateProgressTo(target) {
-    const start = currentDisplay;
-    const diff = target - start;
-    const duration = 300; // Duration of the animation in milliseconds
-    let startTime = null;
-
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      const factor = Math.min(progress / duration, 1);
-      const newValue = start + diff * factor;
-      currentDisplay = newValue;
-      percentageText.textContent = Math.round(newValue) + '%';
-      // Update the stroke dash offset to reveal progress:
-      const newOffset = circumference * (1 - newValue / 100);
-      progressCircle.style.strokeDashoffset = newOffset;
-      if (factor < 1) {
-        requestAnimationFrame(step);
-      }
+  
+  // Set the dash pattern so the progress stays inside the circle.
+  // "5 5" gives a series of small dashes.
+  progressCircle.style.strokeDasharray = "5 5";
+  
+  // Total fake duration: 5 seconds (5000 ms) divided into four segments:
+  const totalFakeDuration = 5000; // milliseconds
+  const segments = [
+    { start: 0, end: 33, duration: 1250 },
+    { start: 33, end: 54, duration: 1250 },
+    { start: 54, end: 78, duration: 1250 },
+    { start: 78, end: 100, duration: 1250 }
+  ];
+  
+  let startTime = performance.now();
+  
+  function updateProgress() {
+    const now = performance.now();
+    const elapsed = now - startTime;
+    let progress;
+    
+    if (elapsed >= totalFakeDuration) {
+      progress = 100;
+    } else if (elapsed < segments[0].duration) {
+      progress = (elapsed / segments[0].duration) * (segments[0].end - segments[0].start) + segments[0].start;
+    } else if (elapsed < segments[0].duration + segments[1].duration) {
+      const segElapsed = elapsed - segments[0].duration;
+      progress = segments[1].start + (segElapsed / segments[1].duration) * (segments[1].end - segments[1].start);
+    } else if (elapsed < segments[0].duration + segments[1].duration + segments[2].duration) {
+      const segElapsed = elapsed - segments[0].duration - segments[1].duration;
+      progress = segments[2].start + (segElapsed / segments[2].duration) * (segments[2].end - segments[2].start);
+    } else {
+      const segElapsed = elapsed - segments[0].duration - segments[1].duration - segments[2].duration;
+      progress = segments[3].start + (segElapsed / segments[3].duration) * (segments[3].end - segments[3].start);
     }
-    requestAnimationFrame(step);
-  }
-
-  function finishLoading() {
-    // Ensure we animate to 100% before finishing
-    animateProgressTo(100);
-    setTimeout(() => {
+    
+    // Update the percentage display (rounded)
+    percentageText.textContent = Math.round(progress) + '%';
+    
+    // Animate the stroke-dashoffset from full (circumference) to 0:
+    const newOffset = circumference * (1 - progress / 100);
+    progressCircle.style.strokeDashoffset = newOffset;
+    
+    if (progress < 100) {
+      requestAnimationFrame(updateProgress);
+    } else {
+      // Fade out the loading screen when complete
       loadingScreen.classList.add('fade-out');
       setTimeout(() => {
         loadingScreen.style.display = 'none';
-        // Here you could also initialize your main page functionality if needed.
       }, 500);
-    }, 300);
-  }
-
-  function incrementCounter() {
-    loadedImages++;
-    const targetPercent = Math.round((loadedImages / totalImages) * 100);
-    animateProgressTo(targetPercent);
-    if (loadedImages === totalImages) {
-      finishLoading();
     }
   }
-
-  // Fallback: force finish after 5 seconds even if not all crucial images have loaded
-  setTimeout(() => {
-    if (currentDisplay < 100) {
-      finishLoading();
-    }
-  }, 5000);
-
-  if (totalImages === 0) {
-    animateProgressTo(100);
-    finishLoading();
-  } else {
-    crucialImages.forEach(img => {
-      if (img.complete) {
-        incrementCounter();
-      } else {
-        img.addEventListener('load', incrementCounter, false);
-        img.addEventListener('error', incrementCounter, false);
-      }
-    });
-  }
+  
+  // Set initial offset so no progress is visible (i.e. full offset)
+  progressCircle.style.strokeDashoffset = circumference;
+  
+  // Start the fake progress animation
+  requestAnimationFrame(updateProgress);
 });

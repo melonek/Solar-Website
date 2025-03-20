@@ -108,32 +108,33 @@
       </div>
     </nav>
 
-<!-- Loading Screen -->
-<div id="loading-screen">
-  <div class="loader-container">
-    <svg class="loader-svg" width="150" height="150" viewBox="0 0 120 120">
-      <defs>
-        <linearGradient id="loader-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color: #00ff00;" />
-          <stop offset="100%" style="stop-color: #00f0ff;" />
-        </linearGradient>
-      </defs>
-      <!-- Background circle for reference -->
-      <circle class="loader-background" cx="60" cy="60" r="50" fill="none" stroke="#333" stroke-width="10" />
-      <!-- Group that rotates continuously -->
-      <g class="progress-rotate">
-        <circle class="loader-progress" cx="60" cy="60" r="50" fill="none"
-          stroke="url(#loader-gradient)" stroke-width="10" stroke-linecap="butt"
-          transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314" />
-      </g>
-    </svg>
-    <div class="loader-percentage">0%</div>
-  </div>
-</div>
+    <!-- Loading Screen with Circular Loader -->
+    <div id="loading-screen">
+      <div class="loader-container">
+        <svg class="loader-svg" width="150" height="150" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="loader-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color: #00ff00;" />
+              <stop offset="100%" style="stop-color: #00f0ff;" />
+            </linearGradient>
+          </defs>
+          <!-- Background circle (static reference) -->
+          <circle class="loader-background" cx="60" cy="60" r="50" fill="none" stroke="#333" stroke-width="10" />
+          <!-- Group that rotates continuously clockwise -->
+          <g class="progress-rotate">
+            <circle class="loader-progress" cx="60" cy="60" r="50" fill="none"
+              stroke="url(#loader-gradient)" stroke-width="10" stroke-linecap="butt"
+              transform="rotate(-90 60 60)" stroke-dashoffset="314" />
+          </g>
+        </svg>
+        <div class="loader-percentage">0%</div>
+      </div>
+    </div>
 
-<!-- Hidden crucial images for preloading (they won't be visible) -->
+<!-- Hidden crucial images for preloading -->
 <img src="https://naturespark.com.au/images/AboutUs/solarek.webp" class="crucial" alt="Hero Banner Image" style="display: none;" />
 <img src="https://naturespark.com.au/images/leafBanner/leaf.webp" class="crucial" alt="Leaf Image" style="display: none;" />
+
 
 
 
