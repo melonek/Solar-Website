@@ -118,19 +118,26 @@
           <stop offset="100%" style="stop-color: #00f0ff;" />
         </linearGradient>
       </defs>
-      <!-- Background circle (for reference) -->
+      <!-- Background circle for reference -->
       <circle class="loader-background" cx="60" cy="60" r="50" fill="none" stroke="#333" stroke-width="10" />
-      <!-- Progress circle -->
-      <circle class="loader-progress" cx="60" cy="60" r="50" fill="none"
-              stroke="url(#loader-gradient)" stroke-width="10" stroke-linecap="butt"
-              transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314" />
+      <!-- Group that rotates continuously -->
+      <g class="progress-rotate">
+        <circle class="loader-progress" cx="60" cy="60" r="50" fill="none"
+          stroke="url(#loader-gradient)" stroke-width="10" stroke-linecap="butt"
+          transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314" />
+      </g>
     </svg>
     <div class="loader-percentage">0%</div>
   </div>
 </div>
 
+<!-- Hidden crucial images for preloading (they won't be visible) -->
+<img src="https://naturespark.com.au/images/AboutUs/solarek.webp" class="crucial" alt="Hero Banner Image" style="display: none;" />
+<img src="https://naturespark.com.au/images/leafBanner/leaf.webp" class="crucial" alt="Leaf Image" style="display: none;" />
 
-    
+
+
+
 <!-- Main Content (Initially hidden) -->
 <div id="main-content">
   <!-- Hero Section -->

@@ -559,7 +559,7 @@ nav {
   #loading-screen.fade-out {
     opacity: 0;
     pointer-events: none;
-    z-index: -1; /* Drop immediately to avoid overlap */
+    z-index: -1;
   }
   
   /* Loader container */
@@ -575,25 +575,30 @@ nav {
     height: 100%;
   }
   
-  /* Background circle (optional) */
+  /* Background circle (static reference) */
   .loader-background {
-    /* This circle stays static */
+    /* You can adjust styling if needed */
   }
   
-  /* Progress circle with dashed pattern for little straight bars */
+  /* Progress group rotates continuously clockwise */
+  .progress-rotate {
+    animation: rotateProgress 2s linear infinite;
+  }
+  
+  /* Progress circle with dashed stroke (little straight bars) */
   .loader-progress {
-    stroke-dasharray: 4, 4;  /* Adjust values to get your desired dash pattern */
+    stroke-dasharray: 4, 4; /* Adjust this for the desired dash pattern */
     transition: stroke-dashoffset 0.3s ease;
   }
   
-  /* Percentage text styling inside the circle */
+  /* Percentage text inside the circle */
   .loader-percentage {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
-    font-family: 'Orbitron', sans-serif; /* Example cool font – include via Google Fonts if needed */
+    font-family: 'Orbitron', sans-serif;
     font-size: 24px;
   }
   
@@ -610,6 +615,13 @@ nav {
     animation: rotateHighlight 2s linear infinite;
   }
   
+  /* Keyframes for the rotating progress group */
+  @keyframes rotateProgress {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Keyframes for the highlight rotation */
   @keyframes rotateHighlight {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
