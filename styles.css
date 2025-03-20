@@ -551,7 +551,6 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     z-index: 9999;
     transition: opacity 0.5s ease;
   }
@@ -563,32 +562,59 @@ nav {
     z-index: -1; /* Drop immediately to avoid overlap */
   }
   
-  /* Loading bar container */
-  .loading-bar-container {
-    width: 80%;
-    max-width: 500px;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 10px;
+  /* Loader container */
+  .loader-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
   }
   
-  /* The progress bar */
-  .loading-bar {
+  /* Loader SVG */
+  .loader-svg {
+    width: 100%;
     height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, #00ff00, #00f0ff);
-    border-radius: 4px;
-    transition: width 0.3s ease;
   }
   
-  /* Percentage text */
-  #loading-percentage {
-    color: #fff;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
+  /* Background circle (optional) */
+  .loader-background {
+    /* This circle stays static */
   }
+  
+  /* Progress circle with dashed pattern for little straight bars */
+  .loader-progress {
+    stroke-dasharray: 4, 4;  /* Adjust values to get your desired dash pattern */
+    transition: stroke-dashoffset 0.3s ease;
+  }
+  
+  /* Percentage text styling inside the circle */
+  .loader-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-family: 'Orbitron', sans-serif; /* Example cool font – include via Google Fonts if needed */
+    font-size: 24px;
+  }
+  
+  /* Rotating highlight overlay around the circle */
+  .loader-container::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: rotateHighlight 2s linear infinite;
+  }
+  
+  @keyframes rotateHighlight {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
   
   /* Hide the main content initially */
   .hidden {

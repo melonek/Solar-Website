@@ -1,26 +1,29 @@
-// modern-loading.js
-
 document.addEventListener('DOMContentLoaded', function () {
   const images = document.images;
   const totalImages = images.length;
   let loadedImages = 0;
   
-  const progressBar = document.querySelector('.loading-bar');
-  const percentageText = document.getElementById('loading-percentage');
+  // Elements for the circular loader
+  const progressCircle = document.querySelector('.loader-progress');
+  const percentageText = document.querySelector('.loader-percentage');
   const loadingScreen = document.getElementById('loading-screen');
   
+  // Calculate circumference (2 * π * r) for r = 50 (as set in SVG)
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  
+  // Update progress display
   function updateProgress(percent) {
-    progressBar.style.width = percent + '%';
     percentageText.textContent = percent + '%';
+    const offset = circumference * (1 - percent / 100);
+    progressCircle.style.strokeDashoffset = offset;
   }
   
   function finishLoading() {
-    // Delay slightly so the user sees 100%
     setTimeout(() => {
       loadingScreen.classList.add('fade-out');
       setTimeout(() => {
         loadingScreen.style.display = 'none';
-        // No need to unhide main content as it’s already rendered in the DOM.
       }, 500);
     }, 300);
   }
