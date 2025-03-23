@@ -52,12 +52,14 @@ nav {
     margin-left: 0; /* Reset margin to ensure dropdown works */
     padding: 0; /* Remove any padding that might push items off-center */
     align-items: center; /* Vertical alignment */
+    font-family: 'Roboto Slab';
 }
 
 
 /* Ensure the spacing between items is even */
 .nav-links li {
     margin-left: 10px; /* Space between items */
+    font-family: 'Roboto Slab';
 }
 
 /* Links style */
@@ -73,6 +75,7 @@ nav {
     background-color: rgba(255, 255, 255, 0.2);
     display: inline-flex;
     align-items: center;
+    font-family: 'Roboto Slab';
 }
 
 /* Active link (for current page) */
@@ -104,10 +107,12 @@ nav {
     .nav-links a {
         font-size: 0.9rem; /* Slightly smaller font */
         padding: 9px 14px; /* Reduce padding to keep elements fitting */
+        font-family: 'Roboto Slab';
     }
 
     .nav-links li {
         margin-left: 8px; /* Reduce space between items */
+        font-family: 'Roboto Slab';
     }
 }
 
@@ -124,6 +129,7 @@ nav {
     .nav-links a {
         font-size: 0.85rem;
         padding: 7px 10px;
+        font-family: 'Roboto Slab';
     }
 }
 
@@ -140,6 +146,7 @@ nav {
     .nav-links a {
         font-size: 0.8rem;
         padding: 6px 9px;
+        font-family: 'Roboto Slab';
     }
 }
 
@@ -156,6 +163,7 @@ nav {
     .nav-links a {
         font-size: 0.75rem;
         padding: 5px 8px;
+        font-family: 'Roboto Slab';
     }
 }
 
@@ -169,11 +177,8 @@ nav {
         justify-content: center; /* Center the nav-links */
         align-items: center; /* Ensure vertical alignment */
         position: relative; /* To keep logo in place */
-        z-index: 1000;
-    }
-
-    nav {
         padding: 2.5rem 1rem; /* Slightly increase nav height for mobile */
+        z-index: 1000;
     }
 
     @media screen and (max-width: 768px) {
@@ -193,6 +198,7 @@ nav {
             border-radius: 0 0 25px 25px;
             transform-origin: top center;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Roboto Slab';
         }
 
         .nav-links::before {
@@ -211,6 +217,7 @@ nav {
             display: flex;
             animation: bubbleAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 0 0 25px 25px;
+            font-family: 'Roboto Slab';
         }
     
         .nav-links li {
@@ -279,6 +286,7 @@ nav {
     display: inline-flex;
     align-items: center;
     cursor: pointer; /* so it appears clickable */
+    font-family: 'Roboto Slab';
   }
   
   .nav-links .dropbtn:hover {
@@ -298,6 +306,7 @@ nav {
          display: inline-flex;
          align-items: center;
          cursor: pointer;
+         font-family: 'Roboto Slab';
     }
 }
 
@@ -577,20 +586,12 @@ nav {
   
   /* Background circle (static reference) */
   .loader-background {
-    /* Optional styling */
+    /* Optionally adjust styling here if needed */
   }
   
-  /* Progress group rotates continuously clockwise */
-  .progress-rotate {
-    animation: rotateProgress 2s linear infinite;
-  }
-  
-  /* Progress circle with dashed stroke */
+  /* Progress circle (will be controlled via JS) */
   .loader-progress {
-    /* Setting a fixed dash pattern so the colored progress stays within the circle.
-       Here "5 5" means a dash length of 5 pixels followed by a gap of 5 pixels.
-       Adjust these values as needed. */
-    stroke-dasharray: 5 5;
+    stroke-linecap: butt;
     transition: stroke-dashoffset 0.3s ease;
   }
   
@@ -615,13 +616,7 @@ nav {
     bottom: -5px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: rotateHighlight 2s linear infinite;
-  }
-  
-  /* Keyframes for rotating progress group */
-  @keyframes rotateProgress {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    animation: rotateHighlight 5s linear forwards; /* Matches 5-second duration */
   }
   
   /* Keyframes for the highlight rotation */
@@ -728,6 +723,14 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  
+  #main-content {
+    display: none; /* Hidden by default, revealed by modern-loading.js */
+  }
+  #loading-screen.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
   }
   
   /* Text Styling */

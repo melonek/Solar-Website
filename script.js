@@ -1,4 +1,7 @@
 (function () {
+  // Expose initPage globally
+  window.initPage = initPage;
+
   // -------------------------
   // HELPER: Debounce Function
   // -------------------------
@@ -53,7 +56,7 @@
       document.body.appendChild(fbScript);
     }
   }
-  
+
   window.fbAsyncInit = function () {
     FB.init({
       appId: '1426450195430892',
@@ -66,12 +69,11 @@
       scaleFacebookTimelines();
     });
   };
-  
-  // Override console.error to filter Facebook-specific errors
+
   const originalConsoleError = console.error;
   console.error = function (...args) {
     if (typeof args[0] === 'string' && args[0].includes('N_K8-X0_Ici.js')) {
-      return; // Silently ignore
+      return;
     }
     originalConsoleError.apply(console, args);
   };
@@ -82,12 +84,8 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
+        .then(registration => console.log('Service Worker registered with scope:', registration.scope))
+        .catch(error => console.error('Service Worker registration failed:', error));
     });
   }
 
@@ -110,103 +108,14 @@
     containers.forEach(container => {
       const fbPage = container.querySelector('.fb-page');
       if (fbPage) {
-        const containerWidth = container.clientWidth - 40; // Adjust for padding/margins
-        console.log(`Setting fb-page width to ${containerWidth}px`);
+        const containerWidth = container.clientWidth - 40;
         fbPage.setAttribute('data-width', containerWidth);
-        // Re-parse the widget to apply the new width
-        if (window.FB) {
-          FB.XFBML.parse(container);
-        }
-      } else {
-        console.warn('fb-page not found in:', container);
+        if (window.FB) FB.XFBML.parse(container);
       }
     });
   }
-  
-  // Debounce resize events
-// Increase debounce delay to reduce frequent calls
-window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was 50ms, now 200ms
 
-  // -------------------------
-  // MODERN LOADING BAR
-  // -------------------------
-  function initModernLoading() {
-    const criticalImages = Array.from(document.images).filter(img =>
-      !img.hasAttribute('loading') || img.getAttribute('loading') !== 'lazy'
-    );
-    const totalImages = criticalImages.length;
-    let loadedImages = 0;
-    const progressBar = document.querySelector('.loading-bar');
-    const percentageText = document.getElementById('loading-percentage');
-    const loadingScreen = document.getElementById('loading-screen');
-
-    function updateProgress(percent) {
-      progressBar.style.width = percent + '%';
-      percentageText.textContent = percent + '%';
-    }
-
-    function finishLoading() {
-      setTimeout(() => {
-        loadingScreen.classList.add('fade-out');
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-          const mainContent = document.getElementById('main-content');
-          if (mainContent) {
-            mainContent.classList.remove('hidden');
-            mainContent.style.display = 'block';
-          }
-          initPage();
-        }, 500); // Matches CSS transition duration
-      }, 300);
-    }
-
-    // Fallback to ensure loading screen hides after 2 seconds
-    setTimeout(() => {
-      if (!loadingScreen.classList.contains('fade-out')) {
-        loadingScreen.classList.add('fade-out');
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-          const mainContent = document.getElementById('main-content');
-          if (mainContent) {
-            mainContent.classList.remove('hidden');
-            mainContent.style.display = 'block';
-          }
-          initPage();
-        }, 500);
-      }
-    }, 2000);
-
-    if (totalImages === 0) {
-      updateProgress(100);
-      finishLoading();
-    } else {
-      setTimeout(() => {
-        finishLoading();
-      }, 5000);
-
-      criticalImages.forEach(img => {
-        if (img.complete) {
-          loadedImages++;
-          const percent = Math.round((loadedImages / totalImages) * 100);
-          updateProgress(percent);
-          if (loadedImages === totalImages) finishLoading();
-        } else {
-          img.addEventListener('load', () => {
-            loadedImages++;
-            const percent = Math.round((loadedImages / totalImages) * 100);
-            updateProgress(percent);
-            if (loadedImages === totalImages) finishLoading();
-          }, false);
-          img.addEventListener('error', () => {
-            loadedImages++;
-            const percent = Math.round((loadedImages / totalImages) * 100);
-            updateProgress(percent);
-            if (loadedImages === totalImages) finishLoading();
-          }, false);
-        }
-      });
-    }
-  }
+  window.addEventListener('resize', debounce(scaleFacebookTimelines, 200));
 
   // -------------------------
   // HERO SECTION INITIALIZATION
@@ -214,20 +123,8 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
   async function initHeroSection() {
     const heroSection = document.querySelector('.hero-section');
     const heroCanvas = document.querySelector('#hero-canvas');
-    if (!heroSection) {
-      console.error("Hero section (.hero-section) not found in DOM.");
-      return;
-    }
-    if (!heroCanvas) {
-      console.error("Canvas (#hero-canvas) not found in DOM.");
-      return;
-    }
-    if (typeof THREE === 'undefined') {
-      console.error("Three.js library not loaded. Check CDN or network.");
-      return;
-    }
-    if (typeof gsap === 'undefined') {
-      console.error("GSAP library not loaded. Check CDN or network.");
+    if (!heroSection || !heroCanvas || typeof THREE === 'undefined' || typeof gsap === 'undefined') {
+      console.error('Hero section initialization failed: missing elements or libraries');
       return;
     }
 
@@ -238,8 +135,6 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     renderer.setClearColor(0x000000);
     const canvasHeight = window.innerHeight * 1.3;
     renderer.setSize(window.innerWidth, canvasHeight);
-    camera.aspect = window.innerWidth / canvasHeight;
-    camera.updateProjectionMatrix();
     camera.position.z = 5;
 
     const textureLoader = new THREE.TextureLoader();
@@ -249,7 +144,6 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         textureLoader.loadAsync('https://naturespark.com.au/images/AboutUs/solarek.webp'),
         textureLoader.loadAsync('https://naturespark.com.au/images/leafBanner/leaf.webp')
       ]);
-      console.log('Hero textures loaded successfully');
     } catch (err) {
       console.error('Error loading hero textures:', err);
       return;
@@ -258,16 +152,8 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     const planeWidth = 20;
     const planeHeight = 20 * (solarek.height / solarek.width);
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-    const firstMaterial = new THREE.MeshBasicMaterial({
-      map: firstImageTexture,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-    const secondMaterial = new THREE.MeshBasicMaterial({
-      map: secondImageTexture,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
+    const firstMaterial = new THREE.MeshBasicMaterial({ map: firstImageTexture, transparent: true, side: THREE.DoubleSide });
+    const secondMaterial = new THREE.MeshBasicMaterial({ map: secondImageTexture, transparent: true, side: THREE.DoubleSide });
     const firstPlane = new THREE.Mesh(geometry, firstMaterial);
     const secondPlane = new THREE.Mesh(geometry, secondMaterial);
 
@@ -293,12 +179,9 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
       const sectionHeight = heroSection.clientHeight;
       if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
         const progress = (scrollY - sectionTop) / sectionHeight;
-        const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeight;
-        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeight;
-        const rotation = -progress * rotationIntensity;
-        firstPlane.position.y = -parallaxYFirst / 100;
-        secondPlane.position.y = -parallaxYSecond / 100;
-        secondPlane.rotation.z = rotation;
+        firstPlane.position.y = -(progress * parallaxIntensityFirst * sectionHeight) / 100;
+        secondPlane.position.y = -(progress * parallaxIntensitySecond * sectionHeight) / 100;
+        secondPlane.rotation.z = -progress * rotationIntensity;
       }
       renderer.render(scene, camera);
     }
@@ -317,7 +200,7 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const solarek = { width: 5000, height: 3500 };
     const leaves = isMobile ? { width: 4200, height: 3700 } : { width: 6500, height: 4500 };
-    return { solarek, leaves, isMobile };
+    return { solarek, leaves };
   }
 
   // -------------------------
@@ -325,14 +208,12 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
   // -------------------------
   const revealTimeouts = new Map();
   const observerOptions = { threshold: 0.2 };
+  const globalRevealObserver = new IntersectionObserver(revealCallback, observerOptions);
 
-  function revealCallback(entries, observer) {
+  function revealCallback(entries) {
     entries.forEach(entry => {
       const delay = parseFloat(entry.target.getAttribute('data-reveal-delay')) || 0;
       if (entry.isIntersecting) {
-        if (revealTimeouts.has(entry.target)) {
-          clearTimeout(revealTimeouts.get(entry.target));
-        }
         const timeoutId = setTimeout(() => {
           if (entry.target.classList.contains('unique-service-product')) {
             entry.target.style.transform = 'translate(0)';
@@ -341,26 +222,18 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         }, delay * 200);
         revealTimeouts.set(entry.target, timeoutId);
       } else {
-        if (revealTimeouts.has(entry.target)) {
-          clearTimeout(revealTimeouts.get(entry.target));
-          revealTimeouts.delete(entry.target);
-        }
+        clearTimeout(revealTimeouts.get(entry.target));
+        revealTimeouts.delete(entry.target);
         entry.target.classList.remove(entry.target.classList.contains('brand-card') ? 'active' : 'revealed');
         if (entry.target.classList.contains('unique-service-product')) {
           const revealDirection = entry.target.getAttribute('data-reveal-direction');
-          if (revealDirection === 'right') {
-            entry.target.style.transform = 'translateX(50px)';
-          } else if (revealDirection === 'left') {
-            entry.target.style.transform = 'translateX(-50px)';
-          } else if (revealDirection === 'bottom') {
-            entry.target.style.transform = 'translateY(50px)';
-          }
+          if (revealDirection === 'right') entry.target.style.transform = 'translateX(50px)';
+          else if (revealDirection === 'left') entry.target.style.transform = 'translateX(-50px)';
+          else if (revealDirection === 'bottom') entry.target.style.transform = 'translateY(50px)';
         }
       }
     });
   }
-
-  const globalRevealObserver = new IntersectionObserver(revealCallback, observerOptions);
 
   function observeElements(selector) {
     document.querySelectorAll(selector).forEach((el, index) => {
@@ -374,29 +247,16 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
   function initArticlesMutationObserver() {
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) return;
-    const config = { childList: true, subtree: true };
-    const mutationCallback = (mutationsList) => {
-      mutationsList.forEach(mutation => {
+    const mutationObserver = new MutationObserver(mutations =>
+      mutations.forEach(mutation =>
         mutation.addedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.matches('.article-card')) {
-              observeNewElement(node);
-            } else {
-              node.querySelectorAll('.article-card').forEach(observeNewElement);
-            }
+          if (node.nodeType === Node.ELEMENT_NODE && (node.matches('.article-card') || node.querySelector('.article-card'))) {
+            observeElements('.article-card');
           }
-        });
-      });
-    };
-    const mutationObserver = new MutationObserver(mutationCallback);
-    mutationObserver.observe(articlesGrid, config);
-  }
-
-  function observeNewElement(node) {
-    if (!node.hasAttribute('data-reveal-delay')) {
-      node.setAttribute('data-reveal-delay', 0);
-    }
-    globalRevealObserver.observe(node);
+        })
+      )
+    );
+    mutationObserver.observe(articlesGrid, { childList: true, subtree: true });
   }
 
   function setupRevealObservers() {
@@ -415,12 +275,7 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     const timelines = document.querySelectorAll('.fb-page-wrapper');
     const triggerBottom = window.innerHeight * 0.8;
     timelines.forEach(timeline => {
-      const timelineTop = timeline.getBoundingClientRect().top;
-      if (timelineTop < triggerBottom) {
-        timeline.classList.add('revealed');
-      } else {
-        timeline.classList.remove('revealed');
-      }
+      timeline.classList.toggle('revealed', timeline.getBoundingClientRect().top < triggerBottom);
     });
   }
 
@@ -428,8 +283,7 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     const sections = document.querySelectorAll('.panels-grid .product, .inverters-grid .product, .battery-grid .product');
     const triggerBottom = window.innerHeight * 0.8;
     sections.forEach(section => {
-      const sectionTop = section.getBoundingClientRect().top;
-      section.classList.toggle('revealed', sectionTop < triggerBottom);
+      section.classList.toggle('revealed', section.getBoundingClientRect().top < triggerBottom);
     });
   }
 
@@ -443,15 +297,14 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     revealFacebookTimelines();
     revealProductSections();
   });
-  revealProductSections(); // Initial call
+  revealFacebookTimelines(); // Restore initial call
+  revealProductSections();   // Restore initial call
 
   // -------------------------
   // UI & NAVIGATION INITIALIZATION
   // -------------------------
   function initUI() {
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('initUI: DOMContentLoaded fired');
-
       const brandContainer = document.querySelector('#brands') || document.querySelector('.brand-container');
       if (brandContainer) {
         const brands = [
@@ -469,9 +322,6 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
           brandCard.appendChild(img);
           brandContainer.appendChild(brandCard);
         });
-        console.log('Brand logos appended:', brands.length);
-      } else {
-        console.warn('Brand container not found');
       }
 
       const buildSolarSection = document.getElementById('build-solar');
@@ -482,11 +332,11 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         if (!buildSolarSection) return;
         const sectionTop = buildSolarSection.offsetTop,
               sectionHeight = buildSolarSection.clientHeight;
-        if (scrollY > sectionTop + sectionHeight || scrollY < sectionTop) return;
-        const progress = (scrollY - sectionTop) / sectionHeight,
-              parallaxY = progress * sectionHeight * 0.25;
-        if (buildSolarVideo) {
-          buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${parallaxY}px))`;
+        if (scrollY <= sectionTop + sectionHeight && scrollY >= sectionTop) {
+          const progress = (scrollY - sectionTop) / sectionHeight;
+          if (buildSolarVideo) {
+            buildSolarVideo.style.transform = `translate(-50%, calc(-50% + ${progress * sectionHeight * 0.25}px))`;
+          }
         }
         requestAnimationFrame(updateParallaxBuild);
       }
@@ -497,19 +347,17 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         }
       });
 
-      document.querySelectorAll('.fancy-button').forEach(button => {
+      document.querySelectorAll('.fancy-button, .savings-btn, .build-button').forEach(button => {
         button.addEventListener('click', function(event) {
           if (isScrolling || isTouching) {
             event.preventDefault();
-            return false;
+            return;
           }
           const url = this.getAttribute('href');
           if (this.classList.contains('mirror-left')) {
             event.preventDefault();
-            setTimeout(() => {
-              window.open(url, '_blank', 'noopener,noreferrer');
-            }, 100);
-          } else {
+            setTimeout(() => window.open(url, '_blank', 'noopener,noreferrer'), 100);
+          } else if (url) {
             window.location.href = url;
           }
         });
@@ -519,26 +367,6 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
           event.preventDefault();
           this.click();
         }, { passive: false });
-      });
-
-      document.querySelectorAll('.savings-btn, .build-button').forEach(button => {
-        button.addEventListener('click', function(event) {
-          if (isScrolling || isTouching) {
-            event.preventDefault();
-            return false;
-          }
-          const url = this.getAttribute('href');
-          if (url) {
-            if (this.classList.contains('mirror-left')) {
-              event.preventDefault();
-              setTimeout(() => {
-                window.open(url, '_blank', 'noopener,noreferrer');
-              }, 100);
-            } else {
-              window.location.href = url;
-            }
-          }
-        });
       });
 
       const mediaQuery = window.matchMedia('(max-width: 768px)');
@@ -558,30 +386,17 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
 
       document.querySelectorAll('.dropdown > .dropbtn').forEach(dropbtn => {
         dropbtn.addEventListener('click', function(e) {
-          if (mediaQuery.matches) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-          } else {
+          if (!mediaQuery.matches) {
             e.preventDefault();
             e.stopPropagation();
             const dropdown = this.parentElement;
             const dropdownContent = dropdown.querySelector('.dropdown-content');
             const isActive = dropdownContent.classList.contains('active');
             closeAllDropdowns();
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.remove('active');
             if (!isActive) {
               dropdownContent.classList.add('active');
               dropdown.classList.add('active');
             }
-          }
-        });
-        dropbtn.addEventListener('touchend', function(e) {
-          if (mediaQuery.matches) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
           }
         });
       });
@@ -594,30 +409,17 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
           const dropdown = this.parentElement;
           const dropdownContent = dropdown.querySelector('.dropdown-content');
           const isActive = dropdownContent.classList.contains('active');
-          document.querySelectorAll('.dropdown-content').forEach(content => {
-            if (content !== dropdownContent) content.classList.remove('active');
-          });
-          document.querySelectorAll('.dropdown').forEach(d => {
-            if (d !== dropdown) d.classList.remove('active');
-          });
-          if (!isActive) {
-            dropdownContent.classList.add('active');
-            dropdown.classList.add('active');
-            console.log('Dropdown toggled on mobile');
-          } else {
-            dropdownContent.classList.remove('active');
-            dropdown.classList.remove('active');
-          }
+          closeAllDropdowns();
+          dropdownContent.classList.toggle('active', !isActive);
+          dropdown.classList.toggle('active', !isActive);
         });
       });
 
       window.addEventListener('scroll', () => {
         const navLinks = document.querySelector('.nav-links');
-        const mobileMenu = document.getElementById('mobile-menu');
         if (mediaQuery.matches && navLinks.classList.contains('active')) {
           closeAllDropdowns();
           navLinks.classList.remove('active');
-          mobileMenu.classList.remove('open');
         }
       });
 
@@ -625,13 +427,12 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         link.addEventListener('click', () => {
           if (mediaQuery.matches) {
             closeAllDropdowns();
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.remove('active');
+            document.querySelector('.nav-links').classList.remove('active');
           }
         });
       });
 
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', e => {
         const navLinks = document.querySelector('.nav-links');
         if (!e.target.closest('.nav-links')) {
           closeAllDropdowns();
@@ -641,10 +442,9 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
 
       window.addEventListener('resize', () => {
         toggleHrefs();
-        const navLinks = document.querySelector('.nav-links');
         if (!mediaQuery.matches) {
           closeAllDropdowns();
-          navLinks.classList.remove('active');
+          document.querySelector('.nav-links').classList.remove('active');
         }
       });
 
@@ -658,30 +458,6 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
         const navContainer = document.querySelector('nav') || document.body;
         const observer = new MutationObserver(() => {
           toggleHrefs();
-          document.querySelectorAll('.dropdown > a').forEach(link => {
-            link.addEventListener('click', function(e) {
-              if (!mediaQuery.matches) return;
-              e.preventDefault();
-              e.stopPropagation();
-              const dropdown = this.parentElement;
-              const dropdownContent = dropdown.querySelector('.dropdown-content');
-              const isActive = dropdownContent.classList.contains('active');
-              document.querySelectorAll('.dropdown-content').forEach(content => {
-                if (content !== dropdownContent) content.classList.remove('active');
-              });
-              document.querySelectorAll('.dropdown').forEach(d => {
-                if (d !== dropdown) d.classList.remove('active');
-              });
-              if (!isActive) {
-                dropdownContent.classList.add('active');
-                dropdown.classList.add('active');
-              } else {
-                dropdownContent.classList.remove('active');
-                dropdown.classList.remove('active');
-              }
-            });
-          });
-          console.log('Navigation updated dynamically');
           observer.disconnect();
         });
         observer.observe(navContainer, { childList: true, subtree: true });
@@ -691,23 +467,13 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
       function initProductMutationObserver() {
         const productContainers = document.querySelectorAll('.panels-grid, .inverters-grid, .battery-grid');
         if (!productContainers.length) return;
-        const config = { childList: true, subtree: true };
-        const mutationCallback = () => {
-          revealProductSections();
-          console.log('Product sections updated dynamically');
-        };
-        productContainers.forEach(container => {
-          const observer = new MutationObserver(mutationCallback);
-          observer.observe(container, config);
-        });
+        const observer = new MutationObserver(revealProductSections);
+        productContainers.forEach(container => observer.observe(container, { childList: true, subtree: true }));
       }
       initProductMutationObserver();
     }, { once: true });
   }
 
-  // -------------------------
-  // MOBILE MENU TOGGLE SETUP
-  // -------------------------
   // -------------------------
   // MOBILE MENU TOGGLE SETUP
   // -------------------------
@@ -717,61 +483,38 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     const mediaQuery = window.matchMedia('(max-width: 768px)');
 
     if (mobileMenu && navLinks) {
-      // Toggle menu on click
-      mobileMenu.addEventListener('click', (e) => {
+      mobileMenu.addEventListener('click', e => {
         e.stopPropagation();
         navLinks.classList.toggle('active');
         mobileMenu.classList.toggle('open');
-        console.log('Mobile menu toggled');
       });
 
-      // Close menu when clicking outside on mobile
-      document.addEventListener('click', (e) => {
-        if (mediaQuery.matches && navLinks.classList.contains('active')) {
-          if (!e.target.closest('.nav-links') && !e.target.closest('#mobile-menu')) {
-            navLinks.classList.remove('active');
-            mobileMenu.classList.remove('open');
-            console.log('Mobile menu closed due to outside click');
-          }
+      document.addEventListener('click', e => {
+        if (mediaQuery.matches && navLinks.classList.contains('active') && !e.target.closest('.nav-links') && !e.target.closest('#mobile-menu')) {
+          navLinks.classList.remove('active');
+          mobileMenu.classList.remove('open');
         }
       });
 
-      // Handle dropdown links for same-page redirects on mobile
       document.querySelectorAll('.dropdown-content a, .nav-links a').forEach(link => {
-        link.addEventListener('click', (e) => {
-          if (mediaQuery.matches) {
-            const href = link.getAttribute('href');
-            // Check if it's an anchor link (starts with #)
-            if (href && href.startsWith('#')) {
-              navLinks.classList.remove('active');
-              mobileMenu.classList.remove('open');
-              console.log('Mobile menu closed due to same-page redirect:', href);
-            }
+        link.addEventListener('click', () => {
+          if (mediaQuery.matches && link.getAttribute('href')?.startsWith('#')) {
+            navLinks.classList.remove('active');
+            mobileMenu.classList.remove('open');
           }
         });
       });
-    } else {
-      console.warn('Mobile menu or nav links not found:', { mobileMenu, navLinks });
     }
   }
 
-  // Attach mobile menu listener as soon as DOM is ready
-  document.addEventListener('DOMContentLoaded', setupMobileMenu);
-
-  // Attach mobile menu listener as soon as DOM is ready
   document.addEventListener('DOMContentLoaded', setupMobileMenu);
 
   // -------------------------
   // CONSOLIDATED PAGE INITIALIZATION
   // -------------------------
   function initPage() {
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection && typeof initHeroSection === 'function') {
-      initHeroSection();
-    }
-    if (typeof initUI === 'function') {
-      initUI();
-    }
+    if (document.querySelector('.hero-section')) initHeroSection();
+    initUI();
     loadFacebookSDK();
     setupRevealObservers();
 
@@ -799,19 +542,13 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     ];
 
     function initializeBrandSlider(cardSelector, containerSelector) {
-      console.log('Initializing brand slider...');
       const cards = document.querySelectorAll(cardSelector);
-      console.log('Found', cards.length, 'brand cards');
-      if (!cards.length) {
-        console.error('No brand cards found with selector:', cardSelector);
-        return;
-      }
+      if (!cards.length) return;
 
       let currentStartIndex = 0;
       const batchSize = 4;
 
       function updateCards() {
-        console.log('Updating brand cards with start index:', currentStartIndex);
         cards.forEach((card, i) => {
           const imgIndex = (currentStartIndex + i) % brandImages.length;
           const brand = brandImages[imgIndex];
@@ -822,10 +559,7 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
               imgEl.src = brand.url;
               imgEl.alt = brand.name;
               card.classList.add('active');
-              console.log(`Set card ${i} img src to ${brand.url}`);
             }, 50);
-          } else {
-            console.warn('No img element found in card:', card);
           }
         });
       }
@@ -838,19 +572,13 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
 
       const container = document.querySelector(containerSelector);
       if (container) {
-        container.addEventListener('mouseenter', () => {
-          clearInterval(intervalId);
-          console.log('Brand slider paused');
-        });
+        container.addEventListener('mouseenter', () => clearInterval(intervalId));
         container.addEventListener('mouseleave', () => {
           intervalId = setInterval(() => {
             currentStartIndex = (currentStartIndex + batchSize) % brandImages.length;
             updateCards();
           }, 5000);
-          console.log('Brand slider resumed');
         });
-      } else {
-        console.warn('Container not found:', containerSelector);
       }
     }
 
@@ -864,44 +592,13 @@ window.addEventListener('resize', debounce(scaleFacebookTimelines, 200)); // Was
     }, 500);
   }
 
-  // INITIAL LOADING HANDLERS
-  window.addEventListener('load', () => {
-    const loadingOverlay = document.getElementById('loading-screen');
-    const mainContent = document.getElementById('main-content');
-    if (localStorage.getItem('loadingScreenShown')) {
-      if (loadingOverlay) loadingOverlay.style.display = 'none';
-      if (mainContent) {
-        mainContent.classList.remove('hidden');
-        mainContent.style.display = 'block';
-      }
-      initPage();
-    } else {
-      initModernLoading();
-      localStorage.setItem('loadingScreenShown', 'true');
-    }
-  });
-
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      const heroSection = document.querySelector('.hero-section');
-      if (heroSection) {
-        initHeroSection();
-      } else {
-        console.warn("pageshow: No hero section found; skipping initHeroSection.");
-      }
-    }
-  });
-
   const subPageImages = [
     'https://naturespark.com.au/images/universalBanner/Solar-drone-photo-Perth.webp',
     'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
     'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
     'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp'
   ];
-  window.addEventListener('load', () => {
-    preloadImages(subPageImages).catch(err => console.error(err));
-  });
+  window.addEventListener('load', () => preloadImages(subPageImages).catch(err => console.error(err)));
 
-  // Define globals used in event handlers
   let isScrolling = false, isTouching = false;
 })();
