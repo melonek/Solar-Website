@@ -13,6 +13,13 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+PUBLIC_GetNode(params)
+  .then(response => {
+    // Use response.info or other properties
+    console.log(response.info);
+  });
+
+
 // ===================== GLOBAL VARIABLES =====================
 let disableAllScroll = false; // Global kill-switch flag
 let brandImages = [];         // Array for brand images
