@@ -1,14 +1,14 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
     });
-  }
+}
 
 // Base URL for article navigation
 const BASE_URL = "/articles/";
@@ -42,6 +42,26 @@ function getShareableUrl(article) {
     return `https://naturespark.com.au${getArticleNavigationUrl(article)}`;
 }
 
+// Intersection Observer setup
+const observerOptions = {
+    root: null, // Use viewport as the root
+    rootMargin: '0px', // No extra margin
+    threshold: 0.1 // Trigger when 10% of the card is visible
+};
+
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        const card = entry.target;
+        if (entry.isIntersecting) {
+            // Card enters viewport: reveal it
+            card.classList.add('revealed');
+        } else {
+            // Card exits viewport: hide it
+            card.classList.remove('revealed');
+        }
+    });
+}, observerOptions);
+
 // Display articles for main section
 function displayArticles(page) {
     const articlesGrid = document.getElementById('articles-grid');
@@ -67,6 +87,10 @@ function displayArticles(page) {
                 </div>
             </div>
         `;
+    });
+    // Observe each card for viewport intersection
+    articlesGrid.querySelectorAll('.article-card').forEach(card => {
+        observer.observe(card);
     });
     updateArticlesPagination(mainArticles.length);
     setupArticleClickEvents();
@@ -99,6 +123,10 @@ function displayLearnArticles(page) {
                 </div>
             </div>
         `;
+    });
+    // Observe each card for viewport intersection
+    learnGrid.querySelectorAll('.learn-card').forEach(card => {
+        observer.observe(card);
     });
     updateLearnPagination(learnArticles.length);
     setupArticleClickEvents();
@@ -194,13 +222,12 @@ function scrollToSection(sectionId) {
     }
 }
 
-// Scroll to specific article; if 'highlight' is true, add the 'highlighted' class (persistent until another card is interacted with)
+// Scroll to specific article; if 'highlight' is true, add the 'highlighted' class
 function scrollToArticle(articleId, highlight = false) {
     const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
     if (articleElement) {
         articleElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         if (highlight) {
-            // Remove highlight from any previously highlighted card (if different)
             if (currentHighlightedCard && currentHighlightedCard !== articleElement) {
                 currentHighlightedCard.classList.remove('highlighted');
             }
@@ -253,7 +280,6 @@ function displayModal(article) {
     const closeModal = () => {
         modal.style.display = "none";
         document.body.classList.remove('modal-open');
-        // Note: we intentionally do NOT remove the highlight here so it remains until the user interacts elsewhere.
         currentShareData = null;
     };
     
@@ -268,13 +294,12 @@ function displayModal(article) {
     }
 }
 
-// Handle summary button clicks (for cards)
+// Handle summary button clicks
 function handleSummaryClick(event) {
     if (event.target.classList.contains('summary-btn')) {
         event.preventDefault();
         const clickedCard = event.target.closest('.article-card, .learn-card');
         if (clickedCard && currentHighlightedCard && currentHighlightedCard !== clickedCard) {
-            // Remove highlight from previously highlighted card when a different card is clicked
             currentHighlightedCard.classList.remove('highlighted');
             currentHighlightedCard = null;
         }
@@ -290,7 +315,7 @@ function handleSummaryClick(event) {
     }
 }
 
-// Unified shareArticle function – immediately redirecting based on button id
+// Unified shareArticle function
 function shareArticle(event) {
     if (event) {
         event.preventDefault();
@@ -428,7 +453,7 @@ function showSharePopup(shareData) {
     popup.querySelector('.close-popup').onclick = () => document.body.removeChild(popup);
 }
 
-// Explicitly bind click events to each share button in both containers
+// Bind click events to share buttons
 function setupShareButtons() {
     const fullButtons = document.querySelectorAll('#full-share-buttons a');
     fullButtons.forEach(btn => {
@@ -442,7 +467,7 @@ function setupShareButtons() {
     });
 }
 
-// Setup event listeners for summary buttons and bind share buttons, plus attach mouseenter events to remove highlight if another card is hovered
+// Setup event listeners for summary buttons and share buttons
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
@@ -480,7 +505,6 @@ window.addEventListener("load", () => {
                 currentArticlePage = Math.floor(mainArticles.findIndex(a => a.id == articleId) / articlesPerPage) + 1;
                 displayArticles(currentArticlePage);
                 scrollToArticle(articleId, true);
-                // Wait 1000ms after scrolling before opening the modal.
                 setTimeout(() => displayModal(article), 500);
             } else if (article.displayOnLearn) {
                 const learnArticles = allArticles.filter(a => a.displayOnLearn)
@@ -488,7 +512,6 @@ window.addEventListener("load", () => {
                 currentLearnPage = Math.floor(learnArticles.findIndex(a => a.id == articleId) / learnArticlesPerPage) + 1;
                 displayLearnArticles(currentLearnPage);
                 scrollToSection('learn');
-                // Delay scrolling then modal
                 setTimeout(() => {
                     scrollToArticle(articleId, true);
                     setTimeout(() => displayModal(article), 500);
