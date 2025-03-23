@@ -433,7 +433,7 @@ border: 2px solid red !important;
 /* Universal Banner Container */
 .universalBanner {
 position: relative;
-height: calc(var(--vh, 1vh) * 70);
+height: 70vh;
 width: 100%;
 overflow: hidden;
 display: flex;
