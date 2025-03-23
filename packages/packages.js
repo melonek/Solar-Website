@@ -13,11 +13,25 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-PUBLIC_GetNode(params)
-  .then(response => {
-    // Use response.info or other properties
-    console.log(response.info);
-  });
+if (typeof PUBLIC_GetNode !== 'undefined') {
+  (async function() {
+    let nodeData;
+    try {
+      nodeData = await PUBLIC_GetNode(params);
+    } catch (error) {
+      console.error("Error in PUBLIC_GetNode:", error);
+      nodeData = { info: { someRequiredField: "defaultValue", anotherRequiredField: 0 } };
+    }
+    // Proceed only if initializeDependentModules exists.
+    if (typeof initializeDependentModules !== 'undefined') {
+      initializeDependentModules(nodeData);
+    } else {
+      console.warn("initializeDependentModules is not defined. Skipping dependent initialization.");
+    }
+  })();
+} else {
+  console.warn("PUBLIC_GetNode is not defined. Skipping that functionality.");
+}
 
 
 // ===================== GLOBAL VARIABLES =====================
