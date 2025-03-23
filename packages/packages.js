@@ -191,11 +191,11 @@ document.addEventListener("DOMContentLoaded", function() {
       }, 500);
     }, duration);
   }
-  
+
   function showCombinedMissingMessage(missingArr) {
     showTextCloud("Missing: " + missingArr.join(", "), 2500, true);
   }
-  
+
   function showTextCloudForSection(key) {
     if (!textCloudFlags[key]) {
       const config = textCloudConfig.find(c => c.key === key);
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   }
-  
+
   // --- Scroll Functions ---
   function normalScrollToSection(sectionId, offset) {
     const isMissing = missingInputs.some(m => m.id === sectionId);
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
       window.scrollTo({ top: topPos, behavior: 'smooth' });
     }
   }
-  
+
   function scrollToForm() {
     if (disableAllScroll && lastButtonClicked?.id !== "enquire-button") return;
     const formEl = document.querySelector('.package-form');
@@ -226,18 +226,18 @@ document.addEventListener("DOMContentLoaded", function() {
       window.scrollTo({ top: elementTop + desiredOffset, behavior: 'smooth' });
     }
   }
-  
+
   function scrollToConfirmButton() {
     if (disableAllScroll && lastButtonClicked?.id !== "confirm-selection") return;
     const btn = document.getElementById("confirm-selection");
     if (btn) btn.scrollIntoView({ behavior: "smooth" });
   }
-  
+
   // --- Standard Helpers ---
   function getPathPrefix() {
     return window.location.pathname.includes('/packages/') ? "../" : "./";
   }
-  
+
   function initializeBrandImages() {
     const prefix = getPathPrefix();
     brandImages = [
@@ -263,34 +263,34 @@ document.addEventListener("DOMContentLoaded", function() {
       { name: 'Tesla', url: `${prefix}images/BrandLogos/Tesla.webp` }
     ];
   }
-  
+
   function preloadBrandImages() {
     return preloadImagesUnified(brandImages);
   }
-  
+
   // --- Missing Mode Validator ---
   function getMissingSelectFields() {
     missingInputs = [];
     const sysSelect = document.getElementById("system-size-select");
     const homeSelect = document.getElementById("home-type-select");
     const powerSelect = document.getElementById("power-supply-select");
-    
+
     if (sysSelect && (!sysSelect.value || sysSelect.value.trim() === "")) {
       missingInputs.push({ id: "system-size-input", name: "System Size", element: sysSelect });
     }
     if (homeSelect && (!homeSelect.value || homeSelect.value.trim() === "")) {
-      missingInputs.push({ id: "home-type-input", name: "Home Type", element: homeSelect });
+      missingInputs.push({ id: "home-type-input", name: "Home Type clapping", element: homeSelect });
     }
     if (powerSelect && (!powerSelect.value || powerSelect.value.trim() === "")) {
       missingInputs.push({ id: "power-supply-input", name: "Power Supply", element: powerSelect });
     }
     return missingInputs.map(input => input.name);
   }
-  
+
   function checkMissingAndMaybeReturn() {
     const missingArr = getMissingSelectFields();
     const currentMissingCount = missingArr.length;
-  
+
     // Mark missing fields
     missingInputs.forEach(input => {
       if (submissionAttempted) {
@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function() {
         el.classList.remove("missing");
       }
     });
-  
+
     if (submissionAttempted) {
       if (currentMissingCount > 1) {
         disableAllScroll = false;
@@ -323,25 +323,22 @@ document.addEventListener("DOMContentLoaded", function() {
       } else if (currentMissingCount === 0) {
         disableAllScroll = false;
         if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
-        // When all missing inputs are fixed, scroll to the package form and update the summary live.
-        const packageForm = document.querySelector(".package-form");
-        if (packageForm) {
+        // When all missing inputs are fixed, scroll to the last button clicked
+        if (lastButtonClicked?.id === "confirm-selection") {
           defaultScrollTimeout = setTimeout(() => {
-            packageForm.scrollIntoView({ behavior: 'smooth' });
-            updateFormSummary();
-            if (lastButtonClicked && lastButtonClicked.id === "confirm-selection") {
-              setTimeout(() => {
-                showTextCloudForSection('packageForm');
-              }, 800);
-            }
+            scrollToForm();
+            updateFormSummary(); // Only called here if confirm-selection was clicked
+            setTimeout(() => {
+              showTextCloudForSection('packageForm');
+            }, 800);
           }, 500);
+        } else if (lastButtonClicked?.id === "enquire-button") {
+          scrollToForm();
         }
       }
     }
   }
-  
-  
-  
+
   function attachAutoReturnListener(fieldId) {
     const field = document.getElementById(fieldId);
     if (field) {
@@ -349,7 +346,7 @@ document.addEventListener("DOMContentLoaded", function() {
       field.addEventListener("blur", checkMissingAndMaybeReturn);
     }
   }
-  
+
   function attachFocusHandlers(inputEl, defaultText) {
     if (!inputEl) return;
     inputEl.addEventListener("focus", () => {
@@ -361,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     inputEl.addEventListener("input", checkDefaultInputs);
   }
-  
+
   // --- Input Handlers for Select Fields ---
   function handleSystemSizeSelection(value) {
     if (value === "") {
@@ -371,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     updatePanelPrice();
     document.getElementById("home-type-input").style.display = "block";
-    updatePackageDisplay(); // This now calls updateFormSummary() at its end
+    updatePackageDisplay();
     checkMissingAndMaybeReturn();
     if (!submissionAttempted) {
       normalScrollToSection("home-type-input", 350);
@@ -383,7 +380,6 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
-  
 
   function handleHomeTypeSelection(value) {
     if (value === "") {
@@ -391,19 +387,9 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
       selectedHomeType = value;
     }
-    
-    // Update the display, which internally updates images, prices, etc.
     updatePackageDisplay();
-    
-    // Reveal the power supply input
     document.getElementById("power-supply-input").style.display = "block";
-    
-    // Check missing fields and update the scroll logic
     checkMissingAndMaybeReturn();
-    
-    // Only update the summary if all required inputs are now selected.
-    updateFormSummary();
-    
     if (!submissionAttempted) {
       normalScrollToSection("power-supply-input", 360);
       showTextCloudForSection('powerSupply');
@@ -414,21 +400,15 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
-  
-  
+
   function handlePowerSupplySelection(value) {
     if (value === "") {
       selectedPowerSupply = "";
     } else {
       selectedPowerSupply = value;
     }
-    
     updatePackageDisplay();
     checkMissingAndMaybeReturn();
-    
-    // Only update the summary if all required inputs are selected.
-    updateFormSummary();
-    
     if (!submissionAttempted) {
       normalScrollToSection("inverters-section", 0);
       showTextCloudForSection('inverter');
@@ -436,9 +416,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
-  
-  
-  
+
   function checkDefaultInputs() {
     const sysSelect = document.getElementById("system-size-select");
     const homeSelect = document.getElementById("home-type-select");
@@ -472,7 +450,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     checkMissingAndMaybeReturn();
   }
-  
+
   // --- Package Data Helper Functions ---
   function collectPackageData() {
     const sysText = selectedSystemSize ? selectedSystemSize : "Not selected";
@@ -504,22 +482,20 @@ document.addEventListener("DOMContentLoaded", function() {
       </ul>
     `;
   }
-  
-  // Modified updateFormSummary: if data has been saved, re-append it instead of overwriting
+
   function updateFormSummary() {
-    // Only update (or display) the summary if all required inputs are filled.
     if (getMissingSelectFields().length > 0) {
-      // If a summary element exists, clear its content
       let summaryEl = document.getElementById("package-summary");
       if (summaryEl) {
         summaryEl.innerHTML = "";
+        summaryEl.style.display = "none"; // Hide if incomplete
       }
       return;
     }
-    
+
     const formEl = document.querySelector(".package-form");
     if (!formEl) return;
-    
+
     let summaryEl = document.getElementById("package-summary");
     if (!summaryEl) {
       summaryEl = document.createElement("div");
@@ -527,13 +503,11 @@ document.addEventListener("DOMContentLoaded", function() {
       const firstGroup = formEl.querySelector(".form-group") || formEl.firstChild;
       formEl.insertBefore(summaryEl, firstGroup);
     }
-    
+
     summaryEl.innerHTML = collectPackageData();
     summaryEl.style.display = "block";
   }
-  
-  
-  
+
   function validateFormDetails() {
     const fullNameField = document.getElementById("fullName");
     const mobileField = document.getElementById("mobilePhone");
@@ -541,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const addressField = document.getElementById("installationAddress");
     const messageField = document.getElementById("message");
     let missing = [];
-  
+
     if (!fullNameField || fullNameField.value.trim() === "") missing.push("Full Name");
     if (!mobileField || mobileField.value.trim() === "") missing.push("Mobile Phone");
     else {
@@ -552,14 +526,14 @@ document.addEventListener("DOMContentLoaded", function() {
     else if (!emailField.value.includes("@")) missing.push("Valid Email");
     if (!addressField || addressField.value.trim() === "") missing.push("Installation Address");
     if (!messageField || messageField.value.trim() === "") missing.push("Message");
-  
+
     if (missing.length > 0) {
       showTextCloud("Please fill in: " + missing.join(", "), 3000, true);
       return false;
     }
     return true;
   }
-  
+
   // --- Brand Carousel and Product Functions ---
   function initializeBrandSlider(cardSelector, containerSelector) {
     const cards = document.querySelectorAll(cardSelector);
@@ -598,7 +572,7 @@ document.addEventListener("DOMContentLoaded", function() {
       cards.forEach(card => card.classList.add("active"));
     }, 500);
   }
-  
+
   const solarProducts = {
     panels: [
       {
@@ -685,7 +659,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     ]
   };
-  
+
   function createProductCard(product, type) {
     const card = document.createElement("div");
     card.className = "product-card product";
@@ -698,7 +672,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <button class="read-more-btn shiny" data-type="${type}" data-id="${product.id}">Read More</button>
     `;
     card.querySelector(".read-more-btn").addEventListener("click", handleModalOpen);
-    
+
     card.addEventListener("click", (e) => {
       if (e.target.closest(".read-more-btn")) return;
       if (type === "panel") {
@@ -728,7 +702,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     return card;
   }
-  
+
   function handleModalOpen(e) {
     e.preventDefault();
     const type = e.target.dataset.type;
@@ -742,13 +716,13 @@ document.addEventListener("DOMContentLoaded", function() {
       product = solarProducts.batteries.find(p => p.id === id);
     }
     if (!product) return;
-    
+
     const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
     const brandLogoUrl = brand ? brand.url : "";
-    const logoClass = type === "panel" 
-      ? "brand-logo-panel" 
+    const logoClass = type === "panel"
+      ? "brand-logo-panel"
       : (type === "inverter" ? "brand-logo-inverter" : "brand-logo-battery");
-    
+
     const modal = document.getElementById("product-modal");
     document.querySelector(".modal-product-image").innerHTML = `
       <div class="product-image-container">
@@ -767,7 +741,7 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     modal.classList.add("active");
   }
-  
+
   function updatePanelPrice() {
     if (selectedPanel) {
       const pricePerPanel = selectedPanel.price / defaultPanels;
@@ -779,14 +753,14 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   }
-  
+
   function updatePackageDisplay() {
     const panelImage = document.getElementById("selected-panel-image");
     const inverterImage = document.getElementById("selected-inverter-image");
     const batteryImage = document.getElementById("selected-battery-image");
     const packageDesc = document.getElementById("package-description");
     const confirmBtn = document.getElementById("confirm-selection");
-  
+
     let panelLogo = document.getElementById("panel-logo");
     let inverterLogo = document.getElementById("inverter-logo");
     if (!panelLogo) {
@@ -801,7 +775,7 @@ document.addEventListener("DOMContentLoaded", function() {
       inverterLogo.classList.add("logo-overlay");
       inverterImage.parentNode.appendChild(inverterLogo);
     }
-    
+
     if (selectedPanel) {
       panelImage.src = selectedPanel.image;
       panelImage.style.visibility = "visible";
@@ -844,7 +818,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (batteryLogo) batteryLogo.style.visibility = "hidden";
       document.getElementById("image-combination").classList.remove("with-battery");
     }
-    
+
     if (selectedPanel && selectedInverter) {
       let desc = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
       if (selectedBattery) desc += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
@@ -852,7 +826,7 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("solar-package-input").value =
         `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
         (selectedBattery ? `\nBattery: ${selectedBattery.name}` : "");
-      
+
       const pricePerPanel = selectedPanel.price / defaultPanels;
       const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
       const panelCost = numPanels * pricePerPanel;
@@ -870,12 +844,8 @@ document.addEventListener("DOMContentLoaded", function() {
       packageDesc.textContent = "";
       confirmBtn.style.visibility = "hidden";
     }
-    
-    // Re-append the package summary.
-    if (document.getElementById("package-summary"))
-      updateFormSummary();
   }
-  
+
   function showSolarPackageSection() {
     const sec = document.getElementById("solar-package");
     if (selectedPanel && selectedInverter) {
@@ -883,7 +853,7 @@ document.addEventListener("DOMContentLoaded", function() {
       scrollToSolarPackage(-30);
     }
   }
-  
+
   function scrollToSolarPackage(offset = 0) {
     if (disableAllScroll) return;
     const sec = document.getElementById("solar-package");
@@ -892,13 +862,13 @@ document.addEventListener("DOMContentLoaded", function() {
       window.scrollTo({ top: topPos, behavior: 'smooth' });
     }
   }
-  
+
   function handleNotInterested() {
     selectedBattery = null;
     updatePackageDisplay();
     showSolarPackageSection();
   }
-  
+
   function updateSolarPackageInput() {
     let details = "";
     if (selectedPanel) details += `Panels: ${selectedPanel.name}\n`;
@@ -910,22 +880,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const input = document.getElementById("solar-package-input");
     if (input) input.value = details;
   }
-  
+
   // --- Final Initialization ---
   initializeBrandImages();
   preloadBrandImages()
     .then(() => console.log("Crucial brand images preloaded."))
     .catch((error) => console.error("Error preloading brand images:", error));
-  
+
   if (document.getElementById("brands")) {
     initializeBrandSlider(".brand-card", "#brands");
   }
   if (document.getElementById("solar-logo-cards-container")) {
     initializeBrandSlider(".solar-brand-card", "#solar-logo-cards-container");
   }
-  
+
   updatePackageDisplay();
-  
+
   Promise.all([
     preloadProductCardImages(solarProducts.panels),
     preloadProductCardImages(solarProducts.inverters),
@@ -935,7 +905,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const panelsGrid = document.getElementById("panels-grid");
       const invertersGrid = document.getElementById("inverters-grid");
       const batteryGrid = document.getElementById("battery-grid");
-      
+
       solarProducts.panels.forEach(panel => panelsGrid.appendChild(createProductCard(panel, "panel")));
       solarProducts.inverters.forEach(inv => invertersGrid.appendChild(createProductCard(inv, "inverter")));
       if (solarProducts.batteries) {
@@ -943,13 +913,13 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     })
     .catch(err => console.error("Error preloading product images:", err));
-  
+
   document.getElementById("solar-package").style.display = "none";
-  
+
   const sysSelect = document.getElementById("system-size-select");
   const homeSelect = document.getElementById("home-type-select");
   const powerSelect = document.getElementById("power-supply-select");
-  
+
   if (sysSelect) {
     attachFocusHandlers(sysSelect, "Choose size");
     sysSelect.addEventListener("change", (e) => {
@@ -977,12 +947,11 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     attachAutoReturnListener("power-supply-select");
   }
-  
+
   function markSubmissionAttempt() {
     submissionAttempted = true;
   }
-  
-  // Modified confirm-selection button click event:
+
   document.getElementById("confirm-selection").addEventListener("click", function() {
     lastButtonClicked = this;
     markSubmissionAttempt();
@@ -992,16 +961,15 @@ document.addEventListener("DOMContentLoaded", function() {
       showCombinedMissingMessage(missing);
       checkMissingAndMaybeReturn();
     } else {
-      // Save the package data so that it can be re-appended if needed
       savedPackageData = collectPackageData();
-      updateFormSummary();
+      updateFormSummary(); // Appends summary only here if no missing fields
       scrollToForm();
       setTimeout(() => {
         showTextCloudForSection('packageForm');
       }, 800);
     }
   });
-  
+
   document.getElementById("enquire-button").addEventListener("click", function(e) {
     e.preventDefault();
     lastButtonClicked = this;
@@ -1012,9 +980,9 @@ document.addEventListener("DOMContentLoaded", function() {
       showCombinedMissingMessage(missing);
       checkMissingAndMaybeReturn();
     } else {
-      updateFormSummary();
       updateSolarPackageInput();
       if (!validateFormDetails()) return;
+      updateFormSummary(); // Updates data for submission, display depends on confirm-selection
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000, false);
       setTimeout(() => { submissionAttempted = false; }, 4500);
       scrollToConfirmButton();
@@ -1032,11 +1000,11 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   });
-  
+
   document.getElementById("not-interested-btn").addEventListener("click", () => {
     handleNotInterested();
   });
-  
+
   (function addBatteryOnlyButton() {
     const batterySec = document.getElementById("battery-storage");
     const notIntBtn = document.getElementById("not-interested-btn");
@@ -1057,21 +1025,21 @@ document.addEventListener("DOMContentLoaded", function() {
       btnContainer.appendChild(batteryOnly);
     }
   })();
-  
+
   document.addEventListener("click", (e) => {
     const modal = document.getElementById("product-modal");
     if (modal && modal.classList.contains("active") && e.target === modal) {
       modal.classList.remove("active");
     }
   });
-  
+
   document.addEventListener("click", (e) => {
     const modal = document.getElementById("product-modal");
     if (modal && (e.target.classList.contains("close") || e.target.classList.contains("modal-close"))) {
       modal.classList.remove("active");
     }
   });
-  
+
   window.addEventListener('scroll', function panelsTextCloudScroll() {
     if (!textCloudFlags.panels) {
       const panelsSection = document.getElementById('panels-section');
@@ -1084,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   });
-  
+
   // --- Filter Bar Sorting for Solar Products ---
   function sortProducts(type, criteria) {
     const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
@@ -1105,12 +1073,12 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("inverter-filter").addEventListener("change", function() {
     sortProducts("inverter", this.value);
   });
-  
+
   // --- Three.js Parallax Banner Initialization ---
-  function initParallaxBanner(sectionSelector, canvasId, firstImagePath, firstWidth, firstHeight, secondWidth, secondHeight) {
+  function initParallaxBanner(sectionSelector, canvasId, firstImagePath, firstWidth, firstHeight) {
     const section = document.querySelector(sectionSelector);
     const canvas = document.querySelector(`#${canvasId}`);
-    
+
     if (!section) {
       console.error(`Section (${sectionSelector}) not found in DOM.`);
       return;
@@ -1123,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", function() {
       console.error("Required libraries not loaded.");
       return;
     }
-    
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
@@ -1134,24 +1102,23 @@ document.addEventListener("DOMContentLoaded", function() {
     camera.aspect = window.innerWidth / canvasHeight;
     camera.updateProjectionMatrix();
     camera.position.z = 5;
-    
+
     const textureLoader = new THREE.TextureLoader();
     const firstTexture = textureLoader.load(firstImagePath, () => console.log(`First image for ${canvasId} loaded successfully`), undefined, (err) => console.error(`Error loading first image for ${canvasId}:`, err));
     const planeWidth = 20;
     const planeHeightValue = 20 * (firstHeight / firstWidth);
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeightValue);
-    const firstMaterial = new THREE.MeshBasicMaterial({ 
+    const firstMaterial = new THREE.MeshBasicMaterial({
       map: firstTexture,
       transparent: true,
       side: THREE.DoubleSide,
       color: firstTexture ? null : 0xff0000
     });
-    
+
     const planeHeightInWorld = planeHeightValue * (firstHeight / 4000);
     const repeatsNeeded = Math.ceil((canvasHeight * 1.5) / planeHeightInWorld) + 1;
     const firstPlanes = [];
-    const secondPlanes = [];
-    
+
     for (let i = 0; i < repeatsNeeded; i++) {
       const firstPlane = new THREE.Mesh(geometry, firstMaterial);
       firstPlane.scale.set(firstWidth / 4000, firstHeight / 4000, 1);
@@ -1159,23 +1126,21 @@ document.addEventListener("DOMContentLoaded", function() {
       scene.add(firstPlane);
       firstPlanes.push(firstPlane);
     }
-    
+
     const parallaxIntensityFirst = 0.25;
-    const parallaxIntensitySecond = 0.15;
     const rotationIntensity = 0.3;
-    
+
     function animate() {
       requestAnimationFrame(animate);
       const scrollY = window.scrollY;
       const sectionTop = section.offsetTop;
       const sectionHeightValue = section.clientHeight;
-    
+
       if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeightValue) {
         const progress = (scrollY - sectionTop) / sectionHeightValue;
         const parallaxYFirst = progress * parallaxIntensityFirst * sectionHeightValue;
-        const parallaxYSecond = progress * parallaxIntensitySecond * sectionHeightValue;
         const rotation = -progress * rotationIntensity;
-    
+
         firstPlanes.forEach((plane, index) => {
           plane.position.y = (-index * planeHeightInWorld) - (parallaxYFirst / 100);
         });
@@ -1183,7 +1148,7 @@ document.addEventListener("DOMContentLoaded", function() {
       renderer.render(scene, camera);
     }
     animate();
-    
+
     window.addEventListener('resize', () => {
       const newSectionHeight = section.offsetHeight;
       const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.5);
@@ -1202,7 +1167,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
-  
+
   const bannerConfigs = [
     {
       sectionSelector: '.panels-section',
@@ -1226,19 +1191,19 @@ document.addEventListener("DOMContentLoaded", function() {
       firstHeight: 4500,
     }
   ];
-  
-  const allCrucialBannerImages = bannerConfigs.flatMap(config => [config.firstImagePath,].filter(Boolean));
+
+  const allCrucialBannerImages = bannerConfigs.flatMap(config => [config.firstImagePath].filter(Boolean));
   preloadImagesUnified(allCrucialBannerImages)
     .then(() => console.log("Crucial Three.js banner images preloaded."))
     .catch(err => console.error("Error preloading Three.js banner images:", err));
-  
+
   bannerConfigs.forEach(config => {
     initParallaxBanner(
       config.sectionSelector,
       config.canvasId,
       config.firstImagePath,
       config.firstWidth,
-      config.firstHeight,
+      config.firstHeight
     );
   });
 });
