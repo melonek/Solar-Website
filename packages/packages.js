@@ -13,38 +13,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Dummy implementation of PUBLIC_GetNode (replace with real implementation)
-function PUBLIC_GetNode(params) {
-  // Return a dummy promise resolving to a valid object
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        info: {
-          someRequiredField: "dummyValue",
-          anotherRequiredField: 0
-          // Add any other keys your code requires...
-        }
-      });
-    }, 100);
-  });
-}
-
-// Dummy implementation of initializeDependentModules (replace with your real initialization)
-function initializeDependentModules(nodeData) {
-  console.log("Initializing dependent modules with:", nodeData);
-  // Here you can trigger your banner animations or other functionality.
-  // For example:
-  startBannerAnimations(nodeData);
-}
-
-// Optional dummy function for banner animations:
-function startBannerAnimations(data) {
-  console.log("Banner animations started using data:", data);
-  // If your banner animation code is already in place, this might just log the data.
-}
-
-
-
 // ===================== GLOBAL VARIABLES =====================
 let disableAllScroll = false; // Global kill-switch flag
 let brandImages = [];         // Array for brand images
@@ -142,10 +110,137 @@ setVh();
 window.addEventListener('resize', setVh);
 
 // --------------------
+// updatePackageDisplay with Guard Conditions
+// --------------------
+function updatePackageDisplay() {
+  const panelImage = document.getElementById("selected-panel-image");
+  const inverterImage = document.getElementById("selected-inverter-image");
+  const batteryImage = document.getElementById("selected-battery-image");
+  const packageDesc = document.getElementById("package-description");
+  const confirmBtn = document.getElementById("confirm-selection");
+
+  // Guard: Check if the essential elements exist
+  if (!panelImage || !inverterImage || !packageDesc || !confirmBtn) {
+    console.warn("updatePackageDisplay: Required elements are missing. Skipping update.");
+    return;
+  }
+
+  let panelLogo = document.getElementById("panel-logo");
+  let inverterLogo = document.getElementById("inverter-logo");
+
+  // Append panel logo if not already present
+  if (!panelLogo) {
+    if (panelImage.parentNode) {
+      panelLogo = document.createElement("img");
+      panelLogo.id = "panel-logo";
+      panelLogo.classList.add("logo-overlay");
+      panelImage.parentNode.appendChild(panelLogo);
+    } else {
+      console.warn("panelImage.parentNode is null; cannot append panelLogo.");
+    }
+  }
+  if (!inverterLogo) {
+    if (inverterImage.parentNode) {
+      inverterLogo = document.createElement("img");
+      inverterLogo.id = "inverter-logo";
+      inverterLogo.classList.add("logo-overlay");
+      inverterImage.parentNode.appendChild(inverterLogo);
+    } else {
+      console.warn("inverterImage.parentNode is null; cannot append inverterLogo.");
+    }
+  }
+
+  // Update panel image and logo
+  if (selectedPanel) {
+    panelImage.src = selectedPanel.image;
+    panelImage.style.visibility = "visible";
+    const pBrand = brandImages.find(b => b.name.toLowerCase() === selectedPanel.brand.toLowerCase());
+    if (pBrand && panelLogo) {
+      panelLogo.src = pBrand.url;
+      panelLogo.style.visibility = "visible";
+    } else if (panelLogo) {
+      panelLogo.style.visibility = "hidden";
+    }
+  }
+  // Update inverter image and logo
+  if (selectedInverter) {
+    inverterImage.src = selectedInverter.image;
+    inverterImage.style.visibility = "visible";
+    const iBrand = brandImages.find(b => b.name.toLowerCase() === selectedInverter.brand.toLowerCase());
+    if (iBrand && inverterLogo) {
+      inverterLogo.src = iBrand.url;
+      inverterLogo.style.visibility = "visible";
+    } else if (inverterLogo) {
+      inverterLogo.style.visibility = "hidden";
+    }
+  }
+  // Update battery image and logo if battery is selected
+  if (selectedBattery) {
+    batteryImage.src = selectedBattery.image;
+    batteryImage.style.visibility = "visible";
+    const container = document.getElementById("panel-inverter-container");
+    let batteryLogo = document.getElementById("battery-logo");
+    if (!batteryLogo && container) {
+      batteryLogo = document.createElement("img");
+      batteryLogo.id = "battery-logo";
+      batteryLogo.classList.add("logo-overlay", "brand-logo-battery");
+      container.appendChild(batteryLogo);
+    }
+    if (batteryLogo) {
+      batteryLogo.src = getPathPrefix() + "images/BrandLogos/Tesla.webp";
+      batteryLogo.style.visibility = "visible";
+    }
+    const imageCombination = document.getElementById("image-combination");
+    if (imageCombination) {
+      imageCombination.classList.add("with-battery");
+    }
+  } else {
+    batteryImage.style.visibility = "hidden";
+    let batteryLogo = document.getElementById("battery-logo");
+    if (batteryLogo) batteryLogo.style.visibility = "hidden";
+    const imageCombination = document.getElementById("image-combination");
+    if (imageCombination) {
+      imageCombination.classList.remove("with-battery");
+    }
+  }
+
+  // If both panel and inverter are selected, update the package description and total cost
+  if (selectedPanel && selectedInverter) {
+    let desc = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
+    if (selectedBattery) desc += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
+    packageDesc.innerHTML = desc;
+    const solarPackageInput = document.getElementById("solar-package-input");
+    if (solarPackageInput) {
+      solarPackageInput.value =
+        `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
+        (selectedBattery ? `\nBattery: ${selectedBattery.name}` : "");
+    }
+    const pricePerPanel = selectedPanel.price / defaultPanels;
+    const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
+    const panelCost = numPanels * pricePerPanel;
+    const inverterCost = selectedInverter.price;
+    const batteryCost = selectedBattery ? selectedBattery.price : 0;
+    let extraCost = 0;
+    if (selectedHomeType && selectedHomeType.toLowerCase().includes("double"))
+      extraCost += extraCharges.doubleStorey;
+    if (selectedPowerSupply && selectedPowerSupply.toLowerCase().includes("three"))
+      extraCost += extraCharges.threePhase;
+    const total = panelCost + inverterCost + batteryCost + extraCost;
+    const totalCostElem = document.getElementById("total-cost");
+    if (totalCostElem) {
+      totalCostElem.textContent = `Total = $${total} AUD`;
+    }
+    confirmBtn.style.visibility = "visible";
+  } else {
+    packageDesc.textContent = "";
+    confirmBtn.style.visibility = "hidden";
+  }
+}
+
+// --------------------
 // Combined Initialization Code
 // --------------------
 document.addEventListener("DOMContentLoaded", function() {
-
   // --- Banner Parallax Initialization ---
   const bannerImageDiv = document.querySelector('.banner-image');
   preloadImagesUnified([crucialBannerImage])
@@ -359,7 +454,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (lastButtonClicked?.id === "confirm-selection") {
           defaultScrollTimeout = setTimeout(() => {
             scrollToForm();
-            updateFormSummary(); // Only called here if confirm-selection was clicked
+            updateFormSummary();
             setTimeout(() => {
               showTextCloudForSection('packageForm');
             }, 800);
@@ -520,7 +615,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let summaryEl = document.getElementById("package-summary");
       if (summaryEl) {
         summaryEl.innerHTML = "";
-        summaryEl.style.display = "none"; // Hide if incomplete
+        summaryEl.style.display = "none";
       }
       return;
     }
@@ -786,115 +881,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  function updatePackageDisplay() {
-    const panelImage = document.getElementById("selected-panel-image");
-    const inverterImage = document.getElementById("selected-inverter-image");
-    const batteryImage = document.getElementById("selected-battery-image");
-    const packageDesc = document.getElementById("package-description");
-    const confirmBtn = document.getElementById("confirm-selection");
-  
-    // Guard: Check if the required elements are present.
-    if (!panelImage || !inverterImage || !packageDesc || !confirmBtn) {
-      console.warn("updatePackageDisplay: Required elements not found, skipping update.");
-      return;
-    }
-  
-    let panelLogo = document.getElementById("panel-logo");
-    let inverterLogo = document.getElementById("inverter-logo");
-  
-    // Ensure panelImage has a parent before appending
-    if (!panelLogo) {
-      if (panelImage.parentNode) {
-        panelLogo = document.createElement("img");
-        panelLogo.id = "panel-logo";
-        panelLogo.classList.add("logo-overlay");
-        panelImage.parentNode.appendChild(panelLogo);
-      } else {
-        console.warn("panelImage.parentNode is null");
-      }
-    }
-    if (!inverterLogo) {
-      if (inverterImage.parentNode) {
-        inverterLogo = document.createElement("img");
-        inverterLogo.id = "inverter-logo";
-        inverterLogo.classList.add("logo-overlay");
-        inverterImage.parentNode.appendChild(inverterLogo);
-      } else {
-        console.warn("inverterImage.parentNode is null");
-      }
-    }
-  
-    // Continue with update logic...
-    if (selectedPanel) {
-      panelImage.src = selectedPanel.image;
-      panelImage.style.visibility = "visible";
-      const pBrand = brandImages.find(b => b.name.toLowerCase() === selectedPanel.brand.toLowerCase());
-      if (pBrand) {
-        panelLogo.src = pBrand.url;
-        panelLogo.style.visibility = "visible";
-      } else {
-        panelLogo.style.visibility = "hidden";
-      }
-    }
-    if (selectedInverter) {
-      inverterImage.src = selectedInverter.image;
-      inverterImage.style.visibility = "visible";
-      const iBrand = brandImages.find(b => b.name.toLowerCase() === selectedInverter.brand.toLowerCase());
-      if (iBrand) {
-        inverterLogo.src = iBrand.url;
-        inverterLogo.style.visibility = "visible";
-      } else {
-        inverterLogo.style.visibility = "hidden";
-      }
-    }
-    if (selectedBattery) {
-      batteryImage.src = selectedBattery.image;
-      batteryImage.style.visibility = "visible";
-      const container = document.getElementById("panel-inverter-container");
-      let batteryLogo = document.getElementById("battery-logo");
-      if (!batteryLogo) {
-        batteryLogo = document.createElement("img");
-        batteryLogo.id = "battery-logo";
-        batteryLogo.classList.add("logo-overlay", "brand-logo-battery");
-        container.appendChild(batteryLogo);
-      }
-      batteryLogo.src = getPathPrefix() + "images/BrandLogos/Tesla.webp";
-      batteryLogo.style.visibility = "visible";
-      document.getElementById("image-combination").classList.add("with-battery");
-    } else {
-      batteryImage.style.visibility = "hidden";
-      let batteryLogo = document.getElementById("battery-logo");
-      if (batteryLogo) batteryLogo.style.visibility = "hidden";
-      document.getElementById("image-combination").classList.remove("with-battery");
-    }
-
-    if (selectedPanel && selectedInverter) {
-      let desc = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
-      if (selectedBattery) desc += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
-      packageDesc.innerHTML = desc;
-      document.getElementById("solar-package-input").value =
-        `Panels: ${selectedPanel.name}\nInverter: ${selectedInverter.name}` +
-        (selectedBattery ? `\nBattery: ${selectedBattery.name}` : "");
-
-      const pricePerPanel = selectedPanel.price / defaultPanels;
-      const numPanels = systemPanelsMapping[selectedSystemSize] || 15;
-      const panelCost = numPanels * pricePerPanel;
-      const inverterCost = selectedInverter.price;
-      const batteryCost = selectedBattery ? selectedBattery.price : 0;
-      let extraCost = 0;
-      if (selectedHomeType && selectedHomeType.toLowerCase().includes("double"))
-        extraCost += extraCharges.doubleStorey;
-      if (selectedPowerSupply && selectedPowerSupply.toLowerCase().includes("three"))
-        extraCost += extraCharges.threePhase;
-      const total = panelCost + inverterCost + batteryCost + extraCost;
-      document.getElementById("total-cost").textContent = `Total = $${total} AUD`;
-      confirmBtn.style.visibility = "visible";
-    } else {
-      packageDesc.textContent = "";
-      confirmBtn.style.visibility = "hidden";
-    }
-  }
-
   function showSolarPackageSection() {
     const sec = document.getElementById("solar-package");
     if (selectedPanel && selectedInverter) {
@@ -1011,7 +997,7 @@ document.addEventListener("DOMContentLoaded", function() {
       checkMissingAndMaybeReturn();
     } else {
       savedPackageData = collectPackageData();
-      updateFormSummary(); // Appends summary only here if no missing fields
+      updateFormSummary();
       scrollToForm();
       setTimeout(() => {
         showTextCloudForSection('packageForm');
@@ -1031,7 +1017,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
       updateSolarPackageInput();
       if (!validateFormDetails()) return;
-      updateFormSummary(); // Updates data for submission, display depends on confirm-selection
+      updateFormSummary();
       showTextCloud("Thank you, your message has been forwarded. Have a nice day.", 4000, false);
       setTimeout(() => { submissionAttempted = false; }, 4500);
       scrollToConfirmButton();
