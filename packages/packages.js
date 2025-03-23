@@ -13,25 +13,36 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-if (typeof PUBLIC_GetNode !== 'undefined') {
-  (async function() {
-    let nodeData;
-    try {
-      nodeData = await PUBLIC_GetNode(params);
-    } catch (error) {
-      console.error("Error in PUBLIC_GetNode:", error);
-      nodeData = { info: { someRequiredField: "defaultValue", anotherRequiredField: 0 } };
-    }
-    // Proceed only if initializeDependentModules exists.
-    if (typeof initializeDependentModules !== 'undefined') {
-      initializeDependentModules(nodeData);
-    } else {
-      console.warn("initializeDependentModules is not defined. Skipping dependent initialization.");
-    }
-  })();
-} else {
-  console.warn("PUBLIC_GetNode is not defined. Skipping that functionality.");
+// Dummy implementation of PUBLIC_GetNode (replace with real implementation)
+function PUBLIC_GetNode(params) {
+  // Return a dummy promise resolving to a valid object
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        info: {
+          someRequiredField: "dummyValue",
+          anotherRequiredField: 0
+          // Add any other keys your code requires...
+        }
+      });
+    }, 100);
+  });
 }
+
+// Dummy implementation of initializeDependentModules (replace with your real initialization)
+function initializeDependentModules(nodeData) {
+  console.log("Initializing dependent modules with:", nodeData);
+  // Here you can trigger your banner animations or other functionality.
+  // For example:
+  startBannerAnimations(nodeData);
+}
+
+// Optional dummy function for banner animations:
+function startBannerAnimations(data) {
+  console.log("Banner animations started using data:", data);
+  // If your banner animation code is already in place, this might just log the data.
+}
+
 
 
 // ===================== GLOBAL VARIABLES =====================
@@ -781,22 +792,39 @@ document.addEventListener("DOMContentLoaded", function() {
     const batteryImage = document.getElementById("selected-battery-image");
     const packageDesc = document.getElementById("package-description");
     const confirmBtn = document.getElementById("confirm-selection");
-
+  
+    // Guard: Check if the required elements are present.
+    if (!panelImage || !inverterImage || !packageDesc || !confirmBtn) {
+      console.warn("updatePackageDisplay: Required elements not found, skipping update.");
+      return;
+    }
+  
     let panelLogo = document.getElementById("panel-logo");
     let inverterLogo = document.getElementById("inverter-logo");
+  
+    // Ensure panelImage has a parent before appending
     if (!panelLogo) {
-      panelLogo = document.createElement("img");
-      panelLogo.id = "panel-logo";
-      panelLogo.classList.add("logo-overlay");
-      panelImage.parentNode.appendChild(panelLogo);
+      if (panelImage.parentNode) {
+        panelLogo = document.createElement("img");
+        panelLogo.id = "panel-logo";
+        panelLogo.classList.add("logo-overlay");
+        panelImage.parentNode.appendChild(panelLogo);
+      } else {
+        console.warn("panelImage.parentNode is null");
+      }
     }
     if (!inverterLogo) {
-      inverterLogo = document.createElement("img");
-      inverterLogo.id = "inverter-logo";
-      inverterLogo.classList.add("logo-overlay");
-      inverterImage.parentNode.appendChild(inverterLogo);
+      if (inverterImage.parentNode) {
+        inverterLogo = document.createElement("img");
+        inverterLogo.id = "inverter-logo";
+        inverterLogo.classList.add("logo-overlay");
+        inverterImage.parentNode.appendChild(inverterLogo);
+      } else {
+        console.warn("inverterImage.parentNode is null");
+      }
     }
-
+  
+    // Continue with update logic...
     if (selectedPanel) {
       panelImage.src = selectedPanel.image;
       panelImage.style.visibility = "visible";
