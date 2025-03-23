@@ -1,68 +1,42 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch(error => {
-                console.error('Service Worker registration failed:', error);
-            });
+            .then(registration => console.log('Service Worker registered with scope:', registration.scope))
+            .catch(error => console.error('Service Worker registration failed:', error));
     });
 }
 
-// Base URL for article navigation
 const BASE_URL = "/articles/";
 
-// Check allArticles without redeclaring
 if (typeof allArticles === "undefined") {
     console.error("allArticles is not defined. Ensure articleArray.js is loaded correctly.");
     window.allArticles = [];
 }
 
-// Pagination settings
 const articlesPerPage = 6;
 let currentArticlePage = 1;
-
 const learnArticlesPerPage = 3;
 let currentLearnPage = 1;
 
-// Global variable to store current share info (set when modal opens)
 let currentShareData = null;
-
-// Global reference to the currently highlighted card element
 let currentHighlightedCard = null;
 
-// Utility to get article navigation URL
 function getArticleNavigationUrl(article) {
     return `${BASE_URL}${article.fullArticlePath}`;
 }
 
-// Utility to get shareable URL
 function getShareableUrl(article) {
     return `https://naturespark.com.au${getArticleNavigationUrl(article)}`;
 }
 
-// Intersection Observer setup
-const observerOptions = {
-    root: null, // Use viewport as the root
-    rootMargin: '0px', // No extra margin
-    threshold: 0.1 // Trigger when 10% of the card is visible
-};
-
-const observer = new IntersectionObserver((entries, observer) => {
+// Single Intersection Observer for article/learn cards
+const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+const articleObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        const card = entry.target;
-        if (entry.isIntersecting) {
-            // Card enters viewport: reveal it
-            card.classList.add('revealed');
-        } else {
-            // Card exits viewport: hide it
-            card.classList.remove('revealed');
-        }
+        entry.target.classList.toggle('revealed', entry.isIntersecting);
     });
 }, observerOptions);
 
-// Display articles for main section
 function displayArticles(page) {
     const articlesGrid = document.getElementById('articles-grid');
     if (!articlesGrid) {
@@ -88,15 +62,17 @@ function displayArticles(page) {
             </div>
         `;
     });
-    // Observe each card for viewport intersection
     articlesGrid.querySelectorAll('.article-card').forEach(card => {
-        observer.observe(card);
+        // Avoid re-observing if already observed (prevents duplication)
+        if (!card.dataset.observed) {
+            articleObserver.observe(card);
+            card.dataset.observed = 'true';
+        }
     });
     updateArticlesPagination(mainArticles.length);
     setupArticleClickEvents();
 }
 
-// Display articles for learn section
 function displayLearnArticles(page) {
     const learnGrid = document.getElementById('learn-grid');
     if (!learnGrid) {
@@ -124,15 +100,16 @@ function displayLearnArticles(page) {
             </div>
         `;
     });
-    // Observe each card for viewport intersection
     learnGrid.querySelectorAll('.learn-card').forEach(card => {
-        observer.observe(card);
+        if (!card.dataset.observed) {
+            articleObserver.observe(card);
+            card.dataset.observed = 'true';
+        }
     });
     updateLearnPagination(learnArticles.length);
     setupArticleClickEvents();
 }
 
-// Update pagination for main articles
 function updateArticlesPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / articlesPerPage);
     const pagination = document.getElementById('articles-pagination');
@@ -173,7 +150,6 @@ function updateArticlesPagination(totalArticles) {
     pagination.appendChild(nextButton);
 }
 
-// Update pagination for learn articles
 function updateLearnPagination(totalArticles) {
     const totalPages = Math.ceil(totalArticles / learnArticlesPerPage);
     const pagination = document.getElementById('learn-pagination');
@@ -214,15 +190,11 @@ function updateLearnPagination(totalArticles) {
     pagination.appendChild(nextButton);
 }
 
-// Scroll to section
 function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Scroll to specific article; if 'highlight' is true, add the 'highlighted' class
 function scrollToArticle(articleId, highlight = false) {
     const articleElement = document.querySelector(`[data-article-id="${articleId}"]`);
     if (articleElement) {
@@ -237,7 +209,6 @@ function scrollToArticle(articleId, highlight = false) {
     }
 }
 
-// Display modal with summary and share button
 function displayModal(article) {
     const modal = document.getElementById('article-modal');
     if (!modal) {
@@ -266,11 +237,7 @@ function displayModal(article) {
         </div>
     `;
     
-    currentShareData = {
-        url: shareUrl,
-        title: article.title,
-        text: article.snippet
-    };
+    currentShareData = { url: shareUrl, title: article.title, text: article.snippet };
     
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
@@ -289,12 +256,9 @@ function displayModal(article) {
     };
     
     const modalShareBtn = modalContent.querySelector('.share-button');
-    if (modalShareBtn) {
-        modalShareBtn.addEventListener('click', shareArticle);
-    }
+    if (modalShareBtn) modalShareBtn.addEventListener('click', shareArticle);
 }
 
-// Handle summary button clicks
 function handleSummaryClick(event) {
     if (event.target.classList.contains('summary-btn')) {
         event.preventDefault();
@@ -306,16 +270,12 @@ function handleSummaryClick(event) {
         const articleId = clickedCard?.getAttribute('data-article-id');
         if (articleId) {
             const article = allArticles.find(a => a.id == articleId);
-            if (article) {
-                displayModal(article);
-            } else {
-                console.error("Article not found for ID:", articleId);
-            }
+            if (article) displayModal(article);
+            else console.error("Article not found for ID:", articleId);
         }
     }
 }
 
-// Unified shareArticle function
 function shareArticle(event) {
     if (event) {
         event.preventDefault();
@@ -340,11 +300,7 @@ function shareArticle(event) {
         }
     }
     
-    let buttonId = "";
-    if (event && event.target.closest('a')) {
-        buttonId = event.target.closest('a').id || "";
-    }
-    
+    let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
     else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
@@ -381,7 +337,6 @@ function shareArticle(event) {
     return false;
 }
 
-// Show share popup for browsers without Web Share API
 function showSharePopup(shareData) {
     const popup = document.createElement('div');
     popup.className = 'share-popup';
@@ -401,59 +356,18 @@ function showSharePopup(shareData) {
     
     const style = document.createElement('style');
     style.textContent = `
-        .share-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .share-popup-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        .share-popup-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .share-popup-content button, .share-popup-content a {
-            display: inline-block;
-            margin: 5px;
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-        .share-popup-content button:hover, .share-popup-content a:hover {
-            background: #0056b3;
-        }
-        .close-popup {
-            background: #dc3545;
-        }
-        .close-popup:hover {
-            background: #b02a37;
-        }
+        .share-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .share-popup-content { background: white; padding: 20px; border-radius: 10px; text-align: center; max-width: 400px; width: 90%; }
+        .share-popup-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .share-popup-content button, .share-popup-content a { display: inline-block; margin: 5px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
+        .share-popup-content button:hover, .share-popup-content a:hover { background: #0056b3; }
+        .close-popup { background: #dc3545; }
+        .close-popup:hover { background: #b02a37; }
     `;
     document.head.appendChild(style);
     popup.querySelector('.close-popup').onclick = () => document.body.removeChild(popup);
 }
 
-// Bind click events to share buttons
 function setupShareButtons() {
     const fullButtons = document.querySelectorAll('#full-share-buttons a');
     fullButtons.forEach(btn => {
@@ -467,23 +381,25 @@ function setupShareButtons() {
     });
 }
 
-// Setup event listeners for summary buttons and share buttons
 function setupArticleClickEvents() {
     document.removeEventListener('click', handleSummaryClick);
     document.addEventListener('click', handleSummaryClick);
     setupShareButtons();
     
     document.querySelectorAll('.article-card, .learn-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            if (currentHighlightedCard && currentHighlightedCard !== card) {
-                currentHighlightedCard.classList.remove('highlighted');
-                currentHighlightedCard = null;
-            }
-        });
+        card.removeEventListener('mouseenter', handleMouseEnter); // Prevent duplicate listeners
+        card.addEventListener('mouseenter', handleMouseEnter);
     });
 }
 
-// Initial load: render articles and setup share buttons
+function handleMouseEnter(event) {
+    const card = event.currentTarget;
+    if (currentHighlightedCard && currentHighlightedCard !== card) {
+        currentHighlightedCard.classList.remove('highlighted');
+        currentHighlightedCard = null;
+    }
+}
+
 window.addEventListener("load", () => {
     if (typeof allArticles === "undefined") {
         console.error("allArticles is not defined. Ensure articleArray.js is loaded.");
@@ -521,12 +437,8 @@ window.addEventListener("load", () => {
             console.error("Article not found for ID:", articleId);
         }
     } else {
-        if (document.getElementById('articles-grid')) {
-            displayArticles(currentArticlePage);
-        }
-        if (document.getElementById('learn-grid')) {
-            displayLearnArticles(currentLearnPage);
-        }
+        if (document.getElementById('articles-grid')) displayArticles(currentArticlePage);
+        if (document.getElementById('learn-grid')) displayLearnArticles(currentLearnPage);
     }
     
     setupShareButtons();

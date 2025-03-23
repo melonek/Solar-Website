@@ -244,20 +244,20 @@
     });
   }
 
-  function initArticlesMutationObserver() {
-    const articlesGrid = document.getElementById('articles-grid');
-    if (!articlesGrid) return;
-    const mutationObserver = new MutationObserver(mutations =>
-      mutations.forEach(mutation =>
-        mutation.addedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE && (node.matches('.article-card') || node.querySelector('.article-card'))) {
-            observeElements('.article-card');
-          }
-        })
-      )
-    );
-    mutationObserver.observe(articlesGrid, { childList: true, subtree: true });
-  }
+function initArticlesMutationObserver() {
+  const articlesGrid = document.getElementById('articles-grid');
+  if (!articlesGrid) return;
+  const mutationObserver = new MutationObserver(mutations =>
+    mutations.forEach(mutation =>
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE && (node.matches('.article-card') || node.querySelector('.article-card'))) {
+          observeElements('.article-card');
+        }
+      })
+    )
+  );
+  mutationObserver.observe(articlesGrid, { childList: true, subtree: true });
+}
 
   function setupRevealObservers() {
     observeElements('.fancy-button');
