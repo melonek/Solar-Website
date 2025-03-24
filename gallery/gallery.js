@@ -165,10 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show modal
     modal.style.display = 'flex';
-    
-    // Reset scroll position to top
-    modal.scrollTop = 0;
-    window.requestAnimationFrame(() => { modal.scrollTop = 0; });
+    // Removed the scrollTop reset to ensure it only applies to the modal.
   }
   
   // Close modal when clicking the close button
@@ -491,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!existingNotification) {
         const notification = document.createElement('p');
         notification.className = 'load-notification';
-        notification.textContent = "All images have been displayed.";
+        notification.textContent = "All jobs have been displayed.";
         loadMoreWrapper.appendChild(notification);
       }
     }
