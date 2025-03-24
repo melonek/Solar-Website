@@ -493,6 +493,31 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   }
+
+  // Immediately override the native scroll functions as early as possible
+(function() {
+  const originalScrollTo = window.scrollTo;
+  window.scrollTo = function(x, y) {
+    // If the call is trying to scroll to top, ignore it
+    if (x === 0 && y === 0) {
+      console.log("Prevented automatic scroll to top via scrollTo.");
+      return;
+    }
+    return originalScrollTo.apply(window, arguments);
+  };
+
+  // Also override window.scroll if needed (for browsers that use it)
+  const originalScroll = window.scroll;
+  window.scroll = function(options) {
+    // If options is an object and both top and left are 0, ignore it
+    if (typeof options === "object" && options.top === 0 && options.left === 0) {
+      console.log("Prevented automatic scroll to top via scroll.");
+      return;
+    }
+    return originalScroll.apply(window, arguments);
+  };
+})();
+
   
   // ----------------------
   // Carousel Auto-Scroll
