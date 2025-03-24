@@ -49,7 +49,7 @@
       }
       const fbScript = document.createElement('script');
       fbScript.id = 'fb-sdk-script';
-      fbScript.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1426450195430892';
+      fbScript.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0&appId=1403351067527439';
       fbScript.async = true;
       fbScript.defer = true;
       fbScript.onload = () => console.log('Facebook SDK script loaded');
@@ -57,26 +57,24 @@
     }
   }
 
-  window.fbAsyncInit = function () {
-    FB.init({
-      appId: '1426450195430892',
-      xfbml: true,
-      version: 'v22.0'
-    });
-    console.log('FB SDK initialized via fbAsyncInit');
-    FB.XFBML.parse(document.getElementById('social-timelines'), () => {
+window.fbAsyncInit = function () {
+  FB.init({
+    appId: '1403351067527439',
+    xfbml: true,
+    version: 'v22.0'
+  });
+  console.log('FB SDK initialized via fbAsyncInit');
+  const timelineContainer = document.getElementById('social-timelines');
+  if (timelineContainer) {
+    FB.XFBML.parse(timelineContainer, () => {
       console.log('Facebook timelines rendered successfully');
-      scaleFacebookTimelines();
+      // Delay the scaling function by 2 seconds (2000 ms)
+      setTimeout(scaleFacebookTimelines, 2000);
     });
-  };
+  }
+};
 
-  const originalConsoleError = console.error;
-  console.error = function (...args) {
-    if (typeof args[0] === 'string' && args[0].includes('N_K8-X0_Ici.js')) {
-      return;
-    }
-    originalConsoleError.apply(console, args);
-  };
+  
 
   // -------------------------
   // SERVICE WORKER REGISTRATION
@@ -109,13 +107,20 @@
       const fbPage = container.querySelector('.fb-page');
       if (fbPage) {
         const containerWidth = container.clientWidth - 40;
-        fbPage.setAttribute('data-width', containerWidth);
-        if (window.FB) FB.XFBML.parse(container);
+        // Ensure fbPage has the attribute that is safe to change
+        if (fbPage.getAttribute('data-width') !== containerWidth) {
+          fbPage.setAttribute('data-width', containerWidth);
+          // Optionally, re-parse the container only if necessary
+          if (window.FB && typeof FB.XFBML.parse === 'function') {
+            FB.XFBML.parse(container);
+          }
+        }
+      } else {
+        console.warn('Facebook page element not found in container:', container);
       }
     });
   }
-
-  window.addEventListener('resize', debounce(scaleFacebookTimelines, 200));
+  
 
   // -------------------------
   // HERO SECTION INITIALIZATION

@@ -13,17 +13,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-window.addEventListener('unhandledrejection', event => {
-  const err = event.reason;
-  // Check if the error comes from PUBLIC_GetNode
-  if (err && err.data && err.data.method === 'PUBLIC_GetNode') {
-    // Prevent default handling so the error isn’t logged as unhandled
-    event.preventDefault();
-    console.warn("Suppressed PUBLIC_GetNode error:", err);
-  }
-});
-
-
 // ===================== GLOBAL VARIABLES =====================
 let disableAllScroll = false; // Global kill-switch flag
 let brandImages = [];         // Array for brand images
@@ -119,6 +108,13 @@ function setVh() {
 }
 setVh();
 window.addEventListener('resize', setVh);
+
+// --------------------
+// Helper: getPathPrefix (now in global scope)
+// --------------------
+function getPathPrefix() {
+  return window.location.pathname.includes('/packages/') ? "../" : "./";
+}
 
 // --------------------
 // updatePackageDisplay with Guard Conditions
@@ -371,11 +367,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (btn) btn.scrollIntoView({ behavior: "smooth" });
   }
 
-  // --- Standard Helpers ---
-  function getPathPrefix() {
-    return window.location.pathname.includes('/packages/') ? "../" : "./";
-  }
-
   function initializeBrandImages() {
     const prefix = getPathPrefix();
     brandImages = [
@@ -429,13 +420,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const missingArr = getMissingSelectFields();
     const currentMissingCount = missingArr.length;
 
-    // Mark missing fields
     missingInputs.forEach(input => {
       if (submissionAttempted) {
         input.element.classList.add("missing");
       }
     });
-    // Remove "missing" class from valid fields
     ["system-size-select", "home-type-select", "power-supply-select"].forEach(id => {
       const el = document.getElementById(id);
       if (el && !missingInputs.some(m => m.element === el)) {
@@ -461,7 +450,6 @@ document.addEventListener("DOMContentLoaded", function() {
       } else if (currentMissingCount === 0) {
         disableAllScroll = false;
         if (defaultScrollTimeout) clearTimeout(defaultScrollTimeout);
-        // When all missing inputs are fixed, scroll to the last button clicked
         if (lastButtonClicked?.id === "confirm-selection") {
           defaultScrollTimeout = setTimeout(() => {
             scrollToForm();
@@ -518,6 +506,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  window.handleSystemSizeSelection = handleSystemSizeSelection;
 
   function handleHomeTypeSelection(value) {
     if (value === "") {
@@ -538,6 +527,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  window.handleHomeTypeSelection = handleHomeTypeSelection;
 
   function handlePowerSupplySelection(value) {
     if (value === "") {
@@ -554,6 +544,7 @@ document.addEventListener("DOMContentLoaded", function() {
       normalScrollToSection(lastButtonClicked.id, 0);
     }
   }
+  window.handlePowerSupplySelection = handlePowerSupplySelection;
 
   function checkDefaultInputs() {
     const sysSelect = document.getElementById("system-size-select");
@@ -838,6 +829,9 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       updatePackageDisplay();
     });
+    // Animate the card as it appears (slide up effect)
+    gsap.from(card, { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" });
+    
     return card;
   }
 

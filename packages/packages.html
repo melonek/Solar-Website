@@ -4,45 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Solar Packages - Nature's Spark Solar</title>
-
-  <script>
-    (function() {
-      const originalConsoleError = console.error;
-      console.error = function(...args) {
-        // If the error is an object with code -32603 and data.method PUBLIC_GetNode, skip logging it.
-        if (
-          args[0] &&
-          typeof args[0] === 'object' &&
-          args[0].code === -32603 &&
-          args[0].data &&
-          args[0].data.method === 'PUBLIC_GetNode'
-        ) {
-          return;
-        }
-        originalConsoleError.apply(console, args);
-      };
-  
-      // Also try a global unhandled rejection handler
-      window.addEventListener('unhandledrejection', event => {
-        if (
-          event.reason &&
-          event.reason.data &&
-          event.reason.data.method === 'PUBLIC_GetNode'
-        ) {
-          event.preventDefault();
-        }
-      });
-  
-      // And a global error handler
-      window.onerror = function(message, source, lineno, colno, error) {
-        if (error && error.data && error.data.method === 'PUBLIC_GetNode') {
-          return true; // Suppress the error
-        }
-        return false;
-      };
-    })();
-  </script>
-  
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js" defer></script>
@@ -319,9 +280,8 @@
     <p>© 2025 Nature's Spark Solar. SolarVirtuoz powered - all rights reserved.</p>
   </footer>
 
-  <script src="../sw.js" defer></script>
-  <script src="packages.js" defer></script>
   <script src="../script.js" defer></script>
+  <script src="packages.js" defer></script>
   
 </body>
 </html>
