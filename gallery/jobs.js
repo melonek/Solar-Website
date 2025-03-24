@@ -277,7 +277,7 @@ const jobs = [
       roofType: "Metal Tin",
       completionDate: "24-03-2025",
       difficulty: "Easy",
-      timeToComplete: "(8:30am-12:15am)",
+      timeToComplete: "(8:30am-12:15pm)",
       suburb: "Landsdale, WA, 6065",
       mainImage: "/images/Jobs/Job16/m.webp",
       additionalImages: [
