@@ -13,6 +13,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+window.addEventListener('unhandledrejection', event => {
+  const err = event.reason;
+  // Check if the error comes from PUBLIC_GetNode
+  if (err && err.data && err.data.method === 'PUBLIC_GetNode') {
+    // Prevent default handling so the error isn’t logged as unhandled
+    event.preventDefault();
+    console.warn("Suppressed PUBLIC_GetNode error:", err);
+  }
+});
+
+
 // ===================== GLOBAL VARIABLES =====================
 let disableAllScroll = false; // Global kill-switch flag
 let brandImages = [];         // Array for brand images
