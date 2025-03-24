@@ -268,5 +268,23 @@ const jobs = [
         "/images/Jobs/Job15/i1.webp",
         "/images/Jobs/Job15/i2.webp",
       ]
+    },
+    {
+      title: "Landsdale Installation",
+      "House Type": "Single-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.44kW (14 Panels)",
+      roofType: "Metal Tin",
+      completionDate: "24-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(8:30am-12:15am)",
+      suburb: "Landsdale, WA, 6065",
+      mainImage: "/images/Jobs/Job16/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job16/p1.webp",
+        "/images/Jobs/Job16/p2.webp",
+        "/images/Jobs/Job16/i1.webp",
+        "/images/Jobs/Job16/i2.webp",
+      ]
     }
   ];
