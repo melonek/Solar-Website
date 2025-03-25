@@ -662,7 +662,7 @@ document.addEventListener("DOMContentLoaded", function() {
         id: 1,
         name: "TW-48HD440 (440 Watt)",
         brand: "Tongwei",
-        specs: "1",
+        specs: `440W, 22.02% efficiency`,
         country: "Canada",
         warranty: "30 years",
         datasheet: "/packages/Datasheets/TW-Information.pdf",
