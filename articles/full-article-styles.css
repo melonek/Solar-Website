@@ -290,6 +290,11 @@ body {
     }
 }
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
 /* Share Buttons (Sticky) */
 #full-share-buttons {
     position: sticky;
