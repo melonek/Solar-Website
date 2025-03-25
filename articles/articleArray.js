@@ -114,5 +114,17 @@ const allArticles = [
         "displayOnMain": true,
         "displayOnLearn": false,
         "fullArticlePath": "article4/Fronius-Reserva-Battery-for-Australians.html"
+      },
+      {
+        "id": 5,
+        "title": "Dyness Powerbox Pro Battery: A Reliable Solar Storage Solution for Australia",
+        "image": "https://naturespark.com.au/articles/article5/dyness-banner.webp",
+        "snippet": "Discover the Dyness Powerbox Pro Battery – a scalable, high-safety LiFePO₄ storage solution designed for Australian homes.",
+        "summary": "\n<h2>Key Features</h2>\n<p>The Dyness Powerbox Pro is a DC-coupled home battery featuring LiFePO₄ technology, delivering 10.24 kWh per unit (≈9.2 kWh usable at 90% DoD) with scalability up to 51 kWh. It boasts a high round-trip efficiency of around 95%, robust safety through an integrated BMS, and a long cycle life of over 6,000 cycles with a 10-year warranty ensuring at least 70% capacity retention.</p>\n<h2>Seamless Integration</h2>\n<p>Designed for versatile installation, the Powerbox Pro works with a broad range of hybrid and off-grid inverters. Its compact, IP65-rated enclosure makes it suitable for both indoor and outdoor use, ensuring it integrates effortlessly into existing or new solar systems.</p>\n<h2>Pricing & Incentives</h2>\n<p>Early estimates place the Dyness Powerbox Pro at around AUD $6,000 per unit (hardware only). With government rebates, state-based loans, and flexible financing options available, it offers an affordable pathway for homeowners to upgrade their solar storage solutions.</p>\n<h2>Benefits & Advantages</h2>\n<p>The Powerbox Pro provides energy independence with its efficient performance and scalable design. Its robust safety features, long lifespan, and flexible integration make it an ideal choice for Australian residential users seeking reliable backup power and improved solar self-consumption.</p>\n",
+        "publishedDate": "March 25, 2025",
+        "comment": "A concise overview of the Dyness Powerbox Pro Battery, highlighting its technical features, seamless integration with solar systems, competitive pricing, and key benefits for Australian residential applications.",
+        "displayOnMain": true,
+        "displayOnLearn": false,
+        "fullArticlePath": "article5/Dyness-Powerbox-Pro-Battery-for-Australians.html"
       }
 ];
