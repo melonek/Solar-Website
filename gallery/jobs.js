@@ -291,7 +291,7 @@ const jobs = [
       title: "Sinagra Installation",
       "House Type": "Single-Storey",
       "Installation Type": "Normal Solar",
-      "System Size": "6.6kW (14 Panels)",
+      "System Size": "6.6kW (15 Panels)",
       roofType: "Clay Tile",
       completionDate: "25-03-2025",
       difficulty: "Easy",
