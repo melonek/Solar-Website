@@ -286,5 +286,23 @@ const jobs = [
         "/images/Jobs/Job16/i1.webp",
         "/images/Jobs/Job16/i2.webp",
       ]
+    },
+    {
+      title: "Sinagra Installation",
+      "House Type": "Single-Storey",
+      "Installation Type": "Normal Solar",
+      "System Size": "6.6kW (14 Panels)",
+      roofType: "Clay Tile",
+      completionDate: "25-03-2025",
+      difficulty: "Easy",
+      timeToComplete: "(8:45am-2:15pm)",
+      suburb: "Sinagra, WA, 6065",
+      mainImage: "/images/Jobs/Job17/m.webp",
+      additionalImages: [
+        "/images/Jobs/Job17/p1.webp",
+        "/images/Jobs/Job17/p2.webp",
+        "/images/Jobs/Job17/i1.webp",
+        "/images/Jobs/Job17/i2.webp",
+      ]
     }
   ];
