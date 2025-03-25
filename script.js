@@ -515,6 +515,7 @@ function initArticlesMutationObserver() {
       { name: 'Trina', url: 'https://naturespark.com.au/images/BrandLogos/Trina-Solar.webp' },
       { name: 'SMA', url: 'https://naturespark.com.au/images/BrandLogos/SMA.webp' },
       { name: 'Canadian Solar', url: 'https://naturespark.com.au/images/BrandLogos/Canadian-Solar.webp' },
+      { name: 'Tongwei', url: 'https://naturespark.com.au/images/BrandLogos/Tongwei.webp' },
       { name: 'DaSolar', url: 'https://naturespark.com.au/images/BrandLogos/DaSolar.webp' },
       { name: 'Fronius', url: 'https://naturespark.com.au/images/BrandLogos/Fronius.webp' },
       { name: 'Growatt', url: 'https://naturespark.com.au/images/BrandLogos/Growatt.webp' },

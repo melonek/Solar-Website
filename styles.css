@@ -932,10 +932,6 @@ nav {
     margin-top: -10px;
 }
 
-
-
-
-
 /* Main Headings */
 .section h1 {
     font-family: 'Roboto Slab', serif; /* Use Roboto Slab for section headlines */
@@ -1004,9 +1000,10 @@ nav {
     }
 }
 
-/* ======= MODAL STYLES FOR PRODUCTS ======= */
-/* Base modal overlay: hidden by default */
-#product-modal {
+/* ======= CUSTOM MODAL STYLES FOR PRODUCTS ======= */
+
+/* Base modal overlay (renamed) */
+#custom-modal {
     display: none; /* hidden by default */
     position: fixed;
     top: 0;
@@ -1017,116 +1014,154 @@ nav {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    overflow-y: auto; /* enable scrolling if content overflows */
   }
   
-  /* When active, display it as flex (centers the modal) */
-  #product-modal.active {
+  #custom-modal.active {
     display: flex;
   }
   
-  #product-modal .modal-content {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    max-width: 800px;
-    width: 100%;
-    background: white;
+  /* Modal content container */
+  #custom-modal .custom-modal-content {
+    background: #fff;
     padding: 20px;
     border-radius: 8px;
+    max-width: 800px;
+    width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
   }
   
-  /* (Other styles remain the same) */
-  
-
-#product-modal .modal-product-image {
-    flex: 1 1 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-#product-modal .modal-product-image img {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-#product-modal .modal-product-details {
-    flex: 1 1 300px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-#product-modal .close {
+  /* Close button */
+  #custom-modal .custom-close {
     position: absolute;
     top: 10px;
     right: 10px;
     font-size: 30px;
     cursor: pointer;
     color: #333;
-}
-
-#product-modal .close:hover {
+  }
+  
+  #custom-modal .custom-close:hover {
     color: #f00;
-}
-
-/*Modal logo img on the panel and inverter*/
-
-.product-image-container {
+  }
+  
+  /* Top row: two-column layout */
+  #custom-modal .custom-modal-top {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  /* Left container: image and logo */
+  #custom-modal .custom-modal-image-container {
+    flex: 0 0 40%;
+    max-width: 300px;
+    margin-right: 20px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    box-sizing: border-box;
     position: relative;
-    display: inline-block;
-}
-
-.main-product-image {
+  }
+  
+  #custom-modal .custom-modal-image-container img {
     width: 100%;
     height: auto;
-}
-
-/* Panel Brand Logo */
-.brand-logo-panel {
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  
+  /* Right container: basic product info */
+  #custom-modal .custom-modal-info {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: left;
+    font-size: 1.1em;
+    margin-left: 30px;
+    margin-top: 80px;
+  }
+  
+  #custom-modal .custom-modal-info p {
+    margin: 0.5em 0;
+    line-height: 1.6;
+  }
+  
+  #custom-modal .custom-modal-info p strong {
+    font-weight: bold;
+  }
+  
+  /* Full-width container for detailed product description below the top row */
+  #custom-modal .custom-modal-description {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  #custom-modal .custom-modal-description h2,
+  #custom-modal .custom-modal-description h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  #custom-modal .custom-modal-description p {
+    margin-bottom: 1em;
+    line-height: 1.6;
+  }
+  
+  #custom-modal .custom-modal-description ul {
+    margin: 1em 0;
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+  
+  #custom-modal .custom-modal-description li {
+    margin-bottom: 0.2em; /* reduced gap */
+  }
+  
+  /* Clearfix for top row if needed */
+  #custom-modal .custom-modal-top::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Logo styles (applied within the image container) */
+  .custom-logo {
     position: absolute;
-    top: 50px;
-    left: 20px;
-    width: 80px !important;  /* Adjust size for panels */
-    height: auto;
-    background: white;
+    background: #fff;
     padding: 2px;
     border-radius: 4px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* Inverter Brand Logo */
-.brand-logo-inverter {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 100px !important;  /* Adjust size for inverters */
-    height: auto;
-    background: white;
-    padding: 4px;  /* Add different padding for inverters */
-    border-radius: 6px;
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
-}
-
-#panel-logo {
-    left: 10px;
   }
   
-  #inverter-logo {
-    left: 220px; /* Adjust based on image size */
+  /* Panel logo */
+  .custom-logo-panel {
+    top: 50px;
+    left: 20px;
+    width: 80px !important;
   }
+  
+  /* Inverter logo */
+  .custom-logo-inverter {
+    top: 8px;
+    left: 8px;
+    width: 100px !important;
+    padding: 4px;
+    border-radius: 6px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  
 
   /* IMAGES COMBINED (SOLAR AND INVERTER) - THE STYLING FOR TWO TOP LEFT LOGOS*/
 

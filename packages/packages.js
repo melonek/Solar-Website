@@ -326,6 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
       { name: 'Trina', url: `${prefix}images/BrandLogos/Trina-Solar.webp` },
       { name: 'SMA', url: `${prefix}images/BrandLogos/SMA.webp` },
       { name: 'Canadian Solar', url: `${prefix}images/BrandLogos/Canadian-Solar.webp` },
+      { name: 'Tongwei', url: `${prefix}images/BrandLogos/Tongwei.webp` },
       { name: 'DaSolar', url: `${prefix}images/BrandLogos/DaSolar.webp` },
       { name: 'Fronius', url: `${prefix}images/BrandLogos/Fronius.webp` },
       { name: 'Growatt', url: `${prefix}images/BrandLogos/Growatt.webp` },
@@ -659,17 +660,56 @@ document.addEventListener("DOMContentLoaded", function() {
     panels: [
       {
         id: 1,
-        name: "Canadian Solar 400W",
-        brand: "Canadian Solar",
-        specs: "400W Mono PERC",
+        name: "TW-48HD440 (440 Watt)",
+        brand: "Tongwei",
+        specs: "1",
         country: "Canada",
-        warranty: "25 years",
-        datasheet: "",
-        image: "../images/Panels/Canadian-Solar-440-W.webp",
+        warranty: "30 years",
+        datasheet: "/packages/Datasheets/TW-Information.pdf",
+        image: "../images/Panels/TW.webp",
         price: 1500,
         popularity: 3,
-        description: "Solar panel description goes here..."
-      },
+        description: `
+  <h2>Overview</h2>
+  <p>
+    The TWMNH-48HD440 solar module delivers a remarkable <strong>440 watts</strong> of power, ensuring excellent efficiency in converting sunlight. Its innovative bifacial design allows it to capture sunlight from both sides, which boosts energy output—especially in reflective conditions like snow or light-colored surfaces. With an impressive conversion efficiency of <strong>22.02%</strong>, this module is perfect for high-demand applications. Built with durable glass-glass construction, it withstands mechanical stress and harsh weather, and it supports installations with up to <strong>1500 volts</strong>. Backed by a <strong>30-year warranty</strong>, it is designed for long-lasting, reliable performance in residential, commercial, and industrial environments.
+  </p>
+  
+  <h3>Key Features</h3>
+  <ul>
+    <li><strong>High Efficiency:</strong> Achieves 22.02% energy conversion for optimal output.</li>
+    <li><strong>Bifacial Design:</strong> Captures sunlight from both sides to maximize generation.</li>
+    <li><strong>Glass-Glass Construction:</strong> Offers enhanced durability against physical and weather stresses.</li>
+    <li><strong>Versatile Voltage Support:</strong> Compatible with systems up to 1500 volts for flexible installation.</li>
+    <li><strong>Weather Resilience:</strong> Withstands up to 5400 Pa of snow load and 2400 Pa of wind pressure.</li>
+    <li><strong>Secure Connectors:</strong> Features Stäubli MC4-EVO2 connectors with 1200 mm cable lengths for safe and efficient installation.</li>
+    <li><strong>Compact & Lightweight:</strong> Measures 1762 x 1134 x 30 mm and weighs only 20.9 kg.</li>
+    <li><strong>Extended Warranty:</strong> Comes with a 30-year warranty for enduring reliability.</li>
+  </ul>
+  
+  <h3>Attributes</h3>
+  <ul>
+    <li><strong>Brand:</strong> Tongwei</li>
+    <li><strong>Part Number:</strong> 48HD440</li>
+    <li><strong>Backing Sheet Colour:</strong> White</li>
+    <li><strong>Cell Count:</strong> 96 Cells</li>
+    <li><strong>Frame Colour:</strong> Black</li>
+    <li><strong>Frame Thickness:</strong> 30mm</li>
+    <li><strong>Series:</strong> </li>
+    <li><strong>Wattage Range:</strong> 440 Watt</li>
+  </ul>
+  
+  <h3>Size Information</h3>
+  <ul>
+    <li><strong>Weight (kg):</strong> 20.9000</li>
+    <li><strong>Length (mm):</strong> 1762</li>
+    <li><strong>Height (mm):</strong> 1134</li>
+    <li><strong>Width (mm):</strong> 30</li>
+    <li><strong>Length Packaging (mm):</strong> 1762</li>
+    <li><strong>Height Packaging (mm):</strong> 1134</li>
+    <li><strong>Width Packaging (mm):</strong> 30</li>
+  </ul>
+`},
       {
         id: 2,
         name: "Trina Solar 410W",
@@ -695,12 +735,12 @@ document.addEventListener("DOMContentLoaded", function() {
         price: 1500,
         popularity: 3,
         description: "Solar panel description goes here..."
-      },
+      }
     ],
     inverters: [
       {
         id: 1,
-        name: "Fronius Primo 5.0",
+        name: "SOLIS 5kW Three Phase Solar Inverter",
         brand: "Fronius",
         specs: "5kW Single Phase",
         country: "Austria",
@@ -742,6 +782,7 @@ document.addEventListener("DOMContentLoaded", function() {
     ]
   };
 
+  // --- New: Create Product Card with Updated Modal Open Function ---
   function createProductCard(product, type) {
     const card = document.createElement("div");
     card.className = "product-card product";
@@ -788,6 +829,7 @@ document.addEventListener("DOMContentLoaded", function() {
     return card;
   }
 
+  // --- Updated Modal Open Function using new names and structure ---
   function handleModalOpen(e) {
     e.preventDefault();
     const type = e.target.dataset.type;
@@ -805,25 +847,31 @@ document.addEventListener("DOMContentLoaded", function() {
     const brand = brandImages.find(b => b.name.toLowerCase() === product.brand.toLowerCase());
     const brandLogoUrl = brand ? brand.url : "";
     const logoClass = type === "panel"
-      ? "brand-logo-panel"
-      : (type === "inverter" ? "brand-logo-inverter" : "brand-logo-battery");
+      ? "custom-logo-panel"
+      : (type === "inverter" ? "custom-logo-inverter" : "custom-logo-battery");
 
-    const modal = document.getElementById("product-modal");
-    document.querySelector(".modal-product-image").innerHTML = `
+    const modal = document.getElementById("custom-modal");
+
+    // Populate the left container (image and logo)
+    document.querySelector(".custom-modal-image-container").innerHTML = `
       <div class="product-image-container">
         <img src="${product.image}" alt="${product.name}" class="main-product-image">
-        ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="${logoClass}">` : ""}
+        ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="custom-logo ${logoClass}">` : ""}
       </div>
     `;
-    document.querySelector(".modal-product-details").innerHTML = `
-      <h2>${product.name}</h2>
+
+    // Populate the right container (basic product info)
+    document.querySelector(".custom-modal-info").innerHTML = `
       <p><strong>Brand Name:</strong> ${product.brand}</p>
       <p><strong>Specifications:</strong> ${product.specs}</p>
       <p><strong>Country:</strong> ${product.country}</p>
       <p><strong>Warranty:</strong> ${product.warranty}</p>
       <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
-      <p><strong>Product Description:</strong> ${product.description}</p>
     `;
+
+    // Populate the full-width description container (which may include HTML markup)
+    document.querySelector(".custom-modal-description").innerHTML = product.description;
+
     modal.classList.add("active");
   }
 
@@ -1019,16 +1067,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   })();
 
+  // --- Updated Modal Close Event Listeners (using new names) ---
   document.addEventListener("click", (e) => {
-    const modal = document.getElementById("product-modal");
+    const modal = document.getElementById("custom-modal");
     if (modal && modal.classList.contains("active") && e.target === modal) {
       modal.classList.remove("active");
     }
   });
 
   document.addEventListener("click", (e) => {
-    const modal = document.getElementById("product-modal");
-    if (modal && (e.target.classList.contains("close") || e.target.classList.contains("modal-close"))) {
+    const modal = document.getElementById("custom-modal");
+    if (modal && (e.target.classList.contains("custom-close") || e.target.classList.contains("custom-modal-close"))) {
       modal.classList.remove("active");
     }
   });
@@ -1079,4 +1128,3 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
-
