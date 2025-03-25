@@ -282,6 +282,14 @@ body {
     font-style: italic;
 }
 
+@media (max-width: 600px) {
+    .articles-table th,
+    .articles-table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
+
 /* Share Buttons (Sticky) */
 #full-share-buttons {
     position: sticky;
