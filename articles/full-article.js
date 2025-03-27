@@ -274,10 +274,17 @@ function shareArticle(event) {
         event.stopPropagation();
     }
     
+    // Build shareData with all available metadata
     let shareData = currentShareData || {
-        title: document.querySelector('title')?.textContent || 'Check this out!',
-        text: document.querySelector('meta[name="description"]')?.content || 'Here is an interesting page for you.',
-        url: window.location.href
+        title: document.querySelector('meta[property="og:title"]')?.content || 
+               document.querySelector('title')?.textContent || 'Check this out!',
+        text: document.querySelector('meta[property="og:description"]')?.content || 
+              document.querySelector('meta[name="description"]')?.content || 
+              'Here is an interesting page for you.',
+        url: document.querySelector('meta[property="og:url"]')?.content || 
+             window.location.href,
+        image: document.querySelector('meta[property="og:image"]')?.content || 
+               document.querySelector('meta[name="twitter:image"]')?.content || ''
     };
     
     if (event) {
@@ -292,8 +299,8 @@ function shareArticle(event) {
         }
     }
     
-    // Add cache-busting to ensure fresh metadata fetch
-    shareData.url = `${shareData.url}?t=${Date.now()}`;
+    // Force fresh metadata fetch with cache-busting
+    shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
@@ -305,31 +312,40 @@ function shareArticle(event) {
     let shareUrl = "";
     switch(platform) {
         case "twitter":
-            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.title)}`;
+            shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.title + ' - ' + shareData.text)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "facebook":
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "linkedin":
-            shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}`;
+            shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&summary=${encodeURIComponent(shareData.text)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "whatsapp":
-            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.title + ' ' + shareData.url)}`;
+            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.title + ' - ' + shareData.text + ' ' + shareData.url)}`;
+            window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
             if (navigator.share) {
-                navigator.share(shareData)
+                navigator.share({
+                    title: shareData.title,
+                    text: shareData.text,
+                    url: shareData.url
+                })
                     .then(() => console.log('Article shared successfully'))
-                    .catch(err => console.error('Error sharing:', err));
-                return false;
+                    .catch(err => console.error('Share failed:', err)); // Silent fail, no pop-up
             } else {
-                showSharePopup(shareData);
-                return false;
+                // Silent fallback: copy to clipboard instead of pop-up
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(shareData.url)
+                        .then(() => console.log('URL copied to clipboard'))
+                        .catch(err => console.error('Clipboard copy failed:', err));
+                }
             }
+            break;
     }
-    
-    window.open(shareUrl, '_blank');
-    return false;
 }
 
 function showSharePopup(shareData) {
