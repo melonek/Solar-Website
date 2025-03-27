@@ -292,6 +292,9 @@ function shareArticle(event) {
         }
     }
     
+    // Add cache-busting to ensure fresh metadata fetch
+    shareData.url = `${shareData.url}?t=${Date.now()}`;
+    
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
