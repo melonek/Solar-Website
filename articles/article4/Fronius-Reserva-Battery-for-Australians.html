@@ -296,24 +296,6 @@
     if (isExternalReferrer && !isCrawler) {
       window.location.href = `/articles/learn.html?articleId=${articleId}`;
     }
-
-    // Dynamic metatag updates
-    document.addEventListener("DOMContentLoaded", () => {
-      const articleId = "4";
-      const article = allArticles.find(a => a.id == articleId);
-      if (article) {
-        document.querySelector('title').textContent = article.title;
-        document.querySelector('meta[name="description"]').content = article.snippet;
-        document.querySelector('meta[property="og:title"]').content = article.title;
-        document.querySelector('meta[property="og:description"]').content = article.snippet;
-        document.querySelector('meta[property="og:image"]').content = article.image;
-        document.querySelector('meta[property="og:url"]').content = getShareableUrl(article);
-        document.querySelector('meta[name="twitter:title"]').content = article.title;
-        document.querySelector('meta[name="twitter:description"]').content = article.snippet;
-        document.querySelector('meta[name="twitter:image"]').content = article.image;
-        document.querySelector('meta[name="twitter:url"]').content = getShareableUrl(article);
-      }
-    });
   </script>
 
   <!-- Scripts -->
