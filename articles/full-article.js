@@ -274,7 +274,7 @@ function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Build shareData with all available metadata
+    // Use static metadata from <head>
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || 
                document.querySelector('title')?.textContent || 'Check this out!',
@@ -299,7 +299,7 @@ function shareArticle(event) {
         }
     }
     
-    // Force fresh metadata fetch with cache-busting
+    // Cache-busting to force fresh metadata fetch
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
@@ -335,14 +335,11 @@ function shareArticle(event) {
                     url: shareData.url
                 })
                     .then(() => console.log('Article shared successfully'))
-                    .catch(err => console.error('Share failed:', err)); // Silent fail, no pop-up
-            } else {
-                // Silent fallback: copy to clipboard instead of pop-up
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(shareData.url)
-                        .then(() => console.log('URL copied to clipboard'))
-                        .catch(err => console.error('Clipboard copy failed:', err));
-                }
+                    .catch(err => console.error('Share failed:', err)); // Silent fail
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareData.url)
+                    .then(() => console.log('URL copied to clipboard'))
+                    .catch(err => console.error('Clipboard copy failed:', err));
             }
             break;
     }
