@@ -133,6 +133,17 @@ document.addEventListener('DOMContentLoaded', function() {
       img.onerror = () => console.error(`og:image inaccessible: ${ogTags["og:image"]}`);
     }
   }
+
+  if (window.location.pathname.includes('/gallery/job-static-htmls/gallery-job')) {
+    const jobId = window.location.pathname.split('gallery-job')[1].replace('.html', '');
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      console.log(`Auto-opening modal for static page job: ${jobId}`);
+      openModal(job);
+    } else {
+      console.error(`Job not found for static page: ${jobId}`);
+    }
+  }
   
   function openModal(job) {
     if (!modal || !modalBody) {

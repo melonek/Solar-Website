@@ -160,22 +160,5 @@
   <script src="../../packages/universalBanner.js" defer></script>
   <script src="../../script.js" defer></script>
   <script src="../../sw.js" defer></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOMContentLoaded fired');
-      if (!window.jobs) {
-        console.error('window.jobs not available yet');
-        return;
-      }
-      console.log('window.jobs loaded:', window.jobs.length, 'jobs');
-      const job = window.jobs.find(j => j.id === 'job22');
-      if (job) {
-        console.log('Job22 found, opening modal');
-        openModal(job);
-      } else {
-        console.error('Job22 not found in jobs array');
-      }
-    });
-  </script>
 </body>
 </html>
