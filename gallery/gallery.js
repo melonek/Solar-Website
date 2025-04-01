@@ -1,15 +1,11 @@
 // gallery.js
 document.addEventListener('DOMContentLoaded', function() {
-  // Ensure jobs is available
   if (!window.jobs) {
     console.error('Jobs array not found. Ensure jobs.js is loaded before gallery.js.');
     return;
   }
   const jobs = window.jobs;
 
-  // ----------------------
-  // Selectors and Globals
-  // ----------------------
   const modal = document.getElementById('modal');
   const modalBody = document.querySelector('.modal-body');
   const closeModal = document.querySelector('.close-modal');
@@ -42,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
   
-  // ----------------------
-  // Utility Functions
-  // ----------------------
   function parseTimeString(timeStr) {
     const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
     if (match) {
@@ -77,12 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-  // Function to update Open Graph and Twitter meta tags
   function updateOpenGraphTags(job) {
     const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
-    const jobUrl = `${baseUrl}#${job.id}`;
+    const jobUrl = `${baseUrl}?job=${job.id}`;
 
-    // Define Open Graph tags for the specific job
     const ogTags = {
       "og:title": `${job.title} - Nature's Spark Solar`,
       "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
@@ -93,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
       "og:locale": "en_US"
     };
 
-    // Update or create OG meta tags
     Object.entries(ogTags).forEach(([property, content]) => {
       let metaTag = document.querySelector(`meta[property="${property}"]`);
       if (!metaTag) {
@@ -104,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
       metaTag.setAttribute('content', content);
     });
 
-    // Update Twitter Card tags
     const twitterTags = {
       "twitter:title": `${job.title} - Nature's Spark Solar`,
       "twitter:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}.`,
@@ -122,9 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // ----------------------
-  // Modal Functions
-  // ----------------------
   function openModal(job) {
     if (!modal || !modalBody) {
       console.error('Modal or modal-body not found');
@@ -134,10 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCarouselPauseState();
     document.body.style.overflow = 'hidden';
 
-    // Update URL with job ID (e.g., "#job1")
-    window.history.pushState({ jobId: job.id }, job.title, `#${job.id}`);
-
-    // Update Open Graph and Twitter meta tags
+    window.history.pushState({ jobId: job.id }, job.title, `?job=${job.id}`);
     updateOpenGraphTags(job);
 
     let modalContent = modalBody.querySelector('.modal-content');
@@ -210,12 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
     columnsContainer.appendChild(rightColumn);
     modalContent.appendChild(columnsContainer);
 
-    // Add Share button
     const shareButton = document.createElement('button');
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturespark.com.au/gallery/gallery.html#${job.id}`;
+      const shareUrl = `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
@@ -231,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.style.display = 'none';
       document.body.style.overflow = '';
       updateCarouselPauseState();
-      window.history.pushState({}, document.title, window.location.pathname); // Reset URL
+      window.history.pushState({}, document.title, window.location.pathname);
     });
   }
   
@@ -242,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         document.body.style.overflow = '';
         updateCarouselPauseState();
-        window.history.pushState({}, document.title, window.location.pathname); // Reset URL
+        window.history.pushState({}, document.title, window.location.pathname);
       }
     });
     modal.addEventListener('touchstart', function(e) {
@@ -251,14 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         document.body.style.overflow = '';
         updateCarouselPauseState();
-        window.history.pushState({}, document.title, window.location.pathname); // Reset URL
+        window.history.pushState({}, document.title, window.location.pathname);
       }
     });
   }
   
-  // ----------------------
-  // Lightbox Functions
-  // ----------------------
   function openLightbox(src) {
     if (!lightbox || !lightboxContent) {
       console.error('Lightbox elements not found');
@@ -377,18 +356,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { passive: true });
   }
   
-  // ----------------------
-  // Image Validation Utility
-  // ----------------------
   function validateImage(img) {
     img.addEventListener('error', function() {
       img.src = fallbackImage;
     });
   }
   
-  // ----------------------
-  // Carousel & Archive Rendering
-  // ----------------------
   function createCard(job) {
     const card = document.createElement('div');
     card.className = 'card';
@@ -549,7 +522,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Immediately override the native scroll functions as early as possible
   (function() {
     const originalScrollTo = window.scrollTo;
     window.scrollTo = function(x, y) {
@@ -570,20 +542,23 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   })();
 
-  // ----------------------
-  // Check URL on Page Load
-  // ----------------------
-  const hash = window.location.hash.substring(1); // e.g., "job1" from "#job1"
-  if (hash) {
-    const job = jobs.find(j => j.id === hash);
+  const urlParams = new URLSearchParams(window.location.search);
+  const jobId = urlParams.get('job');
+  if (jobId) {
+    const job = jobs.find(j => j.id === jobId);
     if (job) {
-      openModal(job); // This will update OG tags
+      openModal(job);
+    }
+  } else {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const job = jobs.find(j => j.id === hash);
+      if (job) {
+        openModal(job);
+      }
     }
   }
   
-  // ----------------------
-  // Carousel Auto-Scroll
-  // ----------------------
   function autoScroll() {
     if (!carouselPaused && carousel) {
       currentTranslateX -= scrollSpeed;
@@ -608,9 +583,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // ----------------------
-  // Handle Back/Forward Navigation
-  // ----------------------
   window.addEventListener('popstate', function(event) {
     const jobId = event.state?.jobId;
     if (jobId) {
@@ -626,9 +598,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // ----------------------
-  // Initialize Everything
-  // ----------------------
   renderCarousel();
   autoScroll();
   if (archiveGrid && loadMoreBtn && loadMoreWrapper) {
