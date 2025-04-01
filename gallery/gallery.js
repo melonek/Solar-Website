@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`;
+      const shareUrl = `https://naturespark.com.au/gallery/job-static-htmls/gallery-${job.id}.html`; // e.g., gallery-job22.html
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
