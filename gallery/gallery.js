@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let lightboxActive = false;
   let modalWasOpenBeforeLightbox = false;
   
+  const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
+  
   function updateCarouselPauseState() {
     if (modalActive || lightboxActive) {
       carouselPaused = true;
@@ -35,8 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
       carouselPaused = false;
     }
   }
-  
-  const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
   
   function parseTimeString(timeStr) {
     const match = timeStr.match(/(\d+):(\d+)\s*(am|pm)/i);
@@ -70,20 +70,34 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${day}-${month}-${year}`;
   }
 
-  function updateOpenGraphTags(job) {
-    const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
-    const jobUrl = `${baseUrl}?job=${job.id}`;
+  function updateOpenGraphTags(job = null) {
+    const baseUrl = "https://naturesspark.com.au/gallery/gallery.html";
+    let ogTags;
 
-    const ogTags = {
-      "og:title": `${job.title} - Nature's Spark Solar`,
-      "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
-      "og:image": `https://naturespark.com.au${job.mainImage}`,
-      "og:url": jobUrl,
-      "og:type": "article",
-      "og:site_name": "Nature's Spark Solar",
-      "og:locale": "en_US",
-      "fb:app_id": "1426450195430892" // Replace with your actual App ID
-    };
+    if (job) {
+      const jobUrl = `${baseUrl}?job=${job.id}`;
+      ogTags = {
+        "og:title": `${job.title} - Nature's Spark Solar`,
+        "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
+        "og:image": `https://naturesspark.com.au${job.mainImage}`,
+        "og:url": jobUrl,
+        "og:type": "article",
+        "og:site_name": "Nature's Spark Solar",
+        "og:locale": "en_US",
+        "fb:app_id": "YOUR_APP_ID_HERE" // Replace with your actual App ID
+      };
+    } else {
+      ogTags = {
+        "og:title": "Installation Gallery - Nature's Spark Solar",
+        "og:description": "Discover our portfolio of completed solar projects. View our Installation Gallery to see expert workmanship and innovative solar solutions in action.",
+        "og:image": "https://naturesspark.com.au/images/BusinessLogo/nse-v2.png",
+        "og:url": baseUrl,
+        "og:type": "website",
+        "og:site_name": "Nature's Spark Solar",
+        "og:locale": "en_US",
+        "fb:app_id": "YOUR_APP_ID_HERE" // Replace with your actual App ID
+      };
+    }
 
     Object.entries(ogTags).forEach(([property, content]) => {
       let metaTag = document.querySelector(`meta[property="${property}"]`);
@@ -96,11 +110,24 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log(`Set ${property} to: ${content}`); // Debug log
     });
 
-    const twitterTags = {
+    // Validate og:image accessibility
+    if (ogTags["og:image"]) {
+      const img = new Image();
+      img.src = ogTags["og:image"];
+      img.onload = () => console.log(`og:image loaded successfully: ${ogTags["og:image"]}`);
+      img.onerror = () => console.error(`og:image failed to load: ${ogTags["og:image"]}`);
+    }
+
+    const twitterTags = job ? {
       "twitter:title": `${job.title} - Nature's Spark Solar`,
       "twitter:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}.`,
-      "twitter:image": `https://naturespark.com.au${job.mainImage}`,
-      "twitter:url": jobUrl
+      "twitter:image": `https://naturesspark.com.au${job.mainImage}`,
+      "twitter:url": `${baseUrl}?job=${job.id}`
+    } : {
+      "twitter:title": "Installation Gallery - Nature's Spark Solar",
+      "twitter:description": "Discover our portfolio of completed solar projects.",
+      "twitter:image": "https://naturesspark.com.au/images/BusinessLogo/nse-v2.png",
+      "twitter:url": baseUrl
     };
     Object.entries(twitterTags).forEach(([name, content]) => {
       let metaTag = document.querySelector(`meta[name="${name}"]`);
@@ -200,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`;
+      const shareUrl = `https://naturesspark.com.au/gallery/gallery.html?job=${job.id}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
@@ -217,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.style.overflow = '';
       updateCarouselPauseState();
       window.history.pushState({}, document.title, window.location.pathname);
+      updateOpenGraphTags(); // Reset to default
     });
   }
   
@@ -228,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
         updateCarouselPauseState();
         window.history.pushState({}, document.title, window.location.pathname);
+        updateOpenGraphTags(); // Reset to default
       }
     });
     modal.addEventListener('touchstart', function(e) {
@@ -237,6 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
         updateCarouselPauseState();
         window.history.pushState({}, document.title, window.location.pathname);
+        updateOpenGraphTags(); // Reset to default
       }
     });
   }
@@ -362,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function validateImage(img) {
     img.addEventListener('error', function() {
       img.src = fallbackImage;
-      console.log(`Image failed to load, using fallback: ${img.src}`); // Debug log
+      console.log(`Image failed to load, using fallback: ${img.src}`);
     });
   }
   
@@ -546,20 +576,30 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   })();
 
+  // Set OG tags on page load
   const urlParams = new URLSearchParams(window.location.search);
   const jobId = urlParams.get('job');
   if (jobId) {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
+      updateOpenGraphTags(job);
       openModal(job);
+    } else {
+      console.error(`Job not found for ID: ${jobId}`);
+      updateOpenGraphTags(); // Default tags
     }
   } else {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const job = jobs.find(j => j.id === hash);
       if (job) {
+        updateOpenGraphTags(job);
         openModal(job);
+      } else {
+        updateOpenGraphTags(); // Default tags
       }
+    } else {
+      updateOpenGraphTags(); // Default tags
     }
   }
   
@@ -592,13 +632,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jobId) {
       const job = jobs.find(j => j.id === jobId);
       if (job) {
+        updateOpenGraphTags(job);
         openModal(job);
+      } else {
+        updateOpenGraphTags(); // Default tags
       }
     } else {
       modal.style.display = 'none';
       modalActive = false;
       document.body.style.overflow = '';
       updateCarouselPauseState();
+      updateOpenGraphTags(); // Default tags
     }
   });
   
