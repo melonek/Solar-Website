@@ -76,6 +76,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const [day, month, year] = dateStr.split("-");
     return `${day}-${month}-${year}`;
   }
+
+  // Function to update Open Graph and Twitter meta tags
+  function updateOpenGraphTags(job) {
+    const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
+    const jobUrl = `${baseUrl}#${job.id}`;
+
+    // Define Open Graph tags for the specific job
+    const ogTags = {
+      "og:title": `${job.title} - Nature's Spark Solar`,
+      "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
+      "og:image": `https://naturespark.com.au${job.mainImage}`,
+      "og:url": jobUrl,
+      "og:type": "article",
+      "og:site_name": "Nature's Spark Solar",
+      "og:locale": "en_US"
+    };
+
+    // Update or create OG meta tags
+    Object.entries(ogTags).forEach(([property, content]) => {
+      let metaTag = document.querySelector(`meta[property="${property}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('property', property);
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', content);
+    });
+
+    // Update Twitter Card tags
+    const twitterTags = {
+      "twitter:title": `${job.title} - Nature's Spark Solar`,
+      "twitter:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}.`,
+      "twitter:image": `https://naturespark.com.au${job.mainImage}`,
+      "twitter:url": jobUrl
+    };
+    Object.entries(twitterTags).forEach(([name, content]) => {
+      let metaTag = document.querySelector(`meta[name="${name}"]`);
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', name);
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', content);
+    });
+  }
   
   // ----------------------
   // Modal Functions
@@ -91,6 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update URL with job ID (e.g., "#job1")
     window.history.pushState({ jobId: job.id }, job.title, `#${job.id}`);
+
+    // Update Open Graph and Twitter meta tags
+    updateOpenGraphTags(job);
 
     let modalContent = modalBody.querySelector('.modal-content');
     if (!modalContent) {
@@ -161,6 +209,18 @@ document.addEventListener('DOMContentLoaded', function() {
     columnsContainer.appendChild(leftColumn);
     columnsContainer.appendChild(rightColumn);
     modalContent.appendChild(columnsContainer);
+
+    // Add Share button
+    const shareButton = document.createElement('button');
+    shareButton.textContent = 'Share This Installation';
+    shareButton.className = 'share-btn';
+    shareButton.addEventListener('click', () => {
+      const shareUrl = `https://naturespark.com.au/gallery/gallery.html#${job.id}`;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
+      });
+    });
+    modalContent.appendChild(shareButton);
     
     modal.style.display = 'flex';
   }
@@ -517,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (hash) {
     const job = jobs.find(j => j.id === hash);
     if (job) {
-      openModal(job);
+      openModal(job); // This will update OG tags
     }
   }
   
