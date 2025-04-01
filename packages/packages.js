@@ -102,7 +102,109 @@ function getPathPrefix() {
 }
 
 // --------------------
-// updatePackageDisplay with Guard Conditions
+// initParallaxBanner Function (using Three.js)
+// --------------------
+function initParallaxBanner(sectionSelector, canvasId, imagePath, imageWidth, imageHeight) {
+  const section = document.querySelector(sectionSelector);
+  const canvas = document.querySelector(`#${canvasId}`);
+  
+  if (!section) {
+    console.error(`Section (${sectionSelector}) not found in DOM.`);
+    return;
+  }
+  if (!canvas) {
+    console.error(`Canvas (#${canvasId}) not found in DOM.`);
+    return;
+  }
+  if (typeof THREE === 'undefined') {
+    console.error("Three.js library not loaded.");
+    return;
+  }
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+
+  // Size canvas to match section height or a minimum
+  const sectionHeight = section.offsetHeight;
+  const minCanvasHeight = window.innerHeight * 1.3;
+  const canvasHeight = Math.max(sectionHeight, minCanvasHeight);
+  renderer.setSize(window.innerWidth, canvasHeight);
+  canvas.style.width = '100%';
+  canvas.style.height = `${canvasHeight}px`;
+  camera.aspect = window.innerWidth / canvasHeight;
+  camera.updateProjectionMatrix();
+  camera.position.z = 5;
+
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(imagePath,
+    () => console.log(`Image for ${canvasId} loaded successfully`),
+    undefined,
+    (err) => console.error(`Error loading image for ${canvasId}:`, err)
+  );
+  const planeWidth = 20;
+  const planeHeightValue = 20 * (imageHeight / imageWidth);
+  const geometry = new THREE.PlaneGeometry(planeWidth, planeHeightValue);
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    side: THREE.DoubleSide,
+    color: texture ? null : 0xff0000
+  });
+
+  const planeHeightInWorld = planeHeightValue * (imageHeight / 4000);
+  const repeatsNeeded = Math.ceil((canvasHeight * 1.5) / planeHeightInWorld) + 1;
+  const planes = [];
+
+  for (let i = 0; i < repeatsNeeded; i++) {
+    const plane = new THREE.Mesh(geometry, material);
+    plane.scale.set(imageWidth / 4000, imageHeight / 4000, 1);
+    plane.position.set(0, -i * planeHeightInWorld, -1);
+    scene.add(plane);
+    planes.push(plane);
+  }
+
+  const parallaxIntensity = 0.25; // Subtle effect
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const scrollY = window.scrollY;
+    const sectionTop = section.offsetTop;
+    const sectionHeightValue = section.clientHeight;
+
+    if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeightValue) {
+      const progress = (scrollY - sectionTop) / sectionHeightValue;
+      const parallaxY = progress * parallaxIntensity * sectionHeightValue;
+      planes.forEach((plane, index) => {
+        plane.position.y = (-index * planeHeightInWorld) - (parallaxY / 100);
+      });
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    const newSectionHeight = section.offsetHeight;
+    const newCanvasHeight = Math.max(newSectionHeight, window.innerHeight * 1.5);
+    renderer.setSize(window.innerWidth, newCanvasHeight);
+    camera.aspect = window.innerWidth / newCanvasHeight;
+    camera.updateProjectionMatrix();
+    canvas.style.height = `${newCanvasHeight}px`;
+    const newRepeatsNeeded = Math.ceil((newCanvasHeight * 1.5) / planeHeightInWorld) + 1;
+    if (newRepeatsNeeded > planes.length) {
+      for (let i = planes.length; i < newRepeatsNeeded; i++) {
+        const plane = new THREE.Mesh(geometry, material);
+        plane.scale.set(imageWidth / 4000, imageHeight / 4000, 1);
+        plane.position.set(0, -i * planeHeightInWorld, -1);
+        scene.add(plane);
+        planes.push(plane);
+      }
+    }
+  });
+}
+
+// --------------------
+// updatePackageDisplay & UI Functions (unchanged)
 // --------------------
 function updatePackageDisplay() {
   const panelImage = document.getElementById("selected-panel-image");
@@ -111,7 +213,6 @@ function updatePackageDisplay() {
   const packageDesc = document.getElementById("package-description");
   const confirmBtn = document.getElementById("confirm-selection");
 
-  // Guard: Check if the essential elements exist
   if (!panelImage || !inverterImage || !packageDesc || !confirmBtn) {
     console.warn("updatePackageDisplay: Required elements are missing. Skipping update.");
     return;
@@ -120,29 +221,19 @@ function updatePackageDisplay() {
   let panelLogo = document.getElementById("panel-logo");
   let inverterLogo = document.getElementById("inverter-logo");
 
-  // Append panel logo if not already present
-  if (!panelLogo) {
-    if (panelImage.parentNode) {
-      panelLogo = document.createElement("img");
-      panelLogo.id = "panel-logo";
-      panelLogo.classList.add("logo-overlay");
-      panelImage.parentNode.appendChild(panelLogo);
-    } else {
-      console.warn("panelImage.parentNode is null; cannot append panelLogo.");
-    }
+  if (!panelLogo && panelImage.parentNode) {
+    panelLogo = document.createElement("img");
+    panelLogo.id = "panel-logo";
+    panelLogo.classList.add("logo-overlay");
+    panelImage.parentNode.appendChild(panelLogo);
   }
-  if (!inverterLogo) {
-    if (inverterImage.parentNode) {
-      inverterLogo = document.createElement("img");
-      inverterLogo.id = "inverter-logo";
-      inverterLogo.classList.add("logo-overlay");
-      inverterImage.parentNode.appendChild(inverterLogo);
-    } else {
-      console.warn("inverterImage.parentNode is null; cannot append inverterLogo.");
-    }
+  if (!inverterLogo && inverterImage.parentNode) {
+    inverterLogo = document.createElement("img");
+    inverterLogo.id = "inverter-logo";
+    inverterLogo.classList.add("logo-overlay");
+    inverterImage.parentNode.appendChild(inverterLogo);
   }
 
-  // Update panel image and logo
   if (selectedPanel) {
     panelImage.src = selectedPanel.image;
     panelImage.style.visibility = "visible";
@@ -154,7 +245,6 @@ function updatePackageDisplay() {
       panelLogo.style.visibility = "hidden";
     }
   }
-  // Update inverter image and logo
   if (selectedInverter) {
     inverterImage.src = selectedInverter.image;
     inverterImage.style.visibility = "visible";
@@ -166,7 +256,6 @@ function updatePackageDisplay() {
       inverterLogo.style.visibility = "hidden";
     }
   }
-  // Update battery image and logo if battery is selected
   if (selectedBattery) {
     batteryImage.src = selectedBattery.image;
     batteryImage.style.visibility = "visible";
@@ -196,7 +285,6 @@ function updatePackageDisplay() {
     }
   }
 
-  // If both panel and inverter are selected, update the package description and total cost
   if (selectedPanel && selectedInverter) {
     let desc = `My installation will consist of <strong>${selectedPanel.name}</strong> panels and <strong>${selectedInverter.name}</strong> inverter`;
     if (selectedBattery) desc += ` and <strong>${selectedBattery.name}</strong> battery storage system.`;
@@ -712,58 +800,32 @@ document.addEventListener("DOMContentLoaded", function() {
 `},
       {
         id: 2,
-        name: "Trina Solar 410W",
-        brand: "Trina",
-        specs: "410W Mono PERC",
+        name: "Jinko Tiger Neo",
+        brand: "Jinko",
+        specs: "108 Cell N-Type 30mm",
         country: "China",
         warranty: "25 years",
-        datasheet: "",
-        image: "../images/Panels/Trina.webp",
-        price: 1560,
+        datasheet: "/packages/Datasheets/Jinko-Datasheet.pdf",
+        image: "../images/Panels/Jinko-Tiger-Neo-440W.webp",
+        price: 1980,
         popularity: 5,
         description: "Solar panel description goes here..."
       },
-      {
-        id: 3,
-        name: "Canadian Solar 400W",
-        brand: "Canadian Solar",
-        specs: "400W Mono PERC",
-        country: "Canada",
-        warranty: "25 years",
-        datasheet: "",
-        image: "../images/Panels/Canadian-Solar-440-W.webp",
-        price: 1500,
-        popularity: 3,
-        description: "Solar panel description goes here..."
-      }
     ],
     inverters: [
       {
         id: 1,
-        name: "SOLIS 5kW Three Phase Solar Inverter",
-        brand: "Fronius",
-        specs: "5kW Single Phase",
-        country: "Austria",
-        warranty: "10 years",
-        datasheet: "",
-        image: "../images/Inverters/FroniusSymo.webp",
-        price: 1200,
+        name: "Solis 5kW Solar Inverter",
+        brand: "Solis",
+        specs: "5kW Three-Phase",
+        country: "China",
+        warranty: "5 years",
+        datasheet: "/packages/Datasheets/Solis-Datasheet.pdf",
+        image: "../images/Inverters/Solis-5kW-Solar-Inverter.webp",
+        price: 1278,
         popularity: 4,
         description: "Inverter description goes here..."
       },
-      {
-        id: 2,
-        name: "SMA Sunny Boy 5.0",
-        brand: "SMA",
-        specs: "5kW Single Phase",
-        country: "Germany",
-        warranty: "10 years",
-        datasheet: "",
-        image: "../images/Inverters/SMA.webp",
-        price: 1150,
-        popularity: 2,
-        description: "Inverter description goes here..."
-      }
     ],
     batteries: [
       {
@@ -823,9 +885,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       updatePackageDisplay();
     });
-    // Animate the card as it appears (slide up effect)
     gsap.from(card, { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" });
-    
     return card;
   }
 
@@ -852,15 +912,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const modal = document.getElementById("custom-modal");
 
-    // Populate the left container (image and logo)
     document.querySelector(".custom-modal-image-container").innerHTML = `
       <div class="product-image-container">
         <img src="${product.image}" alt="${product.name}" class="main-product-image">
         ${brandLogoUrl ? `<img src="${brandLogoUrl}" alt="${product.brand}" class="custom-logo ${logoClass}">` : ""}
       </div>
     `;
-
-    // Populate the right container (basic product info)
     document.querySelector(".custom-modal-info").innerHTML = `
       <p><strong>Brand Name:</strong> ${product.brand}</p>
       <p><strong>Specifications:</strong> ${product.specs}</p>
@@ -868,10 +925,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>Warranty:</strong> ${product.warranty}</p>
       <p><strong>Datasheet:</strong> <a href="${product.datasheet}" target="_blank">Download</a></p>
     `;
-
-    // Populate the full-width description container (which may include HTML markup)
     document.querySelector(".custom-modal-description").innerHTML = product.description;
-
     modal.classList.add("active");
   }
 
@@ -1066,55 +1120,80 @@ document.addEventListener("DOMContentLoaded", function() {
       btnContainer.appendChild(batteryOnly);
     }
   })();
+});
 
-  // --- Updated Modal Close Event Listeners (using new names) ---
-  document.addEventListener("click", (e) => {
-    const modal = document.getElementById("custom-modal");
-    if (modal && modal.classList.contains("active") && e.target === modal) {
-      modal.classList.remove("active");
-    }
-  });
+// --------------------
+// Initialize Parallax Banners on Window Load
+// --------------------
+window.addEventListener('load', function() {
+  // Panels Section Parallax (using green image)
+  const panelsBannerConfig = {
+    sectionSelector: '#panels-section',
+    canvasId: 'hero-canvas',
+    imagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/green.webp',
+    imageWidth: 6500,
+    imageHeight: 4500
+  };
 
-  document.addEventListener("click", (e) => {
-    const modal = document.getElementById("custom-modal");
-    if (modal && (e.target.classList.contains("custom-close") || e.target.classList.contains("custom-modal-close"))) {
-      modal.classList.remove("active");
-    }
-  });
+  // Inverters Section Parallax (using blue image)
+  const inverterBannerConfig = {
+    sectionSelector: '#inverters-section',
+    canvasId: 'inverter-canvas',
+    imagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/blue.webp',
+    imageWidth: 6500,
+    imageHeight: 4500
+  };
 
-  window.addEventListener('scroll', function panelsTextCloudScroll() {
-    if (!textCloudFlags.panels) {
-      const panelsSection = document.getElementById('panels-section');
-      if (panelsSection) {
-        const rect = panelsSection.getBoundingClientRect();
-        if (rect.top <= window.innerHeight * 0.3 && rect.bottom >= window.innerHeight * 0.3) {
-          showTextCloudForSection('panels');
-          window.removeEventListener('scroll', panelsTextCloudScroll);
-        }
-      }
-    }
-  });
+  // Battery Section Parallax (using orange image)
+  const batteryBannerConfig = {
+    sectionSelector: '#battery-storage',
+    canvasId: 'battery-canvas',
+    imagePath: 'https://naturespark.com.au/images/Green,Blue,Orange-sectionsInPpackages/orange.webp',
+    imageWidth: 6500,
+    imageHeight: 4500
+  };
 
-  // --- Filter Bar Sorting for Solar Products ---
-  function sortProducts(type, criteria) {
-    const grid = document.getElementById(type === "panel" ? "panels-grid" : "inverters-grid");
-    let products = [...solarProducts[type + "s"]];
-    if (criteria === "expensive") {
-      products.sort((a, b) => b.price - a.price);
-    } else if (criteria === "cheap") {
-      products.sort((a, b) => a.price - b.price);
-    } else if (criteria === "popular") {
-      products.sort((a, b) => b.popularity - a.popularity);
-    }
-    grid.innerHTML = "";
-    products.forEach(product => grid.appendChild(createProductCard(product, type)));
-  }
-  document.getElementById("panel-filter").addEventListener("change", function() {
-    sortProducts("panel", this.value);
-  });
-  document.getElementById("inverter-filter").addEventListener("change", function() {
-    sortProducts("inverter", this.value);
-  });
+  // Initialize Panels Banner
+  preloadImagesUnified([panelsBannerConfig.imagePath])
+    .then(() => {
+      console.log("Panels banner image preloaded.");
+      initParallaxBanner(
+        panelsBannerConfig.sectionSelector,
+        panelsBannerConfig.canvasId,
+        panelsBannerConfig.imagePath,
+        panelsBannerConfig.imageWidth,
+        panelsBannerConfig.imageHeight
+      );
+    })
+    .catch(err => console.error("Error preloading panels banner image:", err));
+
+  // Initialize Inverters Banner
+  preloadImagesUnified([inverterBannerConfig.imagePath])
+    .then(() => {
+      console.log("Inverters banner image preloaded.");
+      initParallaxBanner(
+        inverterBannerConfig.sectionSelector,
+        inverterBannerConfig.canvasId,
+        inverterBannerConfig.imagePath,
+        inverterBannerConfig.imageWidth,
+        inverterBannerConfig.imageHeight
+      );
+    })
+    .catch(err => console.error("Error preloading inverters banner image:", err));
+
+  // Initialize Battery Banner
+  preloadImagesUnified([batteryBannerConfig.imagePath])
+    .then(() => {
+      console.log("Battery banner image preloaded.");
+      initParallaxBanner(
+        batteryBannerConfig.sectionSelector,
+        batteryBannerConfig.canvasId,
+        batteryBannerConfig.imagePath,
+        batteryBannerConfig.imageWidth,
+        batteryBannerConfig.imageHeight
+      );
+    })
+    .catch(err => console.error("Error preloading battery banner image:", err));
 });
 
 if ('serviceWorker' in navigator) {

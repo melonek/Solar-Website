@@ -1,4 +1,12 @@
+// gallery.js
 document.addEventListener('DOMContentLoaded', function() {
+  // Ensure jobs is available
+  if (!window.jobs) {
+    console.error('Jobs array not found. Ensure jobs.js is loaded before gallery.js.');
+    return;
+  }
+  const jobs = window.jobs;
+
   // ----------------------
   // Selectors and Globals
   // ----------------------
@@ -9,24 +17,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const lightboxContent = document.querySelector('.lightbox-content');
   const closeLightbox = document.querySelector('.close-lightbox');
   
-  // Carousel Elements
   const carousel = document.querySelector('#installation-gallery .carousel');
   const leftBtn = document.querySelector('#installation-gallery .left-btn');
   const rightBtn = document.querySelector('#installation-gallery .right-btn');
   
-  // Archive Elements (if used)
   const archiveGrid = document.querySelector('.archive-grid');
   const loadMoreBtn = document.querySelector('.load-more');
   const loadMoreWrapper = document.querySelector('.load-more-wrapper');
   
-  // Global variables for carousel scrolling
   let scrollSpeed = 0.5;
   let currentTranslateX = 0;
-  
-  // Global flag to pause/resume carousel auto-scroll
   let carouselPaused = false;
-  
-  // Flags for overlays:
   let modalActive = false;
   let lightboxActive = false;
   let modalWasOpenBeforeLightbox = false;
@@ -39,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Fallback image in case an image fails to load
   const fallbackImage = "https://www.wienerberger.co.uk/content/dam/wienerberger/united-kingdom/marketing/photography/productshots/in-roof-solar/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg.imgTransformer/media_16to10/md-2/1686313825853/UK_MKT_PHO_REF_Solar_Grasmere_002.jpg";
   
   // ----------------------
@@ -89,16 +89,17 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCarouselPauseState();
     document.body.style.overflow = 'hidden';
 
-    // Check for existing modal-content; reuse if present, otherwise create new
+    // Update URL with job ID (e.g., "#job1")
+    window.history.pushState({ jobId: job.id }, job.title, `#${job.id}`);
+
     let modalContent = modalBody.querySelector('.modal-content');
     if (!modalContent) {
       modalContent = document.createElement('div');
       modalContent.className = 'modal-content';
       modalBody.appendChild(modalContent);
     }
-    modalContent.innerHTML = ''; // Clear existing content
+    modalContent.innerHTML = '';
 
-    // Main Image
     const mainImg = document.createElement('img');
     mainImg.className = 'modal-main-img';
     mainImg.src = job.mainImage;
@@ -110,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     modalContent.appendChild(mainImg);
     
-    // Details Section
     const detailsDiv = document.createElement('div');
     detailsDiv.className = 'modal-details';
     detailsDiv.innerHTML = `
@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     modalContent.appendChild(detailsDiv);
     
-    // Two columns for additional images
     const columnsContainer = document.createElement('div');
     columnsContainer.className = 'modal-columns';
     
@@ -163,22 +162,19 @@ document.addEventListener('DOMContentLoaded', function() {
     columnsContainer.appendChild(rightColumn);
     modalContent.appendChild(columnsContainer);
     
-    // Show modal
     modal.style.display = 'flex';
-    // Removed the scrollTop reset to ensure it only applies to the modal.
   }
   
-  // Close modal when clicking the close button
   if (closeModal) {
     closeModal.addEventListener('click', function() {
       modalActive = false;
       modal.style.display = 'none';
       document.body.style.overflow = '';
       updateCarouselPauseState();
+      window.history.pushState({}, document.title, window.location.pathname); // Reset URL
     });
   }
   
-  // Close modal when clicking outside the modal-content
   if (modal) {
     modal.addEventListener('click', function(e) {
       if (!e.target.closest('.modal-content')) {
@@ -186,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         document.body.style.overflow = '';
         updateCarouselPauseState();
+        window.history.pushState({}, document.title, window.location.pathname); // Reset URL
       }
     });
     modal.addEventListener('touchstart', function(e) {
@@ -194,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         document.body.style.overflow = '';
         updateCarouselPauseState();
+        window.history.pushState({}, document.title, window.location.pathname); // Reset URL
       }
     });
   }
@@ -217,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
     lightbox.style.display = 'flex';
     lightbox.style.zIndex = '1000';
     
-    // Blurred background overlay
     let blurredOverlay = document.getElementById('blurred-background');
     if (!blurredOverlay) {
       blurredOverlay = document.createElement('div');
@@ -239,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
       pointerEvents: 'none'
     });
     
-    // Transparent blocking overlay
     let blockingOverlay = document.getElementById('blocking-overlay');
     if (!blockingOverlay) {
       blockingOverlay = document.createElement('div');
@@ -428,7 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Total cards count:", carousel.children.length);
   }
   
-  // Render Archive (if present)
   let loadedJobs = 0;
   const batchSize = 20;
   
@@ -495,29 +490,36 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Immediately override the native scroll functions as early as possible
-(function() {
-  const originalScrollTo = window.scrollTo;
-  window.scrollTo = function(x, y) {
-    // If the call is trying to scroll to top, ignore it
-    if (x === 0 && y === 0) {
-      console.log("Prevented automatic scroll to top via scrollTo.");
-      return;
-    }
-    return originalScrollTo.apply(window, arguments);
-  };
+  (function() {
+    const originalScrollTo = window.scrollTo;
+    window.scrollTo = function(x, y) {
+      if (x === 0 && y === 0) {
+        console.log("Prevented automatic scroll to top via scrollTo.");
+        return;
+      }
+      return originalScrollTo.apply(window, arguments);
+    };
 
-  // Also override window.scroll if needed (for browsers that use it)
-  const originalScroll = window.scroll;
-  window.scroll = function(options) {
-    // If options is an object and both top and left are 0, ignore it
-    if (typeof options === "object" && options.top === 0 && options.left === 0) {
-      console.log("Prevented automatic scroll to top via scroll.");
-      return;
-    }
-    return originalScroll.apply(window, arguments);
-  };
-})();
+    const originalScroll = window.scroll;
+    window.scroll = function(options) {
+      if (typeof options === "object" && options.top === 0 && options.left === 0) {
+        console.log("Prevented automatic scroll to top via scroll.");
+        return;
+      }
+      return originalScroll.apply(window, arguments);
+    };
+  })();
 
+  // ----------------------
+  // Check URL on Page Load
+  // ----------------------
+  const hash = window.location.hash.substring(1); // e.g., "job1" from "#job1"
+  if (hash) {
+    const job = jobs.find(j => j.id === hash);
+    if (job) {
+      openModal(job);
+    }
+  }
   
   // ----------------------
   // Carousel Auto-Scroll
@@ -533,7 +535,6 @@ document.addEventListener('DOMContentLoaded', function() {
     requestAnimationFrame(autoScroll);
   }
   
-  // Left and Right control buttons
   if (leftBtn) {
     leftBtn.addEventListener('click', function() {
       currentTranslateX += 200;
@@ -546,6 +547,24 @@ document.addEventListener('DOMContentLoaded', function() {
       carousel.style.transform = `translateX(${currentTranslateX}px)`;
     });
   }
+  
+  // ----------------------
+  // Handle Back/Forward Navigation
+  // ----------------------
+  window.addEventListener('popstate', function(event) {
+    const jobId = event.state?.jobId;
+    if (jobId) {
+      const job = jobs.find(j => j.id === jobId);
+      if (job) {
+        openModal(job);
+      }
+    } else {
+      modal.style.display = 'none';
+      modalActive = false;
+      document.body.style.overflow = '';
+      updateCarouselPauseState();
+    }
+  });
   
   // ----------------------
   // Initialize Everything

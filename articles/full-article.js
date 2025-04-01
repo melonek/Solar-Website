@@ -268,13 +268,12 @@ function handleSummaryClick(event) {
     }
 }
 
-function shareArticle(event) {
+async function shareArticle(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    // Use static metadata from <head>
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || 
                document.querySelector('title')?.textContent || 'Check this out!',
@@ -299,7 +298,7 @@ function shareArticle(event) {
         }
     }
     
-    // Cache-busting to force fresh metadata fetch
+    // Cache-busting for URL fetch
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
@@ -329,13 +328,24 @@ function shareArticle(event) {
             break;
         default:
             if (navigator.share) {
-                navigator.share({
-                    title: shareData.title,
-                    text: shareData.text,
-                    url: shareData.url
-                })
+                // Try explicit image fetch as a fallback
+                if (shareData.image) {
+                    try {
+                        const response = await fetch(shareData.image, { mode: 'cors' });
+                        if (response.ok) {
+                            const blob = await response.blob();
+                            const file = new File([blob], 'article-image.jpg', { type: 'image/jpeg' });
+                            shareData.files = [file];
+                        } else {
+                            console.error('Image fetch failed:', response.status);
+                        }
+                    } catch (err) {
+                        console.error('Image fetch error:', err);
+                    }
+                }
+                navigator.share(shareData)
                     .then(() => console.log('Article shared successfully'))
-                    .catch(err => console.error('Share failed:', err)); // Silent fail
+                    .catch(err => console.error('Share failed:', err));
             } else if (navigator.clipboard) {
                 navigator.clipboard.writeText(shareData.url)
                     .then(() => console.log('URL copied to clipboard'))
