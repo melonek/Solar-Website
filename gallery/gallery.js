@@ -1,19 +1,4 @@
 // gallery.js
-// Set OG tags immediately if jobId exists
-const urlParams = new URLSearchParams(window.location.search);
-const jobId = urlParams.get('job');
-if (jobId && window.jobs) {
-  const job = window.jobs.find(j => j.id === jobId);
-  if (job) {
-    document.querySelector('meta[property="og:title"]').setAttribute('content', `${job.title} - Nature's Spark Solar`);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`);
-    document.querySelector('meta[property="og:image"]').setAttribute('content', `https://naturespark.com.au${job.mainImage}`);
-    document.querySelector('meta[property="og:url"]').setAttribute('content', `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`);
-    document.querySelector('meta[property="og:type"]').setAttribute('content', 'article');
-    console.log(`Initial og:image set to: https://naturespark.com.au${job.mainImage}`);
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
   if (!window.jobs) {
     console.error('Jobs array not found. Ensure jobs.js is loaded before gallery.js.');
@@ -84,66 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const [day, month, year] = dateStr.split("-");
     return `${day}-${month}-${year}`;
   }
-
-  function updateOpenGraphTags(job = null) {
-    const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
-    let ogTags;
-
-    if (job) {
-      const jobUrl = `${baseUrl}?job=${job.id}`;
-      ogTags = {
-        "og:title": `${job.title} - Nature's Spark Solar`,
-        "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
-        "og:image": `https://naturespark.com.au${job.mainImage}`,
-        "og:url": jobUrl,
-        "og:type": "article",
-        "og:site_name": "Nature's Spark Solar",
-        "og:locale": "en_US",
-        "fb:app_id": "1426450195430892"
-      };
-    } else {
-      ogTags = {
-        "og:title": "Installation Gallery - Nature's Spark Solar",
-        "og:description": "Discover our portfolio of completed solar projects. View our Installation Gallery to see expert workmanship and innovative solar solutions in action.",
-        "og:image": "https://naturespark.com.au/gallery/fallback-solar-image.webp",
-        "og:url": baseUrl,
-        "og:type": "website",
-        "og:site_name": "Nature's Spark Solar",
-        "og:locale": "en_US",
-        "fb:app_id": "1426450195430892"
-      };
-    }
-
-    Object.entries(ogTags).forEach(([property, content]) => {
-      let metaTag = document.querySelector(`meta[property="${property}"]`);
-      if (!metaTag) {
-        metaTag = document.createElement('meta');
-        metaTag.setAttribute('property', property);
-        document.head.appendChild(metaTag);
-      }
-      metaTag.setAttribute('content', content);
-      console.log(`Set ${property} to: ${content}`);
-    });
-
-    // Validate og:image
-    if (ogTags["og:image"]) {
-      const img = new Image();
-      img.src = ogTags["og:image"];
-      img.onload = () => console.log(`og:image validated: ${ogTags["og:image"]}`);
-      img.onerror = () => console.error(`og:image inaccessible: ${ogTags["og:image"]}`);
-    }
-  }
-
-  if (window.location.pathname.includes('/gallery/job-static-htmls/gallery-job')) {
-    const jobId = window.location.pathname.split('gallery-job')[1].replace('.html', '');
-    const job = jobs.find(j => j.id === jobId);
-    if (job) {
-      console.log(`Auto-opening modal for static page job: ${jobId}`);
-      openModal(job);
-    } else {
-      console.error(`Job not found for static page: ${jobId}`);
-    }
-  }
   
   function openModal(job) {
     if (!modal || !modalBody) {
@@ -154,8 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCarouselPauseState();
     document.body.style.overflow = 'hidden';
 
+    // Only update URL, not OG tags, since static pages handle sharing
     window.history.pushState({ jobId: job.id }, job.title, `?job=${job.id}`);
-    updateOpenGraphTags(job);
 
     let modalContent = modalBody.querySelector('.modal-content');
     if (!modalContent) {
@@ -231,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturespark.com.au/gallery/job-static-htmls/gallery-${job.id}.html`; // e.g., gallery-job22.html
+      const shareUrl = `https://naturespark.com.au/gallery/job-static-htmls/gallery-${job.id}.html`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
@@ -248,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.style.overflow = '';
       updateCarouselPauseState();
       window.history.pushState({}, document.title, window.location.pathname);
-      updateOpenGraphTags();
     });
   }
   
@@ -260,7 +184,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
         updateCarouselPauseState();
         window.history.pushState({}, document.title, window.location.pathname);
-        updateOpenGraphTags();
       }
     });
     modal.addEventListener('touchstart', function(e) {
@@ -270,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
         updateCarouselPauseState();
         window.history.pushState({}, document.title, window.location.pathname);
-        updateOpenGraphTags();
       }
     });
   }
@@ -580,27 +502,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   })();
 
+  // Auto-open modal for static job pages
+  if (window.location.pathname.includes('/gallery/job-static-htmls/gallery-job')) {
+    const pathParts = window.location.pathname.split('/');
+    const fileName = pathParts[pathParts.length - 1]; // e.g., "gallery-job22.html"
+    const jobId = fileName.replace('gallery-', '').replace('.html', ''); // e.g., "job22"
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      console.log(`Auto-opening modal for static page job: ${jobId}`);
+      openModal(job);
+    } else {
+      console.error(`Job not found for static page: ${jobId}`);
+    }
+  }
+
+  // Open modal based on query param (optional, if still used)
+  const urlParams = new URLSearchParams(window.location.search);
+  const jobId = urlParams.get('job');
   if (jobId) {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
-      updateOpenGraphTags(job);
       openModal(job);
     } else {
       console.error(`Job not found for ID: ${jobId}`);
-      updateOpenGraphTags();
-    }
-  } else {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const job = jobs.find(j => j.id === hash);
-      if (job) {
-        updateOpenGraphTags(job);
-        openModal(job);
-      } else {
-        updateOpenGraphTags();
-      }
-    } else {
-      updateOpenGraphTags();
     }
   }
   
@@ -633,17 +557,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jobId) {
       const job = jobs.find(j => j.id === jobId);
       if (job) {
-        updateOpenGraphTags(job);
         openModal(job);
-      } else {
-        updateOpenGraphTags();
       }
     } else {
       modal.style.display = 'none';
       modalActive = false;
       document.body.style.overflow = '';
       updateCarouselPauseState();
-      updateOpenGraphTags();
     }
   });
   
