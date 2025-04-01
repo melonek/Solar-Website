@@ -71,13 +71,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateOpenGraphTags(job) {
-    const baseUrl = "https://naturesspark.com.au/gallery/gallery.html";
+    const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
     const jobUrl = `${baseUrl}?job=${job.id}`;
 
     const ogTags = {
       "og:title": `${job.title} - Nature's Spark Solar`,
       "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
-      "og:image": `https://naturesspark.com.au${job.mainImage}`,
+      "og:image": `https://naturespark.com.au${job.mainImage}`,
       "og:url": jobUrl,
       "og:type": "article",
       "og:site_name": "Nature's Spark Solar",
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const twitterTags = {
       "twitter:title": `${job.title} - Nature's Spark Solar`,
       "twitter:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}.`,
-      "twitter:image": `https://naturesspark.com.au${job.mainImage}`,
+      "twitter:image": `https://naturespark.com.au${job.mainImage}`,
       "twitter:url": jobUrl
     };
     Object.entries(twitterTags).forEach(([name, content]) => {
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturesspark.com.au/gallery/gallery.html?job=${job.id}`;
+      const shareUrl = `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
