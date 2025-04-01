@@ -71,17 +71,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateOpenGraphTags(job) {
-    const baseUrl = "https://naturespark.com.au/gallery/gallery.html";
+    const baseUrl = "https://naturesspark.com.au/gallery/gallery.html";
     const jobUrl = `${baseUrl}?job=${job.id}`;
 
     const ogTags = {
       "og:title": `${job.title} - Nature's Spark Solar`,
       "og:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}. Explore our gallery at Nature's Spark Solar.`,
-      "og:image": `https://naturespark.com.au${job.mainImage}`,
+      "og:image": `https://naturesspark.com.au${job.mainImage}`,
       "og:url": jobUrl,
       "og:type": "article",
       "og:site_name": "Nature's Spark Solar",
-      "og:locale": "en_US"
+      "og:locale": "en_US",
+      "fb:app_id": "1426450195430892" // Replace with your actual App ID
     };
 
     Object.entries(ogTags).forEach(([property, content]) => {
@@ -92,12 +93,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(metaTag);
       }
       metaTag.setAttribute('content', content);
+      console.log(`Set ${property} to: ${content}`); // Debug log
     });
 
     const twitterTags = {
       "twitter:title": `${job.title} - Nature's Spark Solar`,
       "twitter:description": `A ${job["System Size"]} ${job["Installation Type"]} installation in ${job.suburb}.`,
-      "twitter:image": `https://naturespark.com.au${job.mainImage}`,
+      "twitter:image": `https://naturesspark.com.au${job.mainImage}`,
       "twitter:url": jobUrl
     };
     Object.entries(twitterTags).forEach(([name, content]) => {
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(metaTag);
       }
       metaTag.setAttribute('content', content);
+      console.log(`Set ${name} to: ${content}`); // Debug log
     });
   }
   
@@ -197,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButton.textContent = 'Share This Installation';
     shareButton.className = 'share-btn';
     shareButton.addEventListener('click', () => {
-      const shareUrl = `https://naturespark.com.au/gallery/gallery.html?job=${job.id}`;
+      const shareUrl = `https://naturesspark.com.au/gallery/gallery.html?job=${job.id}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('URL copied to clipboard! Paste it on Facebook to share this installation.');
       });
@@ -359,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function validateImage(img) {
     img.addEventListener('error', function() {
       img.src = fallbackImage;
+      console.log(`Image failed to load, using fallback: ${img.src}`); // Debug log
     });
   }
   
