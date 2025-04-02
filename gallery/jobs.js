@@ -417,6 +417,25 @@ const jobs = [
       "/images/Jobs/Job22/i1.webp",
       "/images/Jobs/Job22/i2.webp",
     ]
+  },
+  {
+    id: "job23",
+    title: "Wanneroo Installation",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.6kW (15 Panels)",
+    roofType: "Metal Tin",
+    completionDate: "02-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-11:30am)",
+    suburb: "Wanneroo, WA, 6065",
+    mainImage: "/images/Jobs/Job23/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job23/p1.webp",
+      "/images/Jobs/Job23/p2.webp",
+      "/images/Jobs/Job23/i1.webp",
+      "/images/Jobs/Job23/i2.webp",
+    ]
   }
 ];
 
