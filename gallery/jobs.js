@@ -436,6 +436,25 @@ const jobs = [
       "/images/Jobs/Job23/i1.webp",
       "/images/Jobs/Job23/i2.webp",
     ]
+  },
+  {
+    id: "job23",
+    title: "Mount Helena Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.6kW (15 Panels)",
+    roofType: "Metal Tin",
+    completionDate: "03-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:30am-12:30pm)",
+    suburb: "Mount Helena, WA, 6082",
+    mainImage: "/images/Jobs/Job24/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job24/p1.webp",
+      "/images/Jobs/Job24/p2.webp",
+      "/images/Jobs/Job24/i1.webp",
+      "/images/Jobs/Job24/i2.webp",
+    ]
   }
 ];
 

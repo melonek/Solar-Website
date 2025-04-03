@@ -408,22 +408,28 @@ document.addEventListener('DOMContentLoaded', function() {
     return card;
   }
   
-  function renderCarousel() {
-    if (!carousel) {
-      console.error('Carousel not found');
-      return;
-    }
-    console.log("Rendering carousel...");
-    jobs.forEach(job => {
-      const card = createCard(job);
-      carousel.appendChild(card);
-    });
-    jobs.forEach(job => {
-      const cardClone = createCard(job);
-      carousel.appendChild(cardClone);
-    });
-    console.log("Total cards count:", carousel.children.length);
+function renderCarousel() {
+  if (!carousel) {
+    console.error('Carousel not found');
+    return;
   }
+  console.log("Rendering carousel...");
+
+  // Use the sorted jobs array for displaying the jobs in the carousel
+  sortedJobs.forEach(job => {
+    const card = createCard(job);
+    carousel.appendChild(card);
+  });
+
+  // Optionally, duplicate the job cards for infinite scrolling effect
+  sortedJobs.forEach(job => {
+    const cardClone = createCard(job);
+    carousel.appendChild(cardClone);
+  });
+
+  console.log("Total cards count:", carousel.children.length);
+}
+
   
   let loadedJobs = 0;
   const batchSize = 20;
@@ -441,15 +447,15 @@ document.addEventListener('DOMContentLoaded', function() {
     return timeObj.hours * 60 + timeObj.minutes;
   }
   
-  const sortedJobs = jobs.slice().sort((a, b) => {
-    const dateA = parseDate(a.completionDate);
-    const dateB = parseDate(b.completionDate);
-    if (dateA.getTime() !== dateB.getTime()) {
-      return dateB - dateA;
-    } else {
-      return getStartTime(b.timeToComplete) - getStartTime(a.timeToComplete);
-    }
-  });
+const sortedJobs = jobs.slice().sort((a, b) => {
+  const dateA = parseDate(a.completionDate);
+  const dateB = parseDate(b.completionDate);
+  if (dateA.getTime() !== dateB.getTime()) {
+    return dateB - dateA;  // Sort by newest first
+  } else {
+    return getStartTime(b.timeToComplete) - getStartTime(a.timeToComplete);
+  }
+});
   
   function createArchiveSquare(job) {
     const square = document.createElement('div');
