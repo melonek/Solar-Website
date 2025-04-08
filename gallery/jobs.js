@@ -502,7 +502,7 @@ const jobs = [
     "System Size": "6.63kW (13 Panels)",
     roofType: "Clay Tile",
     completionDate: "08-04-2025",
-    difficulty: "Easy",
+    difficulty: "Moderate",
     timeToComplete: "(8:00am-1:30pm)",
     suburb: "Victoria Park, WA, 6101",
     mainImage: "/images/Jobs/Job27/m.webp",
