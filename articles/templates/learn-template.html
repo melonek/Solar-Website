@@ -237,15 +237,15 @@
   </div>
 
   <script>
-    // Redirect only for users, not crawlers, from external sources
-    const articleId = "6"; // Article ID for article2
+    // Redirect for external visitors (non-crawlers)
+    const articleId = "6"; // Article ID for Dyness article
     const referrer = document.referrer;
     const isExternalReferrer = referrer && !referrer.includes(location.hostname);
     const isCrawler = /bot|googlebot|crawler|spider|robot|crawling|twitterbot/i.test(navigator.userAgent);
     if (isExternalReferrer && !isCrawler) {
-      window.location.href = `/Solar-Website/articles/learn.html?articleId=${articleId}`;
+      window.location.href = `/articles/learn.html?articleId=${articleId}`;
     }
-  </script>
+    </script>
 
   <!-- Footer -->
   <footer>
