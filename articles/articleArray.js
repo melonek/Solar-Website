@@ -126,5 +126,17 @@ const allArticles = [
         "displayOnMain": true,
         "displayOnLearn": false,
         "fullArticlePath": "article5/Dyness-Powerbox-Pro-Battery-for-Australians.html"
+      },
+      {
+        "id": 6,
+        "title": "Western Australian Battery Rebate: State and Federal Incentives in 2025",
+        "image": "/articles/article6/battery-rebates-wa-2025.webp",
+        "snippet": "Explore how WA’s state rebates up to $7,500 and a $4,000 federal subsidy make solar batteries more affordable than ever in 2025.",
+        "summary": "\n<h2>Program Overview</h2>\n<p>Western Australia’s Residential Battery Scheme, launching by July 1, 2025, offers $5,000 rebates for Synergy customers and $7,500 for Horizon Power users, paired with a $4,000 federal subsidy confirmed in April 2025. This dual incentive targets 20,000 households, aiming to deploy over 200 MWh of storage capacity.</p>\n<h2>State Incentives</h2>\n<p>The state program provides $500-$750 per kWh (up to 10 kWh), requires VPP-capable batteries, and includes $10,000 interest-free loans for low-income households, alongside a $50M manufacturing boost.</p>\n<h2>Federal Support</h2>\n<p>The $4,000 federal rebate stacks with state incentives, slashing costs for a 10 kWh battery to as low as $500-$3,000, enhancing affordability nationwide.</p>\n<h2>Customer & Industry Impact</h2>\n<p>Homeowners could save $1,000-$1,800 annually, with a 2-4 year payback, while the industry braces for a demand surge, job creation (500-1,000), and local manufacturing growth.</p>\n",
+        "publishedDate": "April 08, 2025",
+        "comment": "A detailed analysis of the Western Australian battery rebate program, covering state and federal incentives, cost reductions, customer savings, and industry implications as of April 2025.",
+        "displayOnMain": false,
+        "displayOnLearn": true,
+        "fullArticlePath": "article6/battery-rebate-wa.html"
       }
 ];

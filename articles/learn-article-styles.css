@@ -231,4 +231,58 @@
     color: white;
     margin-top: 40px;
   }
+
+/* Pagination Base Styles (Shared) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px; /* Added for consistent spacing between items */
+}
+
+
+/* Learn Articles Pagination */
+#learn-pagination button {
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #3498db;
+  color: #3498db;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+#learn-pagination button:hover:not(:disabled) {
+  background-color: #3498db;
+  color: white;
+}
+
+#learn-pagination button.active {
+  background-color: #3498db;
+  color: white;
+  border: 1px solid #3498db;
+}
+
+#learn-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5; /* Visual cue for disabled state */
+}
+
+/* Optional: Responsive Adjustments */
+@media (max-width: 600px) {
+  .pagination {
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 5px;
+  }
   
+  #articles-pagination .page-nav,
+  #articles-pagination .page-number,
+  #learn-pagination .page-nav,
+  #learn-pagination .page-number {
+    padding: 4px 8px; /* Slightly smaller padding */
+    font-size: 12px; /* Smaller text on mobile */
+  }
+}
