@@ -455,6 +455,63 @@ const jobs = [
       "/images/Jobs/Job24/i1.webp",
       "/images/Jobs/Job24/i2.webp",
     ]
+  },
+  {
+    id: "job25",
+    title: "North Lake Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.65kW (14 Panels)",
+    roofType: "Concrete Tile",
+    completionDate: "04-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-10:30am)",
+    suburb: "North Lake, WA, 6163",
+    mainImage: "/images/Jobs/Job25/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job25/p1.webp",
+      "/images/Jobs/Job25/p2.webp",
+      "/images/Jobs/Job25/i1.webp",
+      "/images/Jobs/Job25/i2.webp",
+    ]
+  },
+  {
+    id: "job26",
+    title: "Hamiltion Hill Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.60kW (15 Panels)",
+    roofType: "Metal Tin",
+    completionDate: "07-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(8:00am-12:30pm)",
+    suburb: "Hamilton Hill, WA, 6163",
+    mainImage: "/images/Jobs/Job26/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job26/p1.webp",
+      "/images/Jobs/Job26/p2.webp",
+      "/images/Jobs/Job26/i1.webp",
+      "/images/Jobs/Job26/i2.webp",
+    ]
+  },
+  {
+    id: "job27",
+    title: "Victoria Park Install",
+    "House Type": "Double-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.63kW (13 Panels)",
+    roofType: "Clay Tile",
+    completionDate: "08-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(8:00am-1:30pm)",
+    suburb: "Victoria Park, WA, 6101",
+    mainImage: "/images/Jobs/Job27/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job27/p1.webp",
+      "/images/Jobs/Job27/p2.webp",
+      "/images/Jobs/Job27/i1.webp",
+      "/images/Jobs/Job27/i2.webp",
+    ]
   }
 ];
 
