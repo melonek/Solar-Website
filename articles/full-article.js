@@ -278,12 +278,13 @@ function handleSummaryClick(event) {
 }
 
 async function shareArticle(event) {
+    // Prevent the default action if an event is provided.
     if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    // Build shareData from currentShareData if set, else fallback to meta tags
+    // Build shareData: use global currentShareData if available; otherwise, read from meta tags.
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
@@ -291,32 +292,36 @@ async function shareArticle(event) {
         image: document.querySelector('meta[property="og:image"]')?.content || ''
     };
 
-    // Append cache busting query parameter
+    // Append a cache-busting query parameter to the URL.
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
 
-    // Prepare the base share payload with title, text (description), and URL
+    // Prepare the share payload (for the native share API).
     const sharePayload = {
         title: shareData.title,
         text: shareData.text,
         url: shareData.url
     };
 
-    // Attempt to fetch the article image and include it as a File if supported.
+    // Attempt to fetch the article image and attach it as a file (if supported).
     if (shareData.image) {
         try {
             const response = await fetch(shareData.image);
-            const blob = await response.blob();
-            const file = new File([blob], 'article-image.webp', { type: blob.type });
-            // If the browser supports file sharing (Web Share API Level 2) with files, attach the file.
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                sharePayload.files = [file];
+            if (response.ok) {
+                const blob = await response.blob();
+                const file = new File([blob], 'article-image.webp', { type: blob.type });
+                // If the browser supports file sharing, add the file to the payload.
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    sharePayload.files = [file];
+                }
+            } else {
+                console.error("Image response not ok:", response.status);
             }
-        } catch (err) {
-            console.error('Error fetching image for share:', err);
+        } catch (error) {
+            console.error("Error fetching image for share:", error);
         }
     }
 
-    // Determine which social platform button triggered the event (for URL-based fallback)
+    // Determine if the share event was triggered by a specific social share button.
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
@@ -332,35 +337,37 @@ async function shareArticle(event) {
         platform = "whatsapp";
     }
     
+    // Based on platform, use a URL-based share as fallback.
     let shareUrl = "";
     switch (platform) {
         case "twitter":
-            // Pass only the description (shareData.text) as visible text alongside the URL.
+            // Twitter: use the URL for preview scraping, and only the description (text) for visible tweet text.
             shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "facebook":
+            // Facebook uses only the URL to generate the preview card.
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "linkedin":
+            // LinkedIn uses title and summary with the URL.
             shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&summary=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "whatsapp":
-            // WhatsApp requires a URL in the text to trigger a rich preview.
-            // To minimize the URL’s visual impact, append a zero-width space at the end.
+            // WhatsApp requires the URL in the text to trigger a preview; append a zero-width space to minimize the visible URL.
             shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url + '\u200B')}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // Use native share API if available
+            // If no specific platform is detected, attempt the native share API.
             if (navigator.share) {
                 try {
                     await navigator.share(sharePayload);
                     console.log('Article shared successfully');
                 } catch (err) {
-                    console.error('Share failed:', err);
+                    console.error('Native share failed:', err);
                 }
             } else if (navigator.clipboard) {
                 try {
