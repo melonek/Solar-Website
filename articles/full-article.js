@@ -283,7 +283,7 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Build shareData from currentShareData if set; otherwise fallback to the OG meta tags.
+    // Build shareData from currentShareData if set, else fallback to meta tags
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
@@ -291,23 +291,36 @@ async function shareArticle(event) {
         image: document.querySelector('meta[property="og:image"]')?.content || ''
     };
 
-    // Append a cache busting query parameter to ensure the URL is always unique for scraping purposes.
+    // Append cache busting query parameter
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
 
-    // Prepare the share payload for the native share API.
-    // This payload still includes the URL for scraping, but the visible text is only your description.
+    // Prepare the base share payload with title, text (description), and URL
     const sharePayload = {
         title: shareData.title,
         text: shareData.text,
         url: shareData.url
     };
 
-    // Determine if a specific social share button triggered this event.
+    // Attempt to fetch the article image and include it as a File if supported.
+    if (shareData.image) {
+        try {
+            const response = await fetch(shareData.image);
+            const blob = await response.blob();
+            const file = new File([blob], 'article-image.webp', { type: blob.type });
+            // If the browser supports file sharing (Web Share API Level 2) with files, attach the file.
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                sharePayload.files = [file];
+            }
+        } catch (err) {
+            console.error('Error fetching image for share:', err);
+        }
+    }
+
+    // Determine which social platform button triggered the event (for URL-based fallback)
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
     }
-    
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) {
         platform = "twitter";
@@ -322,29 +335,26 @@ async function shareArticle(event) {
     let shareUrl = "";
     switch (platform) {
         case "twitter":
-            // Twitter uses separate URL and text parameters.
-            // Use only the description in the text parameter.
+            // Pass only the description (shareData.text) as visible text alongside the URL.
             shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "facebook":
-            // Facebook generates the preview card solely from the URL.
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "linkedin":
-            // LinkedIn accepts title, summary (description), and URL as separate parameters.
             shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&summary=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "whatsapp":
-            // WhatsApp uses a single 'text' parameter.
-            // Append a zero-width space (\u200B) to the URL to trigger the preview while minimizing its visibility.
+            // WhatsApp requires a URL in the text to trigger a rich preview.
+            // To minimize the URL’s visual impact, append a zero-width space at the end.
             shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url + '\u200B')}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // For the native share API (or fallback if social button not identified):
+            // Use native share API if available
             if (navigator.share) {
                 try {
                     await navigator.share(sharePayload);
