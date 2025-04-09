@@ -278,40 +278,41 @@ function handleSummaryClick(event) {
 }
 
 async function shareArticle(event) {
+    // Only call preventDefault/stopPropagation if the event is defined
     if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    // Build share data from currentShareData or fallback to meta tag values
-    let shareData = currentShareData || {
-        title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
-        text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
-        url: document.querySelector('meta[property="og:url"]')?.content || window.location.href,
-        image: document.querySelector('meta[property="og:image"]')?.content || ''
-    };
-
-    // Append cache busting query parameter if needed
-    shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
-
-    // Create a payload that always includes text
-    const sharePayload = {
-        title: shareData.title,
-        text: shareData.text,  // Always include text, per your request
-        url: shareData.url
-    };
-
-    // Determine which platform button triggered this event
+    // Safely get the buttonId if event is defined
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
     }
+    
+    // Detect platform based on button id if available
     let platform = "";
-    if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
-    else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
-    else if (buttonId.toLowerCase().includes("linkedin")) platform = "linkedin";
-    else if (buttonId.toLowerCase().includes("whatsapp")) platform = "whatsapp";
+    if (buttonId.toLowerCase().includes("twitter")) {
+        platform = "twitter";
+    } else if (buttonId.toLowerCase().includes("facebook")) {
+        platform = "facebook";
+    } else if (buttonId.toLowerCase().includes("linkedin")) {
+        platform = "linkedin";
+    } else if (buttonId.toLowerCase().includes("whatsapp")) {
+        platform = "whatsapp";
+    }
+    
+    // Use global currentShareData if available; otherwise, fallback to basic meta tag or document defaults
+    let shareData = currentShareData || {
+        title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
+        text: document.querySelector('meta[property="og:description"]')?.content || '',
+        url: document.querySelector('meta[property="og:url"]')?.content || window.location.href,
+        image: document.querySelector('meta[property="og:image"]')?.content || ''
+    };
 
+    // Append cache busting query parameter
+    shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
+    
     let shareUrl = "";
     switch (platform) {
         case "twitter":
@@ -331,10 +332,13 @@ async function shareArticle(event) {
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // For native share (or fallback to copy text)
             if (navigator.share) {
                 try {
-                    await navigator.share(sharePayload);
+                    await navigator.share({
+                        title: shareData.title,
+                        text: shareData.text,
+                        url: shareData.url
+                    });
                     console.log('Article shared successfully');
                 } catch (err) {
                     console.error('Share failed:', err);
@@ -350,7 +354,6 @@ async function shareArticle(event) {
             break;
     }
 }
-
 
 
 function showSharePopup(shareData) {
