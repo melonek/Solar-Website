@@ -214,7 +214,7 @@ function displayModal(article) {
     }
     const articleUrl = getArticleNavigationUrl(article);
     const shareUrl = getShareableUrl(article);
-    
+
     modalContent.innerHTML = `
         <div class="modal-header">
             <h1 class="modal-title">${article.title}</h1>
@@ -222,34 +222,43 @@ function displayModal(article) {
         </div>
         <div class="action-buttons">
             <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
-            <a href="#" class="share-button" data-url="${shareUrl}" data-title="${article.title}" data-snippet="${article.snippet}">🔗 Share this article</a>
+            <button class="share-button" data-url="${shareUrl}" data-title="${article.title}" data-snippet="${article.snippet}">
+                🔗 Share this article
+            </button>
         </div>
         <div class="modal-summary">
             ${article.summary}
         </div>
     `;
-    
-    currentShareData = { url: shareUrl, title: article.title, text: article.snippet };
-    
+
+    // Set the unified share data using only the article’s data
+    currentShareData = {
+        url: shareUrl,
+        title: article.title,
+        text: article.snippet,
+        image: article.image  // Ensures the card uses only the article image
+    };
+
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
     modal.style.display = "flex";
     document.body.classList.add('modal-open');
-    
+
     const closeModal = () => {
         modal.style.display = "none";
         document.body.classList.remove('modal-open');
         currentShareData = null;
     };
-    
+
     document.querySelector('.close').onclick = closeModal;
     window.onclick = (event) => {
         if (event.target === modal) closeModal();
     };
-    
+
     const modalShareBtn = modalContent.querySelector('.share-button');
     if (modalShareBtn) modalShareBtn.addEventListener('click', shareArticle);
 }
+
 
 function handleSummaryClick(event) {
     if (event.target.classList.contains('summary-btn')) {
@@ -274,33 +283,23 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    let shareData = currentShareData || {
-        title: document.querySelector('meta[property="og:title"]')?.content || 
-               document.querySelector('title')?.textContent || 'Check this out!',
-        text: document.querySelector('meta[property="og:description"]')?.content || 
-              document.querySelector('meta[name="description"]')?.content || 
-              'Here is an interesting page for you.',
-        url: document.querySelector('meta[property="og:url"]')?.content || 
-             window.location.href,
-        image: document.querySelector('meta[property="og:image"]')?.content || 
-               document.querySelector('meta[name="twitter:image"]')?.content || ''
-    };
-    
-    if (event) {
-        let button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
-        if (button) {
-            const buttonUrl = button.getAttribute('data-url');
-            const buttonTitle = button.getAttribute('data-title');
-            const buttonSnippet = button.getAttribute('data-snippet');
-            if (buttonUrl) shareData.url = buttonUrl;
-            if (buttonTitle) shareData.title = buttonTitle;
-            if (buttonSnippet) shareData.text = buttonSnippet;
-        }
+    // Use the global currentShareData if available, otherwise get data from the clicked button
+    let shareData = currentShareData;
+    if (!shareData) {
+        const button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
+        shareData = {
+            url: button?.getAttribute('data-url') || window.location.href,
+            title: button?.getAttribute('data-title') || document.title,
+            text: button?.getAttribute('data-snippet') || '',
+            // Optionally, if you attach the image in a data attribute:
+            image: button?.getAttribute('data-image') || ''
+        };
     }
     
-    // Cache-busting for URL fetch
+    // Cache busting if needed
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
+    // Identify social platform based on button id (if applicable)
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
@@ -327,33 +326,30 @@ async function shareArticle(event) {
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
+            // Fallback to Web Share API if available
             if (navigator.share) {
-                // Try explicit image fetch as a fallback
-                if (shareData.image) {
-                    try {
-                        const response = await fetch(shareData.image, { mode: 'cors' });
-                        if (response.ok) {
-                            const blob = await response.blob();
-                            const file = new File([blob], 'article-image.jpg', { type: 'image/jpeg' });
-                            shareData.files = [file];
-                        } else {
-                            console.error('Image fetch failed:', response.status);
-                        }
-                    } catch (err) {
-                        console.error('Image fetch error:', err);
-                    }
+                try {
+                    await navigator.share({
+                        title: shareData.title,
+                        text: shareData.text,
+                        url: shareData.url
+                    });
+                    console.log('Article shared successfully');
+                } catch (err) {
+                    console.error('Share failed:', err);
                 }
-                navigator.share(shareData)
-                    .then(() => console.log('Article shared successfully'))
-                    .catch(err => console.error('Share failed:', err));
             } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(shareData.url)
-                    .then(() => console.log('URL copied to clipboard'))
-                    .catch(err => console.error('Clipboard copy failed:', err));
+                try {
+                    await navigator.clipboard.writeText(shareData.url);
+                    console.log('URL copied to clipboard');
+                } catch (err) {
+                    console.error('Clipboard copy failed:', err);
+                }
             }
             break;
     }
 }
+
 
 function showSharePopup(shareData) {
     const popup = document.createElement('div');
