@@ -222,14 +222,14 @@ function displayModal(article) {
         </div>
         <div class="action-buttons">
             <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
-            <a href="#" class="share-button">🔗 Share this article</a>
+            <a href="#" class="share-button" data-url="${shareUrl}" data-title="${article.title}" data-snippet="${article.snippet}">🔗 Share this article</a>
         </div>
         <div class="modal-summary">
             ${article.summary}
         </div>
     `;
     
-    currentShareData = null; // Clear this since we’re relying on metadata
+    currentShareData = { url: shareUrl, title: article.title, text: article.snippet };
     
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
@@ -274,8 +274,7 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Use metadata directly, no overrides
-    let shareData = {
+    let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || 
                document.querySelector('title')?.textContent || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 
@@ -287,10 +286,21 @@ async function shareArticle(event) {
                document.querySelector('meta[name="twitter:image"]')?.content || ''
     };
     
-    // Cache-busting for URL
+    if (event) {
+        let button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
+        if (button) {
+            const buttonUrl = button.getAttribute('data-url');
+            const buttonTitle = button.getAttribute('data-title');
+            const buttonSnippet = button.getAttribute('data-snippet');
+            if (buttonUrl) shareData.url = buttonUrl;
+            if (buttonTitle) shareData.title = buttonTitle;
+            if (buttonSnippet) shareData.text = buttonSnippet;
+        }
+    }
+    
+    // Cache-busting for URL fetch
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
-    // Platform-specific sharing for social buttons
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
@@ -318,38 +328,28 @@ async function shareArticle(event) {
             break;
         default:
             if (navigator.share) {
+                // Try explicit image fetch as a fallback
                 if (shareData.image) {
                     try {
                         const response = await fetch(shareData.image, { mode: 'cors' });
                         if (response.ok) {
                             const blob = await response.blob();
-                            const isWebp = shareData.image.toLowerCase().endsWith('.webp');
-                            const fileName = isWebp ? 'article-image.webp' : 'article-image.jpg';
-                            const fileType = isWebp ? 'image/webp' : 'image/jpeg';
-                            const file = new File([blob], fileName, { type: fileType });
+                            const file = new File([blob], 'article-image.jpg', { type: 'image/jpeg' });
                             shareData.files = [file];
                         } else {
-                            console.error(`Image fetch failed for ${shareData.image}: ${response.status}`);
+                            console.error('Image fetch failed:', response.status);
                         }
                     } catch (err) {
-                        console.error(`Image fetch error for ${shareData.image}:`, err);
+                        console.error('Image fetch error:', err);
                     }
                 }
-                try {
-                    await navigator.share(shareData);
-                    console.log('Article shared successfully');
-                } catch (err) {
-                    console.error('Share failed:', err);
-                    // Retry without image if it fails
-                    delete shareData.files;
-                    await navigator.share(shareData);
-                }
+                navigator.share(shareData)
+                    .then(() => console.log('Article shared successfully'))
+                    .catch(err => console.error('Share failed:', err));
             } else if (navigator.clipboard) {
                 navigator.clipboard.writeText(shareData.url)
-                    .then(() => alert('URL copied to clipboard'))
+                    .then(() => console.log('URL copied to clipboard'))
                     .catch(err => console.error('Clipboard copy failed:', err));
-            } else {
-                showSharePopup(shareData);
             }
             break;
     }
