@@ -135,7 +135,7 @@ const jobs = [
   },
   {
     id: "job8",
-    title: "Victoria Park Installation",
+    title: "Kardinya Installation",
     "House Type": "Double-Storey",
     "Installation Type": "Normal Solar",
     "System Size": "6.6kW (15 Panels)",
@@ -143,7 +143,7 @@ const jobs = [
     completionDate: "12-03-2025",
     difficulty: "Moderate",
     timeToComplete: "(8:45am-1:15pm)",
-    suburb: "Victoria Park, WA, 6100",
+    suburb: "Kardinya, WA, 6100",
     mainImage: "/images/Jobs/Job8/m.jpg",
     additionalImages: [
       "/images/Jobs/Job8/p1.jpg",
@@ -192,7 +192,7 @@ const jobs = [
   },
   {
     id: "job11",
-    title: "Victoria Park Installation",
+    title: "Kardinya Installation",
     "House Type": "Single-Storey",
     "Installation Type": "Normal Solar",
     "System Size": "6.6kW (15 Panels)",
@@ -200,7 +200,7 @@ const jobs = [
     completionDate: "14-03-2025",
     difficulty: "Moderate",
     timeToComplete: "(1:20pm-4:33pm)",
-    suburb: "Victoria Park, WA, 6100",
+    suburb: "Kardinya, WA, 6100",
     mainImage: "/images/Jobs/Job11/m.webp",
     additionalImages: [
       "/images/Jobs/Job11/p1.webp",
@@ -496,7 +496,7 @@ const jobs = [
   },
   {
     id: "job27",
-    title: "Victoria Park Install",
+    title: "Kardinya Install",
     "House Type": "Double-Storey",
     "Installation Type": "Normal Solar",
     "System Size": "6.63kW (13 Panels)",
@@ -504,13 +504,32 @@ const jobs = [
     completionDate: "08-04-2025",
     difficulty: "Moderate",
     timeToComplete: "(8:00am-1:30pm)",
-    suburb: "Victoria Park, WA, 6101",
+    suburb: "Kardinya, WA, 6101",
     mainImage: "/images/Jobs/Job27/m.webp",
     additionalImages: [
       "/images/Jobs/Job27/p1.webp",
       "/images/Jobs/Job27/p2.webp",
       "/images/Jobs/Job27/i1.webp",
       "/images/Jobs/Job27/i2.webp",
+    ]
+  },
+  {
+    id: "job28",
+    title: "Kardinya Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.60kW (15 Panels)",
+    roofType: "Concrete Tile",
+    completionDate: "09-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-11:00am)",
+    suburb: "Kardinya, WA, 6163",
+    mainImage: "/images/Jobs/Job28/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job28/p1.webp",
+      "/images/Jobs/Job28/p2.webp",
+      "/images/Jobs/Job28/i1.webp",
+      "/images/Jobs/Job28/i2.webp",
     ]
   }
 ];
