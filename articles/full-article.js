@@ -298,7 +298,6 @@ async function shareArticle(event) {
         }
     }
     
-    // Cache-busting for URL fetch
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
@@ -328,28 +327,38 @@ async function shareArticle(event) {
             break;
         default:
             if (navigator.share) {
-                // Try explicit image fetch as a fallback
                 if (shareData.image) {
                     try {
                         const response = await fetch(shareData.image, { mode: 'cors' });
                         if (response.ok) {
                             const blob = await response.blob();
-                            const file = new File([blob], 'article-image.jpg', { type: 'image/jpeg' });
+                            const isWebp = shareData.image.toLowerCase().endsWith('.webp');
+                            const fileName = isWebp ? 'article-image.webp' : 'article-image.jpg';
+                            const fileType = isWebp ? 'image/webp' : 'image/jpeg';
+                            const file = new File([blob], fileName, { type: fileType });
                             shareData.files = [file];
                         } else {
-                            console.error('Image fetch failed:', response.status);
+                            console.error(`Image fetch failed for ${shareData.image}: ${response.status}`);
                         }
                     } catch (err) {
-                        console.error('Image fetch error:', err);
+                        console.error(`Image fetch error for ${shareData.image}:`, err);
                     }
                 }
-                navigator.share(shareData)
-                    .then(() => console.log('Article shared successfully'))
-                    .catch(err => console.error('Share failed:', err));
+                try {
+                    await navigator.share(shareData);
+                    console.log('Article shared successfully');
+                } catch (err) {
+                    console.error('Share failed:', err);
+                    // Fallback without image if sharing fails
+                    delete shareData.files;
+                    await navigator.share(shareData);
+                }
             } else if (navigator.clipboard) {
                 navigator.clipboard.writeText(shareData.url)
-                    .then(() => console.log('URL copied to clipboard'))
+                    .then(() => alert('URL copied to clipboard'))
                     .catch(err => console.error('Clipboard copy failed:', err));
+            } else {
+                alert('Sharing not supported. URL: ' + shareData.url);
             }
             break;
     }
