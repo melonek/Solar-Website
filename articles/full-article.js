@@ -283,7 +283,7 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Build share data from currentShareData or fallback to meta tag values
+    // Build shareData from currentShareData if set; otherwise fallback to the OG meta tags.
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
@@ -291,68 +291,60 @@ async function shareArticle(event) {
         image: document.querySelector('meta[property="og:image"]')?.content || ''
     };
 
-    // Append cache-busting query parameter if needed
+    // Append a cache busting query parameter to ensure the URL is always unique for scraping purposes.
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
 
-    // Create base share payload with title, text, and url
+    // Prepare the share payload for the native share API.
+    // This payload still includes the URL for scraping, but the visible text is only your description.
     const sharePayload = {
         title: shareData.title,
         text: shareData.text,
         url: shareData.url
     };
 
-    // Attempt to fetch the image and include it as a file if supported
-    if (shareData.image) {
-        try {
-            const response = await fetch(shareData.image);
-            const blob = await response.blob();
-            // Create a File object; filename and MIME type come from the blob
-            const file = new File([blob], 'share-image.webp', { type: blob.type });
-            
-            // Check if the browser supports sharing files
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                sharePayload.files = [file];
-            }
-        } catch (err) {
-            console.error('Error fetching image for share:', err);
-        }
-    }
-
-    // Determine which platform button triggered this event (for URL-based sharing fallbacks)
+    // Determine if a specific social share button triggered this event.
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
     }
+    
     let platform = "";
-    if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
-    else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
-    else if (buttonId.toLowerCase().includes("linkedin")) platform = "linkedin";
-    else if (buttonId.toLowerCase().includes("whatsapp")) platform = "whatsapp";
-
+    if (buttonId.toLowerCase().includes("twitter")) {
+        platform = "twitter";
+    } else if (buttonId.toLowerCase().includes("facebook")) {
+        platform = "facebook";
+    } else if (buttonId.toLowerCase().includes("linkedin")) {
+        platform = "linkedin";
+    } else if (buttonId.toLowerCase().includes("whatsapp")) {
+        platform = "whatsapp";
+    }
+    
     let shareUrl = "";
     switch (platform) {
         case "twitter":
-            // Use only the description text with the URL in query parameters
+            // Twitter uses separate URL and text parameters.
+            // Use only the description in the text parameter.
             shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "facebook":
-            // Facebook scrapes the URL; additional text isn’t needed
+            // Facebook generates the preview card solely from the URL.
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "linkedin":
-            // Pass the title and description as parameters
+            // LinkedIn accepts title, summary (description), and URL as separate parameters.
             shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&summary=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "whatsapp":
-            // Concatenate the description and URL
-            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+            // WhatsApp uses a single 'text' parameter.
+            // Append a zero-width space (\u200B) to the URL to trigger the preview while minimizing its visibility.
+            shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url + '\u200B')}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // Use native share API if available
+            // For the native share API (or fallback if social button not identified):
             if (navigator.share) {
                 try {
                     await navigator.share(sharePayload);
