@@ -379,3 +379,23 @@ body.modal-open {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
 }
+
+/* Remove outline and border for share buttons */
+.share-button,
+#full-share-buttons a,
+#learn-share-buttons a,
+#full-top-share-button,
+#learn-top-share-button {
+    outline: none;
+    border: none;
+}
+
+/* Optional: Remove focus styles when buttons are clicked or navigated to */
+.share-button:focus,
+#full-share-buttons a:focus,
+#learn-share-buttons a:focus,
+#full-top-share-button:focus,
+#learn-top-share-button:focus {
+    outline: none;
+    border: none;
+}
