@@ -222,14 +222,18 @@ function displayModal(article) {
         </div>
         <div class="action-buttons">
             <a href="${articleUrl}" class="full-article-btn" target="_blank">Full Article</a>
-            <a href="#" class="share-button" data-url="${shareUrl}" data-title="${article.title}" data-snippet="${article.snippet}">🔗 Share this article</a>
+            <a href="#" class="share-button" 
+               data-url="${shareUrl}" 
+               data-title="${article.title}" 
+               data-snippet="${article.snippet}" 
+               data-image="${article.image}">🔗 Share this article</a>
         </div>
         <div class="modal-summary">
             ${article.summary}
         </div>
     `;
     
-    currentShareData = { url: shareUrl, title: article.title, text: article.snippet };
+    currentShareData = { url: shareUrl, title: article.title, text: article.snippet, image: article.image };
     
     modalContent.style.display = 'flex';
     modalContent.style.flexDirection = 'column';
@@ -274,7 +278,8 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    let shareData = currentShareData || {
+    // Default share data (fallback, rarely used due to data-* overrides)
+    let shareData = {
         title: document.querySelector('meta[property="og:title"]')?.content || 
                document.querySelector('title')?.textContent || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 
@@ -286,20 +291,30 @@ async function shareArticle(event) {
                document.querySelector('meta[name="twitter:image"]')?.content || ''
     };
     
+    // Override with button-specific data if event is provided
     if (event) {
-        let button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
+        const button = event.target.closest('.share-button, #full-share-buttons a, #learn-share-buttons a, #full-top-share-button, #learn-top-share-button');
         if (button) {
             const buttonUrl = button.getAttribute('data-url');
             const buttonTitle = button.getAttribute('data-title');
             const buttonSnippet = button.getAttribute('data-snippet');
+            const buttonImage = button.getAttribute('data-image');
             if (buttonUrl) shareData.url = buttonUrl;
             if (buttonTitle) shareData.title = buttonTitle;
             if (buttonSnippet) shareData.text = buttonSnippet;
+            if (buttonImage) shareData.image = buttonImage;
         }
     }
     
+    // Ensure absolute URL for image if relative
+    if (shareData.image && !shareData.image.startsWith('http')) {
+        shareData.image = `https://naturespark.com.au${shareData.image}`;
+    }
+    
+    // Cache-busting for URL
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
     
+    // Platform-specific sharing for social buttons
     let buttonId = event && event.target.closest('a') ? event.target.closest('a').id || "" : "";
     let platform = "";
     if (buttonId.toLowerCase().includes("twitter")) platform = "twitter";
@@ -339,9 +354,11 @@ async function shareArticle(event) {
                             shareData.files = [file];
                         } else {
                             console.error(`Image fetch failed for ${shareData.image}: ${response.status}`);
+                            delete shareData.files; // Avoid sharing invalid image
                         }
                     } catch (err) {
                         console.error(`Image fetch error for ${shareData.image}:`, err);
+                        delete shareData.files; // Fallback to no image on error
                     }
                 }
                 try {
@@ -349,7 +366,7 @@ async function shareArticle(event) {
                     console.log('Article shared successfully');
                 } catch (err) {
                     console.error('Share failed:', err);
-                    // Fallback without image if sharing fails
+                    // Retry without image if it fails
                     delete shareData.files;
                     await navigator.share(shareData);
                 }
@@ -358,7 +375,7 @@ async function shareArticle(event) {
                     .then(() => alert('URL copied to clipboard'))
                     .catch(err => console.error('Clipboard copy failed:', err));
             } else {
-                alert('Sharing not supported. URL: ' + shareData.url);
+                showSharePopup(shareData); // Fallback popup for non-share browsers
             }
             break;
     }
