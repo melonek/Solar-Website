@@ -283,7 +283,7 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // Build shareData from currentShareData or from meta tags
+    // Build share data from currentShareData or fallback to meta tag values
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
         text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
@@ -291,17 +291,34 @@ async function shareArticle(event) {
         image: document.querySelector('meta[property="og:image"]')?.content || ''
     };
 
-    // Append cache busting query parameter if needed
+    // Append cache-busting query parameter if needed
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
 
-    // Prepare a sharePayload for the native share API including the URL and description only.
+    // Create base share payload with title, text, and url
     const sharePayload = {
-        title: shareData.title,  // This is used by the system to build the card
-        text: shareData.text,    // Visible text: only the description
-        url: shareData.url       // Critical for generating the rich preview from meta tags
+        title: shareData.title,
+        text: shareData.text,
+        url: shareData.url
     };
 
-    // Determine which platform button triggered this event
+    // Attempt to fetch the image and include it as a file if supported
+    if (shareData.image) {
+        try {
+            const response = await fetch(shareData.image);
+            const blob = await response.blob();
+            // Create a File object; filename and MIME type come from the blob
+            const file = new File([blob], 'share-image.webp', { type: blob.type });
+            
+            // Check if the browser supports sharing files
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                sharePayload.files = [file];
+            }
+        } catch (err) {
+            console.error('Error fetching image for share:', err);
+        }
+    }
+
+    // Determine which platform button triggered this event (for URL-based sharing fallbacks)
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
@@ -315,27 +332,27 @@ async function shareArticle(event) {
     let shareUrl = "";
     switch (platform) {
         case "twitter":
-            // Pass only the description in the text parameter and the URL for preview scraping.
+            // Use only the description text with the URL in query parameters
             shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareData.url)}&text=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "facebook":
-            // Facebook scrapes the URL; additional text isn’t needed.
+            // Facebook scrapes the URL; additional text isn’t needed
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "linkedin":
-            // Use the summary parameter for the description.
+            // Pass the title and description as parameters
             shareUrl = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareData.url)}&title=${encodeURIComponent(shareData.title)}&summary=${encodeURIComponent(shareData.text)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         case "whatsapp":
-            // Concatenate description and URL. The card will be built from the URL.
+            // Concatenate the description and URL
             shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // For native share API, include our full payload.
+            // Use native share API if available
             if (navigator.share) {
                 try {
                     await navigator.share(sharePayload);
