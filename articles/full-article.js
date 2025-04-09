@@ -283,18 +283,25 @@ async function shareArticle(event) {
         event.stopPropagation();
     }
     
-    // If available, use the global share data; otherwise, fallback to meta tag values.
+    // Build share data from currentShareData or fallback to meta tag values
     let shareData = currentShareData || {
         title: document.querySelector('meta[property="og:title"]')?.content || document.title || 'Check this out!',
-        text: document.querySelector('meta[property="og:description"]')?.content || '',
+        text: document.querySelector('meta[property="og:description"]')?.content || 'Here is an interesting article for you.',
         url: document.querySelector('meta[property="og:url"]')?.content || window.location.href,
         image: document.querySelector('meta[property="og:image"]')?.content || ''
     };
 
-    // Append cache busting if needed
+    // Append cache busting query parameter if needed
     shareData.url = `${shareData.url.split('?')[0]}?cacheBust=${Date.now()}`;
-    
-    // Determine the platform (if sharing via a button with an id, etc.)
+
+    // Create a payload that always includes text
+    const sharePayload = {
+        title: shareData.title,
+        text: shareData.text,  // Always include text, per your request
+        url: shareData.url
+    };
+
+    // Determine which platform button triggered this event
     let buttonId = "";
     if (event && event.target && event.target.closest('a')) {
         buttonId = event.target.closest('a').id || "";
@@ -304,7 +311,7 @@ async function shareArticle(event) {
     else if (buttonId.toLowerCase().includes("facebook")) platform = "facebook";
     else if (buttonId.toLowerCase().includes("linkedin")) platform = "linkedin";
     else if (buttonId.toLowerCase().includes("whatsapp")) platform = "whatsapp";
-    
+
     let shareUrl = "";
     switch (platform) {
         case "twitter":
@@ -324,27 +331,21 @@ async function shareArticle(event) {
             window.open(shareUrl, '_blank', 'width=600,height=400');
             break;
         default:
-            // On platforms using the native share API, we do a bit of tweaking:
-            // On iOS the addition of a 'text' property may cause the URL preview to split.
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            try {
-                if (navigator.share) {
-                    // For iOS, omit the 'text' property so the system scrapes your URL for an OG preview.
-                    const sharePayload = {
-                        title: shareData.title,
-                        url: shareData.url
-                    };
-                    if (!isIOS) {
-                        sharePayload.text = shareData.text;
-                    }
+            // For native share (or fallback to copy text)
+            if (navigator.share) {
+                try {
                     await navigator.share(sharePayload);
                     console.log('Article shared successfully');
-                } else if (navigator.clipboard) {
+                } catch (err) {
+                    console.error('Share failed:', err);
+                }
+            } else if (navigator.clipboard) {
+                try {
                     await navigator.clipboard.writeText(shareData.url);
                     console.log('URL copied to clipboard');
+                } catch (err) {
+                    console.error('Clipboard copy failed:', err);
                 }
-            } catch (err) {
-                console.error('Share failed:', err);
             }
             break;
     }
