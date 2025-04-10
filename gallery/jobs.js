@@ -531,6 +531,25 @@ const jobs = [
       "/images/Jobs/Job28/i1.webp",
       "/images/Jobs/Job28/i2.webp",
     ]
+  },
+  {
+    id: "job29",
+    title: "Carine Installation",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "9.69kW (19 Panels)",
+    roofType: "Concrete Tile",
+    completionDate: "10-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-12:45am)",
+    suburb: "Carine, WA, 6020",
+    mainImage: "/images/Jobs/Job29/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job29/p1.webp",
+      "/images/Jobs/Job29/p2.webp",
+      "/images/Jobs/Job29/i1.webp",
+      "/images/Jobs/Job29/i2.webp",
+    ]
   }
 ];
 
