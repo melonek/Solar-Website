@@ -541,7 +541,7 @@ const jobs = [
     roofType: "Concrete Tile",
     completionDate: "10-04-2025",
     difficulty: "Easy",
-    timeToComplete: "(7:00am-12:45am)",
+    timeToComplete: "(7:00am-12:45pm)",
     suburb: "Carine, WA, 6020",
     mainImage: "/images/Jobs/Job29/m.webp",
     additionalImages: [
