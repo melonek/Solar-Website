@@ -550,6 +550,63 @@ const jobs = [
       "/images/Jobs/Job29/i1.webp",
       "/images/Jobs/Job29/i2.webp",
     ]
+  },
+  {
+    id: "job30",
+    title: "Mindarie Installation",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.60kW (15 Panels)",
+    roofType: "Metal Tin",
+    completionDate: "11-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-9:50am)",
+    suburb: "Mindarie, WA, 6030",
+    mainImage: "/images/Jobs/Job30/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job30/p1.webp",
+      "/images/Jobs/Job30/p2.webp",
+      "/images/Jobs/Job30/i1.webp",
+      "/images/Jobs/Job30/i2.webp",
+    ]
+  },
+  {
+    id: "job31",
+    title: "Hammond Park Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.60kW (15 Panels)",
+    roofType: "Clay Tile",
+    completionDate: "14-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-11:30am)",
+    suburb: "Hammond Park, WA, 6164",
+    mainImage: "/images/Jobs/Job31/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job31/p1.webp",
+      "/images/Jobs/Job31/p2.webp",
+      "/images/Jobs/Job31/i1.webp",
+      "/images/Jobs/Job31/i2.webp",
+    ]
+  },
+  {
+    id: "job31",
+    title: "Jane Brook Install",
+    "House Type": "Single-Storey",
+    "Installation Type": "Normal Solar",
+    "System Size": "6.60kW (15 Panels)",
+    roofType: "Metal Tin",
+    completionDate: "15-04-2025",
+    difficulty: "Easy",
+    timeToComplete: "(7:00am-11:30am)",
+    suburb: "Jane Brook, WA, 6056",
+    mainImage: "/images/Jobs/Job32/m.webp",
+    additionalImages: [
+      "/images/Jobs/Job32/p1.webp",
+      "/images/Jobs/Job32/p2.webp",
+      "/images/Jobs/Job32/i1.webp",
+      "/images/Jobs/Job32/i2.webp",
+    ]
   }
 ];
 
