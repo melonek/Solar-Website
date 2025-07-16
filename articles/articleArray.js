@@ -127,16 +127,17 @@ const allArticles = [
         "displayOnLearn": false,
         "fullArticlePath": "article5/Dyness-Powerbox-Pro-Battery-for-Australians.html"
       },
-      {
-        "id": 6,
-        "title": "Western Australian Battery Rebate: State and Federal Incentives in 2025",
-        "image": "/articles/article6/battery-rebates-wa-2025.webp",
-        "snippet": "Explore how WA’s state rebates up to $7,500 and a $4,000 federal subsidy make solar batteries more affordable than ever in 2025.",
-        "summary": "\n<h2>Program Overview</h2>\n<p>Western Australia’s Residential Battery Scheme, launching by July 1, 2025, offers $5,000 rebates for Synergy customers and $7,500 for Horizon Power users, paired with a $4,000 federal subsidy confirmed in April 2025. This dual incentive targets 20,000 households, aiming to deploy over 200 MWh of storage capacity.</p>\n<h2>State Incentives</h2>\n<p>The state program provides $500-$750 per kWh (up to 10 kWh), requires VPP-capable batteries, and includes $10,000 interest-free loans for low-income households, alongside a $50M manufacturing boost.</p>\n<h2>Federal Support</h2>\n<p>The $4,000 federal rebate stacks with state incentives, slashing costs for a 10 kWh battery to as low as $500-$3,000, enhancing affordability nationwide.</p>\n<h2>Customer & Industry Impact</h2>\n<p>Homeowners could save $1,000-$1,800 annually, with a 2-4 year payback, while the industry braces for a demand surge, job creation (500-1,000), and local manufacturing growth.</p>\n",
-        "publishedDate": "April 08, 2025",
-        "comment": "A detailed analysis of the Western Australian battery rebate program, covering state and federal incentives, cost reductions, customer savings, and industry implications as of April 2025.",
-        "displayOnMain": false,
-        "displayOnLearn": true,
-        "fullArticlePath": "article6/battery-rebate-wa.html"
-      }
+{
+  "id": 6,
+  "title": "WA Residential Battery Scheme: Rebates, VPP & Loans Explained (2025)",
+  "image": "/articles/article6/battery-rebates-wa-2025.webp",
+  "snippet": "Learn how Perth homeowners can secure up to $5,000 in state rebates (Synergy) or $7,500 (Horizon), join Virtual Power Plants, and access 0% interest loans to slash battery costs by over 80% in 2025.",
+  "summary": "\n<h2>Program Overview</h2>\n<p>The WA Residential Battery Scheme launched on 1 July 2025 to accelerate home energy storage in Western Australia. By combining state rebates with the Federal Cheaper Home Batteries Program, households can cut upfront costs by up to 85% on a typical 10 kWh system. The scheme targets 100,000 installations, adding approximately 1 GWh of distributed storage to the grid.</p>\n<h2>State Rebate Details</h2>\n<p>• <strong>Synergy (metro WA):</strong> $130 per kWh (max 10 kWh → $1,300)<br>• <strong>Horizon Power (regional WA):</strong> $380 per kWh (max 10 kWh → $3,800)<br>Systems must be VPP‑capable, ≥5 kWh usable capacity, internet‑connected, and installed by accredited vendors.</p>\n<h2>Federal Top‑Up Support</h2>\n<p>The Commonwealth Cheaper Home Batteries Program tops up state rebates so a 10 kWh system receives up to $5,000 (Synergy) or $7,500 (Horizon). Accredited retailers claim the federal portion at installation, further reducing out‑of‑pocket costs.</p>\n<h2>VPP &amp; Loan Options</h2>\n<p>All participants must enrol in a Virtual Power Plant, earning export payments (e.g. ~6 ¢/kWh) and helping stabilize the grid. An optional 0% interest loan of $2,001–$10,000 (income cap $210,000) is available over 3–10 years, with no fees or collateral.</p>\n<h2>Cost &amp; Savings</h2>\n<p>Typical Perth home saves $400–$1,500 annually post‑rebates. A 10 kWh install costing $12,000 can drop to $7,000 net (Synergy) or $5,500 (Horizon). Payback periods of 2–4 years are common, with additional VPP income.</p>\n",
+  "publishedDate": "April 08, 2025",
+  "comment": "A concise summary of the WA Residential Battery Scheme, detailing state rebate tiers, federal top‑up, VPP requirements, no‑interest loans, and expected cost savings for 2025.",
+  "displayOnMain": false,
+  "displayOnLearn": true,
+  "fullArticlePath": "article6/battery-rebate-wa.html"
+}
+
 ];
